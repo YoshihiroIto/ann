@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Data.SQLite;
+using System.IO;
 using System.Linq;
 
 namespace Ann.Core
@@ -13,6 +14,9 @@ namespace Ann.Core
 
         public ExecutableUnitHolder(string databaseFile)
         {
+            if (File.Exists(databaseFile) == false)
+                return;
+
             var sb = new SQLiteConnectionStringBuilder
             {
                 DataSource = databaseFile
@@ -26,12 +30,19 @@ namespace Ann.Core
 
         public void Dispose()
         {
-            _ctx.Dispose();
-            _conn.Dispose();
+            _ctx?.Dispose();
+            _conn?.Dispose();
         }
 
         public IEnumerable<ExecutableUnit> Find(string name)
-            => _ctx.GetTable<ExecutableUnit>()
-                .Where(u => u.Name.ToLower().Contains(name.ToLower()));
+        {
+            if (string.IsNullOrEmpty(name))
+                return Enumerable.Empty<ExecutableUnit>();
+
+            // ReSharper disable once MergeConditionalExpression
+            return _ctx == null
+                ? Enumerable.Empty<ExecutableUnit>()
+                : _ctx.GetTable<ExecutableUnit>().Where(u => u.Name.ToLower().Contains(name.ToLower()));
+        }
     }
 }

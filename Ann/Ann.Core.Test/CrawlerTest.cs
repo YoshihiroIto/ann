@@ -10,13 +10,13 @@ namespace Ann.Core.Test
         [TestMethod]
         public void Simple()
         {
-            Crawler.Execute(
+            Crawler.ExecuteAsync(
                 "Test.db",
                 new[]
                 {
                     @"C:\Program Files",
                     @"C:\Program Files (x86)"
-                });
+                }).Wait();
 
             Assert.IsTrue(File.Exists("Test.db"));
 

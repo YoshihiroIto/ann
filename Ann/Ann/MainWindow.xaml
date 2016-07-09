@@ -1,11 +1,44 @@
 ﻿<Window x:Class="Ann.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ann="clr-namespace:Ann"
+        xmlns:behaviors="http://schemas.livet-mvvm.net/2011/wpf"
+        xmlns:core="clr-namespace:Ann.Core;assembly=Ann.Core"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        Title="MainWindow"
+        Title="{Binding Message.Value,
+                        Mode=OneWay}"
         Width="525"
         Height="350"
         mc:Ignorable="d">
-    <Grid />
+    <Window.DataContext>
+        <ann:MainWindowViewModel />
+    </Window.DataContext>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closed">
+            <behaviors:DataContextDisposeAction />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Button Command="{Binding UpdateCommand, Mode=OneTime}" Content="Update" />
+        </StackPanel>
+        <TextBox Grid.Row="1" Text="{Binding Input.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <ListBox Grid.Row="2" ItemsSource="{Binding Candidates.Value, Mode=OneWay}">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type core:ExecutableUnit}">
+                    <Label Content="{Binding Path}" Padding="0" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
 </Window>

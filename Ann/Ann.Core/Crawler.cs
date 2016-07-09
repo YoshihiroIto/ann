@@ -4,49 +4,55 @@ using System.Data.Linq;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Ann.Core
 {
     public static class Crawler
     {
-        public static void Execute(string databaseFile, IEnumerable<string> targetFolders)
+        public static async Task<bool> ExecuteAsync(string databaseFile, IEnumerable<string> targetFolders)
         {
-            if (File.Exists(databaseFile))
-                File.Delete(databaseFile);
-
-            var sb = new SQLiteConnectionStringBuilder
+            await Task.Run(() =>
             {
-                DataSource = databaseFile
-            };
+                if (File.Exists(databaseFile))
+                    File.Delete(databaseFile);
 
-            using (var conn = new SQLiteConnection(sb.ToString()))
-            {
-                conn.Open();
-                CreateTable(conn);
-
-                using (var ctx = new DataContext(conn))
+                var sb = new SQLiteConnectionStringBuilder
                 {
-                    var executableExts = MakeExecutableExts();
+                    DataSource = databaseFile
+                };
 
-                    var count = 0;
+                using (var conn = new SQLiteConnection(sb.ToString()))
+                {
+                    conn.Open();
+                    CreateTable(conn);
 
-                    ctx.GetTable<ExecutableUnit>().InsertAllOnSubmit(
-                        targetFolders.SelectMany(targetFolder =>
-                            EnumerateAllFiles(targetFolder)
-                                .Where(f => executableExts.Contains(Path.GetExtension(f)?.ToLower()))
-                                .Select(f => new ExecutableUnit
-                                {
-                                    Id = count ++,
-                                    Name = Path.GetFileNameWithoutExtension(f),
-                                    Path = f
-                                })
-                            ));
+                    using (var ctx = new DataContext(conn))
+                    {
+                        var executableExts = MakeExecutableExts();
 
-                    ctx.SubmitChanges();
+                        var count = 0;
+
+                        ctx.GetTable<ExecutableUnit>().InsertAllOnSubmit(
+                            targetFolders.SelectMany(targetFolder =>
+                                EnumerateAllFiles(targetFolder)
+                                    .Where(f => executableExts.Contains(Path.GetExtension(f)?.ToLower()))
+                                    .Select(f => new ExecutableUnit
+                                    {
+                                        Id = count ++,
+                                        Name = Path.GetFileNameWithoutExtension(f),
+                                        Path = f
+                                    })
+                                ));
+
+                        ctx.SubmitChanges();
+                    }
+
+                    conn.Close();
                 }
+            });
 
-                conn.Close();
-            }
+            return true;
         }
 
         public static IEnumerable<string> EnumerateAllFiles(string path)
@@ -69,7 +75,7 @@ namespace Ann.Core
             var pathext = Environment.GetEnvironmentVariable("PATHEXT");
 
             return pathext == null
-                ? new HashSet<string>{".exe"}
+                ? new HashSet<string> {".exe"}
                 : new HashSet<string>(pathext.Split(';').Select(p => p.ToLower()));
         }
 
