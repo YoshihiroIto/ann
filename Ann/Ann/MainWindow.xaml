@@ -9,12 +9,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         Title="{Binding Message.Value,
                         Mode=OneWay}"
-        Width="525"
-        Height="350"
+        Width="640"
+        MaxHeight="500"
+        Loaded="Window_Loaded"
+        ResizeMode="NoResize"
+        SizeToContent="Height"
+        WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
     <Window.DataContext>
         <ann:MainWindowViewModel />
     </Window.DataContext>
+
+    <Window.InputBindings>
+        <KeyBinding Key="Enter"
+                    Command="{Binding RunCommand}"
+                    CommandParameter="-1" />
+    </Window.InputBindings>
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closed">
@@ -22,21 +32,94 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <Grid>
+    <Grid Margin="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
+        <!--<StackPanel Grid.Row="0" Orientation="Horizontal">
             <Button Command="{Binding UpdateCommand, Mode=OneTime}" Content="Update" />
-        </StackPanel>
-        <TextBox Grid.Row="1" Text="{Binding Input.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-        <ListBox Grid.Row="2" ItemsSource="{Binding Candidates.Value, Mode=OneWay}">
+        </StackPanel>-->
+
+        <TextBox x:Name="InputTextBox"
+                 Grid.Row="1"
+                 BorderThickness="0"
+                 FontFamily="Tahoma"
+                 FontSize="38"
+                 Text="{Binding Input.Value,
+                                Mode=TwoWay,
+                                UpdateSourceTrigger=PropertyChanged}">
+            <TextBox.InputBindings>
+                <KeyBinding Key="Up"
+                            Command="{Binding SelectedCandidateMoveCommand}"
+                            CommandParameter="-1" />
+                <KeyBinding Key="Down"
+                            Command="{Binding SelectedCandidateMoveCommand}"
+                            CommandParameter="1" />
+            </TextBox.InputBindings>
+        </TextBox>
+
+        <ListBox Grid.Row="2"
+                 Margin="0,16,0,0"
+                 BorderThickness="0"
+                 ItemsSource="{Binding Candidates.Value,
+                                       Mode=OneWay}"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 SelectedItem="{Binding SelectedCandidate.Value,
+                                        Mode=TwoWay}"
+                 SelectionChanged="ListBox_SelectionChanged"
+                 SelectionMode="Single"
+                 VirtualizingPanel.IsVirtualizing="True"
+                 VirtualizingPanel.ScrollUnit="Item"
+                 VirtualizingPanel.VirtualizationMode="Recycling">
+            <ListBox.Style>
+                <Style TargetType="{x:Type ListBox}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Candidates.Value.Length, Mode=OneWay}" Value="0">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.Style>
+
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type core:ExecutableUnit}">
-                    <Label Content="{Binding Path}" Padding="0" />
+                    <Grid Margin="0,4">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="1"
+                                   Margin="0,0,0,2"
+                                   FontFamily="Tahoma"
+                                   FontSize="24"
+                                   FontWeight="Bold"
+                                   Padding="0"
+                                   Text="{Binding Name,
+                                                  Mode=OneWay}" />
+
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="1"
+                                   FontFamily="Tahoma"
+                                   FontWeight="ExtraLight"
+                                   Padding="0"
+                                   Text="{Binding Path,
+                                                  Mode=OneWay}" />
+                    </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
