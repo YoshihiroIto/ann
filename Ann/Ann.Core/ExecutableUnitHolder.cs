@@ -10,7 +10,6 @@ namespace Ann.Core
     public class ExecutableUnitHolder : IDisposable
     {
         private readonly SQLiteConnection _conn;
-        private readonly DataContext _ctx;
 
         public ExecutableUnitHolder(string databaseFile)
         {
@@ -24,13 +23,10 @@ namespace Ann.Core
 
             _conn = new SQLiteConnection(sb.ToString());
             _conn.Open();
-
-            _ctx = new DataContext(_conn);
         }
 
         public void Dispose()
         {
-            _ctx?.Dispose();
             _conn?.Dispose();
         }
 
@@ -39,10 +35,16 @@ namespace Ann.Core
             if (string.IsNullOrEmpty(name))
                 return Enumerable.Empty<ExecutableUnit>();
 
-            // ReSharper disable once MergeConditionalExpression
-            return _ctx == null
-                ? Enumerable.Empty<ExecutableUnit>()
-                : _ctx.GetTable<ExecutableUnit>().Where(u => u.Name.ToLower().Contains(name.ToLower()));
+            if (_conn == null)
+                return Enumerable.Empty<ExecutableUnit>();
+
+            using (var ctx = new DataContext(_conn))
+            {
+                return ctx.GetTable<ExecutableUnit>()
+                    .Where(u => u.Name.ToLower()
+                    .Contains(name.ToLower()))
+                    .ToArray();
+            }
         }
     }
 }

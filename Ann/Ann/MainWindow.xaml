@@ -12,10 +12,11 @@
         Width="640"
         MaxHeight="500"
         AllowsTransparency="True"
-        Background="#4FFF"
-        BorderBrush="#8FFF"
+        Background="#9000"
+        BorderBrush="#C000"
         BorderThickness="1"
         Loaded="Window_Loaded"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         SizeToContent="Height"
@@ -23,7 +24,7 @@
         Topmost="True"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
-        mc:Ignorable="d" MouseLeftButtonDown="Window_MouseLeftButtonDown">
+        mc:Ignorable="d">
     <Window.DataContext>
         <ann:MainWindowViewModel />
     </Window.DataContext>
@@ -47,16 +48,13 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!--<StackPanel Grid.Row="0" Orientation="Horizontal">
-            <Button Command="{Binding UpdateCommand, Mode=OneTime}" Content="Update" />
-        </StackPanel>-->
-
         <TextBox x:Name="InputTextBox"
                  Grid.Row="1"
                  Background="Transparent"
                  BorderThickness="0"
                  FontFamily="Tahoma"
                  FontSize="38"
+                 Foreground="White"
                  Text="{Binding Input.Value,
                                 Mode=TwoWay,
                                 UpdateSourceTrigger=PropertyChanged}">
@@ -69,6 +67,23 @@
                             CommandParameter="1" />
             </TextBox.InputBindings>
         </TextBox>
+
+        <StackPanel Grid.Row="1"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Orientation="Horizontal">
+            <TextBlock VerticalAlignment="Center"
+                       IsHitTestVisible="False"
+                       Text="{Binding Message.Value,
+                                      Mode=OneWay}" />
+            <Button Margin="4,0,0,0"
+                    VerticalAlignment="Center"
+                    Command="{Binding IndexUpdateCommand,
+                                      Mode=OneWay}"
+                    Content="Update"
+                    IsEnabled="{Binding CanIndexUpdate.Value}"
+                    Padding="4,2" />
+        </StackPanel>
 
         <ListBox Grid.Row="2"
                  Margin="0,16,0,0"
@@ -87,6 +102,9 @@
             <ListBox.Style>
                 <Style TargetType="{x:Type ListBox}">
                     <Style.Triggers>
+                        <DataTrigger Binding="{Binding Candidates.Value, Mode=OneWay}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding Candidates.Value.Length, Mode=OneWay}" Value="0">
                             <Setter Property="Visibility" Value="Collapsed" />
                         </DataTrigger>
@@ -117,7 +135,7 @@
                                    Margin="0,0,0,2"
                                    FontFamily="Tahoma"
                                    FontSize="24"
-                                   FontWeight="Bold"
+                                   Foreground="White"
                                    Padding="0"
                                    Text="{Binding Name,
                                                   Mode=OneWay}" />
@@ -126,6 +144,7 @@
                                    Grid.Column="1"
                                    FontFamily="Tahoma"
                                    FontWeight="ExtraLight"
+                                   Foreground="#AAA"
                                    Padding="0"
                                    Text="{Binding Path,
                                                   Mode=OneWay}" />

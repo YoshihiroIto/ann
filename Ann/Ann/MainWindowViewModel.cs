@@ -14,7 +14,9 @@ namespace Ann
     {
         public ReactiveProperty<string> Input { get; } = new ReactiveProperty<string>(string.Empty);
         public ReactiveProperty<string> Message { get; } = new ReactiveProperty<string>(string.Empty);
-        public ReactiveCommand UpdateCommand { get; } = new ReactiveCommand();
+
+        public ReactiveProperty<bool> CanIndexUpdate { get; } = new ReactiveProperty<bool>(true);
+        public ReactiveCommand IndexUpdateCommand { get; }
 
         public ReadOnlyReactiveProperty<ExecutableUnit[]> Candidates { get; }
         public ReactiveProperty<ExecutableUnit> SelectedCandidate { get; }
@@ -28,27 +30,35 @@ namespace Ann
         {
             CompositeDisposable.Add(Input);
             CompositeDisposable.Add(Message);
-            CompositeDisposable.Add(UpdateCommand);
+            CompositeDisposable.Add(CanIndexUpdate);
             CompositeDisposable.Add(DisposeHolder);
 
             UpdateHolder();
 
-            UpdateCommand
+            IndexUpdateCommand = CanIndexUpdate
+                .ToReactiveCommand()
+                .AddTo(CompositeDisposable);
+
+            IndexUpdateCommand
                 .Subscribe(async _ =>
                 {
+                    CanIndexUpdate.Value = false;
                     Message.Value = "Updating";
 
                     Input.Value = string.Empty;
+
                     DisposeHolder();
                     await UpdateIndexAsync();
                     UpdateHolder();
+                    Input.ForceNotify();
 
                     Message.Value = string.Empty;
+                    CanIndexUpdate.Value = true;
                 }).AddTo(CompositeDisposable);
 
             Candidates = Input
                 .Throttle(TimeSpan.FromMilliseconds(50))
-                .Select(i => _holder.Find(i).ToArray())
+                .Select(i => _holder?.Find(i).ToArray())
                 .ToReadOnlyReactiveProperty()
                 .AddTo(CompositeDisposable);
 
@@ -94,6 +104,7 @@ namespace Ann
         private void DisposeHolder()
         {
             _holder?.Dispose();
+            _holder = null;
         }
 
         private static async Task UpdateIndexAsync()

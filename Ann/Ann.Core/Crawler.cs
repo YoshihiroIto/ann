@@ -10,27 +10,22 @@ namespace Ann.Core
 {
     public static class Crawler
     {
-        public static async Task<bool> ExecuteAsync(string databaseFile, IEnumerable<string> targetFolders)
+        public static async Task<bool> ExecuteAsync(string databaseFilePath, IEnumerable<string> targetFolders)
         {
             await Task.Run(() =>
             {
-                if (File.Exists(databaseFile))
-                    File.Delete(databaseFile);
-
-                var sb = new SQLiteConnectionStringBuilder
-                {
-                    DataSource = databaseFile
-                };
+                var sb = new SQLiteConnectionStringBuilder { DataSource = databaseFilePath };
 
                 using (var conn = new SQLiteConnection(sb.ToString()))
                 {
                     conn.Open();
+
                     CreateTable(conn);
+                    DeleteAll(conn);
 
                     using (var ctx = new DataContext(conn))
                     {
                         var executableExts = MakeExecutableExts();
-
                         var count = 0;
 
                         ctx.GetTable<ExecutableUnit>().InsertAllOnSubmit(
@@ -84,7 +79,18 @@ namespace Ann.Core
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText =
-                    $"create table {nameof(ExecutableUnit)} (Id INT PRIMARY KEY, Name NVARCHAR, Path NVARCHAR)";
+                    $"create table if not exists {nameof(ExecutableUnit)} (Id INT PRIMARY KEY, Name NVARCHAR, Path NVARCHAR)";
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void DeleteAll(SQLiteConnection conn)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText =
+                    $"delete from {nameof(ExecutableUnit)}";
 
                 cmd.ExecuteNonQuery();
             }
