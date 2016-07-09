@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="Crawler.cs" />
     <Compile Include="ExecutableUnit.cs" />
+    <Compile Include="ExecutableUnitHolder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

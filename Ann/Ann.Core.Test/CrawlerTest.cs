@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Ann.Core.Test
@@ -18,6 +19,13 @@ namespace Ann.Core.Test
                 });
 
             Assert.IsTrue(File.Exists("Test.db"));
+
+            using (var holder = new ExecutableUnitHolder("Test.db"))
+            {
+                var v = holder.Find("vim");
+
+                Assert.IsTrue(v.Any());
+            }
         }
     }
 }
