@@ -1,5 +1,8 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Runtime.InteropServices;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 
 namespace Ann
 {
@@ -16,18 +19,91 @@ namespace Ann
         private void Window_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             Keyboard.Focus(InputTextBox);
+
+            EnableBlur();
+        }
+
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            DragMove();
         }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var candidate = (ListBox)sender;
-            if (candidate == null)
+            var candidate = sender as ListBox;
+
+            if (candidate?.SelectedItem == null)
                 return;
 
-            if (candidate.SelectedItems.Count == 0)
-                return;
-
-            candidate.ScrollIntoView(candidate.SelectedItems[0]);
+            candidate.ScrollIntoView(candidate.SelectedItem);
         }
+
+        #region Blur
+
+        // https://github.com/riverar/sample-win10-aeroglass/blob/master/MainWindow.xaml.cs
+
+        // ReSharper disable InconsistentNaming
+        internal enum AccentState
+        {
+            ACCENT_DISABLED = 0,
+            ACCENT_ENABLE_GRADIENT = 1,
+            ACCENT_ENABLE_TRANSPARENTGRADIENT = 2,
+            ACCENT_ENABLE_BLURBEHIND = 3,
+            ACCENT_INVALID_STATE = 4
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct AccentPolicy
+        {
+            public AccentState AccentState;
+            public int AccentFlags;
+            public int GradientColor;
+            public int AnimationId;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct WindowCompositionAttributeData
+        {
+            public WindowCompositionAttribute Attribute;
+            public IntPtr Data;
+            public int SizeOfData;
+        }
+
+        internal enum WindowCompositionAttribute
+        {
+            // ...
+            WCA_ACCENT_POLICY = 19
+            // ...
+        }
+
+        [DllImport("user32.dll")]
+        internal static extern int SetWindowCompositionAttribute(IntPtr hwnd, ref WindowCompositionAttributeData data);
+
+        internal void EnableBlur()
+        {
+            var windowHelper = new WindowInteropHelper(this);
+
+            var accent = new AccentPolicy {AccentState = AccentState.ACCENT_ENABLE_BLURBEHIND};
+
+            var accentStructSize = Marshal.SizeOf(accent);
+
+            var accentPtr = Marshal.AllocHGlobal(accentStructSize);
+            Marshal.StructureToPtr(accent, accentPtr, false);
+
+            var data = new WindowCompositionAttributeData
+            {
+                Attribute = WindowCompositionAttribute.WCA_ACCENT_POLICY,
+                SizeOfData = accentStructSize,
+                Data = accentPtr
+            };
+
+            SetWindowCompositionAttribute(windowHelper.Handle, ref data);
+
+            Marshal.FreeHGlobal(accentPtr);
+        }
+
+        // ReSharper restore InconsistentNaming
+
+        #endregion
     }
 }

@@ -11,11 +11,19 @@
                         Mode=OneWay}"
         Width="640"
         MaxHeight="500"
+        AllowsTransparency="True"
+        Background="#4FFF"
+        BorderBrush="#8FFF"
+        BorderThickness="1"
         Loaded="Window_Loaded"
         ResizeMode="NoResize"
+        ShowInTaskbar="False"
         SizeToContent="Height"
+        SnapsToDevicePixels="True"
+        Topmost="True"
         WindowStartupLocation="CenterScreen"
-        mc:Ignorable="d">
+        WindowStyle="None"
+        mc:Ignorable="d" MouseLeftButtonDown="Window_MouseLeftButtonDown">
     <Window.DataContext>
         <ann:MainWindowViewModel />
     </Window.DataContext>
@@ -45,6 +53,7 @@
 
         <TextBox x:Name="InputTextBox"
                  Grid.Row="1"
+                 Background="Transparent"
                  BorderThickness="0"
                  FontFamily="Tahoma"
                  FontSize="38"
@@ -63,6 +72,7 @@
 
         <ListBox Grid.Row="2"
                  Margin="0,16,0,0"
+                 Background="{x:Null}"
                  BorderThickness="0"
                  ItemsSource="{Binding Candidates.Value,
                                        Mode=OneWay}"
