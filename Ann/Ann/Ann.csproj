@@ -130,8 +130,7 @@
       <DependentUpon>Entry.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Foundation\HotKey.cs" />
-    <Compile Include="Foundation\WindowHelper.cs" />
+    <Compile Include="ExecutableUnitViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -174,6 +173,10 @@
     <ProjectReference Include="..\Ann.Core\Ann.Core.csproj">
       <Project>{8876f2ee-02ba-416e-9c03-96bcf42259fe}</Project>
       <Name>Ann.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ann.Foundation\Ann.Foundation.csproj">
+      <Project>{74a85611-46ff-49a5-853c-5252f5509446}</Project>
+      <Name>Ann.Foundation</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Livet;
 
 namespace Ann
@@ -21,15 +20,9 @@ namespace Ann
             Instance.Dispose();
         }
 
-        public bool IsHighPriority(string path)
-        {
-            return _highPriorities.Contains(path);
-        }
-
-        public void AddHighPriorityPath(string path)
-        {
-            _highPriorities.Add(path);
-        }
+        public bool IsHighPriority(string path) => _highPriorities.Contains(path);
+        public bool AddHighPriorityPath(string path) => _highPriorities.Add(path);
+        public bool RemoveHighPriorityPath(string path) => _highPriorities.Remove(path);
 
         public void Dispose()
         {

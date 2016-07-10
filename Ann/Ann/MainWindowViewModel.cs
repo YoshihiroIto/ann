@@ -5,13 +5,13 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Ann.Core;
-using Livet;
+using Ann.Foundation.Mvvm;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 
 namespace Ann
 {
-    public class MainWindowViewModel : ViewModel
+    public class MainWindowViewModel : ViewModelBase
     {
         public ReactiveProperty<string> Input { get; } = new ReactiveProperty<string>(string.Empty);
         public ReactiveProperty<string> Message { get; } = new ReactiveProperty<string>(string.Empty);
@@ -19,8 +19,8 @@ namespace Ann
         public ReactiveProperty<bool> CanIndexUpdate { get; } = new ReactiveProperty<bool>(true);
         public ReactiveCommand IndexUpdateCommand { get; }
 
-        public ReadOnlyReactiveProperty<ExecutableUnit[]> Candidates { get; }
-        public ReactiveProperty<ExecutableUnit> SelectedCandidate { get; }
+        public ReadOnlyReactiveProperty<ExecutableUnitViewModel[]> Candidates { get; }
+        public ReactiveProperty<ExecutableUnitViewModel> SelectedCandidate { get; }
         public ReactiveCommand<object> SelectedCandidateMoveCommand { get; }
 
         public ReactiveCommand RunCommand { get; }
@@ -70,6 +70,7 @@ namespace Ann
                     return _holder?
                         .Find(i)
                         .OrderByDescending(u => App.Instance.IsHighPriority(u.Path))
+                        .Select(u => new ExecutableUnitViewModel(u))
                         .ToArray();
                 })
                 .ToReadOnlyReactiveProperty()
@@ -88,7 +89,7 @@ namespace Ann
             SelectedCandidateMoveCommand
                 .Subscribe(p =>
                 {
-                    var current = Array.IndexOf(Candidates.Value, SelectedCandidate.Value);
+                    var current = IndexOfCandidates(SelectedCandidate.Value.Path);
                     var next = current + int.Parse((string) p);
 
                     if (next == -1)
@@ -115,6 +116,21 @@ namespace Ann
             HideCommand.Subscribe(_ => Visibility.Value = System.Windows.Visibility.Hidden)
                 .AddTo(CompositeDisposable);
         }
+
+        private int IndexOfCandidates(string path)
+        {
+            var index = 0;
+            foreach (var c in Candidates.Value)
+            {
+                if (c.Path == path)
+                    return index;
+
+                ++ index;
+            }
+
+            return -1;
+        }
+
 
         private void UpdateHolder()
         {

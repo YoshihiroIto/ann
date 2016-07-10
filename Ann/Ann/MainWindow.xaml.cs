@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Ann.Core;
 using Ann.Foundation;
 using HotKey;
 
@@ -47,7 +46,7 @@ namespace Ann
             if (vm == null)
                 return;
 
-            var item = (sender as ListBoxItem)?.DataContext as ExecutableUnit;
+            var item = (sender as ListBoxItem)?.DataContext as ExecutableUnitViewModel;
 
             vm.SelectedCandidate.Value = item;
         }
