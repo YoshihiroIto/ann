@@ -202,7 +202,8 @@
                                    Foreground="White"
                                    Padding="0"
                                    Text="{Binding Name,
-                                                  Mode=OneWay}">
+                                                  Mode=OneWay}"
+                                   TextTrimming="WordEllipsis">
                             <TextBlock.ToolTip>
                                 <ToolTip Content="{Binding Name, Mode=OneWay}" />
                             </TextBlock.ToolTip>
@@ -215,7 +216,8 @@
                                    Foreground="#AAA"
                                    Padding="0"
                                    Text="{Binding Path,
-                                                  Mode=OneWay}">
+                                                  Mode=OneWay}"
+                                   TextTrimming="WordEllipsis">
                             <TextBlock.ToolTip>
                                 <ToolTip Content="{Binding Path, Mode=OneWay}" />
                             </TextBlock.ToolTip>
