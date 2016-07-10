@@ -202,7 +202,11 @@
                                    Foreground="White"
                                    Padding="0"
                                    Text="{Binding Name,
-                                                  Mode=OneWay}" />
+                                                  Mode=OneWay}">
+                            <TextBlock.ToolTip>
+                                <ToolTip Content="{Binding Name, Mode=OneWay}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
 
                         <TextBlock Grid.Row="1"
                                    Grid.Column="1"
@@ -211,7 +215,11 @@
                                    Foreground="#AAA"
                                    Padding="0"
                                    Text="{Binding Path,
-                                                  Mode=OneWay}" />
+                                                  Mode=OneWay}">
+                            <TextBlock.ToolTip>
+                                <ToolTip Content="{Binding Path, Mode=OneWay}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
