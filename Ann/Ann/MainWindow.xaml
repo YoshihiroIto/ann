@@ -131,7 +131,7 @@
                 <Style TargetType="ListBoxItem">
                     <Setter Property="IsTabStop" Value="False" />
                     <Setter Property="Focusable" Value="False" />
-                    <EventSetter Event="PreviewMouseMove" Handler="ListBox_MouseMove" />
+                    <EventSetter Event="MouseMove" Handler="ListBox_MouseMove" />
                     <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBox_MouseLeftButtonDown" />
                 </Style>
             </ListBox.Resources>
