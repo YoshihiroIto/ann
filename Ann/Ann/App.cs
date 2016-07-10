@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -56,15 +57,27 @@ namespace Ann
             LoadConfig();
         }
 
-        private static string ConfigFilePath
+        public string ConfigDirPath
         {
             get
             {
-                var loc = Assembly.GetEntryAssembly().Location;
-                var dir = Path.GetDirectoryName(loc) ?? string.Empty;
-                return Path.Combine(dir, "Ann.yaml");
+                var dir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+
+                return Path.Combine(dir, CompanyName, ProductName);
             }
         }
+
+        public string ConfigFilePath => Path.Combine(ConfigDirPath, ProductName + ".yaml");
+
+        private string CompanyName =>
+            ((AssemblyCompanyAttribute) Attribute.GetCustomAttribute(
+                Assembly.GetExecutingAssembly(), typeof(AssemblyCompanyAttribute), false))
+                .Company;
+
+        private string ProductName =>
+            ((AssemblyProductAttribute) Attribute.GetCustomAttribute(
+                Assembly.GetExecutingAssembly(), typeof(AssemblyProductAttribute), false))
+                .Product;
 
         private void LoadConfig()
         {
@@ -99,7 +112,7 @@ namespace Ann
             using (var writer = new StringWriter())
             {
                 new Serializer().Serialize(writer, config);
-
+                Directory.CreateDirectory(ConfigDirPath);
                 File.WriteAllText(ConfigFilePath, writer.ToString());
             }
         }

@@ -144,10 +144,11 @@ namespace Ann
             return -1;
         }
 
+        private static string IndexDbFilePath => System.IO.Path.Combine(App.Instance.ConfigDirPath, "Index.db");
 
         private void UpdateHolder()
         {
-            _holder = new ExecutableUnitHolder("Index.db");
+            _holder = new ExecutableUnitHolder(IndexDbFilePath);
         }
 
         private void DisposeHolder()
@@ -158,8 +159,12 @@ namespace Ann
 
         private static async Task UpdateIndexAsync()
         {
+            var dir = System.IO.Path.GetDirectoryName(IndexDbFilePath);
+            if (dir != null)
+                System.IO.Directory.CreateDirectory(dir);
+
             await Crawler.ExecuteAsync(
-                "Index.db",
+                IndexDbFilePath,
                 new[]
                 {
                     @"C:\Program Files",
