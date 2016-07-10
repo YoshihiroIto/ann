@@ -59,8 +59,9 @@
                  Grid.Row="1"
                  Background="Transparent"
                  BorderThickness="0"
+                 CaretBrush="White"
                  FontFamily="Tahoma"
-                 FontSize="38"
+                 FontSize="40"
                  Foreground="White"
                  Text="{Binding Input.Value,
                                 Mode=TwoWay,
