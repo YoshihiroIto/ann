@@ -1,4 +1,8 @@
 ﻿using System.Diagnostics;
+using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
 
@@ -30,6 +34,33 @@ namespace Ann
 
         #endregion
 
+        #region Icon
+
+        private ImageSource _Icon;
+
+        public ImageSource Icon
+        {
+            get
+            {
+                if (_Icon != null)
+                    return _Icon;
+
+                using (var i = System.Drawing.Icon.ExtractAssociatedIcon(Path))
+                {
+                    if (i != null)
+                        _Icon = Imaging.CreateBitmapSourceFromHIcon(
+                            i.Handle,
+                            new Int32Rect(0, 0, i.Width, i.Height),
+                            BitmapSizeOptions.FromEmptyOptions());
+                }
+
+                return _Icon;
+            }
+            set { SetProperty(ref _Icon, value); }
+        }
+
+        #endregion
+
         public bool IsHighPriority
         {
             get { return App.Instance.IsHighPriority(Path); }
@@ -37,12 +68,12 @@ namespace Ann
             {
                 if (value)
                 {
-                   if (App.Instance.AddHighPriorityPath(Path))
+                    if (App.Instance.AddHighPriorityPath(Path))
                         RaisePropertyChanged();
                 }
                 else
                 {
-                   if (App.Instance.RemoveHighPriorityPath(Path))
+                    if (App.Instance.RemoveHighPriorityPath(Path))
                         RaisePropertyChanged();
                 }
             }

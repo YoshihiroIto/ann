@@ -66,8 +66,8 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <tb:TaskbarIcon MenuActivation="RightClick"
-        IconSource="app.ico"
+        <tb:TaskbarIcon IconSource="app.ico"
+                        MenuActivation="RightClick"
                         ToolTipText="Ann"
                         Visibility="Visible">
             <tb:TaskbarIcon.ContextMenu>
@@ -137,6 +137,7 @@
             <ListBox.Resources>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="IsTabStop" Value="False" />
+                    <Setter Property="Padding" Value="0" />
                     <Setter Property="Focusable" Value="False" />
                     <EventSetter Event="MouseMove" Handler="ListBox_MouseMove" />
                     <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBox_MouseLeftButtonDown" />
@@ -182,6 +183,16 @@
                                                               Mode=TwoWay}" />
                             </ContextMenu>
                         </Grid.ContextMenu>
+
+                        <Image Grid.Row="0"
+                               Grid.RowSpan="2"
+                               Grid.Column="0"
+                               Width="42"
+                               Height="42"
+                               Margin="8,0"
+                               RenderOptions.BitmapScalingMode="HighQuality"
+                               Source="{Binding Icon,
+                                                Mode=OneWay}" />
 
                         <TextBlock Grid.Row="0"
                                    Grid.Column="1"
