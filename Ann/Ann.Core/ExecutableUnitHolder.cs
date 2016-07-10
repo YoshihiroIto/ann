@@ -32,7 +32,12 @@ namespace Ann.Core
 
         public IEnumerable<ExecutableUnit> Find(string name)
         {
-            if (string.IsNullOrEmpty(name))
+            if (name == null)
+                return Enumerable.Empty<ExecutableUnit>();
+
+            name = name.Trim();
+
+            if (name == string.Empty)
                 return Enumerable.Empty<ExecutableUnit>();
 
             if (_conn == null)
