@@ -27,8 +27,9 @@ namespace Ann
 
         public ReactiveProperty<Visibility> Visibility { get; }
             = new ReactiveProperty<Visibility>(System.Windows.Visibility.Visible);
+
         public ReactiveCommand HideCommand { get; }
- 
+
         private ExecutableUnitHolder _holder;
 
         public MainWindowViewModel()
@@ -64,7 +65,13 @@ namespace Ann
 
             Candidates = Input
                 .Throttle(TimeSpan.FromMilliseconds(50))
-                .Select(i => _holder?.Find(i).ToArray())
+                .Select(i =>
+                {
+                    return _holder?
+                        .Find(i)
+                        .OrderByDescending(u => App.Instance.IsHighPriority(u.Path))
+                        .ToArray();
+                })
                 .ToReadOnlyReactiveProperty()
                 .AddTo(CompositeDisposable);
 

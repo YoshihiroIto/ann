@@ -117,14 +117,15 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="Entry.xaml">
+    <Page Include="Entry.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="App.cs" />
     <Compile Include="Entry.xaml.cs">
       <DependentUpon>Entry.xaml</DependentUpon>
       <SubType>Code</SubType>
