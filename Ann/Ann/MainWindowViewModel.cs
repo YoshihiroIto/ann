@@ -119,6 +119,10 @@ namespace Ann
 
         private static async Task UpdateIndexAsync()
         {
+            var sw = new Stopwatch();
+
+            sw.Start();
+
             await Crawler.ExecuteAsync(
                 "Index.db",
                 new[]
@@ -126,6 +130,10 @@ namespace Ann
                     @"C:\Program Files",
                     @"C:\Program Files (x86)"
                 });
+
+            sw.Stop();
+
+            Debug.WriteLine(sw.ElapsedMilliseconds);
         }
     }
 }
