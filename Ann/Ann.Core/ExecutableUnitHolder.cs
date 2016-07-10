@@ -40,9 +40,10 @@ namespace Ann.Core
 
             using (var ctx = new DataContext(_conn))
             {
+                name = name.ToLower();
+
                 return ctx.GetTable<ExecutableUnit>()
-                    .Where(u => u.Name.ToLower()
-                    .Contains(name.ToLower()))
+                    .Where(u => u.Name.ToLower().Contains(name) || u.Path.ToLower().Contains(name))
                     .ToArray();
             }
         }

@@ -8,7 +8,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         Title="{Binding Message.Value,
                         Mode=OneWay}"
-        Width="640"
+        Width="800"
         MaxHeight="500"
         AllowsTransparency="True"
         Background="#9000"

@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Linq;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,11 +32,16 @@ namespace Ann.Core
                             targetFolders.SelectMany(targetFolder =>
                                 EnumerateAllFiles(targetFolder)
                                     .Where(f => executableExts.Contains(Path.GetExtension(f)?.ToLower()))
-                                    .Select(f => new ExecutableUnit
+                                    .Select(f =>
                                     {
-                                        Id = count ++,
-                                        Name = Path.GetFileNameWithoutExtension(f),
-                                        Path = f
+                                        var fvi = FileVersionInfo.GetVersionInfo(f);
+
+                                        return new ExecutableUnit
+                                        {
+                                            Id = count ++,
+                                            Name = fvi.FileDescription,
+                                            Path = f
+                                        };
                                     })
                                 ));
 
@@ -67,11 +72,15 @@ namespace Ann.Core
 
         private static HashSet<string> MakeExecutableExts()
         {
+#if false
             var pathext = Environment.GetEnvironmentVariable("PATHEXT");
 
             return pathext == null
                 ? new HashSet<string> {".exe"}
                 : new HashSet<string>(pathext.Split(';').Select(p => p.ToLower()));
+#else
+            return new HashSet<string> {".exe"};
+#endif
         }
 
         private static void CreateTable(SQLiteConnection conn)

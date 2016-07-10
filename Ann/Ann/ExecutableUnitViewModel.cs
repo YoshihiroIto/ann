@@ -52,7 +52,7 @@ namespace Ann
         {
             Debug.Assert(model != null);
 
-            Name = model.Name;
+            Name = string.IsNullOrEmpty(model.Name) == false ? model.Name : System.IO.Path.GetFileName(model.Path);
             Path = model.Path;
         }
     }
