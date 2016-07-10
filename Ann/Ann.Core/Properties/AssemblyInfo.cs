@@ -7,9 +7,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Ann.Core")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Yoshihiro Ito")]
+[assembly: AssemblyCompany("Jewelry Development")]
 [assembly: AssemblyProduct("Ann.Core")]
-[assembly: AssemblyCopyright("Copyright © 2016 Yoshihiro Ito All Rights Reserved.")]
+[assembly: AssemblyCopyright("Copyright © 2016 Jewelry Development All Rights Reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
