@@ -39,9 +39,9 @@
 
     <Window.InputBindings>
         <KeyBinding Key="Enter" Command="{Binding RunCommand, Mode=OneTime}" />
-        <KeyBinding Key="Escape" Command="{Binding HideCommand, Mode=OneTime}" />
+        <KeyBinding Key="Escape" Command="{Binding AppHideCommand, Mode=OneTime}" />
         <KeyBinding Key="J"
-                    Command="{Binding HideCommand,
+                    Command="{Binding AppHideCommand,
                                       Mode=OneTime}"
                     Modifiers="Control" />
     </Window.InputBindings>
@@ -50,6 +50,10 @@
         <i:EventTrigger EventName="Closed">
             <behaviors:DataContextDisposeAction />
         </i:EventTrigger>
+
+        <behaviors:InteractionMessageTrigger MessageKey="Close" Messenger="{Binding Messenger, Mode=OneTime}">
+            <behaviors:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
+        </behaviors:InteractionMessageTrigger>
     </i:Interaction.Triggers>
 
     <Grid Margin="16">
@@ -104,6 +108,15 @@
                     Command="{Binding IndexUpdateCommand,
                                       Mode=OneWay}"
                     Content="Update"
+                    Focusable="False"
+                    IsEnabled="{Binding CanIndexUpdate.Value}"
+                    IsTabStop="False"
+                    Padding="4,2" />
+            <Button Margin="4,0,0,0"
+                    VerticalAlignment="Center"
+                    Command="{Binding AppQuitCommand,
+                                      Mode=OneWay}"
+                    Content="Quit"
                     Focusable="False"
                     IsEnabled="{Binding CanIndexUpdate.Value}"
                     IsTabStop="False"

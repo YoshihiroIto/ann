@@ -1,22 +1,25 @@
 ﻿using System.Collections.Generic;
-using Livet;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using Ann.Foundation.Mvvm;
+using YamlDotNet.Serialization;
 
 namespace Ann
 {
-    public class App : NotificationObject
+    public class App : ModelBase
     {
         public static App Instance { get; } = new App();
 
-        private readonly HashSet<string> _highPriorities = new HashSet<string>();
+        private HashSet<string> _highPriorities = new HashSet<string>();
 
         public static void Initialize()
         {
-            // test
-            Instance.AddHighPriorityPath(@"C:\Program Files\vim\gvim.exe");
         }
 
         public static void Destory()
         {
+            Instance.SaveConfig();
             Instance.Dispose();
         }
 
@@ -24,15 +27,49 @@ namespace Ann
         public bool AddHighPriorityPath(string path) => _highPriorities.Add(path);
         public bool RemoveHighPriorityPath(string path) => _highPriorities.Remove(path);
 
-        public void Dispose()
-        {
-            _compositeDisposable.Dispose();
-        }
-
-        private readonly LivetCompositeDisposable _compositeDisposable = new LivetCompositeDisposable();
-
         private App()
         {
+            LoadConfig();
+        }
+
+        private static string ConfigFilePath
+        {
+            get
+            {
+                var loc = Assembly.GetEntryAssembly().Location;
+                var dir = Path.GetDirectoryName(loc) ?? string.Empty;
+                return Path.Combine(dir, "Ann.yaml");
+            }
+        }
+
+        private void LoadConfig()
+        {
+            if (File.Exists(ConfigFilePath) == false)
+                return;
+
+            using (var reader = new StringReader(File.ReadAllText(ConfigFilePath)))
+            {
+                var config = new Deserializer().Deserialize<Config.App>(reader);
+
+                _highPriorities = config.HighPriorities == null
+                    ? new HashSet<string>()
+                    : new HashSet<string>(config.HighPriorities);
+            }
+        }
+
+        private void SaveConfig()
+        {
+            var config = new Config.App
+            {
+                HighPriorities = _highPriorities.ToArray()
+            };
+
+            using (var writer = new StringWriter())
+            {
+                new Serializer().Serialize(writer, config);
+
+                File.WriteAllText(ConfigFilePath, writer.ToString());
+            }
         }
     }
 }

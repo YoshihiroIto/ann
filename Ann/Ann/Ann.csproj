@@ -115,6 +115,10 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="YamlDotNet, Version=3.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YamlDotNet.3.9.0\lib\net35\YamlDotNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Entry.xaml">
@@ -126,6 +130,7 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="App.cs" />
+    <Compile Include="Config\App.cs" />
     <Compile Include="Entry.xaml.cs">
       <DependentUpon>Entry.xaml</DependentUpon>
       <SubType>Code</SubType>

@@ -8,6 +8,7 @@ using Ann.Core;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using Livet.Messaging.Windows;
 
 namespace Ann
 {
@@ -28,7 +29,8 @@ namespace Ann
         public ReactiveProperty<Visibility> Visibility { get; }
             = new ReactiveProperty<Visibility>(System.Windows.Visibility.Visible);
 
-        public ReactiveCommand HideCommand { get; }
+        public ReactiveCommand AppHideCommand { get; }
+        public ReactiveCommand AppQuitCommand { get; }
 
         private ExecutableUnitHolder _holder;
 
@@ -112,8 +114,12 @@ namespace Ann
                     await Task.Run(() => Process.Start(SelectedCandidate.Value.Path));
                 }).AddTo(CompositeDisposable);
 
-            HideCommand = new ReactiveCommand().AddTo(CompositeDisposable);
-            HideCommand.Subscribe(_ => Visibility.Value = System.Windows.Visibility.Hidden)
+            AppHideCommand = new ReactiveCommand().AddTo(CompositeDisposable);
+            AppHideCommand.Subscribe(_ => Visibility.Value = System.Windows.Visibility.Hidden)
+                .AddTo(CompositeDisposable);
+
+            AppQuitCommand = new ReactiveCommand().AddTo(CompositeDisposable);
+            AppQuitCommand.Subscribe(_ => Messenger.Raise(new WindowActionMessage(WindowAction.Close, "Close")))
                 .AddTo(CompositeDisposable);
         }
 
