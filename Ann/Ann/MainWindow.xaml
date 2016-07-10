@@ -25,6 +25,13 @@
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         mc:Ignorable="d">
+    <Window.Resources>
+        <Style TargetType="ListBoxItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        </Style>
+    </Window.Resources>
+
     <Window.DataContext>
         <ann:MainWindowViewModel />
     </Window.DataContext>
@@ -60,9 +67,20 @@
                                 UpdateSourceTrigger=PropertyChanged}">
             <TextBox.InputBindings>
                 <KeyBinding Key="Up"
-                            Command="{Binding SelectedCandidateMoveCommand}"
+                            Command="{Binding SelectedCandidateMoveCommand,
+                                              Mode=OneTime}"
                             CommandParameter="-1" />
                 <KeyBinding Key="Down"
+                            Command="{Binding SelectedCandidateMoveCommand,
+                                              Mode=OneTime}"
+                            CommandParameter="1" />
+
+                <KeyBinding Key="Tab"
+                            Command="{Binding SelectedCandidateMoveCommand,
+                                              Mode=OneTime}"
+                            CommandParameter="-1"
+                            Modifiers="Shift" />
+                <KeyBinding Key="Tab"
                             Command="{Binding SelectedCandidateMoveCommand}"
                             CommandParameter="1" />
             </TextBox.InputBindings>
@@ -81,7 +99,9 @@
                     Command="{Binding IndexUpdateCommand,
                                       Mode=OneWay}"
                     Content="Update"
+                    Focusable="False"
                     IsEnabled="{Binding CanIndexUpdate.Value}"
+                    IsTabStop="False"
                     Padding="4,2" />
         </StackPanel>
 
@@ -89,6 +109,8 @@
                  Margin="0,16,0,0"
                  Background="{x:Null}"
                  BorderThickness="0"
+                 Focusable="False"
+                 IsTabStop="False"
                  ItemsSource="{Binding Candidates.Value,
                                        Mode=OneWay}"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -99,6 +121,13 @@
                  VirtualizingPanel.IsVirtualizing="True"
                  VirtualizingPanel.ScrollUnit="Item"
                  VirtualizingPanel.VirtualizationMode="Recycling">
+            <ListBox.Resources>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="IsTabStop" Value="False" />
+                    <Setter Property="Focusable" Value="False" />
+                </Style>
+            </ListBox.Resources>
+
             <ListBox.Style>
                 <Style TargetType="{x:Type ListBox}">
                     <Style.Triggers>
