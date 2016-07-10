@@ -83,7 +83,7 @@ namespace Ann
         {
             Debug.Assert(model != null);
 
-            Name = string.IsNullOrEmpty(model.Name) == false ? model.Name : System.IO.Path.GetFileName(model.Path);
+            Name = string.IsNullOrWhiteSpace(model.Name) == false ? model.Name : System.IO.Path.GetFileName(model.Path);
             Path = model.Path;
         }
     }
