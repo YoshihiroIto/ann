@@ -30,7 +30,7 @@ namespace Ann
             = new ReactiveProperty<Visibility>(System.Windows.Visibility.Visible);
 
         public ReactiveCommand AppHideCommand { get; }
-        public ReactiveCommand AppQuitCommand { get; }
+        public ReactiveCommand AppExitCommand { get; }
 
         public ReactiveProperty<double> Left { get;  }
         public ReactiveProperty<double> Top { get;  }
@@ -115,14 +115,15 @@ namespace Ann
                 {
                     Visibility.Value = System.Windows.Visibility.Hidden;
                     await Task.Run(() => Process.Start(SelectedCandidate.Value.Path));
+                    Input.Value = string.Empty;
                 }).AddTo(CompositeDisposable);
 
             AppHideCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             AppHideCommand.Subscribe(_ => Visibility.Value = System.Windows.Visibility.Hidden)
                 .AddTo(CompositeDisposable);
 
-            AppQuitCommand = new ReactiveCommand().AddTo(CompositeDisposable);
-            AppQuitCommand.Subscribe(_ => Messenger.Raise(new WindowActionMessage(WindowAction.Close, "Close")))
+            AppExitCommand = new ReactiveCommand().AddTo(CompositeDisposable);
+            AppExitCommand.Subscribe(_ => Messenger.Raise(new WindowActionMessage(WindowAction.Close, "Close")))
                 .AddTo(CompositeDisposable);
 
             Left = App.Instance.ToReactivePropertyAsSynchronized(x => x.MainWindowLeft).AddTo(CompositeDisposable);
