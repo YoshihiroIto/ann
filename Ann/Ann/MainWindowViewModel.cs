@@ -98,8 +98,11 @@ namespace Ann
                 .AddTo(CompositeDisposable);
 
             RunCommand
-                .Subscribe(_ => Process.Start(SelectedCandidate.Value.Path))
-                .AddTo(CompositeDisposable);
+                .Subscribe(async _ =>
+                {
+                    Visibility.Value = System.Windows.Visibility.Hidden;
+                    await Task.Run(() => Process.Start(SelectedCandidate.Value.Path));
+                }).AddTo(CompositeDisposable);
 
             HideCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             HideCommand.Subscribe(_ => Visibility.Value = System.Windows.Visibility.Hidden)
@@ -119,10 +122,6 @@ namespace Ann
 
         private static async Task UpdateIndexAsync()
         {
-            var sw = new Stopwatch();
-
-            sw.Start();
-
             await Crawler.ExecuteAsync(
                 "Index.db",
                 new[]
@@ -130,10 +129,6 @@ namespace Ann
                     @"C:\Program Files",
                     @"C:\Program Files (x86)"
                 });
-
-            sw.Stop();
-
-            Debug.WriteLine(sw.ElapsedMilliseconds);
         }
     }
 }
