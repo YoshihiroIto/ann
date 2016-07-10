@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
+using Ann.Core;
 
 namespace Ann
 {
@@ -36,6 +37,24 @@ namespace Ann
                 return;
 
             candidate.ScrollIntoView(candidate.SelectedItem);
+        }
+
+        private void ListBox_MouseMove(object sender, MouseEventArgs e)
+        {
+            var vm = DataContext as MainWindowViewModel;
+            if (vm == null)
+                return;
+
+            var item = (sender as ListBoxItem)?.DataContext as ExecutableUnit;
+
+            vm.SelectedCandidate.Value = item;
+        }
+
+        private void ListBox_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var vm = DataContext as MainWindowViewModel;
+
+            vm?.RunCommand.Execute(null);
         }
 
         #region Blur

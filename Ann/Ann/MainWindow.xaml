@@ -37,9 +37,7 @@
     </Window.DataContext>
 
     <Window.InputBindings>
-        <KeyBinding Key="Enter"
-                    Command="{Binding RunCommand}"
-                    CommandParameter="-1" />
+        <KeyBinding Key="Enter" Command="{Binding RunCommand, Mode=OneTime}" />
     </Window.InputBindings>
 
     <i:Interaction.Triggers>
@@ -126,6 +124,8 @@
                 <Style TargetType="ListBoxItem">
                     <Setter Property="IsTabStop" Value="False" />
                     <Setter Property="Focusable" Value="False" />
+                    <EventSetter Event="PreviewMouseMove" Handler="ListBox_MouseMove" />
+                    <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBox_MouseLeftButtonDown" />
                 </Style>
             </ListBox.Resources>
 
