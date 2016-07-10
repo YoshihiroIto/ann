@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using Ann.Core;
 using Livet;
 using Reactive.Bindings;
@@ -24,6 +25,10 @@ namespace Ann
 
         public ReactiveCommand RunCommand { get; }
 
+        public ReactiveProperty<Visibility> Visibility { get; }
+            = new ReactiveProperty<Visibility>(System.Windows.Visibility.Visible);
+        public ReactiveCommand HideCommand { get; }
+ 
         private ExecutableUnitHolder _holder;
 
         public MainWindowViewModel()
@@ -31,6 +36,7 @@ namespace Ann
             CompositeDisposable.Add(Input);
             CompositeDisposable.Add(Message);
             CompositeDisposable.Add(CanIndexUpdate);
+            CompositeDisposable.Add(Visibility);
             CompositeDisposable.Add(DisposeHolder);
 
             UpdateHolder();
@@ -93,6 +99,10 @@ namespace Ann
 
             RunCommand
                 .Subscribe(_ => Process.Start(SelectedCandidate.Value.Path))
+                .AddTo(CompositeDisposable);
+
+            HideCommand = new ReactiveCommand().AddTo(CompositeDisposable);
+            HideCommand.Subscribe(_ => Visibility.Value = System.Windows.Visibility.Hidden)
                 .AddTo(CompositeDisposable);
         }
 

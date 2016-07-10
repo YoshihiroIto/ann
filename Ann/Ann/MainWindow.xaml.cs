@@ -1,7 +1,9 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Ann.Core;
 using Ann.Foundation;
+using HotKey;
 
 namespace Ann
 {
@@ -15,11 +17,13 @@ namespace Ann
             InitializeComponent();
         }
 
-        private void Window_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Keyboard.Focus(InputTextBox);
-
             WindowHelper.EnableBlur(this);
+            SetupHotKey();
+            Application.Current.Deactivated += (_, __) => Visibility = Visibility.Hidden;
+
+            Keyboard.Focus(InputTextBox);
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -53,6 +57,22 @@ namespace Ann
             var vm = DataContext as MainWindowViewModel;
 
             vm?.RunCommand.Execute(null);
+        }
+
+        private void SetupHotKey()
+        {
+            var switchVisibility = new HotKeyRegister(MOD_KEY.SHIFT, System.Windows.Forms.Keys.Space, this);
+            switchVisibility.HotKeyPressed += _ =>
+            {
+                if (Visibility == Visibility.Hidden)
+                {
+                    Visibility = Visibility.Visible;
+                    Activate();
+                    Keyboard.Focus(InputTextBox);
+                }
+                else
+                    Visibility = Visibility.Hidden;
+            };
         }
     }
 }

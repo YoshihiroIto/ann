@@ -1,4 +1,6 @@
-﻿using System;
+﻿// https://github.com/riverar/sample-win10-aeroglass/blob/master/MainWindow.xaml.cs
+// ReSharper disable All
+using System;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
@@ -32,12 +34,6 @@ namespace Ann.Foundation
             Marshal.FreeHGlobal(accentPtr);
         }
 
-        // https://github.com/riverar/sample-win10-aeroglass/blob/master/MainWindow.xaml.cs
-
-        // ReSharper disable UnusedMember.Local
-        // ReSharper disable InconsistentNaming
-        // ReSharper disable MemberCanBePrivate.Local
-        // ReSharper disable FieldCanBeMadeReadOnly.Local
         private enum AccentState
         {
             ACCENT_DISABLED = 0,
@@ -73,11 +69,6 @@ namespace Ann.Foundation
 
         [DllImport("user32.dll")]
         private static extern int SetWindowCompositionAttribute(IntPtr hwnd, ref WindowCompositionAttributeData data);
-
-        // ReSharper restore FieldCanBeMadeReadOnly.Local
-        // ReSharper restore MemberCanBePrivate.Local
-        // ReSharper restore InconsistentNaming
-        // ReSharper restore UnusedMember.Local
 
         #endregion
     }

@@ -22,6 +22,8 @@
         SizeToContent="Height"
         SnapsToDevicePixels="True"
         Topmost="True"
+        Visibility="{Binding Visibility.Value,
+                             Mode=TwoWay}"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         mc:Ignorable="d">
@@ -38,6 +40,11 @@
 
     <Window.InputBindings>
         <KeyBinding Key="Enter" Command="{Binding RunCommand, Mode=OneTime}" />
+        <KeyBinding Key="Escape" Command="{Binding HideCommand, Mode=OneTime}" />
+        <KeyBinding Key="J"
+                    Command="{Binding HideCommand,
+                                      Mode=OneTime}"
+                    Modifiers="Control" />
     </Window.InputBindings>
 
     <i:Interaction.Triggers>
