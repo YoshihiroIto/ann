@@ -41,6 +41,13 @@
         <ann:MainWindowViewModel />
     </Window.DataContext>
 
+    <Window.ContextMenu>
+        <ContextMenu>
+            <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="Update Index" />
+            <MenuItem Command="{Binding AppExitCommand, Mode=OneTime}" Header="Exit" />
+        </ContextMenu>
+    </Window.ContextMenu>
+
     <Window.InputBindings>
         <KeyBinding Key="Enter" Command="{Binding RunCommand, Mode=OneTime}" />
         <KeyBinding Key="Escape" Command="{Binding AppHideCommand, Mode=OneTime}" />
