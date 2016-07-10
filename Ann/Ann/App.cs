@@ -13,6 +13,30 @@ namespace Ann
 
         private HashSet<string> _highPriorities = new HashSet<string>();
 
+        #region MainWindowLeft
+
+        private double _MainWindowLeft;
+
+        public double MainWindowLeft
+        {
+            get { return _MainWindowLeft; }
+            set { SetProperty(ref _MainWindowLeft, value); }
+        }
+
+        #endregion
+
+        #region MainWindowTop
+
+        private double _MainWindowTop;
+
+        public double MainWindowTop
+        {
+            get { return _MainWindowTop; }
+            set { SetProperty(ref _MainWindowTop, value); }
+        }
+
+        #endregion
+
         public static void Initialize()
         {
         }
@@ -54,6 +78,9 @@ namespace Ann
                 _highPriorities = config.HighPriorities == null
                     ? new HashSet<string>()
                     : new HashSet<string>(config.HighPriorities);
+
+                MainWindowLeft = config.MainWindow?.Left ?? 0;
+                MainWindowTop = config.MainWindow?.Top ?? 0;
             }
         }
 
@@ -61,7 +88,12 @@ namespace Ann
         {
             var config = new Config.App
             {
-                HighPriorities = _highPriorities.ToArray()
+                HighPriorities = _highPriorities.ToArray(),
+                MainWindow = new Config.MainWindow
+                {
+                    Left = MainWindowLeft,
+                    Top = MainWindowTop
+                }
             };
 
             using (var writer = new StringWriter())

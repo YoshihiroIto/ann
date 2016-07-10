@@ -14,16 +14,19 @@
         Background="#9000"
         BorderBrush="#C000"
         BorderThickness="1"
+        Left="{Binding Left.Value,
+                       Mode=TwoWay}"
         Loaded="Window_Loaded"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         SizeToContent="Height"
         SnapsToDevicePixels="True"
+        Top="{Binding Top.Value,
+                      Mode=TwoWay}"
         Topmost="True"
         Visibility="{Binding Visibility.Value,
                              Mode=TwoWay}"
-        WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         mc:Ignorable="d">
     <Window.Resources>

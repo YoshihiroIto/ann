@@ -32,6 +32,9 @@ namespace Ann
         public ReactiveCommand AppHideCommand { get; }
         public ReactiveCommand AppQuitCommand { get; }
 
+        public ReactiveProperty<double> Left { get;  }
+        public ReactiveProperty<double> Top { get;  }
+
         private ExecutableUnitHolder _holder;
 
         public MainWindowViewModel()
@@ -121,6 +124,9 @@ namespace Ann
             AppQuitCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             AppQuitCommand.Subscribe(_ => Messenger.Raise(new WindowActionMessage(WindowAction.Close, "Close")))
                 .AddTo(CompositeDisposable);
+
+            Left = App.Instance.ToReactivePropertyAsSynchronized(x => x.MainWindowLeft).AddTo(CompositeDisposable);
+            Top = App.Instance.ToReactivePropertyAsSynchronized(x => x.MainWindowTop).AddTo(CompositeDisposable);
         }
 
         private int IndexOfCandidates(string path)

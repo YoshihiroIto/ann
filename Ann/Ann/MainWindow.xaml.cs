@@ -60,7 +60,7 @@ namespace Ann
 
         private void SetupHotKey()
         {
-            var switchVisibility = new HotKeyRegister(MOD_KEY.SHIFT, System.Windows.Forms.Keys.Space, this);
+            var switchVisibility = new HotKeyRegister(MOD_KEY.CONTROL, System.Windows.Forms.Keys.Space, this);
             switchVisibility.HotKeyPressed += _ =>
             {
                 if (Visibility == Visibility.Hidden)
