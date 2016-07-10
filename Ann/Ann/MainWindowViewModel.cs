@@ -123,7 +123,7 @@ namespace Ann
                 .AddTo(CompositeDisposable);
 
             AppExitCommand = new ReactiveCommand().AddTo(CompositeDisposable);
-            AppExitCommand.Subscribe(_ => Messenger.Raise(new WindowActionMessage(WindowAction.Close, "Close")))
+            AppExitCommand.Subscribe(_ => Messenger.Raise(new WindowActionMessage(WindowAction.Close, "WindowAction")))
                 .AddTo(CompositeDisposable);
 
             Left = App.Instance.ToReactivePropertyAsSynchronized(x => x.MainWindowLeft).AddTo(CompositeDisposable);

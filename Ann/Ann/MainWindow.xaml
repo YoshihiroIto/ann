@@ -62,7 +62,7 @@
             <behaviors:DataContextDisposeAction />
         </i:EventTrigger>
 
-        <behaviors:InteractionMessageTrigger MessageKey="Close" Messenger="{Binding Messenger, Mode=OneTime}">
+        <behaviors:InteractionMessageTrigger MessageKey="WindowAction" Messenger="{Binding Messenger, Mode=OneTime}">
             <behaviors:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
         </behaviors:InteractionMessageTrigger>
     </i:Interaction.Triggers>
