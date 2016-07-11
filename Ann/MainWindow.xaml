@@ -173,62 +173,63 @@
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type ann:ExecutableUnitViewModel}">
                     <Grid Margin="0,4">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <Grid.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="High Priority"
-                                          IsCheckable="True"
-                                          IsChecked="{Binding IsHighPriority,
-                                                              Mode=TwoWay}" />
-                            </ContextMenu>
-                        </Grid.ContextMenu>
-
-                        <Image Grid.Row="0"
-                               Grid.RowSpan="2"
-                               Grid.Column="0"
-                               Width="42"
-                               Height="42"
+                        <Image Grid.Column="0"
+                               Width="48"
+                               Height="48"
                                Margin="8,0"
                                RenderOptions.BitmapScalingMode="HighQuality"
                                Source="{Binding Icon,
                                                 Mode=OneWay}" />
 
-                        <TextBlock Grid.Row="0"
-                                   Grid.Column="1"
-                                   Margin="0,0,0,2"
-                                   FontFamily="Tahoma"
-                                   FontSize="24"
-                                   Foreground="White"
-                                   Padding="0"
-                                   Text="{Binding Name,
-                                                  Mode=OneWay}"
-                                   TextTrimming="WordEllipsis">
-                            <TextBlock.ToolTip>
-                                <ToolTip Content="{Binding Name, Mode=OneWay}" />
-                            </TextBlock.ToolTip>
-                        </TextBlock>
+                        <Grid Grid.Column="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="1"
-                                   Grid.Column="1"
-                                   FontFamily="Tahoma"
-                                   FontWeight="ExtraLight"
-                                   Foreground="#AAA"
-                                   Padding="0"
-                                   Text="{Binding Path,
-                                                  Mode=OneWay}"
-                                   TextTrimming="WordEllipsis">
-                            <TextBlock.ToolTip>
-                                <ToolTip Content="{Binding Path, Mode=OneWay}" />
-                            </TextBlock.ToolTip>
-                        </TextBlock>
+                            <Grid.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="High Priority"
+                                              IsCheckable="True"
+                                              IsChecked="{Binding IsHighPriority,
+                                                                  Mode=TwoWay}" />
+                                </ContextMenu>
+                            </Grid.ContextMenu>
+
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="0"
+                                       Margin="0,0,0,2"
+                                       FontFamily="Tahoma"
+                                       FontSize="24"
+                                       Foreground="White"
+                                       Padding="0"
+                                       Text="{Binding Name,
+                                                      Mode=OneWay}"
+                                       TextTrimming="CharacterEllipsis">
+                                <TextBlock.ToolTip>
+                                    <ToolTip Content="{Binding Name, Mode=OneWay}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+
+                            <TextBlock Grid.Row="1"
+                                       Grid.Column="0"
+                                       FontFamily="Tahoma"
+                                       FontWeight="ExtraLight"
+                                       Foreground="#AAA"
+                                       Padding="0"
+                                       Text="{Binding Path,
+                                                      Mode=OneWay}"
+                                       TextTrimming="CharacterEllipsis">
+                                <TextBlock.ToolTip>
+                                    <ToolTip Content="{Binding Path, Mode=OneWay}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                        </Grid>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
