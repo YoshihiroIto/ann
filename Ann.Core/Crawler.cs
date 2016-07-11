@@ -26,7 +26,6 @@ namespace Ann.Core
                     using (var ctx = new DataContext(conn))
                     {
                         var executableExts = MakeExecutableExts();
-                        var count = 0;
 
                         ctx.GetTable<ExecutableUnit>().InsertAllOnSubmit(
                             targetFolders.SelectMany(targetFolder =>
@@ -36,11 +35,14 @@ namespace Ann.Core
                                     {
                                         var fvi = FileVersionInfo.GetVersionInfo(f);
 
+                                        var name = string.IsNullOrWhiteSpace(fvi.FileDescription)
+                                            ? Path.GetFileNameWithoutExtension(f)
+                                            : fvi.FileDescription;
+
                                         return new ExecutableUnit
                                         {
-                                            Id = count ++,
-                                            Name = fvi.FileDescription,
-                                            Path = f
+                                            Path = f,
+                                            Name = name,
                                         };
                                     })
                                 ));
@@ -88,7 +90,7 @@ namespace Ann.Core
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText =
-                    $"create table if not exists {nameof(ExecutableUnit)} (Id INT PRIMARY KEY, Name NVARCHAR, Path NVARCHAR)";
+                    $"create table if not exists {nameof(ExecutableUnit)} (Path NVARCHAR PRIMARY KEY, Name NVARCHAR)";
 
                 cmd.ExecuteNonQuery();
             }
