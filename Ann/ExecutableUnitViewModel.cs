@@ -1,10 +1,11 @@
 ﻿using System.Diagnostics;
+using System.IO;
 using System.Windows;
-using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
+using Jewelry.Collections;
+using Microsoft.WindowsAPICodePack.Shell;
 
 namespace Ann
 {
@@ -36,27 +37,34 @@ namespace Ann
 
         #region Icon
 
-        private ImageSource _Icon;
-
         public ImageSource Icon
         {
             get
             {
-                if (_Icon != null)
-                    return _Icon;
+                if (File.Exists(Path) == false)
+                    return null;
 
-                using (var i = System.Drawing.Icon.ExtractAssociatedIcon(Path))
+                return IconCache.GetOrAdd(Path, path =>
                 {
-                    if (i != null)
-                        _Icon = Imaging.CreateBitmapSourceFromHIcon(
-                            i.Handle,
-                            new Int32Rect(0, 0, i.Width, i.Height),
-                            BitmapSizeOptions.FromEmptyOptions());
-                }
+                    using (var file = ShellFile.FromFilePath(Path))
+                    {
+                        const int iconSize = 48;
 
-                return _Icon;
+                        var thumbnail = file.Thumbnail;
+
+                        var mediumBitmapSource = thumbnail.MediumBitmapSource;
+                        if ((int)mediumBitmapSource.Width == iconSize)
+                            return mediumBitmapSource;
+
+                        var bitmapSource = thumbnail.MediumBitmapSource;
+                        if ((int) bitmapSource.Width == iconSize)
+                            return bitmapSource;
+
+                        thumbnail.CurrentSize = new Size(iconSize, iconSize);
+                        return thumbnail.BitmapSource;
+                    }
+                });
             }
-            set { SetProperty(ref _Icon, value); }
         }
 
         #endregion
@@ -86,5 +94,7 @@ namespace Ann
             Name = string.IsNullOrWhiteSpace(model.Name) == false ? model.Name : System.IO.Path.GetFileName(model.Path);
             Path = model.Path;
         }
+        
+        private static readonly LruCache<string, ImageSource> IconCache = new LruCache<string, ImageSource>(512, false);
     }
 }

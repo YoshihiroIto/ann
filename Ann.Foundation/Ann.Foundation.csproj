@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="Control\HotKey.cs" />
     <Compile Include="Control\WindowHelper.cs" />
+    <Compile Include="LruCache.cs" />
     <Compile Include="Mvvm\ModelBase.cs" />
     <Compile Include="Mvvm\ViewModelBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
