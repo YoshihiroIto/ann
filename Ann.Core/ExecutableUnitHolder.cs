@@ -49,8 +49,26 @@ namespace Ann.Core
 
                 return ctx.GetTable<ExecutableUnit>()
                     .Where(u => u.Name.ToLower().Contains(name) || u.Path.ToLower().Contains(name))
+                    .ToArray()
+                    .OrderBy(u => MakeOrder(u, name))
                     .ToArray();
             }
         }
+
+        // ReSharper disable PossibleNullReferenceException
+        private static int MakeOrder(ExecutableUnit u, string name)
+        {
+            var filename = Path.GetFileNameWithoutExtension(u.Path);
+
+            if (filename == name)
+                return 0;
+
+            if (filename.StartsWith(name))
+                return 1;
+
+            return filename.Contains(name) ? 2 : 3;
+        }
+
+        // ReSharper restore PossibleNullReferenceException
     }
 }
