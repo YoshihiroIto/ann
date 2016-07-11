@@ -62,19 +62,18 @@ namespace Ann
             get
             {
                 var dir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-
                 return Path.Combine(dir, CompanyName, ProductName);
             }
         }
 
         public string ConfigFilePath => Path.Combine(ConfigDirPath, ProductName + ".yaml");
 
-        private string CompanyName =>
+        private static string CompanyName =>
             ((AssemblyCompanyAttribute) Attribute.GetCustomAttribute(
                 Assembly.GetExecutingAssembly(), typeof(AssemblyCompanyAttribute), false))
                 .Company;
 
-        private string ProductName =>
+        private static string ProductName =>
             ((AssemblyProductAttribute) Attribute.GetCustomAttribute(
                 Assembly.GetExecutingAssembly(), typeof(AssemblyProductAttribute), false))
                 .Product;

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Reflection;
 using System.Runtime;
 using System.Windows;
 
@@ -14,7 +12,7 @@ namespace Ann
         [STAThread]
         public static void Main(string[] args)
         {
-            ProfileOptimization.SetProfileRoot(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+            ProfileOptimization.SetProfileRoot(App.Instance.ConfigDirPath);
             ProfileOptimization.StartProfile("Startup.Profile");
 
             var e = new Entry();
