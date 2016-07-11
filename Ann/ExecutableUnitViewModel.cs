@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.IO;
-using System.Windows;
 using System.Windows.Media;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
@@ -48,26 +47,27 @@ namespace Ann
                 {
                     using (var file = ShellFile.FromFilePath(Path))
                     {
-                        const int iconSize = 48;
-
                         var thumbnail = file.Thumbnail;
 
+#if false
+                        const int iconSize = 48;
                         var mediumBitmapSource = thumbnail.MediumBitmapSource;
                         if ((int)mediumBitmapSource.Width == iconSize)
                             return mediumBitmapSource;
 
-                        var bitmapSource = thumbnail.MediumBitmapSource;
-                        if ((int) bitmapSource.Width == iconSize)
-                            return bitmapSource;
+                        var largeBitmapSource = thumbnail.LargeBitmapSource;
+                        if ((int) largeBitmapSource.Width == iconSize)
+                            return largeBitmapSource;
 
                         thumbnail.CurrentSize = new Size(iconSize, iconSize);
+#endif
                         return thumbnail.BitmapSource;
                     }
                 });
             }
         }
 
-        #endregion
+#endregion
 
         public bool IsHighPriority
         {
