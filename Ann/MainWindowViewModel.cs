@@ -110,12 +110,18 @@ namespace Ann
                 .ToReactiveCommand()
                 .AddTo(CompositeDisposable);
 
+            string path = null;
             RunCommand
-                .Subscribe(async _ =>
+                .Do(_ =>
+                {
+                    path = SelectedCandidate.Value.Path;
+                    Input.Value = string.Empty;
+                })
+                .Delay(TimeSpan.FromMilliseconds(20))
+                .Subscribe(_ =>
                 {
                     Visibility.Value = System.Windows.Visibility.Hidden;
-                    await Task.Run(() => Process.Start(SelectedCandidate.Value.Path));
-                    Input.Value = string.Empty;
+                    Process.Start(path);
                 }).AddTo(CompositeDisposable);
 
             AppHideCommand = new ReactiveCommand().AddTo(CompositeDisposable);
