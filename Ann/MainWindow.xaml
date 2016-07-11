@@ -192,7 +192,6 @@
                                Width="48"
                                Height="48"
                                Margin="8,0"
-                               RenderOptions.BitmapScalingMode="HighQuality"
                                Source="{Binding Icon,
                                                 Mode=OneWay}" />
 
