@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Windows;
 using System.Windows.Media;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
@@ -47,27 +48,16 @@ namespace Ann
                 {
                     using (var file = ShellFile.FromFilePath(Path))
                     {
-                        var thumbnail = file.Thumbnail;
+                        const double iconSize = 48;
+                        file.Thumbnail.CurrentSize = new Size(iconSize*Scale.Width, iconSize*Scale.Height);
 
-#if false
-                        const int iconSize = 48;
-                        var mediumBitmapSource = thumbnail.MediumBitmapSource;
-                        if ((int)mediumBitmapSource.Width == iconSize)
-                            return mediumBitmapSource;
-
-                        var largeBitmapSource = thumbnail.LargeBitmapSource;
-                        if ((int) largeBitmapSource.Width == iconSize)
-                            return largeBitmapSource;
-
-                        thumbnail.CurrentSize = new Size(iconSize, iconSize);
-#endif
-                        return thumbnail.BitmapSource;
+                        return file.Thumbnail.BitmapSource;
                     }
                 });
             }
         }
 
-#endregion
+        #endregion
 
         public bool IsHighPriority
         {
@@ -94,7 +84,9 @@ namespace Ann
             Name = string.IsNullOrWhiteSpace(model.Name) == false ? model.Name : System.IO.Path.GetFileName(model.Path);
             Path = model.Path;
         }
-        
+
+        public static Size Scale { get; set; }
+
         private static readonly LruCache<string, ImageSource> IconCache = new LruCache<string, ImageSource>(512, false);
     }
 }

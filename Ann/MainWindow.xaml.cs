@@ -23,6 +23,13 @@ namespace Ann
             Application.Current.Deactivated += (_, __) => Visibility = Visibility.Hidden;
 
             Keyboard.Focus(InputTextBox);
+
+            var source = PresentationSource.FromVisual(this);
+            if (source?.CompositionTarget != null)
+                ExecutableUnitViewModel.Scale =
+                    new Size(
+                        source.CompositionTarget.TransformToDevice.M11,
+                        source.CompositionTarget.TransformToDevice.M22);
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

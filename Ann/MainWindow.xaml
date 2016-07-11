@@ -127,7 +127,7 @@
         <ListBox Grid.Row="1"
                  Margin="0,16,0,0"
                  HorizontalContentAlignment="Stretch"
-                 Background="{x:Null}"
+                 Background="Transparent"
                  BorderThickness="0"
                  Focusable="False"
                  IsTabStop="False"
@@ -145,11 +145,18 @@
                 <Style TargetType="ListBoxItem">
                     <Setter Property="IsTabStop" Value="False" />
                     <Setter Property="Padding" Value="0" />
+                    <Setter Property="Margin" Value="0" />
                     <Setter Property="Focusable" Value="False" />
                     <EventSetter Event="MouseMove" Handler="ListBox_MouseMove" />
                     <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBox_MouseLeftButtonDown" />
                 </Style>
             </ListBox.Resources>
+
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
 
             <ListBox.Style>
                 <Style TargetType="{x:Type ListBox}">
@@ -164,25 +171,27 @@
                 </Style>
             </ListBox.Style>
 
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <VirtualizingStackPanel />
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type ann:ExecutableUnitViewModel}">
-                    <Grid Margin="0,4">
+                    <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
+                        <Grid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="High Priority"
+                                          IsCheckable="True"
+                                          IsChecked="{Binding IsHighPriority,
+                                                              Mode=TwoWay}" />
+                            </ContextMenu>
+                        </Grid.ContextMenu>
+
                         <Image Grid.Column="0"
                                Width="48"
                                Height="48"
                                Margin="8,0"
-                               RenderOptions.BitmapScalingMode="HighQuality"
                                Source="{Binding Icon,
                                                 Mode=OneWay}" />
 
@@ -191,15 +200,6 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-
-                            <Grid.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="High Priority"
-                                              IsCheckable="True"
-                                              IsChecked="{Binding IsHighPriority,
-                                                                  Mode=TwoWay}" />
-                                </ContextMenu>
-                            </Grid.ContextMenu>
 
                             <TextBlock Grid.Row="0"
                                        Grid.Column="0"
