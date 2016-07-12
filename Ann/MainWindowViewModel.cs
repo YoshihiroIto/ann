@@ -14,10 +14,10 @@ namespace Ann
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        public ReactiveProperty<string> Input { get; } = new ReactiveProperty<string>(string.Empty);
-        public ReactiveProperty<string> Message { get; } = new ReactiveProperty<string>(string.Empty);
+        public ReactiveProperty<string> Input { get; }
+        public ReactiveProperty<string> Message { get; }
 
-        public ReactiveProperty<bool> CanIndexUpdate { get; } = new ReactiveProperty<bool>(true);
+        public ReactiveProperty<bool> CanIndexUpdate { get; }
         public ReactiveCommand IndexUpdateCommand { get; }
 
         public ReadOnlyReactiveProperty<ExecutableUnitViewModel[]> Candidates { get; }
@@ -27,7 +27,6 @@ namespace Ann
         public ReactiveCommand RunCommand { get; }
 
         public ReactiveProperty<Visibility> Visibility { get; }
-            = new ReactiveProperty<Visibility>(System.Windows.Visibility.Visible);
 
         public ReactiveCommand AppHideCommand { get; }
         public ReactiveCommand AppExitCommand { get; }
@@ -35,32 +34,22 @@ namespace Ann
         public ReactiveProperty<double> Left { get;  }
         public ReactiveProperty<double> Top { get;  }
 
-        private readonly IconDecoder _iconDecoder;
-        private static string IconCacheFilePath => System.IO.Path.Combine(App.ConfigDirPath, "IconCache.db");
-
-        public Size IconSize
-        {
-            set { _iconDecoder.IconSize = value; }
-        }
+        private readonly IconDecoder _iconDecoder = new IconDecoder(App.IconCacheFilePath);
+        public Size IconSize { set { _iconDecoder.IconSize = value; } }
 
         public ImageSource GetIcon(string path) => _iconDecoder.GetIcon(path);
         public ReactiveProperty<double> CandidatesListMaxHeight { get; }
 
         public MainWindowViewModel()
         {
-            CompositeDisposable.Add(Input);
-            CompositeDisposable.Add(Message);
-            CompositeDisposable.Add(CanIndexUpdate);
-            CompositeDisposable.Add(Visibility);
-
-            _iconDecoder = new IconDecoder(IconCacheFilePath);
-
+            Input = new ReactiveProperty<string>().AddTo(CompositeDisposable);
+            Message = new ReactiveProperty<string>(string.Empty).AddTo(CompositeDisposable);
+            CanIndexUpdate = new ReactiveProperty<bool>(true).AddTo(CompositeDisposable);
+            Visibility = new ReactiveProperty<Visibility>(System.Windows.Visibility.Visible).AddTo(CompositeDisposable);
             CandidatesListMaxHeight = new ReactiveProperty<double>().AddTo(CompositeDisposable);
 
             IndexUpdateCommand = CanIndexUpdate
-                .ToReactiveCommand()
-                .AddTo(CompositeDisposable);
-
+                .ToReactiveCommand().AddTo(CompositeDisposable);
             IndexUpdateCommand
                 .Subscribe(async _ =>
                 {
@@ -94,9 +83,7 @@ namespace Ann
 
             SelectedCandidateMoveCommand = SelectedCandidate
                 .Select(c => c != null)
-                .ToReactiveCommand()
-                .AddTo(CompositeDisposable);
-
+                .ToReactiveCommand().AddTo(CompositeDisposable);
             SelectedCandidateMoveCommand
                 .Subscribe(p =>
                 {
@@ -113,9 +100,7 @@ namespace Ann
 
             RunCommand = SelectedCandidate
                 .Select(i => i != null)
-                .ToReactiveCommand()
-                .AddTo(CompositeDisposable);
-
+                .ToReactiveCommand().AddTo(CompositeDisposable);
             string path = null;
             RunCommand
                 .Do(_ =>

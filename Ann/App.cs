@@ -18,6 +18,7 @@ namespace Ann
         private readonly ExecutableUnitDataBase _ExecutableUnitDataBase = new ExecutableUnitDataBase(IndexDbFilePath);
 
         private static string IndexDbFilePath => Path.Combine(ConfigDirPath, "Index.db");
+        public static string IconCacheFilePath => Path.Combine(ConfigDirPath, "IconCache.db");
 
         #region MainWindowLeft
 
