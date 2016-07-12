@@ -148,6 +148,7 @@
     </Page>
     <Compile Include="App.cs" />
     <Compile Include="Config\App.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Entry.xaml.cs">
       <DependentUpon>Entry.xaml</DependentUpon>
       <SubType>Code</SubType>

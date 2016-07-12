@@ -66,12 +66,10 @@ namespace Ann
             if (source?.CompositionTarget == null)
                 return;
 
-            const double iconSize = 48;
-
             _DataContext.IconSize =
                 new Size(
-                    iconSize*source.CompositionTarget.TransformToDevice.M11,
-                    iconSize*source.CompositionTarget.TransformToDevice.M22);
+                    Constants.IconSize*source.CompositionTarget.TransformToDevice.M11,
+                    Constants.IconSize*source.CompositionTarget.TransformToDevice.M22);
         }
 
         private void SetupHotKey()

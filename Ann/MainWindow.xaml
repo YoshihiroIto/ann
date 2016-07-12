@@ -185,8 +185,8 @@
                         </Grid.ContextMenu>
 
                         <Image Grid.Column="0"
-                               Width="48"
-                               Height="48"
+                               Width="{x:Static ann:Constants.IconSize}"
+                               Height="{x:Static ann:Constants.IconSize}"
                                Margin="4,4"
                                Source="{Binding Icon,
                                                 Mode=OneWay}" />
