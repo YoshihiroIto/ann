@@ -53,7 +53,7 @@ namespace Ann
             candidate.ScrollIntoView(candidate.SelectedItem);
         }
 
-        private void ListBox_MouseMove(object sender, MouseEventArgs e)
+        private void ListBox_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var vm = DataContext as MainWindowViewModel;
             if (vm == null)
@@ -62,13 +62,8 @@ namespace Ann
             var item = (sender as ListBoxItem)?.DataContext as ExecutableUnitViewModel;
 
             vm.SelectedCandidate.Value = item;
-        }
 
-        private void ListBox_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            var vm = DataContext as MainWindowViewModel;
-
-            vm?.RunCommand.Execute(null);
+            vm.RunCommand.Execute(null);
         }
 
         private void SetupHotKey()

@@ -10,7 +10,6 @@
         Title="{Binding Message.Value,
                         Mode=OneWay}"
         Width="800"
-        MaxHeight="500"
         AllowsTransparency="True"
         Background="#9000"
         BorderBrush="#C000"
@@ -125,6 +124,8 @@
                                   Mode=OneWay}" />
 
         <ListBox Grid.Row="1"
+                 MaxHeight="{Binding CandidatesListMaxHeight.Value,
+                                     Mode=OneWay}"
                  Margin="0,16,0,0"
                  HorizontalContentAlignment="Stretch"
                  Background="Transparent"
@@ -147,7 +148,6 @@
                     <Setter Property="Padding" Value="0" />
                     <Setter Property="Margin" Value="0" />
                     <Setter Property="Focusable" Value="False" />
-                    <EventSetter Event="MouseMove" Handler="ListBox_MouseMove" />
                     <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBox_MouseLeftButtonDown" />
                 </Style>
             </ListBox.Resources>
@@ -191,11 +191,13 @@
                         <Image Grid.Column="0"
                                Width="48"
                                Height="48"
-                               Margin="8,0"
+                               Margin="4,4"
                                Source="{Binding Icon,
                                                 Mode=OneWay}" />
 
-                        <Grid Grid.Column="1">
+                        <Grid Grid.Column="1"
+                              Margin="0,4"
+                              VerticalAlignment="Center">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
