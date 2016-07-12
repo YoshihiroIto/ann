@@ -4,30 +4,29 @@ using System.Data.Linq;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Ann.Core
 {
     public class ExecutableUnitDataBase : IDisposable
     {
-        private readonly SQLiteConnection _conn;
+        private SQLiteConnection _conn;
+
+        private readonly string _dataBaseFile;
 
         public ExecutableUnitDataBase(string databaseFile)
         {
             if (File.Exists(databaseFile) == false)
                 return;
 
-            var sb = new SQLiteConnectionStringBuilder
-            {
-                DataSource = databaseFile
-            };
+            _dataBaseFile = databaseFile;
 
-            _conn = new SQLiteConnection(sb.ToString());
-            _conn.Open();
+            Open();
         }
 
         public void Dispose()
         {
-            _conn?.Dispose();
+            Close();
         }
 
         public IEnumerable<ExecutableUnit> Find(string name)
@@ -54,6 +53,42 @@ namespace Ann.Core
                     .ToArray();
             }
         }
+        
+        public async Task UpdateIndexAsync()
+        {
+            Close();
+
+            var dir = Path.GetDirectoryName(_dataBaseFile);
+            if (dir != null)
+                Directory.CreateDirectory(dir);
+
+            await Crawler.ExecuteAsync(
+                _dataBaseFile,
+                new[]
+                {
+                    @"C:\Program Files",
+                    @"C:\Program Files (x86)"
+                });
+
+            Open();
+        }
+
+        private void Open()
+        {
+            var sb = new SQLiteConnectionStringBuilder
+            {
+                DataSource = _dataBaseFile
+            };
+
+            _conn = new SQLiteConnection(sb.ToString());
+            _conn.Open();
+        }
+
+        private void Close()
+        {
+            _conn?.Dispose();
+            _conn = null;
+        }
 
         // ReSharper disable PossibleNullReferenceException
         private static int MakeOrder(ExecutableUnit u, string name)
@@ -68,7 +103,6 @@ namespace Ann.Core
 
             return filename.Contains(name) ? 2 : 3;
         }
-
         // ReSharper restore PossibleNullReferenceException
     }
 }

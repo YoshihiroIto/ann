@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
+using Ann.Core;
 using Ann.Foundation.Mvvm;
 using YamlDotNet.Serialization;
 
@@ -13,6 +15,9 @@ namespace Ann
         public static App Instance { get; } = new App();
 
         private HashSet<string> _highPriorities = new HashSet<string>();
+        private readonly ExecutableUnitDataBase _ExecutableUnitDataBase = new ExecutableUnitDataBase(IndexDbFilePath);
+
+        private static string IndexDbFilePath => Path.Combine(ConfigDirPath, "Index.db");
 
         #region MainWindowLeft
 
@@ -52,13 +57,23 @@ namespace Ann
         public bool AddHighPriorityPath(string path) => _highPriorities.Add(path);
         public bool RemoveHighPriorityPath(string path) => _highPriorities.Remove(path);
 
+        public async Task UpdateIndexAsync() =>
+            await _ExecutableUnitDataBase.UpdateIndexAsync();
+
+        public IEnumerable<ExecutableUnit> FindExecutableUnit(string name) =>
+            _ExecutableUnitDataBase
+                .Find(name)
+                .OrderByDescending(u => IsHighPriority(u.Path));
+
         private App()
         {
+            CompositeDisposable.Add(_ExecutableUnitDataBase);
             LoadConfig();
         }
 
         #region config
-        public string ConfigDirPath
+
+        public static string ConfigDirPath
         {
             get
             {
@@ -67,7 +82,7 @@ namespace Ann
             }
         }
 
-        public string ConfigFilePath => Path.Combine(ConfigDirPath, ProductName + ".yaml");
+        public static string ConfigFilePath => Path.Combine(ConfigDirPath, ProductName + ".yaml");
 
         private static string CompanyName =>
             ((AssemblyCompanyAttribute) Attribute.GetCustomAttribute(
@@ -116,6 +131,7 @@ namespace Ann
                 File.WriteAllText(ConfigFilePath, writer.ToString());
             }
         }
+
         #endregion
     }
 }

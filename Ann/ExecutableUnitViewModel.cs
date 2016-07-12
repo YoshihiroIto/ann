@@ -33,24 +33,6 @@ namespace Ann
 
         public ImageSource Icon => _parent.GetIcon(Path);
 
-        public bool IsHighPriority
-        {
-            get { return App.Instance.IsHighPriority(Path); }
-            set
-            {
-                if (value)
-                {
-                    if (App.Instance.AddHighPriorityPath(Path))
-                        RaisePropertyChanged();
-                }
-                else
-                {
-                    if (App.Instance.RemoveHighPriorityPath(Path))
-                        RaisePropertyChanged();
-                }
-            }
-        }
-
         private readonly MainWindowViewModel _parent;
 
         public ExecutableUnitViewModel(MainWindowViewModel parent, ExecutableUnit model)

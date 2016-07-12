@@ -12,7 +12,7 @@ namespace Ann
         [STAThread]
         public static void Main(string[] args)
         {
-            ProfileOptimization.SetProfileRoot(App.Instance.ConfigDirPath);
+            ProfileOptimization.SetProfileRoot(App.ConfigDirPath);
             ProfileOptimization.StartProfile("Startup.Profile");
 
             var e = new Entry();

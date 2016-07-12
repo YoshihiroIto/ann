@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using Ann.Core;
@@ -36,9 +35,8 @@ namespace Ann
         public ReactiveProperty<double> Left { get;  }
         public ReactiveProperty<double> Top { get;  }
 
-        private ExecutableUnitDataBase _DataBase;
         private readonly IconDecoder _iconDecoder;
-        private static string IconCacheFilePath => System.IO.Path.Combine(App.Instance.ConfigDirPath, "IconCache.db");
+        private static string IconCacheFilePath => System.IO.Path.Combine(App.ConfigDirPath, "IconCache.db");
 
         public Size IconSize
         {
@@ -54,9 +52,6 @@ namespace Ann
             CompositeDisposable.Add(Message);
             CompositeDisposable.Add(CanIndexUpdate);
             CompositeDisposable.Add(Visibility);
-            CompositeDisposable.Add(DisposeHolder);
-
-            UpdateHolder();
 
             _iconDecoder = new IconDecoder(IconCacheFilePath);
 
@@ -70,13 +65,9 @@ namespace Ann
                 .Subscribe(async _ =>
                 {
                     CanIndexUpdate.Value = false;
-                    Message.Value = "Updating";
+                    Message.Value = "Updating...";
 
-                    Input.Value = string.Empty;
-
-                    DisposeHolder();
-                    await UpdateIndexAsync();
-                    UpdateHolder();
+                    await App.Instance.UpdateIndexAsync();
                     Input.ForceNotify();
 
                     Message.Value = string.Empty;
@@ -89,9 +80,7 @@ namespace Ann
                 {
                     Candidates.Value?.ForEach(c => c.Dispose());
 
-                    return _DataBase?
-                        .Find(i)
-                        .OrderByDescending(u => App.Instance.IsHighPriority(u.Path))
+                    return App.Instance.FindExecutableUnit(i)
                         .Select(u => new ExecutableUnitViewModel(this, u))
                         .ToArray();
                 })
@@ -165,34 +154,6 @@ namespace Ann
             }
 
             return -1;
-        }
-
-        private static string IndexDbFilePath => System.IO.Path.Combine(App.Instance.ConfigDirPath, "Index.db");
-
-        private void UpdateHolder()
-        {
-            _DataBase = new ExecutableUnitDataBase(IndexDbFilePath);
-        }
-
-        private void DisposeHolder()
-        {
-            _DataBase?.Dispose();
-            _DataBase = null;
-        }
-
-        private static async Task UpdateIndexAsync()
-        {
-            var dir = System.IO.Path.GetDirectoryName(IndexDbFilePath);
-            if (dir != null)
-                System.IO.Directory.CreateDirectory(dir);
-
-            await Crawler.ExecuteAsync(
-                IndexDbFilePath,
-                new[]
-                {
-                    @"C:\Program Files",
-                    @"C:\Program Files (x86)"
-                });
         }
     }
 }
