@@ -86,5 +86,16 @@ namespace Ann
                     Visibility = Visibility.Hidden;
             };
         }
+
+        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var vm = DataContext as MainWindowViewModel;
+            if (vm == null)
+                return;
+
+            const int maxLine = 8;
+
+            vm.CandidatesListMaxHeight.Value = (e.NewSize.Height + 2)*maxLine + 4;
+        }
     }
 }

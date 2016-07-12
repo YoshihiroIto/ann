@@ -173,7 +173,7 @@
 
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type ann:ExecutableUnitViewModel}">
-                    <Grid>
+                    <Grid SizeChanged="Grid_SizeChanged">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />

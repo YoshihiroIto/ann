@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using Ann.Core;
-using Ann.Core.Icon;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -47,6 +46,7 @@ namespace Ann
         }
 
         public ImageSource GetIcon(string path) => _iconDecoder.GetIcon(path);
+        public ReactiveProperty<double> CandidatesListMaxHeight { get; }
 
         public MainWindowViewModel()
         {
@@ -59,6 +59,8 @@ namespace Ann
             UpdateHolder();
 
             _iconDecoder = new IconDecoder(IconCacheFilePath);
+
+            CandidatesListMaxHeight = new ReactiveProperty<double>().AddTo(CompositeDisposable);
 
             IndexUpdateCommand = CanIndexUpdate
                 .ToReactiveCommand()
@@ -85,6 +87,8 @@ namespace Ann
                 .Throttle(TimeSpan.FromMilliseconds(50))
                 .Select(i =>
                 {
+                    Candidates.Value?.ForEach(c => c.Dispose());
+
                     return _holder?
                         .Find(i)
                         .OrderByDescending(u => App.Instance.IsHighPriority(u.Path))
