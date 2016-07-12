@@ -55,8 +55,28 @@ namespace Ann
         }
 
         public bool IsHighPriority(string path) => _highPriorities.Contains(path);
-        public bool AddHighPriorityPath(string path) => _highPriorities.Add(path);
-        public bool RemoveHighPriorityPath(string path) => _highPriorities.Remove(path);
+
+        public bool AddHighPriorityPath(string path)
+        {
+            if (_highPriorities.Add(path))
+            {
+                SaveConfig();
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool RemoveHighPriorityPath(string path)
+        {
+            if (_highPriorities.Remove(path))
+            {
+                SaveConfig();
+                return true;
+            }
+
+            return false;
+        }
 
         public async Task UpdateIndexAsync() =>
             await _ExecutableUnitDataBase.UpdateIndexAsync();
