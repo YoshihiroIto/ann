@@ -15,9 +15,8 @@ namespace Ann
 
         public MainWindow()
         {
-            InitializeComponent();
-
             DataContext = _DataContext;
+            InitializeComponent();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
