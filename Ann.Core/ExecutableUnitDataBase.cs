@@ -7,11 +7,11 @@ using System.Linq;
 
 namespace Ann.Core
 {
-    public class ExecutableUnitHolder : IDisposable
+    public class ExecutableUnitDataBase : IDisposable
     {
         private readonly SQLiteConnection _conn;
 
-        public ExecutableUnitHolder(string databaseFile)
+        public ExecutableUnitDataBase(string databaseFile)
         {
             if (File.Exists(databaseFile) == false)
                 return;

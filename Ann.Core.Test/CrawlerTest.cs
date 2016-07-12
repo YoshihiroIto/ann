@@ -20,7 +20,7 @@ namespace Ann.Core.Test
 
             Assert.IsTrue(File.Exists("Test.db"));
 
-            using (var holder = new ExecutableUnitHolder("Test.db"))
+            using (var holder = new ExecutableUnitDataBase("Test.db"))
             {
                 var v = holder.Find("vim");
 

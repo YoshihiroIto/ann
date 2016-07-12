@@ -36,7 +36,7 @@ namespace Ann
         public ReactiveProperty<double> Left { get;  }
         public ReactiveProperty<double> Top { get;  }
 
-        private ExecutableUnitHolder _holder;
+        private ExecutableUnitDataBase _DataBase;
         private readonly IconDecoder _iconDecoder;
         private static string IconCacheFilePath => System.IO.Path.Combine(App.Instance.ConfigDirPath, "IconCache.db");
 
@@ -89,7 +89,7 @@ namespace Ann
                 {
                     Candidates.Value?.ForEach(c => c.Dispose());
 
-                    return _holder?
+                    return _DataBase?
                         .Find(i)
                         .OrderByDescending(u => App.Instance.IsHighPriority(u.Path))
                         .Select(u => new ExecutableUnitViewModel(this, u))
@@ -171,13 +171,13 @@ namespace Ann
 
         private void UpdateHolder()
         {
-            _holder = new ExecutableUnitHolder(IndexDbFilePath);
+            _DataBase = new ExecutableUnitDataBase(IndexDbFilePath);
         }
 
         private void DisposeHolder()
         {
-            _holder?.Dispose();
-            _holder = null;
+            _DataBase?.Dispose();
+            _DataBase = null;
         }
 
         private static async Task UpdateIndexAsync()
