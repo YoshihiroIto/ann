@@ -125,6 +125,8 @@ namespace Ann
 
             Left = App.Instance.ToReactivePropertyAsSynchronized(x => x.MainWindowLeft).AddTo(CompositeDisposable);
             Top = App.Instance.ToReactivePropertyAsSynchronized(x => x.MainWindowTop).AddTo(CompositeDisposable);
+
+            Visibility.Subscribe(_ => Input.Value = string.Empty).AddTo(CompositeDisposable);
         }
 
         private int IndexOfCandidates(string path)
