@@ -26,10 +26,16 @@ namespace Ann
 
             var source = PresentationSource.FromVisual(this);
             if (source?.CompositionTarget != null)
-                ExecutableUnitViewModel.Scale =
+            {
+                var vm = (MainWindowViewModel) DataContext;
+
+                const double iconSize = 48;
+
+                vm.IconSize =
                     new Size(
-                        source.CompositionTarget.TransformToDevice.M11,
-                        source.CompositionTarget.TransformToDevice.M22);
+                        iconSize*source.CompositionTarget.TransformToDevice.M11,
+                        iconSize*source.CompositionTarget.TransformToDevice.M22);
+            }
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

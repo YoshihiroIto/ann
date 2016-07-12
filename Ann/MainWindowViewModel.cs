@@ -4,7 +4,9 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using Ann.Core;
+using Ann.Core.Icon;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -36,6 +38,15 @@ namespace Ann
         public ReactiveProperty<double> Top { get;  }
 
         private ExecutableUnitHolder _holder;
+        private readonly IconDecoder _iconDecoder;
+        private static string IconCacheFilePath => System.IO.Path.Combine(App.Instance.ConfigDirPath, "IconCache.db");
+
+        public Size IconSize
+        {
+            set { _iconDecoder.IconSize = value; }
+        }
+
+        public ImageSource GetIcon(string path) => _iconDecoder.GetIcon(path);
 
         public MainWindowViewModel()
         {
@@ -46,6 +57,8 @@ namespace Ann
             CompositeDisposable.Add(DisposeHolder);
 
             UpdateHolder();
+
+            _iconDecoder = new IconDecoder(IconCacheFilePath);
 
             IndexUpdateCommand = CanIndexUpdate
                 .ToReactiveCommand()
@@ -75,7 +88,7 @@ namespace Ann
                     return _holder?
                         .Find(i)
                         .OrderByDescending(u => App.Instance.IsHighPriority(u.Path))
-                        .Select(u => new ExecutableUnitViewModel(u))
+                        .Select(u => new ExecutableUnitViewModel(this, u))
                         .ToArray();
                 })
                 .ToReadOnlyReactiveProperty()
