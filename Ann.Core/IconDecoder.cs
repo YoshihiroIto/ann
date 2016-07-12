@@ -6,7 +6,7 @@ using System.Windows.Media;
 using Jewelry.Collections;
 using Microsoft.WindowsAPICodePack.Shell;
 
-namespace Ann.Core.Icon
+namespace Ann.Core
 {
     public class IconDecoder : IDisposable
     {

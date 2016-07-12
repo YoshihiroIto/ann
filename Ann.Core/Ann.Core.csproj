@@ -80,8 +80,7 @@
     <Compile Include="Crawler.cs" />
     <Compile Include="ExecutableUnit.cs" />
     <Compile Include="ExecutableUnitHolder.cs" />
-    <Compile Include="Icon\IconCache.cs" />
-    <Compile Include="Icon\IconDecoder.cs" />
+    <Compile Include="IconDecoder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
