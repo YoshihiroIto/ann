@@ -11,31 +11,22 @@ namespace Ann
     /// </summary>
     public partial class MainWindow
     {
+        private readonly MainWindowViewModel _DataContext = new MainWindowViewModel();
+
         public MainWindow()
         {
             InitializeComponent();
+
+            DataContext = _DataContext;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             WindowHelper.EnableBlur(this);
             SetupHotKey();
+            SetupIcon();
             Application.Current.Deactivated += (_, __) => Visibility = Visibility.Hidden;
-
             Keyboard.Focus(InputTextBox);
-
-            var source = PresentationSource.FromVisual(this);
-            if (source?.CompositionTarget != null)
-            {
-                var vm = (MainWindowViewModel) DataContext;
-
-                const double iconSize = 48;
-
-                vm.IconSize =
-                    new Size(
-                        iconSize*source.CompositionTarget.TransformToDevice.M11,
-                        iconSize*source.CompositionTarget.TransformToDevice.M22);
-            }
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -55,15 +46,32 @@ namespace Ann
 
         private void ListBox_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var vm = DataContext as MainWindowViewModel;
-            if (vm == null)
-                return;
-
             var item = (sender as ListBoxItem)?.DataContext as ExecutableUnitViewModel;
 
-            vm.SelectedCandidate.Value = item;
+            _DataContext.SelectedCandidate.Value = item;
+            _DataContext.RunCommand.Execute(null);
+        }
 
-            vm.RunCommand.Execute(null);
+        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            const int maxLine = 8;
+
+            _DataContext.CandidatesListMaxHeight.Value = (e.NewSize.Height + 2)*maxLine + 4;
+        }
+
+        private void SetupIcon()
+        {
+            var source = PresentationSource.FromVisual(this);
+
+            if (source?.CompositionTarget == null)
+                return;
+
+            const double iconSize = 48;
+
+            _DataContext.IconSize =
+                new Size(
+                    iconSize*source.CompositionTarget.TransformToDevice.M11,
+                    iconSize*source.CompositionTarget.TransformToDevice.M22);
         }
 
         private void SetupHotKey()
@@ -80,17 +88,6 @@ namespace Ann
                 else
                     Visibility = Visibility.Hidden;
             };
-        }
-
-        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            var vm = DataContext as MainWindowViewModel;
-            if (vm == null)
-                return;
-
-            const int maxLine = 8;
-
-            vm.CandidatesListMaxHeight.Value = (e.NewSize.Height + 2)*maxLine + 4;
         }
     }
 }

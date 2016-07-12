@@ -36,10 +36,6 @@
         </Style>
     </Window.Resources>
 
-    <Window.DataContext>
-        <ann:MainWindowViewModel />
-    </Window.DataContext>
-
     <Window.ContextMenu>
         <ContextMenu>
             <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="Update Index" />
