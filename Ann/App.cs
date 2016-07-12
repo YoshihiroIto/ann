@@ -57,6 +57,7 @@ namespace Ann
             LoadConfig();
         }
 
+        #region config
         public string ConfigDirPath
         {
             get
@@ -115,5 +116,6 @@ namespace Ann
                 File.WriteAllText(ConfigFilePath, writer.ToString());
             }
         }
+        #endregion
     }
 }
