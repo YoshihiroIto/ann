@@ -142,6 +142,7 @@
 
         <materialDesign:PopupBox Grid.Row="0"
                                  Grid.Column="1"
+                                 PlacementMode="BottomAndAlignRightEdges"
                                  Foreground="White">
             <StackPanel>
                 <Button Command="{Binding IndexUpdateCommand, Mode=OneTime}" Content="Update Index" />
