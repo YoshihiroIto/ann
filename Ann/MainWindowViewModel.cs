@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Media;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
+using Livet.Messaging;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using Livet.Messaging.Windows;
@@ -39,6 +40,8 @@ namespace Ann
 
         public ImageSource GetIcon(string path) => _iconDecoder.GetIcon(path);
         public ReactiveProperty<double> CandidatesListMaxHeight { get; }
+
+        public ReactiveCommand SettingShowCommand { get; }
 
         public MainWindowViewModel()
         {
@@ -127,6 +130,12 @@ namespace Ann
             Top = App.Instance.ToReactivePropertyAsSynchronized(x => x.MainWindowTop).AddTo(CompositeDisposable);
 
             Visibility.Subscribe(_ => Input.Value = string.Empty).AddTo(CompositeDisposable);
+
+            SettingShowCommand = new ReactiveCommand().AddTo(CompositeDisposable);
+            SettingShowCommand.Subscribe(_ =>
+            {
+                Messenger.Raise(new TransitionMessage(new SettingViewModel(), "ShowSetting"));
+            }).AddTo(CompositeDisposable);
         }
 
         private int IndexOfCandidates(string path)

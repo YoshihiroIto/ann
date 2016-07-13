@@ -40,6 +40,8 @@
     <Window.ContextMenu>
         <ContextMenu>
             <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="Update Index" />
+            <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="Setting..." />
+            <Separator />
             <MenuItem Command="{Binding AppExitCommand, Mode=OneTime}" Header="Exit" />
         </ContextMenu>
     </Window.ContextMenu>
@@ -61,6 +63,12 @@
         <behaviors:InteractionMessageTrigger MessageKey="WindowAction" Messenger="{Binding Messenger, Mode=OneTime}">
             <behaviors:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
         </behaviors:InteractionMessageTrigger>
+
+        <behaviors:InteractionMessageTrigger MessageKey="ShowSetting" Messenger="{Binding Messenger, Mode=OneWay}">
+            <behaviors:TransitionInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False"
+                                                          Mode="Modal"
+                                                          WindowType="{x:Type ann:SettingWindow}" />
+        </behaviors:InteractionMessageTrigger>
     </i:Interaction.Triggers>
 
     <Grid Margin="16">
@@ -76,6 +84,8 @@
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
                     <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="Update Index" />
+                    <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="Setting..." />
+                    <Separator />
                     <MenuItem Command="{Binding AppExitCommand, Mode=OneTime}" Header="Exit" />
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
@@ -86,7 +96,6 @@
                  Background="Transparent"
                  BorderThickness="0"
                  CaretBrush="White"
-                 FontFamily="Tahoma"
                  FontSize="40"
                  Foreground="White"
                  Text="{Binding Input.Value,
@@ -203,7 +212,6 @@
                             <TextBlock Grid.Row="0"
                                        Grid.Column="0"
                                        Margin="0,0,0,2"
-                                       FontFamily="Tahoma"
                                        FontSize="24"
                                        Foreground="White"
                                        Padding="0"
@@ -217,8 +225,6 @@
 
                             <TextBlock Grid.Row="1"
                                        Grid.Column="0"
-                                       FontFamily="Tahoma"
-                                       FontWeight="ExtraLight"
                                        Foreground="#AAA"
                                        Padding="0"
                                        Text="{Binding Path,
