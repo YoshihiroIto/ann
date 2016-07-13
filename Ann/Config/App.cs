@@ -10,5 +10,7 @@
     {
         public double Left { get; set; }
         public double Top { get; set; }
+
+        public int MaxCandidateLinesCount { get; set; } = Constants.DefaultMaxCandidateLinesCount;
     }
 }

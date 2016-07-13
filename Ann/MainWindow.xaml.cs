@@ -53,9 +53,7 @@ namespace Ann
 
         private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            const int maxLine = 8;
-
-            _DataContext.CandidatesListMaxHeight.Value = (e.NewSize.Height + 2)*maxLine + 4;
+            _DataContext.CandidateItemHeight.Value = e.NewSize.Height;
         }
 
         private void SetupIcon()

@@ -1,5 +1,4 @@
-﻿using Ann.Foundation.Mvvm;
-using Livet;
+﻿using Livet;
 
 namespace Ann
 {

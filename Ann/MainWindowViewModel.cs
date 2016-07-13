@@ -32,14 +32,20 @@ namespace Ann
         public ReactiveCommand AppHideCommand { get; }
         public ReactiveCommand AppExitCommand { get; }
 
-        public ReactiveProperty<double> Left { get;  }
-        public ReactiveProperty<double> Top { get;  }
+        public ReactiveProperty<double> Left { get; }
+        public ReactiveProperty<double> Top { get; }
+        public ReactiveProperty<int> MaxCandidatesLinesCount { get; }
 
         private readonly IconDecoder _iconDecoder = new IconDecoder(App.IconCacheFilePath);
-        public Size IconSize { set { _iconDecoder.IconSize = value; } }
+
+        public Size IconSize
+        {
+            set { _iconDecoder.IconSize = value; }
+        }
 
         public ImageSource GetIcon(string path) => _iconDecoder.GetIcon(path);
-        public ReactiveProperty<double> CandidatesListMaxHeight { get; }
+        public ReadOnlyReactiveProperty<double> CandidatesListMaxHeight { get; }
+        public ReactiveProperty<double> CandidateItemHeight { get; }
 
         public ReactiveCommand SettingShowCommand { get; }
 
@@ -49,7 +55,19 @@ namespace Ann
             Message = new ReactiveProperty<string>(string.Empty).AddTo(CompositeDisposable);
             CanIndexUpdate = new ReactiveProperty<bool>(true).AddTo(CompositeDisposable);
             Visibility = new ReactiveProperty<Visibility>(System.Windows.Visibility.Visible).AddTo(CompositeDisposable);
-            CandidatesListMaxHeight = new ReactiveProperty<double>().AddTo(CompositeDisposable);
+
+            Left = App.Instance.ToReactivePropertyAsSynchronized(x => x.MainWindowLeft).AddTo(CompositeDisposable);
+            Top = App.Instance.ToReactivePropertyAsSynchronized(x => x.MainWindowTop).AddTo(CompositeDisposable);
+            MaxCandidatesLinesCount =
+                App.Instance.ToReactivePropertyAsSynchronized(x => x.MainWindowMaxCandidateLinesCount)
+                    .AddTo(CompositeDisposable);
+
+            CandidateItemHeight = new ReactiveProperty<double>().AddTo(CompositeDisposable);
+            CandidatesListMaxHeight =
+                CandidateItemHeight
+                    .Select(h => (h + 2)*MaxCandidatesLinesCount.Value + 4)
+                    .ToReadOnlyReactiveProperty()
+                    .AddTo(CompositeDisposable);
 
             IndexUpdateCommand = CanIndexUpdate
                 .ToReactiveCommand().AddTo(CompositeDisposable);
@@ -126,16 +144,12 @@ namespace Ann
             AppExitCommand.Subscribe(_ => Messenger.Raise(new WindowActionMessage(WindowAction.Close, "WindowAction")))
                 .AddTo(CompositeDisposable);
 
-            Left = App.Instance.ToReactivePropertyAsSynchronized(x => x.MainWindowLeft).AddTo(CompositeDisposable);
-            Top = App.Instance.ToReactivePropertyAsSynchronized(x => x.MainWindowTop).AddTo(CompositeDisposable);
-
             Visibility.Subscribe(_ => Input.Value = string.Empty).AddTo(CompositeDisposable);
 
             SettingShowCommand = new ReactiveCommand().AddTo(CompositeDisposable);
-            SettingShowCommand.Subscribe(_ =>
-            {
-                Messenger.Raise(new TransitionMessage(new SettingViewModel(), "ShowSetting"));
-            }).AddTo(CompositeDisposable);
+            SettingShowCommand.Subscribe(
+                _ => { Messenger.Raise(new TransitionMessage(new SettingViewModel(), "ShowSetting")); })
+                .AddTo(CompositeDisposable);
         }
 
         private int IndexOfCandidates(string path)

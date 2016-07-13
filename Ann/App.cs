@@ -44,6 +44,18 @@ namespace Ann
 
         #endregion
 
+        #region MainWindowTop
+
+        private int _MainWindowMaxCandidateLinesCount = Constants.DefaultMaxCandidateLinesCount;
+
+        public int MainWindowMaxCandidateLinesCount
+        {
+            get { return _MainWindowMaxCandidateLinesCount; }
+            set { SetProperty(ref _MainWindowMaxCandidateLinesCount, value); }
+        }
+
+        #endregion
+
         public static void Initialize()
         {
         }
@@ -130,6 +142,7 @@ namespace Ann
 
                 MainWindowLeft = config.MainWindow?.Left ?? 0;
                 MainWindowTop = config.MainWindow?.Top ?? 0;
+                MainWindowMaxCandidateLinesCount = config.MainWindow?.MaxCandidateLinesCount ?? Constants.DefaultMaxCandidateLinesCount;
             }
         }
 
