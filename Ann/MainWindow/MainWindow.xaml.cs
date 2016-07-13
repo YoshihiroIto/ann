@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Ann.Foundation;
@@ -83,6 +85,12 @@ namespace Ann.MainWindow
                 else
                     Visibility = Visibility.Hidden;
             };
+        }
+
+        private async void PopupBox_Closed(object sender, RoutedEventArgs e)
+        {
+            await Task.Delay(TimeSpan.FromMilliseconds(20));
+            InputTextBox.Focus();
         }
     }
 }
