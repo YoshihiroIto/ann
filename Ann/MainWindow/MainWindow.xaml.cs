@@ -4,7 +4,7 @@ using System.Windows.Input;
 using Ann.Foundation;
 using HotKey;
 
-namespace Ann
+namespace Ann.MainWindow
 {
     /// <summary>
     /// MainWindow.xaml の相互作用ロジック

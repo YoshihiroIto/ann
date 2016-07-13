@@ -3,7 +3,7 @@ using System.Windows.Media;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
 
-namespace Ann
+namespace Ann.MainWindow
 {
     public class ExecutableUnitViewModel : ViewModelBase
     {

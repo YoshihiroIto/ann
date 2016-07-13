@@ -6,12 +6,13 @@ using System.Windows;
 using System.Windows.Media;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
+using Ann.SettingWindow;
 using Livet.Messaging;
+using Livet.Messaging.Windows;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using Livet.Messaging.Windows;
 
-namespace Ann
+namespace Ann.MainWindow
 {
     public class MainWindowViewModel : ViewModelBase
     {

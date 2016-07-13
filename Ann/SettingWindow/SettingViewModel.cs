@@ -1,6 +1,6 @@
 ﻿using Livet;
 
-namespace Ann
+namespace Ann.SettingWindow
 {
     public class SettingViewModel : ViewModel
     {
