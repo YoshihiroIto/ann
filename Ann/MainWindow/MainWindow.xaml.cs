@@ -1,18 +1,23 @@
-﻿using System.Windows;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Ann.Foundation;
 using HotKey;
 
-namespace Ann
+namespace Ann.MainWindow
 {
     /// <summary>
     /// MainWindow.xaml の相互作用ロジック
     /// </summary>
     public partial class MainWindow
     {
+        private readonly MainWindowViewModel _DataContext = new MainWindowViewModel();
+
         public MainWindow()
         {
+            DataContext = _DataContext;
             InitializeComponent();
         }
 
@@ -20,16 +25,9 @@ namespace Ann
         {
             WindowHelper.EnableBlur(this);
             SetupHotKey();
+            SetupIcon();
             Application.Current.Deactivated += (_, __) => Visibility = Visibility.Hidden;
-
             Keyboard.Focus(InputTextBox);
-
-            var source = PresentationSource.FromVisual(this);
-            if (source?.CompositionTarget != null)
-                ExecutableUnitViewModel.Scale =
-                    new Size(
-                        source.CompositionTarget.TransformToDevice.M11,
-                        source.CompositionTarget.TransformToDevice.M22);
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -47,22 +45,30 @@ namespace Ann
             candidate.ScrollIntoView(candidate.SelectedItem);
         }
 
-        private void ListBox_MouseMove(object sender, MouseEventArgs e)
-        {
-            var vm = DataContext as MainWindowViewModel;
-            if (vm == null)
-                return;
-
-            var item = (sender as ListBoxItem)?.DataContext as ExecutableUnitViewModel;
-
-            vm.SelectedCandidate.Value = item;
-        }
-
         private void ListBox_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var vm = DataContext as MainWindowViewModel;
+            var item = (sender as ListBoxItem)?.DataContext as ExecutableUnitViewModel;
 
-            vm?.RunCommand.Execute(null);
+            _DataContext.SelectedCandidate.Value = item;
+            _DataContext.RunCommand.Execute(null);
+        }
+
+        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            _DataContext.CandidateItemHeight.Value = e.NewSize.Height;
+        }
+
+        private void SetupIcon()
+        {
+            var source = PresentationSource.FromVisual(this);
+
+            if (source?.CompositionTarget == null)
+                return;
+
+            _DataContext.IconSize =
+                new Size(
+                    Constants.IconSize*source.CompositionTarget.TransformToDevice.M11,
+                    Constants.IconSize*source.CompositionTarget.TransformToDevice.M22);
         }
 
         private void SetupHotKey()
@@ -79,6 +85,12 @@ namespace Ann
                 else
                     Visibility = Visibility.Hidden;
             };
+        }
+
+        private async void PopupBox_Closed(object sender, RoutedEventArgs e)
+        {
+            await Task.Delay(TimeSpan.FromMilliseconds(20));
+            InputTextBox.Focus();
         }
     }
 }

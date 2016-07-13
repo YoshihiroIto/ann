@@ -1,20 +1,23 @@
-﻿<Window x:Class="Ann.MainWindow"
+﻿<Window x:Class="Ann.MainWindow.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ann="clr-namespace:Ann"
         xmlns:behaviors="http://schemas.livet-mvvm.net/2011/wpf"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:mainWindow="clr-namespace:Ann.MainWindow"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:settingWindow="clr-namespace:Ann.SettingWindow"
         xmlns:tb="http://www.hardcodet.net/taskbar"
         Title="{Binding Message.Value,
                         Mode=OneWay}"
-        Width="800"
-        MaxHeight="500"
+        Width="700"
         AllowsTransparency="True"
         Background="#9000"
         BorderBrush="#C000"
         BorderThickness="1"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
         Left="{Binding Left.Value,
                        Mode=TwoWay}"
         Loaded="Window_Loaded"
@@ -23,6 +26,8 @@
         ShowInTaskbar="False"
         SizeToContent="Height"
         SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
         Top="{Binding Top.Value,
                       Mode=TwoWay}"
         Topmost="True"
@@ -31,22 +36,20 @@
         WindowStyle="None"
         mc:Ignorable="d">
     <Window.Resources>
-        <Style TargetType="ListBoxItem">
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="VerticalContentAlignment" Value="Stretch" />
-        </Style>
+        <ResourceDictionary>
+            <Style TargetType="ListBoxItem">
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="VerticalContentAlignment" Value="Stretch" />
+            </Style>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Window.Resources>
-
-    <Window.DataContext>
-        <ann:MainWindowViewModel />
-    </Window.DataContext>
-
-    <Window.ContextMenu>
-        <ContextMenu>
-            <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="Update Index" />
-            <MenuItem Command="{Binding AppExitCommand, Mode=OneTime}" Header="Exit" />
-        </ContextMenu>
-    </Window.ContextMenu>
 
     <Window.InputBindings>
         <KeyBinding Key="Enter" Command="{Binding RunCommand, Mode=OneTime}" />
@@ -65,6 +68,12 @@
         <behaviors:InteractionMessageTrigger MessageKey="WindowAction" Messenger="{Binding Messenger, Mode=OneTime}">
             <behaviors:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
         </behaviors:InteractionMessageTrigger>
+
+        <behaviors:InteractionMessageTrigger MessageKey="ShowSetting" Messenger="{Binding Messenger, Mode=OneWay}">
+            <behaviors:TransitionInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False"
+                                                          Mode="Modal"
+                                                          WindowType="{x:Type settingWindow:SettingWindow}" />
+        </behaviors:InteractionMessageTrigger>
     </i:Interaction.Triggers>
 
     <Grid Margin="16">
@@ -72,14 +81,20 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
 
-        <tb:TaskbarIcon IconSource="app.ico"
+        <tb:TaskbarIcon IconSource="/app.ico"
                         MenuActivation="RightClick"
                         ToolTipText="Ann"
                         Visibility="Visible">
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
                     <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="Update Index" />
+                    <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="Setting..." />
+                    <Separator />
                     <MenuItem Command="{Binding AppExitCommand, Mode=OneTime}" Header="Exit" />
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
@@ -87,10 +102,10 @@
 
         <TextBox x:Name="InputTextBox"
                  Grid.Row="0"
+                 Grid.Column="0"
                  Background="Transparent"
                  BorderThickness="0"
                  CaretBrush="White"
-                 FontFamily="Tahoma"
                  FontSize="40"
                  Foreground="White"
                  Text="{Binding Input.Value,
@@ -118,13 +133,31 @@
         </TextBox>
 
         <TextBlock Grid.Row="0"
+                   Grid.Column="0"
                    HorizontalAlignment="Right"
                    VerticalAlignment="Top"
                    IsHitTestVisible="False"
                    Text="{Binding Message.Value,
                                   Mode=OneWay}" />
 
+        <materialDesign:PopupBox Grid.Row="0"
+                                 Grid.Column="1"
+                                 Closed="PopupBox_Closed"
+                                 Foreground="White"
+                                 PlacementMode="BottomAndAlignRightEdges">
+            <StackPanel>
+                <Button Command="{Binding IndexUpdateCommand, Mode=OneTime}" Content="Update Index" />
+                <Button Command="{Binding SettingShowCommand, Mode=OneTime}" Content="Setting..." />
+                <Separator />
+                <Button Command="{Binding AppExitCommand, Mode=OneTime}" Content="Exit" />
+            </StackPanel>
+        </materialDesign:PopupBox>
+
         <ListBox Grid.Row="1"
+                 Grid.Column="0"
+                 Grid.ColumnSpan="2"
+                 MaxHeight="{Binding CandidatesListMaxHeight.Value,
+                                     Mode=OneWay}"
                  Margin="0,16,0,0"
                  HorizontalContentAlignment="Stretch"
                  Background="Transparent"
@@ -147,7 +180,6 @@
                     <Setter Property="Padding" Value="0" />
                     <Setter Property="Margin" Value="0" />
                     <Setter Property="Focusable" Value="False" />
-                    <EventSetter Event="MouseMove" Handler="ListBox_MouseMove" />
                     <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBox_MouseLeftButtonDown" />
                 </Style>
             </ListBox.Resources>
@@ -172,8 +204,8 @@
             </ListBox.Style>
 
             <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type ann:ExecutableUnitViewModel}">
-                    <Grid>
+                <DataTemplate DataType="{x:Type mainWindow:ExecutableUnitViewModel}">
+                    <Grid SizeChanged="Grid_SizeChanged">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
@@ -189,13 +221,15 @@
                         </Grid.ContextMenu>
 
                         <Image Grid.Column="0"
-                               Width="48"
-                               Height="48"
-                               Margin="8,0"
+                               Width="{x:Static ann:Constants.IconSize}"
+                               Height="{x:Static ann:Constants.IconSize}"
+                               Margin="4,4"
                                Source="{Binding Icon,
                                                 Mode=OneWay}" />
 
-                        <Grid Grid.Column="1">
+                        <Grid Grid.Column="1"
+                              Margin="0,4"
+                              VerticalAlignment="Center">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
@@ -204,7 +238,6 @@
                             <TextBlock Grid.Row="0"
                                        Grid.Column="0"
                                        Margin="0,0,0,2"
-                                       FontFamily="Tahoma"
                                        FontSize="24"
                                        Foreground="White"
                                        Padding="0"
@@ -218,8 +251,6 @@
 
                             <TextBlock Grid.Row="1"
                                        Grid.Column="0"
-                                       FontFamily="Tahoma"
-                                       FontWeight="ExtraLight"
                                        Foreground="#AAA"
                                        Padding="0"
                                        Text="{Binding Path,

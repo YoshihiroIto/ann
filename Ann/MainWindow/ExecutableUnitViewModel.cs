@@ -1,13 +1,9 @@
 ﻿using System.Diagnostics;
-using System.IO;
-using System.Windows;
 using System.Windows.Media;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
-using Jewelry.Collections;
-using Microsoft.WindowsAPICodePack.Shell;
 
-namespace Ann
+namespace Ann.MainWindow
 {
     public class ExecutableUnitViewModel : ViewModelBase
     {
@@ -35,29 +31,7 @@ namespace Ann
 
         #endregion
 
-        #region Icon
-
-        public ImageSource Icon
-        {
-            get
-            {
-                if (File.Exists(Path) == false)
-                    return null;
-
-                return IconCache.GetOrAdd(Path, path =>
-                {
-                    using (var file = ShellFile.FromFilePath(Path))
-                    {
-                        const double iconSize = 48;
-                        file.Thumbnail.CurrentSize = new Size(iconSize*Scale.Width, iconSize*Scale.Height);
-
-                        return file.Thumbnail.BitmapSource;
-                    }
-                });
-            }
-        }
-
-        #endregion
+        public ImageSource Icon => _parent.GetIcon(Path);
 
         public bool IsHighPriority
         {
@@ -77,16 +51,17 @@ namespace Ann
             }
         }
 
-        public ExecutableUnitViewModel(ExecutableUnit model)
+        private readonly MainWindowViewModel _parent;
+
+        public ExecutableUnitViewModel(MainWindowViewModel parent, ExecutableUnit model)
         {
+            Debug.Assert(parent != null);
             Debug.Assert(model != null);
+
+            _parent = parent;
 
             Name = string.IsNullOrWhiteSpace(model.Name) == false ? model.Name : System.IO.Path.GetFileName(model.Path);
             Path = model.Path;
         }
-
-        public static Size Scale { get; set; }
-
-        private static readonly LruCache<string, ImageSource> IconCache = new LruCache<string, ImageSource>(512, false);
     }
 }
