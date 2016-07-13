@@ -5,10 +5,10 @@
         xmlns:behaviors="http://schemas.livet-mvvm.net/2011/wpf"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:mainWindow="clr-namespace:Ann.MainWindow"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:settingWindow="clr-namespace:Ann.SettingWindow"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
         Title="{Binding Message.Value,
                         Mode=OneWay}"
         Width="800"
@@ -25,6 +25,8 @@
         ShowInTaskbar="False"
         SizeToContent="Height"
         SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
         Top="{Binding Top.Value,
                       Mode=TwoWay}"
         Topmost="True"
