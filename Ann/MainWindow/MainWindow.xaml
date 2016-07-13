@@ -6,12 +6,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:mainWindow="clr-namespace:Ann.MainWindow"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:settingWindow="clr-namespace:Ann.SettingWindow"
         xmlns:tb="http://www.hardcodet.net/taskbar"
         Title="{Binding Message.Value,
                         Mode=OneWay}"
-        Width="800"
+        Width="700"
         AllowsTransparency="True"
         Background="#9000"
         BorderBrush="#C000"
@@ -35,20 +36,20 @@
         WindowStyle="None"
         mc:Ignorable="d">
     <Window.Resources>
-        <Style TargetType="ListBoxItem">
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="VerticalContentAlignment" Value="Stretch" />
-        </Style>
-    </Window.Resources>
+        <ResourceDictionary>
+            <Style TargetType="ListBoxItem">
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="VerticalContentAlignment" Value="Stretch" />
+            </Style>
 
-    <Window.ContextMenu>
-        <ContextMenu>
-            <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="Update Index" />
-            <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="Setting..." />
-            <Separator />
-            <MenuItem Command="{Binding AppExitCommand, Mode=OneTime}" Header="Exit" />
-        </ContextMenu>
-    </Window.ContextMenu>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
 
     <Window.InputBindings>
         <KeyBinding Key="Enter" Command="{Binding RunCommand, Mode=OneTime}" />
@@ -80,6 +81,10 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
 
         <tb:TaskbarIcon IconSource="/app.ico"
                         MenuActivation="RightClick"
@@ -97,6 +102,7 @@
 
         <TextBox x:Name="InputTextBox"
                  Grid.Row="0"
+                 Grid.Column="0"
                  Background="Transparent"
                  BorderThickness="0"
                  CaretBrush="White"
@@ -127,13 +133,27 @@
         </TextBox>
 
         <TextBlock Grid.Row="0"
+                   Grid.Column="0"
                    HorizontalAlignment="Right"
                    VerticalAlignment="Top"
                    IsHitTestVisible="False"
                    Text="{Binding Message.Value,
                                   Mode=OneWay}" />
 
+        <materialDesign:PopupBox Grid.Row="0"
+                                 Grid.Column="1"
+                                 Foreground="White">
+            <StackPanel>
+                <Button Command="{Binding IndexUpdateCommand, Mode=OneTime}" Content="Update Index" />
+                <Button Command="{Binding SettingShowCommand, Mode=OneTime}" Content="Setting..." />
+                <Separator />
+                <Button Command="{Binding AppExitCommand, Mode=OneTime}" Content="Exit" />
+            </StackPanel>
+        </materialDesign:PopupBox>
+
         <ListBox Grid.Row="1"
+                 Grid.Column="0"
+                 Grid.ColumnSpan="2"
                  MaxHeight="{Binding CandidatesListMaxHeight.Value,
                                      Mode=OneWay}"
                  Margin="0,16,0,0"

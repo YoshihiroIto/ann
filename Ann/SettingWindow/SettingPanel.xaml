@@ -78,7 +78,7 @@
         </ComboBox>
     </Grid>
 
-    <Grid Margin="16" VerticalAlignment="Top">
+    <Grid Margin="16,128,16,16" VerticalAlignment="Top">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
