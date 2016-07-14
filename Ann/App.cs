@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
+using Reactive.Bindings.Extensions;
 using YamlDotNet.Serialization;
 
 namespace Ann
@@ -17,7 +18,7 @@ namespace Ann
         private HashSet<string> _highPriorities = new HashSet<string>();
         private string[] _targetFolders = {};
 
-        private readonly ExecutableUnitDataBase _ExecutableUnitDataBase = new ExecutableUnitDataBase(IndexDbFilePath);
+        private readonly ExecutableUnitDataBase _ExecutableUnitDataBase;
 
         private static string IndexDbFilePath => Path.Combine(ConfigDirPath, "Index.db");
         public static string IconCacheFilePath => Path.Combine(ConfigDirPath, "IconCache.db");
@@ -46,7 +47,7 @@ namespace Ann
 
         #endregion
 
-        #region MainWindowTop
+        #region MainWindowMaxCandidateLinesCount
 
         private int _MainWindowMaxCandidateLinesCount = Constants.DefaultMaxCandidateLinesCount;
 
@@ -101,7 +102,7 @@ namespace Ann
 
         private App()
         {
-            CompositeDisposable.Add(_ExecutableUnitDataBase);
+            _ExecutableUnitDataBase = new ExecutableUnitDataBase(IndexDbFilePath).AddTo(CompositeDisposable);
             LoadConfig();
         }
 

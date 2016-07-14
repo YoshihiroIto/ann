@@ -16,10 +16,10 @@ namespace Ann.Core
 
         public ExecutableUnitDataBase(string databaseFile)
         {
+            _dataBaseFile = databaseFile;
+
             if (File.Exists(databaseFile) == false)
                 return;
-
-            _dataBaseFile = databaseFile;
 
             Open();
         }
@@ -47,13 +47,15 @@ namespace Ann.Core
                 name = name.ToLower();
 
                 return ctx.GetTable<ExecutableUnit>()
-                    .Where(u => u.Name.ToLower().Contains(name) || u.Path.ToLower().Contains(name))
+                    .Where(u => u.Name.ToLower().Contains(name) ||
+                                u.Directory.ToLower().Contains(name) ||
+                                u.FileName.ToLower().Contains(name))
                     .ToArray()
-                    .OrderBy(u => MakeOrder(u, name))
+                    .OrderBy(u => MakeRank(u, name))
                     .ToArray();
             }
         }
-        
+
         public async Task UpdateIndexAsync(IEnumerable<string> targetFolders)
         {
             Close();
@@ -85,29 +87,39 @@ namespace Ann.Core
         }
 
         // ReSharper disable PossibleNullReferenceException
-        private static int MakeOrder(ExecutableUnit u, string name)
+        private static int MakeRank(ExecutableUnit u, string name)
         {
-            var lowerFilename = Path.GetFileNameWithoutExtension(u.Path).ToLower();
+            Func<int, string, int> makeRankSub = (rankBase, target) =>
+            {
+                target = target.ToLower();
 
-            if (lowerFilename == name)
-                return 0;
+                if (target == name)
+                    return rankBase + 0;
 
-            if (lowerFilename.StartsWith(name))
-                return 1;
+                if (target.Split(' ', '_', '-', '/', '\\').Any(t => t.StartsWith(name)))
+                    return rankBase + 1;
 
-            if (lowerFilename.Contains(name))
-                return 2;
+                if (target.Contains(name))
+                    return rankBase + 2;
 
-            var lowerName = u.Name.ToLower();
+                return int.MaxValue;
+            };
 
-            if (lowerName.StartsWith(name))
-                return 3;
+            var rank0 = makeRankSub(100*0, Path.GetFileNameWithoutExtension(u.FileName));
+            if (rank0 != int.MaxValue)
+                return rank0;
 
-            if (lowerName.Contains(name))
-                return 4;
+            var rank1 = makeRankSub(100*1, u.Directory);
+            if (rank1 != int.MaxValue)
+                return rank1;
 
-            return 5;
+            var rank2 = makeRankSub(100*2, u.Name);
+            if (rank2 != int.MaxValue)
+                return rank2;
+
+            return int.MaxValue;
         }
+
         // ReSharper restore PossibleNullReferenceException
     }
 }

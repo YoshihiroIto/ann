@@ -43,6 +43,8 @@ namespace Ann.Core
                                         {
                                             Path = f,
                                             Name = name,
+                                            Directory = Path.GetDirectoryName(f) ?? string.Empty,
+                                            FileName = Path.GetFileNameWithoutExtension(f)
                                         };
                                     })
                                 ));
@@ -90,7 +92,7 @@ namespace Ann.Core
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText =
-                    $"create table if not exists {nameof(ExecutableUnit)} (Path NVARCHAR PRIMARY KEY, Name NVARCHAR)";
+                    $"create table if not exists {nameof(ExecutableUnit)} (Path TEXT PRIMARY KEY, Name TEX, Directory TEXTT, FileName TEXT)";
 
                 cmd.ExecuteNonQuery();
             }
