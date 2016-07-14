@@ -107,17 +107,19 @@ namespace Ann.Core
                 return int.MaxValue;
             };
 
-            var rank0 = makeRankSub(0, Path.GetFileNameWithoutExtension(u.FileName));
-            if (rank0 != int.MaxValue)
-                return rank0;
+            var b = 0;
 
-            var rank1 = makeRankSub(1, u.Directory);
-            if (rank1 != int.MaxValue)
-                return rank1;
+            var rankName = makeRankSub(++b, u.Name);
+            if (rankName != int.MaxValue)
+                return rankName;
 
-            var rank2 = makeRankSub(2, u.Name);
-            if (rank2 != int.MaxValue)
-                return rank2;
+            var rankFileName = makeRankSub(++b, Path.GetFileNameWithoutExtension(u.FileName));
+            if (rankFileName != int.MaxValue)
+                return rankFileName;
+
+            var rankDir = makeRankSub(++b, u.Directory);
+            if (rankDir != int.MaxValue)
+                return rankDir;
 
             return int.MaxValue;
         }
