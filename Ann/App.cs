@@ -15,6 +15,8 @@ namespace Ann
         public static App Instance { get; } = new App();
 
         private HashSet<string> _highPriorities = new HashSet<string>();
+        private string[] _targetFolders = {};
+
         private readonly ExecutableUnitDataBase _ExecutableUnitDataBase = new ExecutableUnitDataBase(IndexDbFilePath);
 
         private static string IndexDbFilePath => Path.Combine(ConfigDirPath, "Index.db");
@@ -72,30 +74,26 @@ namespace Ann
 
         public bool AddHighPriorityPath(string path)
         {
-            if (_highPriorities.Add(path))
-            {
-                SaveConfig();
-                HighPriorityChenged?.Invoke(this, EventArgs.Empty);
-                return true;
-            }
+            if (_highPriorities.Add(path) == false)
+                return false;
 
-            return false;
+            SaveConfig();
+            HighPriorityChenged?.Invoke(this, EventArgs.Empty);
+            return true;
         }
 
         public bool RemoveHighPriorityPath(string path)
         {
-            if (_highPriorities.Remove(path))
-            {
-                SaveConfig();
-                HighPriorityChenged?.Invoke(this, EventArgs.Empty);
-                return true;
-            }
+            if (_highPriorities.Remove(path) == false)
+                return false;
 
-            return false;
+            SaveConfig();
+            HighPriorityChenged?.Invoke(this, EventArgs.Empty);
+            return true;
         }
 
         public async Task UpdateIndexAsync() =>
-            await _ExecutableUnitDataBase.UpdateIndexAsync();
+            await _ExecutableUnitDataBase.UpdateIndexAsync(_targetFolders);
 
         public IEnumerable<ExecutableUnit> FindExecutableUnit(string name) =>
             _ExecutableUnitDataBase
@@ -143,6 +141,7 @@ namespace Ann
                 _highPriorities = config.HighPriorities == null
                     ? new HashSet<string>()
                     : new HashSet<string>(config.HighPriorities);
+                _targetFolders = config.TargetFolders;
 
                 MainWindowLeft = config.MainWindow?.Left ?? 0;
                 MainWindowTop = config.MainWindow?.Top ?? 0;
@@ -155,6 +154,7 @@ namespace Ann
             var config = new Config.App
             {
                 HighPriorities = _highPriorities.ToArray(),
+                TargetFolders = _targetFolders,
                 MainWindow = new Config.MainWindow
                 {
                     Left = MainWindowLeft,

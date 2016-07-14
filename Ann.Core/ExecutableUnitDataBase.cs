@@ -54,7 +54,7 @@ namespace Ann.Core
             }
         }
         
-        public async Task UpdateIndexAsync()
+        public async Task UpdateIndexAsync(IEnumerable<string> targetFolders)
         {
             Close();
 
@@ -62,13 +62,7 @@ namespace Ann.Core
             if (dir != null)
                 Directory.CreateDirectory(dir);
 
-            await Crawler.ExecuteAsync(
-                _dataBaseFile,
-                new[]
-                {
-                    @"C:\Program Files",
-                    @"C:\Program Files (x86)"
-                });
+            await Crawler.ExecuteAsync(_dataBaseFile, targetFolders);
 
             Open();
         }

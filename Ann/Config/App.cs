@@ -3,6 +3,8 @@
     public class App
     {
         public string[] HighPriorities { get; set; }
+        public string[] TargetFolders { get; set; } = {@"C:\Program Files", @"C:\Program Files (x86)"};
+
         public MainWindow MainWindow { get; set; }
     }
 
