@@ -104,7 +104,7 @@ namespace Ann.Core
             if (lowerFilename.Contains(name))
                 return 2;
 
-            var lowerName = Path.GetFileNameWithoutExtension(u.Name).ToLower();
+            var lowerName = u.Name.ToLower();
 
             if (lowerName.StartsWith(name))
                 return 3;
