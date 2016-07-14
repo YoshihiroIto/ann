@@ -1,7 +1,11 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Reactive.Linq;
 using System.Windows.Media;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
+using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 
 namespace Ann.MainWindow
 {
@@ -51,6 +55,8 @@ namespace Ann.MainWindow
             }
         }
 
+        public ReactiveCommand FlipHighPriority { get; }
+
         private readonly MainWindowViewModel _parent;
 
         public ExecutableUnitViewModel(MainWindowViewModel parent, ExecutableUnit model)
@@ -62,6 +68,19 @@ namespace Ann.MainWindow
 
             Name = string.IsNullOrWhiteSpace(model.Name) == false ? model.Name : System.IO.Path.GetFileName(model.Path);
             Path = model.Path;
+
+            Observable.FromEventPattern(
+                h => App.Instance.HighPriorityChenged += h,
+                h => App.Instance.HighPriorityChenged -= h)
+                .Subscribe(_ =>
+                    // ReSharper disable once ExplicitCallerInfoArgument
+                    RaisePropertyChanged(nameof(IsHighPriority))
+                ).AddTo(CompositeDisposable);
+
+            FlipHighPriority = new ReactiveCommand().AddTo(CompositeDisposable);
+            FlipHighPriority
+                .Subscribe(_ => IsHighPriority = !IsHighPriority)
+                .AddTo(CompositeDisposable);
         }
     }
 }

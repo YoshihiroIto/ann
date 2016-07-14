@@ -66,6 +66,8 @@ namespace Ann
             Instance.Dispose();
         }
 
+        public event EventHandler HighPriorityChenged;
+
         public bool IsHighPriority(string path) => _highPriorities.Contains(path);
 
         public bool AddHighPriorityPath(string path)
@@ -73,6 +75,7 @@ namespace Ann
             if (_highPriorities.Add(path))
             {
                 SaveConfig();
+                HighPriorityChenged?.Invoke(this, EventArgs.Empty);
                 return true;
             }
 
@@ -84,6 +87,7 @@ namespace Ann
             if (_highPriorities.Remove(path))
             {
                 SaveConfig();
+                HighPriorityChenged?.Invoke(this, EventArgs.Empty);
                 return true;
             }
 

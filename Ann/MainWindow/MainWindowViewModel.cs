@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
@@ -22,7 +23,7 @@ namespace Ann.MainWindow
         public ReactiveProperty<bool> CanIndexUpdate { get; }
         public ReactiveCommand IndexUpdateCommand { get; }
 
-        public ReadOnlyReactiveProperty<ExecutableUnitViewModel[]> Candidates { get; }
+        public ReadOnlyReactiveProperty<ObservableCollection<ExecutableUnitViewModel>> Candidates { get; }
         public ReactiveProperty<ExecutableUnitViewModel> SelectedCandidate { get; }
         public ReactiveCommand<object> SelectedCandidateMoveCommand { get; }
 
@@ -91,9 +92,10 @@ namespace Ann.MainWindow
                 {
                     Candidates.Value?.ForEach(c => c.Dispose());
 
-                    return App.Instance.FindExecutableUnit(i)
-                        .Select(u => new ExecutableUnitViewModel(this, u))
-                        .ToArray();
+                    return
+                        new ObservableCollection<ExecutableUnitViewModel>(
+                            App.Instance.FindExecutableUnit(i)
+                                .Select(u => new ExecutableUnitViewModel(this, u)));
                 })
                 .ToReadOnlyReactiveProperty()
                 .AddTo(CompositeDisposable);
@@ -113,8 +115,8 @@ namespace Ann.MainWindow
                     var next = current + int.Parse((string) p);
 
                     if (next == -1)
-                        next = Candidates.Value.Length - 1;
-                    else if (next == Candidates.Value.Length)
+                        next = Candidates.Value.Count - 1;
+                    else if (next == Candidates.Value.Count)
                         next = 0;
 
                     SelectedCandidate.Value = Candidates.Value[next];

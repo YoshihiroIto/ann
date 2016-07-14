@@ -5,6 +5,7 @@
         xmlns:behaviors="http://schemas.livet-mvvm.net/2011/wpf"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:interactivity="clr-namespace:Reactive.Bindings.Interactivity;assembly=ReactiveProperty.NET46"
         xmlns:mainWindow="clr-namespace:Ann.MainWindow"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -48,6 +49,9 @@
 
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
+
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Menu.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ToggleButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -94,7 +98,7 @@
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
                     <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="Update Index" />
-                    <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="Setting..." />
+                    <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="Settings..." />
                     <Separator />
                     <MenuItem Command="{Binding AppExitCommand, Mode=OneTime}" Header="Exit" />
                 </ContextMenu>
@@ -104,6 +108,9 @@
         <TextBox x:Name="InputTextBox"
                  Grid.Row="0"
                  Grid.Column="0"
+                 Width="531"
+                 Margin="0,0,0,0.286"
+                 HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
                  CaretBrush="White"
@@ -111,7 +118,7 @@
                  Foreground="White"
                  Text="{Binding Input.Value,
                                 Mode=TwoWay,
-                                UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="0,0,0,0.286" Width="531">
+                                UpdateSourceTrigger=PropertyChanged}">
             <TextBox.InputBindings>
                 <KeyBinding Key="Up"
                             Command="{Binding SelectedCandidateMoveCommand,
@@ -143,14 +150,14 @@
 
         <materialDesign:PopupBox Grid.Row="0"
                                  Grid.Column="1"
-                                 Closed="PopupBox_Closed"
                                  Margin="0,0,-12,0"
+                                 Closed="PopupBox_Closed"
                                  Foreground="White"
                                  PlacementMode="BottomAndAlignRightEdges">
             <StackPanel>
                 <Button Command="{Binding IndexUpdateCommand, Mode=OneTime}" Content="Update Index" />
-                <Button Command="{Binding SettingShowCommand, Mode=OneTime}" Content="Setting..." />
-                <Separator />
+                <Button Command="{Binding SettingShowCommand, Mode=OneTime}" Content="Settings..." />
+                <Separator Style="{StaticResource MaterialDesignSeparator}" />
                 <Button Command="{Binding AppExitCommand, Mode=OneTime}" Content="Exit" />
             </StackPanel>
         </materialDesign:PopupBox>
@@ -182,7 +189,7 @@
                     <Setter Property="Padding" Value="0" />
                     <Setter Property="Margin" Value="0" />
                     <Setter Property="Focusable" Value="False" />
-                    <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBox_MouseLeftButtonDown" />
+                    <EventSetter Event="MouseLeftButtonDown" Handler="ListBox_MouseLeftButtonDown" />
                 </Style>
             </ListBox.Resources>
 
@@ -198,7 +205,7 @@
                         <DataTrigger Binding="{Binding Candidates.Value, Mode=OneWay}" Value="{x:Null}">
                             <Setter Property="Visibility" Value="Collapsed" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding Candidates.Value.Length, Mode=OneWay}" Value="0">
+                        <DataTrigger Binding="{Binding Candidates.Value.Count, Mode=OneWay}" Value="0">
                             <Setter Property="Visibility" Value="Collapsed" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -211,21 +218,13 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-
-                        <Grid.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="High Priority"
-                                          IsCheckable="True"
-                                          IsChecked="{Binding IsHighPriority,
-                                                              Mode=TwoWay}" />
-                            </ContextMenu>
-                        </Grid.ContextMenu>
 
                         <Image Grid.Column="0"
                                Width="{x:Static ann:Constants.IconSize}"
                                Height="{x:Static ann:Constants.IconSize}"
-                               Margin="4,4"
+                               Margin="4"
                                Source="{Binding Icon,
                                                 Mode=OneWay}" />
 
@@ -263,6 +262,31 @@
                                 </TextBlock.ToolTip>
                             </TextBlock>
                         </Grid>
+
+                        <Button Grid.Column="2"
+                                Margin="0,0,12,0"
+                                VerticalAlignment="Bottom"
+                                materialDesign:RippleAssist.IsCentered="True">
+                            <materialDesign:PackIcon Kind="Star" />
+                            <Button.Style>
+                                <Style BasedOn="{StaticResource MaterialDesignToolButton}" TargetType="{x:Type Button}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsHighPriority, Mode=OneWay}" Value="True">
+                                            <Setter Property="Foreground" Value="Yellow" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsHighPriority, Mode=OneWay}" Value="False">
+                                            <Setter Property="Foreground" Value="#888" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <interactivity:EventToReactiveCommand Command="{Binding FlipHighPriority, Mode=OneTime}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Button>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
