@@ -92,8 +92,7 @@ namespace Ann
             return true;
         }
 
-        public async Task UpdateIndexAsync() =>
-            await _ExecutableUnitDataBase.UpdateIndexAsync(_targetFolders);
+        public async Task UpdateIndexAsync() => await _ExecutableUnitDataBase.UpdateIndexAsync(_targetFolders);
 
         public IEnumerable<ExecutableUnit> FindExecutableUnit(string name) =>
             _ExecutableUnitDataBase
@@ -129,6 +128,20 @@ namespace Ann
                 Assembly.GetExecutingAssembly(), typeof(AssemblyProductAttribute), false))
                 .Product;
 
+        public Config.App MakeCurrentConfig()
+        {
+            return new Config.App
+            {
+                HighPriorities = _highPriorities.ToArray(),
+                TargetFolders = _targetFolders,
+                MainWindow = new Config.MainWindow
+                {
+                    Left = MainWindowLeft,
+                    Top = MainWindowTop
+                }
+            };
+        }
+
         private void LoadConfig()
         {
             if (File.Exists(ConfigFilePath) == false)
@@ -145,26 +158,16 @@ namespace Ann
 
                 MainWindowLeft = config.MainWindow?.Left ?? 0;
                 MainWindowTop = config.MainWindow?.Top ?? 0;
-                MainWindowMaxCandidateLinesCount = config.MainWindow?.MaxCandidateLinesCount ?? Constants.DefaultMaxCandidateLinesCount;
+                MainWindowMaxCandidateLinesCount = config.MainWindow?.MaxCandidateLinesCount ??
+                                                   Constants.DefaultMaxCandidateLinesCount;
             }
         }
 
         private void SaveConfig()
         {
-            var config = new Config.App
-            {
-                HighPriorities = _highPriorities.ToArray(),
-                TargetFolders = _targetFolders,
-                MainWindow = new Config.MainWindow
-                {
-                    Left = MainWindowLeft,
-                    Top = MainWindowTop
-                }
-            };
-
             using (var writer = new StringWriter())
             {
-                new Serializer().Serialize(writer, config);
+                new Serializer().Serialize(writer, MakeCurrentConfig());
                 Directory.CreateDirectory(ConfigDirPath);
                 File.WriteAllText(ConfigFilePath, writer.ToString());
             }

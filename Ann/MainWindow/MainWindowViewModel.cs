@@ -150,9 +150,11 @@ namespace Ann.MainWindow
             Visibility.Subscribe(_ => Input.Value = string.Empty).AddTo(CompositeDisposable);
 
             SettingShowCommand = new ReactiveCommand().AddTo(CompositeDisposable);
-            SettingShowCommand.Subscribe(
-                _ => { Messenger.Raise(new TransitionMessage(new SettingViewModel(), "ShowSetting")); })
-                .AddTo(CompositeDisposable);
+            SettingShowCommand.Subscribe(_ =>
+                    Messenger.Raise(new TransitionMessage(
+                        new SettingViewModel(App.Instance.MakeCurrentConfig()),
+                        "ShowSetting"))
+                ).AddTo(CompositeDisposable);
         }
 
         private int IndexOfCandidates(string path)

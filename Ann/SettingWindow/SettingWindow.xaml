@@ -5,8 +5,9 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         Title="Setting -- Ann"
-        Width="800"
-        Height="600"
+        Width="600"
+        Height="500"
+        d:DataContext="{d:DesignData SettingViewModel}"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
@@ -14,6 +15,9 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
+
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.CheckBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ListBox.xaml" />
@@ -56,31 +60,18 @@
                        Style="{StaticResource MaterialDesignHeadlineTextBlock}"
                        Text="General Settings" />
 
-            <Separator Grid.Row="1"
-                       Grid.Column="0"
-                       Grid.ColumnSpan="3"
-                       VerticalAlignment="Top"
-                       SnapsToDevicePixels="True" />
-
             <ComboBox Grid.Row="1"
                       Grid.Column="0"
                       Width="130"
-                      Margin="0,16,0,0"
+                      Margin="8,16,0,0"
                       HorizontalAlignment="Left"
                       materialDesign:HintAssist.Hint="Max Candidate Lines"
-                      Style="{StaticResource MaterialDesignFloatingHintComboBox}">
-                <ComboBoxItem>2</ComboBoxItem>
-                <ComboBoxItem>3</ComboBoxItem>
-                <ComboBoxItem>4</ComboBoxItem>
-                <ComboBoxItem>5</ComboBoxItem>
-                <ComboBoxItem>6</ComboBoxItem>
-                <ComboBoxItem>7</ComboBoxItem>
-                <ComboBoxItem>8</ComboBoxItem>
-                <ComboBoxItem>9</ComboBoxItem>
-            </ComboBox>
+                      ItemsSource="{Binding MaxCandidateLines}"
+                      SelectedItem="{Binding MaxCandidateLinesCount.Value}"
+                      Style="{StaticResource MaterialDesignFloatingHintComboBox}" />
         </Grid>
 
-        <Grid Margin="0,128,0,0">
+        <Grid Margin="0,80,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="32" />
@@ -91,8 +82,6 @@
                   Margin="16"
                   VerticalAlignment="Top">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
@@ -110,23 +99,20 @@
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0"
-                           Grid.Column="0"
                            Style="{StaticResource MaterialDesignHeadlineTextBlock}"
                            Text="Target Folders" />
 
-                <Separator Grid.Row="1"
-                           Grid.Column="0"
-                           Grid.ColumnSpan="3"
-                           VerticalAlignment="Top"
-                           SnapsToDevicePixels="True" />
+                <ItemsControl Grid.Row="1"
+                              Margin="8,16,0,0"
+                              Focusable="False"
+                              ItemsSource="{Binding TargetFolders,
+                                                    Mode=OneWay}" />
             </Grid>
 
             <Grid Grid.Column="2"
                   Margin="16"
                   VerticalAlignment="Top">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
@@ -148,11 +134,11 @@
                            Style="{StaticResource MaterialDesignHeadlineTextBlock}"
                            Text="High Priorities" />
 
-                <Separator Grid.Row="1"
-                           Grid.Column="0"
-                           Grid.ColumnSpan="3"
-                           VerticalAlignment="Top"
-                           SnapsToDevicePixels="True" />
+                <ItemsControl Grid.Row="1"
+                              Margin="8,16,0,0"
+                              Focusable="False"
+                              ItemsSource="{Binding HighPriorities,
+                                                    Mode=OneWay}" />
             </Grid>
         </Grid>
     </StackPanel>
