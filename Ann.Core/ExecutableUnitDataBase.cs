@@ -93,15 +93,26 @@ namespace Ann.Core
         // ReSharper disable PossibleNullReferenceException
         private static int MakeOrder(ExecutableUnit u, string name)
         {
-            var filename = Path.GetFileNameWithoutExtension(u.Path).ToLower();
+            var lowerFilename = Path.GetFileNameWithoutExtension(u.Path).ToLower();
 
-            if (filename == name)
+            if (lowerFilename == name)
                 return 0;
 
-            if (filename.StartsWith(name))
+            if (lowerFilename.StartsWith(name))
                 return 1;
 
-            return filename.Contains(name) ? 2 : 3;
+            if (lowerFilename.Contains(name))
+                return 2;
+
+            var lowerName = Path.GetFileNameWithoutExtension(u.Name).ToLower();
+
+            if (lowerName.StartsWith(name))
+                return 3;
+
+            if (lowerName.Contains(name))
+                return 4;
+
+            return 5;
         }
         // ReSharper restore PossibleNullReferenceException
     }
