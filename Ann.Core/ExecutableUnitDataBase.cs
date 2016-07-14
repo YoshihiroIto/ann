@@ -89,31 +89,33 @@ namespace Ann.Core
         // ReSharper disable PossibleNullReferenceException
         private static int MakeRank(ExecutableUnit u, string name)
         {
+            var unitNameLength = Math.Min(u.Name.Length, 9999);
+
             Func<int, string, int> makeRankSub = (rankBase, target) =>
             {
                 target = target.ToLower();
 
                 if (target == name)
-                    return rankBase + 0;
+                    return (rankBase + 0)*10000 + unitNameLength;
 
                 if (target.Split(' ', '_', '-', '/', '\\').Any(t => t.StartsWith(name)))
-                    return rankBase + 1;
+                    return (rankBase + 1)*10000 + unitNameLength;
 
                 if (target.Contains(name))
-                    return rankBase + 2;
+                    return (rankBase + 2)*10000 + unitNameLength;
 
                 return int.MaxValue;
             };
 
-            var rank0 = makeRankSub(100*0, Path.GetFileNameWithoutExtension(u.FileName));
+            var rank0 = makeRankSub(0, Path.GetFileNameWithoutExtension(u.FileName));
             if (rank0 != int.MaxValue)
                 return rank0;
 
-            var rank1 = makeRankSub(100*1, u.Directory);
+            var rank1 = makeRankSub(1, u.Directory);
             if (rank1 != int.MaxValue)
                 return rank1;
 
-            var rank2 = makeRankSub(100*2, u.Name);
+            var rank2 = makeRankSub(2, u.Name);
             if (rank2 != int.MaxValue)
                 return rank2;
 
