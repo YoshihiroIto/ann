@@ -113,13 +113,13 @@ namespace Ann.Core
 
             var b = 0;
 
+            var rankFileName = makeRankSub(++b, u.FileName);
+            if (rankFileName != int.MaxValue)
+                return rankFileName;
+
             var rankName = makeRankSub(++b, u.Name);
             if (rankName != int.MaxValue)
                 return rankName;
-
-            var rankFileName = makeRankSub(++b, Path.GetFileNameWithoutExtension(u.FileName));
-            if (rankFileName != int.MaxValue)
-                return rankFileName;
 
             var rankDir = makeRankSub(++b, u.Directory);
             if (rankDir != int.MaxValue)
