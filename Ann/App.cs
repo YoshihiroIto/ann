@@ -98,7 +98,8 @@ namespace Ann
         public IEnumerable<ExecutableUnit> FindExecutableUnit(string name) =>
             _ExecutableUnitDataBase
                 .Find(name)
-                .OrderByDescending(u => IsHighPriority(u.Path));
+                .OrderByDescending(u => IsHighPriority(u.Path))
+                .Take(100);
 
         private App()
         {

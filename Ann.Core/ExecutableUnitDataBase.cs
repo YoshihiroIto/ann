@@ -51,8 +51,7 @@ namespace Ann.Core
                                 u.Directory.ToLower().Contains(name) ||
                                 u.FileName.ToLower().Contains(name))
                     .ToArray()
-                    .OrderBy(u => MakeRank(u, name))
-                    .ToArray();
+                    .OrderBy(u => MakeRank(u, name));
             }
         }
 
@@ -98,11 +97,16 @@ namespace Ann.Core
                 if (target == name)
                     return (rankBase + 0)*10000 + unitNameLength;
 
-                if (target.Split(' ', '_', '-', '/', '\\').Any(t => t.StartsWith(name)))
+                var parts = target.Split(new[] {' ', '_', '-', '/', '\\'}, StringSplitOptions.RemoveEmptyEntries);
+
+                if (parts.Any(t => t.StartsWith(name)))
                     return (rankBase + 1)*10000 + unitNameLength;
 
-                if (target.Contains(name))
+                if (target.StartsWith(name))
                     return (rankBase + 2)*10000 + unitNameLength;
+
+                if (target.Contains(name))
+                    return (rankBase + 3)*10000 + unitNameLength;
 
                 return int.MaxValue;
             };
