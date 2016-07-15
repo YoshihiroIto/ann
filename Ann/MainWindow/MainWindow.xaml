@@ -11,8 +11,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:settingWindow="clr-namespace:Ann.SettingWindow"
         xmlns:tb="http://www.hardcodet.net/taskbar"
-        Title="{Binding Message.Value,
-                        Mode=OneWay}"
         Width="600"
         d:DataContext="{d:DesignData mainWindow:MainWindowViewModel}"
         AllowsTransparency="True"
@@ -49,6 +47,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Menu.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ToggleButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ProgressBar.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -85,6 +84,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
@@ -134,16 +134,31 @@
             </TextBox.InputBindings>
         </TextBox>
 
-        <TextBlock Grid.Row="0"
-                   Grid.Column="0"
-                   HorizontalAlignment="Right"
-                   VerticalAlignment="Top"
-                   IsHitTestVisible="False"
-                   Text="{Binding Message.Value,
-                                  Mode=OneWay}" />
+        <ProgressBar Grid.Row="0"
+                     Grid.Column="1"
+                     Margin="12,0,0,0"
+                     HorizontalAlignment="Right"
+                     VerticalAlignment="Center"
+                     Foreground="White"
+                     IsHitTestVisible="False"
+                     IsIndeterminate="True"
+                     Value="0">
+            <ProgressBar.Style>
+                <Style BasedOn="{StaticResource MaterialDesignCircularProgressBar}" TargetType="{x:Type ProgressBar}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsIndexUpdating.Value, Mode=OneWay}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsIndexUpdating.Value, Mode=OneWay}" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ProgressBar.Style>
+        </ProgressBar>
 
         <materialDesign:PopupBox Grid.Row="0"
-                                 Grid.Column="1"
+                                 Grid.Column="2"
                                  Margin="0,0,-12,0"
                                  Closed="PopupBox_Closed"
                                  Foreground="White"
@@ -158,7 +173,7 @@
 
         <ListBox Grid.Row="1"
                  Grid.Column="0"
-                 Grid.ColumnSpan="2"
+                 Grid.ColumnSpan="3"
                  MaxHeight="{Binding CandidatesListMaxHeight.Value,
                                      Mode=OneWay}"
                  Margin="0,16,0,0"
@@ -259,7 +274,9 @@
                         <Button Grid.Column="2"
                                 Margin="0,0,12,0"
                                 VerticalAlignment="Bottom"
-                                materialDesign:RippleAssist.IsCentered="True">
+                                materialDesign:RippleAssist.IsCentered="True"
+                                Focusable="False"
+                                IsTabStop="False">
                             <materialDesign:PackIcon Kind="Star" />
                             <Button.Style>
                                 <Style BasedOn="{StaticResource MaterialDesignToolButton}" TargetType="{x:Type Button}">

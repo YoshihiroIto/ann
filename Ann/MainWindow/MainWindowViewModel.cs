@@ -18,9 +18,7 @@ namespace Ann.MainWindow
     public class MainWindowViewModel : ViewModelBase
     {
         public ReactiveProperty<string> Input { get; }
-        public ReactiveProperty<string> Message { get; }
-
-        public ReactiveProperty<bool> CanIndexUpdate { get; }
+        public ReactiveProperty<bool> IsIndexUpdating { get; }
         public ReactiveCommand IndexUpdateCommand { get; }
 
         public ReadOnlyReactiveProperty<ObservableCollection<ExecutableUnitViewModel>> Candidates { get; }
@@ -54,8 +52,7 @@ namespace Ann.MainWindow
         public MainWindowViewModel()
         {
             Input = new ReactiveProperty<string>().AddTo(CompositeDisposable);
-            Message = new ReactiveProperty<string>(string.Empty).AddTo(CompositeDisposable);
-            CanIndexUpdate = new ReactiveProperty<bool>(true).AddTo(CompositeDisposable);
+            IsIndexUpdating = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
             Visibility = new ReactiveProperty<Visibility>(System.Windows.Visibility.Visible).AddTo(CompositeDisposable);
 
             Left = App.Instance.ToReactivePropertyAsSynchronized(x => x.MainWindowLeft).AddTo(CompositeDisposable);
@@ -71,26 +68,25 @@ namespace Ann.MainWindow
                     .ToReadOnlyReactiveProperty()
                     .AddTo(CompositeDisposable);
 
-            IndexUpdateCommand = CanIndexUpdate
+            IndexUpdateCommand = IsIndexUpdating.Select(i => i == false)
                 .ToReactiveCommand().AddTo(CompositeDisposable);
+
             IndexUpdateCommand
                 .Subscribe(async _ =>
                 {
-                    CanIndexUpdate.Value = false;
-                    Message.Value = "Updating...";
+                    IsIndexUpdating.Value = true;
 
                     await App.Instance.UpdateIndexAsync();
                     Input.ForceNotify();
 
-                    Message.Value = string.Empty;
-                    CanIndexUpdate.Value = true;
+                    IsIndexUpdating.Value = false;
                 }).AddTo(CompositeDisposable);
 
             Candidates = Input
-                .Throttle(TimeSpan.FromMilliseconds(50))
+                .Throttle(TimeSpan.FromMilliseconds(20))
                 .Select(i =>
                 {
-                    Candidates.Value?.ForEach(c => c.Dispose());
+                    Candidates?.Value?.ForEach(c => c.Dispose());
 
                     return
                         new ObservableCollection<ExecutableUnitViewModel>(
