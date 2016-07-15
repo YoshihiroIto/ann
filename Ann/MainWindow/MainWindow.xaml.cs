@@ -45,14 +45,6 @@ namespace Ann.MainWindow
             candidate.ScrollIntoView(candidate.SelectedItem);
         }
 
-        private void ListBox_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            var item = (sender as ListBoxItem)?.DataContext as ExecutableUnitViewModel;
-
-            _DataContext.SelectedCandidate.Value = item;
-            _DataContext.RunCommand.Execute(null);
-        }
-
         private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             _DataContext.CandidateItemHeight.Value = e.NewSize.Height;
@@ -91,6 +83,14 @@ namespace Ann.MainWindow
         {
             await Task.Delay(TimeSpan.FromMilliseconds(20));
             InputTextBox.Focus();
+        }
+
+        private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var item = (sender as FrameworkElement)?.DataContext as ExecutableUnitViewModel;
+
+            _DataContext.SelectedCandidate.Value = item;
+            _DataContext.RunCommand.Execute(null);
         }
     }
 }

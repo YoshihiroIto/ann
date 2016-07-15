@@ -183,7 +183,6 @@
                     <Setter Property="Padding" Value="0" />
                     <Setter Property="Margin" Value="0" />
                     <Setter Property="Focusable" Value="False" />
-                    <EventSetter Event="MouseLeftButtonDown" Handler="ListBox_MouseLeftButtonDown" />
                 </Style>
             </ListBox.Resources>
 
@@ -208,7 +207,7 @@
 
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type mainWindow:ExecutableUnitViewModel}">
-                    <Grid SizeChanged="Grid_SizeChanged">
+                    <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown" SizeChanged="Grid_SizeChanged">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
