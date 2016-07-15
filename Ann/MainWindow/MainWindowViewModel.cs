@@ -64,7 +64,7 @@ namespace Ann.MainWindow
             CandidateItemHeight = new ReactiveProperty<double>().AddTo(CompositeDisposable);
             CandidatesListMaxHeight =
                 CandidateItemHeight
-                    .Select(h => (h + 2)*MaxCandidatesLinesCount.Value + 4)
+                    .Select(h => h*MaxCandidatesLinesCount.Value + 4)
                     .ToReadOnlyReactiveProperty()
                     .AddTo(CompositeDisposable);
 
@@ -147,9 +147,9 @@ namespace Ann.MainWindow
 
             SettingShowCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             SettingShowCommand.Subscribe(_ =>
-                    Messenger.Raise(new TransitionMessage(
-                        new SettingViewModel(App.Instance.MakeCurrentConfig()),
-                        "ShowSetting"))
+                Messenger.Raise(new TransitionMessage(
+                    new SettingViewModel(App.Instance.MakeCurrentConfig()),
+                    "ShowSetting"))
                 ).AddTo(CompositeDisposable);
         }
 

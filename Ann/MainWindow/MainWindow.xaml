@@ -192,15 +192,6 @@
                  VirtualizingPanel.IsVirtualizing="True"
                  VirtualizingPanel.ScrollUnit="Item"
                  VirtualizingPanel.VirtualizationMode="Recycling">
-            <ListBox.Resources>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="IsTabStop" Value="False" />
-                    <Setter Property="Padding" Value="0" />
-                    <Setter Property="Margin" Value="0" />
-                    <Setter Property="Focusable" Value="False" />
-                </Style>
-            </ListBox.Resources>
-
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <VirtualizingStackPanel />
@@ -219,6 +210,13 @@
                     </Style.Triggers>
                 </Style>
             </ListBox.Style>
+
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource CandidateListBoxItemStyle}">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListBox.ItemContainerStyle>
 
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type mainWindow:ExecutableUnitViewModel}">
