@@ -162,23 +162,26 @@ namespace Ann
 
         private void LoadConfig()
         {
+            var config = ReadConfigIfExist();
+
+            _highPriorities = config.HighPriorities == null
+                ? new HashSet<string>()
+                : new HashSet<string>(config.HighPriorities);
+            _targetFolders = config.TargetFolders;
+
+            MainWindowLeft = config.MainWindow?.Left ?? 0;
+            MainWindowTop = config.MainWindow?.Top ?? 0;
+            MainWindowMaxCandidateLinesCount = config.MainWindow?.MaxCandidateLinesCount ??
+                                               Constants.DefaultMaxCandidateLinesCount;
+        }
+
+        private static Config.App ReadConfigIfExist()
+        {
             if (File.Exists(ConfigFilePath) == false)
-                return;
+                return new Config.App();
 
             using (var reader = new StringReader(File.ReadAllText(ConfigFilePath)))
-            {
-                var config = new Deserializer().Deserialize<Config.App>(reader);
-
-                _highPriorities = config.HighPriorities == null
-                    ? new HashSet<string>()
-                    : new HashSet<string>(config.HighPriorities);
-                _targetFolders = config.TargetFolders;
-
-                MainWindowLeft = config.MainWindow?.Left ?? 0;
-                MainWindowTop = config.MainWindow?.Top ?? 0;
-                MainWindowMaxCandidateLinesCount = config.MainWindow?.MaxCandidateLinesCount ??
-                                                   Constants.DefaultMaxCandidateLinesCount;
-            }
+                return new Deserializer().Deserialize<Config.App>(reader);
         }
 
         private void SaveConfig()

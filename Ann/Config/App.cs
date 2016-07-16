@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 
 namespace Ann.Config
 {
@@ -7,7 +8,8 @@ namespace Ann.Config
         public string[] TargetFolders { get; set; } =
             {
                 @"C:\Program Files",
-                @"C:\Program Files (x86)"
+                @"C:\Program Files (x86)",
+                $@"{Environment.ExpandEnvironmentVariables("%SystemRoot%")}\System32"
             };
 
         public string[] HighPriorities { get; set; }
