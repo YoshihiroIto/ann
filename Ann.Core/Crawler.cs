@@ -14,7 +14,7 @@ namespace Ann.Core
         {
             await Task.Run(() =>
             {
-                var sb = new SQLiteConnectionStringBuilder { DataSource = databaseFilePath };
+                var sb = new SQLiteConnectionStringBuilder {DataSource = databaseFilePath};
 
                 using (var conn = new SQLiteConnection(sb.ToString()))
                 {
@@ -75,28 +75,20 @@ namespace Ann.Core
 
         private static void CreateTable(SQLiteConnection conn)
         {
-            using (var cmd = conn.CreateCommand())
+            var commandTexts = new[]
             {
-                cmd.CommandText =
-                    $"drop table if exists {nameof(ExecutableUnit)}";
+                $"drop table if exists {nameof(ExecutableUnit)}",
+                $"create table {nameof(ExecutableUnit)} (Path TEXT PRIMARY KEY, Name TEX, Directory TEXTT, FileName TEXT)",
+                $"delete from {nameof(ExecutableUnit)}"
+            };
 
-                cmd.ExecuteNonQuery();
-            }
-
-            using (var cmd = conn.CreateCommand())
+            foreach (var commandText in commandTexts)
             {
-                cmd.CommandText =
-                    $"create table {nameof(ExecutableUnit)} (Path TEXT PRIMARY KEY, Name TEX, Directory TEXTT, FileName TEXT)";
-
-                cmd.ExecuteNonQuery();
-            }
-
-            using (var cmd = conn.CreateCommand())
-            {
-                cmd.CommandText =
-                    $"delete from {nameof(ExecutableUnit)}";
-
-                cmd.ExecuteNonQuery();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = commandText;
+                    cmd.ExecuteNonQuery();
+                }
             }
         }
     }
