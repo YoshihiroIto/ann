@@ -1,119 +1,91 @@
-﻿// https://github.com/mok-aster/GlobalHotKey.NET
-// ReSharper disable All
+﻿// https://github.com/mok-aster/GlobalHotKey.NET を参考に実装
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Interop;
-using System.Diagnostics.Contracts;
 
-namespace HotKey
+namespace Ann.Foundation.Control
 {
-    internal class HotKeyWinApi
-	{
-		public const int WmHotKey = 0x0312;
-
-		[DllImport("user32.dll", SetLastError = true)]
-		public static extern bool RegisterHotKey(IntPtr hWnd, int id, MOD_KEY fsModifiers, Keys vk);
-
-		[DllImport("user32.dll", SetLastError = true)]
-		public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
-	}
-
-    /// <summary>
-    /// グローバルホットキーを登録機能を提供します。
-    /// </summary>
-	public sealed class HotKeyRegister
+    public class HotKeyRegister : IDisposable
     {
-        //ホットキーが押された時には発生するイベントです。
-		public event Action<HotKeyRegister> HotKeyPressed;
+        public event EventHandler HotKeyPressed;
 
-		private readonly int id;
-		private bool isKeyRegistered;
-		private readonly IntPtr handle;
+        public Key Key { get; }
+        public ModifierKeys KeyModifier { get; }
 
-        /// <summary>
-        /// ホットキーに使用されるキー
-        /// </summary>
-		public Keys Key { get; private set; }
+        private readonly int _Id;
+        private bool _isRegistered;
+        private readonly IntPtr _Handle;
 
+        // ReSharper disable once InconsistentNaming
+        private const int WM_HOTKEY = 0x0312;
 
-        /// <summary>
-        /// ホットキーに使用される修飾キー
-        /// </summary>
-		public MOD_KEY KeyModifier { get; private set; }
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool RegisterHotKey(IntPtr hWnd, int id, ModifierKeys fsModifiers, int vk);
 
-        /// <summary>
-        /// 新規のホットキーを登録します。
-        /// </summary>
-        /// <param name="MOD_KEY">修飾キー</param>
-        /// <param name="Key">キー</param>
-        /// <param name="Window">親ウィンドウ</param>
-        public HotKeyRegister(MOD_KEY MOD_KEY, System.Windows.Forms.Keys Key, System.Windows.Window Window)
-		{
-            var windowHandle = new WindowInteropHelper(Window).Handle;
-            Contract.Requires(MOD_KEY != MOD_KEY.None || Key != Keys.None);
-            Contract.Requires(windowHandle != IntPtr.Zero);
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
-            this.Key = Key;
-            KeyModifier = MOD_KEY;
-            var r = new Random();
-            id = r.Next();
-            handle = windowHandle;
-            RegisterHotKey();
-
-            ComponentDispatcher.ThreadPreprocessMessage += ThreadPreprocessMessageMethod;
-		}
-
-		private void RegisterHotKey()
-		{
-			if (Key == Keys.None)
-				return;
-			if (isKeyRegistered)
-				UnregisterHotKey();
-			isKeyRegistered = HotKeyWinApi.RegisterHotKey(handle, id, KeyModifier, Key);
-			if (!isKeyRegistered)
-				throw new ApplicationException("Hotkey already in use");
-		}
-
-        ~HotKeyRegister()
+        public HotKeyRegister(ModifierKeys modifierKeys, Key key, Window window)
         {
-            UnregisterHotKey();
+            Key = key;
+            KeyModifier = modifierKeys;
+
+            _Id = ++ _count;
+
+            _Handle = new WindowInteropHelper(window).Handle;
         }
 
-	    private void UnregisterHotKey()
-		{
-			isKeyRegistered = !HotKeyWinApi.UnregisterHotKey(handle, id);
-		}
+        public void Dispose()
+        {
+            Unregister();
+        }
 
+        private static int _count;
 
-		private void ThreadPreprocessMessageMethod(ref MSG msg, ref bool handled)
-		{
-			if (!handled)
-			{
-				if (msg.message == HotKeyWinApi.WmHotKey　&& (int)(msg.wParam) == id)
-				{
-					OnHotKeyPressed();
-					handled = true;
-				}
-			}
-		}
+        public bool Register()
+        {
+            if (_isRegistered)
+                Unregister();
 
-		private void OnHotKeyPressed()
-		{
-			if (HotKeyPressed != null)
-				HotKeyPressed(this);
-		}
-	}
-	public enum MOD_KEY : int
-	{
-		None = 0x0000,
-		ALT = 0x0001,
-		CONTROL = 0x0002,
-		SHIFT = 0x0004,
-	}
+            var vk = KeyInterop.VirtualKeyFromKey(Key);
+            _isRegistered = RegisterHotKey(_Handle, _Id, KeyModifier, vk);
+
+            if (_isRegistered == false)
+                return false;
+
+            if (_isRegistered)
+                ComponentDispatcher.ThreadPreprocessMessage += ThreadPreprocessMessageMethod;
+
+            return _isRegistered;
+        }
+
+        public void Unregister()
+        {
+            if (_isRegistered)
+                ComponentDispatcher.ThreadPreprocessMessage -= ThreadPreprocessMessageMethod;
+
+            UnregisterHotKey(_Handle, _Id);
+
+            _isRegistered = false;
+        }
+
+        private void ThreadPreprocessMessageMethod(ref MSG msg, ref bool handled)
+        {
+            if (handled)
+                return;
+
+            if (msg.message != WM_HOTKEY)
+                return;
+
+            if ((int)msg.wParam != _Id)
+                return;
+
+            HotKeyPressed?.Invoke(this, EventArgs.Empty);
+
+            handled = true;
+        }
+    }
 }

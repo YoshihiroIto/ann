@@ -5,7 +5,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Ann.Foundation;
-using HotKey;
+using Ann.Foundation.Control;
+using Reactive.Bindings.Extensions;
 
 namespace Ann.MainWindow
 {
@@ -81,8 +82,8 @@ namespace Ann.MainWindow
 
         private void SetupHotKey()
         {
-            var switchVisibility = new HotKeyRegister(MOD_KEY.CONTROL, System.Windows.Forms.Keys.Space, this);
-            switchVisibility.HotKeyPressed += _ =>
+            var activate = new HotKeyRegister(ModifierKeys.Control, Key.Space, this).AddTo(_DataContext.CompositeDisposable);
+            activate.HotKeyPressed += (_, __) =>
             {
                 if (Visibility == Visibility.Hidden)
                 {
@@ -93,6 +94,8 @@ namespace Ann.MainWindow
                 else
                     Visibility = Visibility.Hidden;
             };
+
+            activate.Register();
         }
 
         private void SetupShortcutKey()
