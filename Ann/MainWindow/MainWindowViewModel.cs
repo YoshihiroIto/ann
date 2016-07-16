@@ -89,7 +89,7 @@ namespace Ann.MainWindow
                 }).AddTo(CompositeDisposable);
 
             Candidates = Input
-                .Throttle(TimeSpan.FromMilliseconds(20))
+                .Throttle(TimeSpan.FromMilliseconds(50))
                 .Select(i =>
                 {
                     var candidates = Candidates?.Value;
