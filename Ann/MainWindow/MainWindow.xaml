@@ -140,7 +140,6 @@
                      HorizontalAlignment="Right"
                      VerticalAlignment="Center"
                      Foreground="White"
-                     IsHitTestVisible="False"
                      IsIndeterminate="True"
                      Value="0">
             <ProgressBar.Style>
@@ -155,6 +154,9 @@
                     </Style.Triggers>
                 </Style>
             </ProgressBar.Style>
+            <ProgressBar.ToolTip>
+                <ToolTip Content="Index Updating..."></ToolTip>
+            </ProgressBar.ToolTip>
         </ProgressBar>
 
         <materialDesign:PopupBox Grid.Row="0"
