@@ -86,7 +86,10 @@ namespace Ann.MainWindow
                 .Throttle(TimeSpan.FromMilliseconds(20))
                 .Select(i =>
                 {
-                    Candidates?.Value?.ForEach(c => c.Dispose());
+                    var candidates = Candidates?.Value;
+                    if (candidates != null)
+                        foreach (var c in candidates)
+                            c.Dispose();
 
                     return
                         new ObservableCollection<ExecutableUnitViewModel>(
