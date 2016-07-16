@@ -6,7 +6,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Ann.Foundation;
 using Ann.Foundation.Control;
-using Reactive.Bindings.Extensions;
 
 namespace Ann.MainWindow
 {
@@ -16,6 +15,8 @@ namespace Ann.MainWindow
     public partial class MainWindow
     {
         private readonly MainWindowViewModel _DataContext = new MainWindowViewModel();
+
+        private HotKeyRegister _activateHotKey;
 
         public MainWindow()
         {
@@ -31,6 +32,8 @@ namespace Ann.MainWindow
             SetupIcon();
             Application.Current.Deactivated += (_, __) => Visibility = Visibility.Hidden;
             Keyboard.Focus(InputTextBox);
+
+            _DataContext.CompositeDisposable.Add(() => _activateHotKey?.Dispose());
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -82,8 +85,16 @@ namespace Ann.MainWindow
 
         private void SetupHotKey()
         {
-            var activate = new HotKeyRegister(ModifierKeys.Control, Key.Space, this).AddTo(_DataContext.CompositeDisposable);
-            activate.HotKeyPressed += (_, __) =>
+            _activateHotKey?.Dispose();
+
+            var config = App.Instance.MakeCurrentConfig();
+
+            _activateHotKey = new HotKeyRegister(
+                config.MainWindow.ShortcutKeys.Activate.Modifiers,
+                config.MainWindow.ShortcutKeys.Activate.Key,
+                this);
+
+            _activateHotKey.HotKeyPressed += (_, __) =>
             {
                 if (Visibility == Visibility.Hidden)
                 {
@@ -95,7 +106,7 @@ namespace Ann.MainWindow
                     Visibility = Visibility.Hidden;
             };
 
-            activate.Register();
+            _activateHotKey.Register();
         }
 
         private void SetupShortcutKey()
@@ -103,9 +114,9 @@ namespace Ann.MainWindow
             InputBindings.Clear();
 
             // 標準
-            InputBindings.Add(new KeyBinding { Key = Key.Enter, Command = _DataContext.RunCommand });
-            InputBindings.Add(new KeyBinding { Key = Key.Escape, Command = _DataContext.AppHideCommand });
-            
+            InputBindings.Add(new KeyBinding {Key = Key.Enter, Command = _DataContext.RunCommand});
+            InputBindings.Add(new KeyBinding {Key = Key.Escape, Command = _DataContext.AppHideCommand});
+
             // コンフィグから指定されたもの
             var config = App.Instance.MakeCurrentConfig();
             InputBindings.AddRange(config.MainWindow.ShortcutKeys.Hide

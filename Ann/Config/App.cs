@@ -21,11 +21,15 @@ namespace Ann.Config
         public double Top { get; set; }
 
         public int MaxCandidateLinesCount { get; set; } = Constants.DefaultMaxCandidateLinesCount;
+
         public ShortcutKeys ShortcutKeys { get; set; } = new ShortcutKeys();
     }
 
     public class ShortcutKeys
     {
+        public ShortcutKey Activate { get; set; } =
+            new ShortcutKey {Key = Key.Space, Modifiers = ModifierKeys.Control};
+
         public ShortcutKey[] Hide { get; set; } =
             {
                 new ShortcutKey {Key = Key.J, Modifiers = ModifierKeys.Control}
