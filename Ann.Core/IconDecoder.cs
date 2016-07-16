@@ -43,7 +43,12 @@ namespace Ann.Core
                 using (var file = ShellFile.FromFilePath(p))
                 {
                     file.Thumbnail.CurrentSize = IconSize;
-                    return file.Thumbnail.BitmapSource;
+
+                    var bi = file.Thumbnail.BitmapSource;
+                    if (bi.CanFreeze && bi.IsFrozen == false)
+                        bi.Freeze();
+
+                    return bi;
                 }
             });
         }
