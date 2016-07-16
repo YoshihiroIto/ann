@@ -106,7 +106,13 @@ namespace Ann.MainWindow
                     Visibility = Visibility.Hidden;
             };
 
-            _activateHotKey.Register();
+            _DataContext.IsEnableActivateHotKey.Value = _activateHotKey.Register();
+
+            if (_DataContext.IsEnableActivateHotKey.Value == false)
+            {
+                _activateHotKey.Dispose();
+                _activateHotKey = null;
+            }
         }
 
         private void SetupShortcutKey()

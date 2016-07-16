@@ -50,6 +50,9 @@ namespace Ann.MainWindow
         public ReactiveCommand SettingShowCommand { get; }
 
         public ReadOnlyReactiveProperty<bool> IsEnabledIndex { get; }
+        public ReactiveProperty<bool> IsEnableActivateHotKey { get; }
+
+        public ReadOnlyReactiveProperty<string> Message { get; }
 
         public MainWindowViewModel()
         {
@@ -158,6 +161,12 @@ namespace Ann.MainWindow
                 ).AddTo(CompositeDisposable);
 
             IsEnabledIndex = App.Instance.ObserveProperty(x => x.IsEnabledIndex)
+                .ToReadOnlyReactiveProperty()
+                .AddTo(CompositeDisposable);
+
+            IsEnableActivateHotKey = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
+            Message = IsEnableActivateHotKey
+                .Select(i => i ? string.Empty : "Activation Hotkey is already in use.")
                 .ToReadOnlyReactiveProperty()
                 .AddTo(CompositeDisposable);
         }

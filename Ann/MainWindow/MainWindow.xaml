@@ -67,18 +67,7 @@
         </behaviors:InteractionMessageTrigger>
     </i:Interaction.Triggers>
 
-    <Grid Margin="16">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-
+    <StackPanel Margin="16">
         <tb:TaskbarIcon IconSource="/app.ico"
                         MenuActivation="RightClick"
                         ToolTipText="Ann"
@@ -93,115 +82,138 @@
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>
 
-        <TextBox x:Name="InputTextBox"
-                 Grid.Row="0"
-                 Grid.Column="0"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 CaretBrush="White"
-                 FontSize="32"
-                 Foreground="White"
-                 Text="{Binding Input.Value,
-                                Mode=TwoWay,
-                                UpdateSourceTrigger=PropertyChanged}">
-            <TextBox.InputBindings>
-                <KeyBinding Key="Up"
-                            Command="{Binding SelectedCandidateMoveCommand,
-                                              Mode=OneTime}"
-                            CommandParameter="-1" />
-                <KeyBinding Key="Down"
-                            Command="{Binding SelectedCandidateMoveCommand,
-                                              Mode=OneTime}"
-                            CommandParameter="1" />
+        <DockPanel LastChildFill="True">
+            <materialDesign:PopupBox Margin="0,0,-12,0"
+                                     Closed="PopupBox_Closed"
+                                     DockPanel.Dock="Right"
+                                     Foreground="White"
+                                     PlacementMode="BottomAndAlignRightEdges">
+                <StackPanel>
+                    <Button Command="{Binding IndexUpdateCommand, Mode=OneTime}" Content="Update Index" />
+                    <Button Command="{Binding SettingShowCommand, Mode=OneTime}" Content="Settings..." />
+                    <Separator Style="{StaticResource MaterialDesignSeparator}" />
+                    <Button Command="{Binding AppExitCommand, Mode=OneTime}" Content="Exit" />
+                </StackPanel>
+            </materialDesign:PopupBox>
 
-                <KeyBinding Key="Tab"
-                            Command="{Binding SelectedCandidateMoveCommand,
-                                              Mode=OneTime}"
-                            CommandParameter="-1"
-                            Modifiers="Shift" />
-                <KeyBinding Key="Tab"
-                            Command="{Binding SelectedCandidateMoveCommand}"
-                            CommandParameter="1" />
-            </TextBox.InputBindings>
-        </TextBox>
+            <Border Width="24"
+                    Height="24"
+                    Margin="12,0,0,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    BorderThickness="0"
+                    DockPanel.Dock="Right"
+                    Padding="0"
+                    Background="Transparent"
+                    ToolTip="{Binding Message.Value,
+                                      Mode=OneWay}">
+                <materialDesign:PackIcon Width="24"
+                                         Height="24"
+                                         Foreground="DodgerBlue"
+                                         Kind="MessageTextOutline" />
+                <Border.Style>
+                    <Style TargetType="{x:Type Border}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Message.Value, Mode=OneWay}" Value="">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
 
-        <ProgressBar Grid.Row="0"
-                     Grid.Column="1"
-                     Margin="12,0,0,0"
-                     HorizontalAlignment="Right"
-                     VerticalAlignment="Center"
+                        <Setter Property="Visibility" Value="Visible" />
+                    </Style>
+                </Border.Style>
+            </Border>
+
+            <ProgressBar Margin="12,0,0,0"
+                         HorizontalAlignment="Right"
+                         VerticalAlignment="Center"
+                         DockPanel.Dock="Right"
+                         Foreground="White"
+                         IsIndeterminate="True"
+                         ToolTip="Index Updating..."
+                         Value="0">
+                <ProgressBar.Style>
+                    <Style BasedOn="{StaticResource MaterialDesignCircularProgressBar}" TargetType="{x:Type ProgressBar}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsIndexUpdating.Value, Mode=OneWay}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsIndexUpdating.Value, Mode=OneWay}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ProgressBar.Style>
+            </ProgressBar>
+
+            <Button Width="24"
+                    Height="24"
+                    Margin="12,0,0,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Command="{Binding IndexUpdateCommand,
+                                      Mode=OneTime}"
+                    DockPanel.Dock="Right"
+                    Padding="0"
+                    ToolTip="Index not found. Please update index.">
+                <materialDesign:PackIcon Width="24"
+                                         Height="24"
+                                         Foreground="Orange"
+                                         Kind="SyncAlert" />
+                <Button.Style>
+                    <Style BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="{x:Type Button}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsEnabledIndex.Value, Mode=OneWay}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsIndexUpdating.Value, Mode=OneWay}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsEnabledIndex.Value, Mode=OneWay}" Value="False" />
+                                    <Condition Binding="{Binding IsIndexUpdating.Value, Mode=OneWay}" Value="False" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Visibility" Value="Visible" />
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+
+            <TextBox x:Name="InputTextBox"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     CaretBrush="White"
+                     FontSize="32"
                      Foreground="White"
-                     IsIndeterminate="True"
-                     ToolTip="Index Updating..."
-                     Value="0">
-            <ProgressBar.Style>
-                <Style BasedOn="{StaticResource MaterialDesignCircularProgressBar}" TargetType="{x:Type ProgressBar}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsIndexUpdating.Value, Mode=OneWay}" Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding IsIndexUpdating.Value, Mode=OneWay}" Value="False">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ProgressBar.Style>
-        </ProgressBar>
+                     Text="{Binding Input.Value,
+                                    Mode=TwoWay,
+                                    UpdateSourceTrigger=PropertyChanged}">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Up"
+                                Command="{Binding SelectedCandidateMoveCommand,
+                                                  Mode=OneTime}"
+                                CommandParameter="-1" />
+                    <KeyBinding Key="Down"
+                                Command="{Binding SelectedCandidateMoveCommand,
+                                                  Mode=OneTime}"
+                                CommandParameter="1" />
 
-        <Button Grid.Row="0"
-                Grid.Column="2"
-                Width="24"
-                Height="24"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                Command="{Binding IndexUpdateCommand,
-                                  Mode=OneTime}"
-                Padding="0"
-                ToolTip="Index not found. Please update index.">
-            <materialDesign:PackIcon Width="24"
-                                     Height="24"
-                                     Foreground="DeepPink"
-                                     Kind="AlertOutline" />
-            <Button.Style>
-                <Style BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="{x:Type Button}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsEnabledIndex.Value, Mode=OneWay}" Value="True">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding IsIndexUpdating.Value, Mode=OneWay}" Value="True">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
+                    <KeyBinding Key="Tab"
+                                Command="{Binding SelectedCandidateMoveCommand,
+                                                  Mode=OneTime}"
+                                CommandParameter="-1"
+                                Modifiers="Shift" />
+                    <KeyBinding Key="Tab"
+                                Command="{Binding SelectedCandidateMoveCommand}"
+                                CommandParameter="1" />
+                </TextBox.InputBindings>
+            </TextBox>
+        </DockPanel>
 
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsEnabledIndex.Value, Mode=OneWay}" Value="False" />
-                                <Condition Binding="{Binding IsIndexUpdating.Value, Mode=OneWay}" Value="False" />
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Visibility" Value="Visible" />
-                        </MultiDataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
-
-        <materialDesign:PopupBox Grid.Row="0"
-                                 Grid.Column="3"
-                                 Margin="0,0,-12,0"
-                                 Closed="PopupBox_Closed"
-                                 Foreground="White"
-                                 PlacementMode="BottomAndAlignRightEdges">
-            <StackPanel>
-                <Button Command="{Binding IndexUpdateCommand, Mode=OneTime}" Content="Update Index" />
-                <Button Command="{Binding SettingShowCommand, Mode=OneTime}" Content="Settings..." />
-                <Separator Style="{StaticResource MaterialDesignSeparator}" />
-                <Button Command="{Binding AppExitCommand, Mode=OneTime}" Content="Exit" />
-            </StackPanel>
-        </materialDesign:PopupBox>
-
-        <ListBox Grid.Row="1"
-                 Grid.Column="0"
-                 Grid.ColumnSpan="4"
-                 MaxHeight="{Binding CandidatesListMaxHeight.Value,
+        <ListBox MaxHeight="{Binding CandidatesListMaxHeight.Value,
                                      Mode=OneWay}"
                  Margin="0,16,0,0"
                  HorizontalContentAlignment="Stretch"
@@ -322,5 +334,5 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-    </Grid>
+    </StackPanel>
 </Window>
