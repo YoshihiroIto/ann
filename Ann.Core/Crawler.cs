@@ -82,7 +82,7 @@ namespace Ann.Core
             var commandTexts = new[]
             {
                 $"drop table if exists {nameof(ExecutableUnit)}",
-                $"create table {nameof(ExecutableUnit)} (Path TEXT PRIMARY KEY, Name TEX, Directory TEXTT, FileName TEXT)",
+                $"create table {nameof(ExecutableUnit)} (Path TEXT PRIMARY KEY, Name TEXT, Directory TEXT, FileName TEXT)",
                 $"delete from {nameof(ExecutableUnit)}"
             };
 
