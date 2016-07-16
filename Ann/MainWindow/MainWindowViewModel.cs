@@ -49,6 +49,8 @@ namespace Ann.MainWindow
 
         public ReactiveCommand SettingShowCommand { get; }
 
+        public ReadOnlyReactiveProperty<bool> IsEnabledIndex { get; }
+
         public MainWindowViewModel()
         {
             Input = new ReactiveProperty<string>().AddTo(CompositeDisposable);
@@ -154,6 +156,10 @@ namespace Ann.MainWindow
                     new SettingViewModel(App.Instance.MakeCurrentConfig()),
                     "ShowSetting"))
                 ).AddTo(CompositeDisposable);
+
+            IsEnabledIndex = App.Instance.ObserveProperty(x => x.IsEnabledIndex)
+                .ToReadOnlyReactiveProperty()
+                .AddTo(CompositeDisposable);
         }
 
         private int IndexOfCandidates(string path)

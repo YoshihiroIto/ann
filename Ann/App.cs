@@ -18,10 +18,22 @@ namespace Ann
         private HashSet<string> _highPriorities = new HashSet<string>();
         private string[] _targetFolders = {};
 
-        private readonly ExecutableUnitDataBase _ExecutableUnitDataBase;
+        private readonly ExecutableUnitDataBase _dataBase;
 
         private static string IndexDbFilePath => Path.Combine(ConfigDirPath, "Index.db");
         public static string IconCacheFilePath => Path.Combine(ConfigDirPath, "IconCache.db");
+
+        #region IsEnabledIndex
+
+        private bool _IsEnabledIndex;
+
+        public bool IsEnabledIndex
+        {
+            get { return _IsEnabledIndex; }
+            set { SetProperty(ref _IsEnabledIndex, value); }
+        }
+
+        #endregion
 
         #region MainWindowLeft
 
@@ -93,17 +105,21 @@ namespace Ann
             return true;
         }
 
-        public async Task UpdateIndexAsync() => await _ExecutableUnitDataBase.UpdateIndexAsync(_targetFolders);
+        public async Task UpdateIndexAsync() => await _dataBase.UpdateIndexAsync(_targetFolders);
 
         public IEnumerable<ExecutableUnit> FindExecutableUnit(string name) =>
-            _ExecutableUnitDataBase
+            _dataBase
                 .Find(name)
                 .OrderByDescending(u => IsHighPriority(u.Path))
                 .Take(100);
 
         private App()
         {
-            _ExecutableUnitDataBase = new ExecutableUnitDataBase(IndexDbFilePath).AddTo(CompositeDisposable);
+            _dataBase = new ExecutableUnitDataBase(IndexDbFilePath).AddTo(CompositeDisposable);
+            _dataBase.Opend += (_, __) => IsEnabledIndex = true;
+            _dataBase.Closed += (_, __) => IsEnabledIndex = false;
+            _dataBase.Open();
+
             LoadConfig();
         }
 

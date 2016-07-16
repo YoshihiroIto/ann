@@ -10,16 +10,15 @@ namespace Ann.Core
 {
     public class ExecutableUnitDataBase : IDisposable
     {
-        private SQLiteConnection _conn;
+        public event EventHandler Opend;
+        public event EventHandler Closed;
 
+        private SQLiteConnection _conn;
         private readonly string _dataBaseFile;
 
         public ExecutableUnitDataBase(string databaseFile)
         {
             _dataBaseFile = databaseFile;
-
-            if (File.Exists(databaseFile) == false)
-                return;
 
             Open();
         }
@@ -68,8 +67,11 @@ namespace Ann.Core
             Open();
         }
 
-        private void Open()
+        public void Open()
         {
+            if (File.Exists(_dataBaseFile) == false)
+                return;
+
             var sb = new SQLiteConnectionStringBuilder
             {
                 DataSource = _dataBaseFile
@@ -77,12 +79,16 @@ namespace Ann.Core
 
             _conn = new SQLiteConnection(sb.ToString());
             _conn.Open();
+
+            Opend?.Invoke(this, EventArgs.Empty);
         }
 
         private void Close()
         {
             _conn?.Dispose();
             _conn = null;
+
+            Closed?.Invoke(this, EventArgs.Empty);
         }
 
         // ReSharper disable PossibleNullReferenceException

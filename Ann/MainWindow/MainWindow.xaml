@@ -86,6 +86,7 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
         <tb:TaskbarIcon IconSource="/app.ico"
@@ -141,6 +142,7 @@
                      VerticalAlignment="Center"
                      Foreground="White"
                      IsIndeterminate="True"
+                     ToolTip="Index Updating..."
                      Value="0">
             <ProgressBar.Style>
                 <Style BasedOn="{StaticResource MaterialDesignCircularProgressBar}" TargetType="{x:Type ProgressBar}">
@@ -154,13 +156,46 @@
                     </Style.Triggers>
                 </Style>
             </ProgressBar.Style>
-            <ProgressBar.ToolTip>
-                <ToolTip Content="Index Updating..."></ToolTip>
-            </ProgressBar.ToolTip>
         </ProgressBar>
 
+        <Button Grid.Row="0"
+                Grid.Column="2"
+                Width="24"
+                Height="24"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Command="{Binding IndexUpdateCommand,
+                                  Mode=OneTime}"
+                Padding="0"
+                ToolTip="Index not found. Please update index.">
+            <materialDesign:PackIcon Width="24"
+                                     Height="24"
+                                     Foreground="DeepPink"
+                                     Kind="AlertOutline" />
+            <Button.Style>
+                <Style BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="{x:Type Button}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsEnabledIndex.Value, Mode=OneWay}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsIndexUpdating.Value, Mode=OneWay}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsEnabledIndex.Value, Mode=OneWay}" Value="False" />
+                                <Condition Binding="{Binding IsIndexUpdating.Value, Mode=OneWay}" Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible" />
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+
         <materialDesign:PopupBox Grid.Row="0"
-                                 Grid.Column="2"
+                                 Grid.Column="3"
                                  Margin="0,0,-12,0"
                                  Closed="PopupBox_Closed"
                                  Foreground="White"
@@ -175,7 +210,7 @@
 
         <ListBox Grid.Row="1"
                  Grid.Column="0"
-                 Grid.ColumnSpan="3"
+                 Grid.ColumnSpan="4"
                  MaxHeight="{Binding CandidatesListMaxHeight.Value,
                                      Mode=OneWay}"
                  Margin="0,16,0,0"
@@ -214,7 +249,7 @@
             </ListBox.Style>
 
             <ListBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource CandidateListBoxItemStyle}">
+                <Style BasedOn="{StaticResource CandidateListBoxItemStyle}" TargetType="{x:Type ListBoxItem}">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                     <Setter Property="VerticalContentAlignment" Value="Stretch" />
                 </Style>
@@ -252,11 +287,9 @@
                                        Padding="0"
                                        Text="{Binding Name,
                                                       Mode=OneWay}"
-                                       TextTrimming="CharacterEllipsis">
-                                <TextBlock.ToolTip>
-                                    <ToolTip Content="{Binding Name, Mode=OneWay}" />
-                                </TextBlock.ToolTip>
-                            </TextBlock>
+                                       TextTrimming="CharacterEllipsis"
+                                       ToolTip="{Binding Name,
+                                                         Mode=OneWay}" />
 
                             <TextBlock Grid.Row="1"
                                        Grid.Column="0"
@@ -264,11 +297,9 @@
                                        Padding="0"
                                        Text="{Binding Path,
                                                       Mode=OneWay}"
-                                       TextTrimming="CharacterEllipsis">
-                                <TextBlock.ToolTip>
-                                    <ToolTip Content="{Binding Path, Mode=OneWay}" />
-                                </TextBlock.ToolTip>
-                            </TextBlock>
+                                       TextTrimming="CharacterEllipsis"
+                                       ToolTip="{Binding Path,
+                                                         Mode=OneWay}" />
                         </Grid>
 
                         <Button Grid.Column="2"
