@@ -7,8 +7,8 @@ namespace Ann.Config
     {
         public string[] TargetFolders { get; set; } =
             {
-                @"%ProgramFiles%",
-                @"%ProgramFiles(x86)%",
+                @"C:\Program Files",
+                @"C:\Program Files (x86)",
                 Environment.GetFolderPath(Environment.SpecialFolder.System),
                 Environment.GetFolderPath(Environment.SpecialFolder.SystemX86),
                 Environment.GetFolderPath(Environment.SpecialFolder.Programs)
