@@ -1,8 +1,15 @@
-﻿namespace Ann.Config
+﻿using System.Windows.Input;
+
+namespace Ann.Config
 {
     public class App
     {
-        public string[] TargetFolders { get; set; } = {@"C:\Program Files", @"C:\Program Files (x86)"};
+        public string[] TargetFolders { get; set; } =
+            {
+                @"C:\Program Files",
+                @"C:\Program Files (x86)"
+            };
+
         public string[] HighPriorities { get; set; }
 
         public MainWindow MainWindow { get; set; }
@@ -14,5 +21,14 @@
         public double Top { get; set; }
 
         public int MaxCandidateLinesCount { get; set; } = Constants.DefaultMaxCandidateLinesCount;
+        public ShortcutKeys ShortcutKeys { get; set; } = new ShortcutKeys();
+    }
+
+    public class ShortcutKeys
+    {
+        public ShortcutKey[] Hide { get; set; } =
+            {
+                new ShortcutKey {Key = Key.J, Modifiers = ModifierKeys.Control}
+            };
     }
 }

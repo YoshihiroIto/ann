@@ -142,6 +142,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\ShortcutKey.cs" />
     <Compile Include="SettingWindow\SettingViewModel.cs" />
     <Compile Include="SettingWindow\SettingWindow.xaml.cs">
       <DependentUpon>SettingWindow.xaml</DependentUpon>

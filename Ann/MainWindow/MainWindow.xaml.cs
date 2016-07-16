@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,6 +26,7 @@ namespace Ann.MainWindow
         {
             WindowHelper.EnableBlur(this);
             SetupHotKey();
+            SetupShortcutKey();
             SetupIcon();
             Application.Current.Deactivated += (_, __) => Visibility = Visibility.Hidden;
             Keyboard.Focus(InputTextBox);
@@ -63,6 +65,20 @@ namespace Ann.MainWindow
                     Constants.IconSize*source.CompositionTarget.TransformToDevice.M22);
         }
 
+        private async void PopupBox_Closed(object sender, RoutedEventArgs e)
+        {
+            await Task.Delay(TimeSpan.FromMilliseconds(20));
+            InputTextBox.Focus();
+        }
+
+        private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var item = (sender as FrameworkElement)?.DataContext as ExecutableUnitViewModel;
+
+            _DataContext.SelectedCandidate.Value = item;
+            _DataContext.RunCommand.Execute(null);
+        }
+
         private void SetupHotKey()
         {
             var switchVisibility = new HotKeyRegister(MOD_KEY.CONTROL, System.Windows.Forms.Keys.Space, this);
@@ -79,18 +95,24 @@ namespace Ann.MainWindow
             };
         }
 
-        private async void PopupBox_Closed(object sender, RoutedEventArgs e)
+        private void SetupShortcutKey()
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(20));
-            InputTextBox.Focus();
-        }
+            InputBindings.Clear();
 
-        private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            var item = (sender as FrameworkElement)?.DataContext as ExecutableUnitViewModel;
-
-            _DataContext.SelectedCandidate.Value = item;
-            _DataContext.RunCommand.Execute(null);
+            // 標準
+            InputBindings.Add(new KeyBinding { Key = Key.Enter, Command = _DataContext.RunCommand });
+            InputBindings.Add(new KeyBinding { Key = Key.Escape, Command = _DataContext.AppHideCommand });
+            
+            // コンフィグから指定されたもの
+            var config = App.Instance.MakeCurrentConfig();
+            InputBindings.AddRange(config.MainWindow.ShortcutKeys.Hide
+                .Select(k =>
+                    new KeyBinding
+                    {
+                        Key = k.Key,
+                        Modifiers = k.Modifiers,
+                        Command = _DataContext.AppHideCommand
+                    }).ToArray());
         }
     }
 }

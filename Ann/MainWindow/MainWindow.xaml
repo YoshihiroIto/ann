@@ -52,15 +52,6 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Window.InputBindings>
-        <KeyBinding Key="Enter" Command="{Binding RunCommand, Mode=OneTime}" />
-        <KeyBinding Key="Escape" Command="{Binding AppHideCommand, Mode=OneTime}" />
-        <KeyBinding Key="J"
-                    Command="{Binding AppHideCommand,
-                                      Mode=OneTime}"
-                    Modifiers="Control" />
-    </Window.InputBindings>
-
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closed">
             <behaviors:DataContextDisposeAction />
