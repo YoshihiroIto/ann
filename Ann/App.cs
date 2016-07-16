@@ -37,7 +37,7 @@ namespace Ann
 
         #region MainWindowLeft
 
-        private double _MainWindowLeft;
+        private double _MainWindowLeft = double.NaN;
 
         public double MainWindowLeft
         {
@@ -49,7 +49,7 @@ namespace Ann
 
         #region MainWindowTop
 
-        private double _MainWindowTop;
+        private double _MainWindowTop = double.NaN;
 
         public double MainWindowTop
         {
@@ -169,8 +169,8 @@ namespace Ann
                 : new HashSet<string>(config.HighPriorities);
             _targetFolders = config.TargetFolders;
 
-            MainWindowLeft = config.MainWindow?.Left ?? 0;
-            MainWindowTop = config.MainWindow?.Top ?? 0;
+            MainWindowLeft = config.MainWindow?.Left ?? double.NaN;
+            MainWindowTop = config.MainWindow?.Top ?? double.NaN;
             MainWindowMaxCandidateLinesCount = config.MainWindow?.MaxCandidateLinesCount ??
                                                Constants.DefaultMaxCandidateLinesCount;
         }

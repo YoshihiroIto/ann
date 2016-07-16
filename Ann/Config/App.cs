@@ -21,8 +21,8 @@ namespace Ann.Config
 
     public class MainWindow
     {
-        public double Left { get; set; }
-        public double Top { get; set; }
+        public double Left { get; set; } = double.NaN;
+        public double Top { get; set; } = double.NaN;
 
         public int MaxCandidateLinesCount { get; set; } = Constants.DefaultMaxCandidateLinesCount;
 

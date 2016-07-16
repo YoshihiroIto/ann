@@ -21,6 +21,11 @@ namespace Ann.MainWindow
         public MainWindow()
         {
             DataContext = _DataContext;
+
+            var config = App.Instance.MakeCurrentConfig();
+            if (double.IsNaN(config.MainWindow.Left))
+                WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
             InitializeComponent();
         }
 
