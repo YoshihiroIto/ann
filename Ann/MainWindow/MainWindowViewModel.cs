@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows;
 using System.Windows.Media;
 using Ann.Core;
+using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 using Ann.SettingWindow;
 using Livet.Messaging;
@@ -25,7 +25,7 @@ namespace Ann.MainWindow
         public ReactiveProperty<ExecutableUnitViewModel> SelectedCandidate { get; }
         public ReactiveCommand<object> SelectedCandidateMoveCommand { get; }
 
-        public ReactiveCommand RunCommand { get; }
+        public ReactiveCommand<string> RunCommand { get; }
 
         public ReactiveProperty<Visibility> Visibility { get; }
 
@@ -128,7 +128,7 @@ namespace Ann.MainWindow
 
             RunCommand = SelectedCandidate
                 .Select(i => i != null)
-                .ToReactiveCommand().AddTo(CompositeDisposable);
+                .ToReactiveCommand<string>().AddTo(CompositeDisposable);
             string path = null;
             RunCommand
                 .Do(_ =>
@@ -137,10 +137,10 @@ namespace Ann.MainWindow
                     Input.Value = string.Empty;
                 })
                 .Delay(TimeSpan.FromMilliseconds(20))
-                .Subscribe(_ =>
+                .Subscribe(async p =>
                 {
                     Visibility.Value = System.Windows.Visibility.Hidden;
-                    Process.Start(path);
+                    await ProcessHelper.Run(path, p == "admin");
                 }).AddTo(CompositeDisposable);
 
             AppHideCommand = new ReactiveCommand().AddTo(CompositeDisposable);

@@ -86,7 +86,7 @@
             <materialDesign:PopupBox Margin="0,0,-12,0"
                                      Closed="PopupBox_Closed"
                                      DockPanel.Dock="Right"
-                                     Foreground="White"
+                                     Foreground="Gainsboro"
                                      PlacementMode="BottomAndAlignRightEdges">
                 <StackPanel>
                     <Button Command="{Binding IndexUpdateCommand, Mode=OneTime}" Content="Update Index" />
@@ -101,10 +101,10 @@
                     Margin="12,0,0,0"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
+                    Background="Transparent"
                     BorderThickness="0"
                     DockPanel.Dock="Right"
                     Padding="0"
-                    Background="Transparent"
                     ToolTip="{Binding Message.Value,
                                       Mode=OneWay}">
                 <materialDesign:PackIcon Width="24"
@@ -161,7 +161,7 @@
                                          Foreground="Orange"
                                          Kind="SyncAlert" />
                 <Button.Style>
-                    <Style BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="{x:Type Button}">
+                    <Style BasedOn="{StaticResource MaterialDesignToolForegroundButton}" TargetType="{x:Type Button}">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsEnabledIndex.Value, Mode=OneWay}" Value="True">
                                 <Setter Property="Visibility" Value="Collapsed" />
@@ -264,6 +264,7 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
                         <Image Grid.Column="0"
@@ -304,7 +305,36 @@
                                                          Mode=OneWay}" />
                         </Grid>
 
-                        <Button Grid.Column="2"
+                        <materialDesign:PopupBox Grid.Column="2"
+                                                 Closed="PopupBox_Closed"
+                                                 DockPanel.Dock="Right"
+                                                 Margin="0,0,-8,-24"
+                                                 Foreground="Gainsboro"
+                                                 PlacementMode="BottomAndAlignRightEdges">
+                            <StackPanel>
+                                <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
+                                <Button Command="{Binding DataContext.RunCommand,
+                                                          RelativeSource={RelativeSource AncestorType=Window},
+                                                          Mode=OneWay}"
+                                        CommandParameter="admin"
+                                        Content="Run As Administrator" />
+                            </StackPanel>
+
+                            <materialDesign:PopupBox.Style>
+                                <Style TargetType="{x:Type materialDesign:PopupBox}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="False">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </materialDesign:PopupBox.Style>
+                        </materialDesign:PopupBox>
+
+                        <Button Grid.Column="3"
                                 Margin="0,0,12,0"
                                 VerticalAlignment="Bottom"
                                 materialDesign:RippleAssist.IsCentered="True"
