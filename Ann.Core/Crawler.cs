@@ -24,7 +24,7 @@ namespace Ann.Core
 
                     using (var ctx = new DataContext(conn))
                     {
-                        var executableExts = MakeExecutableExts();
+                        var executableExts = new HashSet<string> {".exe", ".lnk"};
 
                         ctx.GetTable<ExecutableUnit>().InsertAllOnSubmit(
                             targetFolders.SelectMany(targetFolder =>
@@ -71,19 +71,6 @@ namespace Ann.Core
             {
                 return Enumerable.Empty<string>();
             }
-        }
-
-        private static HashSet<string> MakeExecutableExts()
-        {
-#if false
-            var pathext = Environment.GetEnvironmentVariable("PATHEXT");
-
-            return pathext == null
-                ? new HashSet<string> {".exe"}
-                : new HashSet<string>(pathext.Split(';').Select(p => p.ToLower()));
-#else
-            return new HashSet<string> {".exe"};
-#endif
         }
 
         private static void CreateTable(SQLiteConnection conn)
