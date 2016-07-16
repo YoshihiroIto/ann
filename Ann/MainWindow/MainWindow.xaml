@@ -306,9 +306,9 @@
                         </Grid>
 
                         <materialDesign:PopupBox Grid.Column="2"
+                                                 Margin="0,0,-8,-24"
                                                  Closed="PopupBox_Closed"
                                                  DockPanel.Dock="Right"
-                                                 Margin="0,0,-8,-24"
                                                  Foreground="Gainsboro"
                                                  PlacementMode="BottomAndAlignRightEdges">
                             <StackPanel>
@@ -318,6 +318,9 @@
                                                           Mode=OneWay}"
                                         CommandParameter="admin"
                                         Content="Run As Administrator" />
+
+                                <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
+                                <Button Command="{Binding DataContext.ContainingFolderOpenCommand, RelativeSource={RelativeSource AncestorType=Window}, Mode=OneWay}" Content="Open Containing Folder" />
                             </StackPanel>
 
                             <materialDesign:PopupBox.Style>

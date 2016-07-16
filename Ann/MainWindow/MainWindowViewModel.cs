@@ -26,6 +26,7 @@ namespace Ann.MainWindow
         public ReactiveCommand<object> SelectedCandidateMoveCommand { get; }
 
         public ReactiveCommand<string> RunCommand { get; }
+        public ReactiveCommand ContainingFolderOpenCommand { get; }
 
         public ReactiveProperty<Visibility> Visibility { get; }
 
@@ -140,8 +141,15 @@ namespace Ann.MainWindow
                 .Subscribe(async p =>
                 {
                     Visibility.Value = System.Windows.Visibility.Hidden;
-                    await ProcessHelper.Run(path, p == "admin");
+                    await ProcessHelper.Run(path, string.Empty, p == "admin");
                 }).AddTo(CompositeDisposable);
+
+            ContainingFolderOpenCommand = SelectedCandidate
+                .Select(i => i != null)
+                .ToReactiveCommand().AddTo(CompositeDisposable);
+            ContainingFolderOpenCommand
+                .Subscribe(async _ => await ProcessHelper.Run("EXPLORER", $"/select,\"{SelectedCandidate.Value.Path}\"", false))
+                .AddTo(CompositeDisposable);
 
             AppHideCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             AppHideCommand.Subscribe(_ => Visibility.Value = System.Windows.Visibility.Hidden)
