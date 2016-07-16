@@ -21,7 +21,6 @@ namespace Ann.Core
                     conn.Open();
 
                     CreateTable(conn);
-                    DeleteAll(conn);
 
                     using (var ctx = new DataContext(conn))
                     {
@@ -92,14 +91,19 @@ namespace Ann.Core
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText =
-                    $"create table if not exists {nameof(ExecutableUnit)} (Path TEXT PRIMARY KEY, Name TEX, Directory TEXTT, FileName TEXT)";
+                    $"drop table if exists {nameof(ExecutableUnit)}";
 
                 cmd.ExecuteNonQuery();
             }
-        }
 
-        private static void DeleteAll(SQLiteConnection conn)
-        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText =
+                    $"create table {nameof(ExecutableUnit)} (Path TEXT PRIMARY KEY, Name TEX, Directory TEXTT, FileName TEXT)";
+
+                cmd.ExecuteNonQuery();
+            }
+
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText =
