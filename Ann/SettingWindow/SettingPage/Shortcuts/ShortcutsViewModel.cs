@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Ann.Foundation.Mvvm;
+using Reactive.Bindings.Extensions;
 
 namespace Ann.SettingWindow.SettingPage.Shortcuts
 {
@@ -14,8 +15,11 @@ namespace Ann.SettingWindow.SettingPage.Shortcuts
         {
             Debug.Assert(model != null);
 
-            Activate = new ShortcutKeyViewModel(model.MainWindow.ShortcutKeys.Activate);
-            HideShortcuts = new ShortcutKeyListBoxViewModel(model.MainWindow.ShortcutKeys.Hide);
+            Activate = new ShortcutKeyViewModel(model.MainWindow.ShortcutKeys.Activate)
+                .AddTo(CompositeDisposable);
+
+            HideShortcuts = new ShortcutKeyListBoxViewModel(model.MainWindow.ShortcutKeys.Hide)
+                .AddTo(CompositeDisposable);
         }
     }
 }
