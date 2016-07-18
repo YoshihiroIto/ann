@@ -12,7 +12,7 @@ using YamlDotNet.Serialization;
 
 namespace Ann
 {
-    public class App : ModelBase
+    public class App : DisposableModelBase
     {
         public static App Instance { get; } = new App();
 

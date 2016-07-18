@@ -3,7 +3,7 @@ using Livet.Messaging;
 
 namespace Ann.Foundation.Mvvm
 {
-    public class ViewModelBase : ModelBase
+    public class ViewModelBase : DisposableNotificationObject
     {
         private InteractionMessenger _Messenger;
 

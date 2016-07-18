@@ -60,6 +60,9 @@
     <Compile Include="Control\WindowHelper.cs" />
     <Compile Include="DisposableChecker.cs" />
     <Compile Include="LruCache.cs" />
+    <Compile Include="Mvvm\DisposableNotificationObject.cs" />
+    <Compile Include="Mvvm\DisposableModelBase.cs" />
+    <Compile Include="Mvvm\NotificationObject.cs" />
     <Compile Include="Mvvm\ModelBase.cs" />
     <Compile Include="Mvvm\ViewModelBase.cs" />
     <Compile Include="ProcessHelper.cs" />
