@@ -61,7 +61,8 @@ namespace Ann.MainWindow
             IsIndexUpdating = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
             Visibility = new ReactiveProperty<Visibility>(System.Windows.Visibility.Visible).AddTo(CompositeDisposable);
 
-            Left = App.Instance.Config.MainWindow.ToReactivePropertyAsSynchronized(x => x.Left).AddTo(CompositeDisposable);
+            Left =
+                App.Instance.Config.MainWindow.ToReactivePropertyAsSynchronized(x => x.Left).AddTo(CompositeDisposable);
             Top = App.Instance.Config.MainWindow.ToReactivePropertyAsSynchronized(x => x.Top).AddTo(CompositeDisposable);
             MaxCandidatesLinesCount =
                 App.Instance.Config.MainWindow.ToReactivePropertyAsSynchronized(x => x.MaxCandidateLinesCount)
@@ -69,8 +70,10 @@ namespace Ann.MainWindow
 
             CandidateItemHeight = new ReactiveProperty<double>().AddTo(CompositeDisposable);
             CandidatesListMaxHeight =
-                CandidateItemHeight
-                    .Select(h => h*MaxCandidatesLinesCount.Value + 4)
+                Observable
+                    .Merge(MaxCandidatesLinesCount.ToUnit())
+                    .Merge(CandidateItemHeight.ToUnit())
+                    .Select(_ => CandidateItemHeight.Value*MaxCandidatesLinesCount.Value + 4)
                     .ToReadOnlyReactiveProperty()
                     .AddTo(CompositeDisposable);
 
@@ -148,7 +151,8 @@ namespace Ann.MainWindow
                 .Select(i => i != null)
                 .ToReactiveCommand().AddTo(CompositeDisposable);
             ContainingFolderOpenCommand
-                .Subscribe(async _ => await ProcessHelper.Run("EXPLORER", $"/select,\"{SelectedCandidate.Value.Path}\"", false))
+                .Subscribe(
+                    async _ => await ProcessHelper.Run("EXPLORER", $"/select,\"{SelectedCandidate.Value.Path}\"", false))
                 .AddTo(CompositeDisposable);
 
             AppHideCommand = new ReactiveCommand().AddTo(CompositeDisposable);

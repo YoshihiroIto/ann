@@ -6,6 +6,7 @@
             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             xmlns:settingWindow="clr-namespace:Ann.SettingWindow"
+            xmlns:settingPage="clr-namespace:Ann.SettingWindow.SettingPage"
             d:DataContext="{d:DesignData ShortcutKeyListBoxViewModel}"
             d:DesignHeight="300"
             d:DesignWidth="300"
@@ -23,7 +24,7 @@
 
     <ListBox HorizontalContentAlignment="Stretch" ItemsSource="{Binding Keys, Mode=OneWay}">
         <ListBox.ItemTemplate>
-            <DataTemplate DataType="{x:Type settingWindow:ShortcutKeyViewModel}">
+            <DataTemplate DataType="{x:Type settingPage:ShortcutKeyViewModel}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />

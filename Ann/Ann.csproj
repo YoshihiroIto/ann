@@ -159,8 +159,8 @@
     <Compile Include="SettingWindow\SettingPage\ShortcutKeyListBox.xaml.cs">
       <DependentUpon>ShortcutKeyListBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SettingWindow\ShortcutKeyListBoxViewModel.cs" />
-    <Compile Include="SettingWindow\ShortcutKeyViewModel.cs" />
+    <Compile Include="SettingWindow\SettingPage\ShortcutKeyListBoxViewModel.cs" />
+    <Compile Include="SettingWindow\SettingPage\ShortcutKeyViewModel.cs" />
     <Page Include="Entry.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

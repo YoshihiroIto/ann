@@ -6,7 +6,7 @@ using Ann.Foundation.Mvvm;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 
-namespace Ann.SettingWindow
+namespace Ann.SettingWindow.SettingPage
 {
     public class ShortcutKeyViewModel : ViewModelBase
     {
