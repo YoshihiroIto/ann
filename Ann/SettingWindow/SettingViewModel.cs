@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Linq;
+using System.Windows;
 using Ann.Foundation.Mvvm;
 using Ann.SettingWindow.SettingPage;
 using Livet;
@@ -18,7 +19,7 @@ namespace Ann.SettingWindow
             Debug.Assert(model != null);
 
             CompositeDisposable.Add(() => Pages.ForEach(p => p.Dispose()));
-            
+
             Pages = new ViewModelBase[]
             {
                 new GeneralViewModel(model),

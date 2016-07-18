@@ -50,7 +50,9 @@
                Text="User folders" />
 
     <settingPage:FolderListBox Margin="16,0,0,8"
-                               AddCommand="{Binding FolderAddCommand, Mode=OneWay}"
-                               RemoveCommand="{Binding FolderRemoveCommand, Mode=OneWay}"
-                               Items="{Binding Folders}" />
+                               AddCommand="{Binding FolderAddCommand,
+                                                    Mode=OneWay}"
+                               Items="{Binding Folders}"
+                               RemoveCommand="{Binding FolderRemoveCommand,
+                                                       Mode=OneWay}" />
 </StackPanel>
