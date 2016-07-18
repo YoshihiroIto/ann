@@ -4,7 +4,7 @@
            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
            xmlns:settingPage="clr-namespace:Ann.SettingWindow.SettingPage"
-           Margin="16"
+           Margin="24,16"
            d:DataContext="{d:DesignData SettingViewModel}"
            d:DesignHeight="300"
            d:DesignWidth="300"
@@ -21,7 +21,7 @@
     <StackPanel DockPanel.Dock="Left">
         <TextBlock Style="{StaticResource MaterialDesignHeadlineTextBlock}" Text="Ann" />
 
-        <ListBox Margin="-16,16,0,0"
+        <ListBox Margin="-24,16,0,0"
                  HorizontalContentAlignment="Stretch"
                  IsSynchronizedWithCurrentItem="True"
                  ItemsSource="{Binding Pages,
@@ -35,7 +35,7 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                    <TextBlock Margin="8,0,0,0"
+                    <TextBlock Margin="16,0,0,0"
                                Padding="0"
                                Text="{Binding Name,
                                               Mode=OneTime}" />
@@ -44,7 +44,7 @@
         </ListBox>
     </StackPanel>
 
-    <StackPanel Margin="48,0,0,0">
+    <StackPanel Margin="64,0,0,0">
         <TextBlock Style="{StaticResource MaterialDesignHeadlineTextBlock}" Text="{Binding SelectedPage.Value.Name, Mode=OneWay}" />
 
         <Separator Style="{StaticResource MaterialDesignSeparator}" />

@@ -172,7 +172,6 @@
         </Setter>
     </Style>
 
-
     <Style x:Key="SettingListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="Padding" Value="0,8" />
@@ -183,8 +182,8 @@
                 <ControlTemplate TargetType="{x:Type ListBoxItem}">
                     <Border x:Name="Bd"
                             Background="{TemplateBinding Background}"
-                            BorderBrush="DimGray"
-                            BorderThickness="8,0,0,0"
+                            BorderBrush="#4E5764"
+                            BorderThickness="6,0,0,0"
                             Padding="{TemplateBinding Padding}"
                             SnapsToDevicePixels="true">
                         <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
