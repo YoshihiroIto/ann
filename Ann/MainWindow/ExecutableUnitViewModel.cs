@@ -55,7 +55,7 @@ namespace Ann.MainWindow
             }
         }
 
-        public ReactiveCommand FlipHighPriority { get; }
+        public ReactiveCommand HighPriorityFlipCommand { get; }
 
         private readonly MainWindowViewModel _parent;
 
@@ -77,8 +77,8 @@ namespace Ann.MainWindow
                     RaisePropertyChanged(nameof(IsHighPriority))
                 ).AddTo(CompositeDisposable);
 
-            FlipHighPriority = new ReactiveCommand().AddTo(CompositeDisposable);
-            FlipHighPriority
+            HighPriorityFlipCommand = new ReactiveCommand().AddTo(CompositeDisposable);
+            HighPriorityFlipCommand
                 .Subscribe(_ => IsHighPriority = !IsHighPriority)
                 .AddTo(CompositeDisposable);
         }

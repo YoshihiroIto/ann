@@ -362,7 +362,7 @@
 
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
-                                    <interactivity:EventToReactiveCommand Command="{Binding FlipHighPriority, Mode=OneTime}" />
+                                    <interactivity:EventToReactiveCommand Command="{Binding HighPriorityFlipCommand, Mode=OneTime}" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
