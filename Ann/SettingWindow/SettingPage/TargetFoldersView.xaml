@@ -1,12 +1,11 @@
-﻿<StackPanel x:Class="Ann.SettingWindow.SettingPage.ShortcutsView"
+﻿<StackPanel x:Class="Ann.SettingWindow.SettingPage.TargetFoldersView"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-            xmlns:control="clr-namespace:Ann.Foundation.Control;assembly=Ann.Foundation"
+            xmlns:ann="clr-namespace:Ann"
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-            xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             xmlns:settingPage="clr-namespace:Ann.SettingWindow.SettingPage"
-            d:DataContext="{d:DesignData ShortcutsViewModel}"
+            d:DataContext="{d:DesignData TargetFolder}"
             d:DesignHeight="300"
             d:DesignWidth="300"
             mc:Ignorable="d">
@@ -28,28 +27,30 @@
 
     <TextBlock Margin="0,0,0,8"
                Style="{StaticResource MaterialDesignSubheadingTextBlock}"
-               Text="Activate" />
+               Text="Frequently used folders" />
 
-    <control:ShortcutKeyInputBox Key="{Binding Key.Value}"
-                                 MinWidth="150"
-                                 Margin="16,0,0,0"
-                                 HorizontalAlignment="Left"
-                                 materialDesign:HintAssist.Hint="Key Stroke"
-                                 DataContext="{Binding Activate}"
-                                 IsAlt="{Binding IsAlt.Value}"
-                                 IsControl="{Binding IsControl.Value}"
-                                 IsShift="{Binding IsShift.Value}"
-                                 Style="{StaticResource MaterialDesignTextBox}" />
+    <CheckBox Margin="16,0,0,8"
+              Content="{x:Static ann:Constants.SystemFolder}"
+              IsChecked="{Binding IsIncludeSystemFolder.Value}" />
+    <CheckBox Margin="16,0,0,8"
+              Content="{x:Static ann:Constants.SystemX86Folder}"
+              IsChecked="{Binding IsIncludeSystemX86Folder.Value}" />
+    <CheckBox Margin="16,0,0,8"
+              Content="{x:Static ann:Constants.ProgramsFolder}"
+              IsChecked="{Binding IsIncludeProgramsFolder.Value}" />
+    <CheckBox Margin="16,0,0,8"
+              Content="{x:Static ann:Constants.ProgramFilesX86Folder}"
+              IsChecked="{Binding IsIncludeProgramFilesX86Folder.Value}" />
+    <CheckBox Margin="16,0,0,8"
+              Content="{x:Static ann:Constants.ProgramFilesFolder}"
+              IsChecked="{Binding IsIncludeProgramFilesFolder.Value}" />
 
     <TextBlock Margin="0,32,0,8"
                Style="{StaticResource MaterialDesignSubheadingTextBlock}"
-               Text="Hide" />
+               Text="User folders" />
 
-    <settingPage:ShortcutKeyListBox MinWidth="150"
-                                    Margin="16,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    DataContext="{Binding HideShortcuts}" />
+    <settingPage:FolderListBox Margin="16,0,0,8"
+                               AddCommand="{Binding FolderAddCommand, Mode=OneWay}"
+                               RemoveCommand="{Binding FolderRemoveCommand, Mode=OneWay}"
+                               Items="{Binding Folders}" />
 </StackPanel>
-
-
-

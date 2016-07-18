@@ -76,18 +76,25 @@ namespace Ann
             var targetFolders = Config.TargetFolder.Folders.ToList();
 
             if (Config.TargetFolder.IsIncludeSystemFolder)
-            {
-                targetFolders.Add(Environment.GetFolderPath(Environment.SpecialFolder.System));
-                targetFolders.Add(Environment.GetFolderPath(Environment.SpecialFolder.SystemX86));
-            }
+                targetFolders.Add(new Config.Path(Constants.SystemFolder));
+
+            if (Config.TargetFolder.IsIncludeSystemX86Folder)
+                targetFolders.Add(new Config.Path(Constants.SystemX86Folder));
 
             if (Config.TargetFolder.IsIncludeProgramsFolder)
-                targetFolders.Add(Environment.GetFolderPath(Environment.SpecialFolder.Programs));
+                targetFolders.Add(new Config.Path(Constants.ProgramsFolder));
+
+            if (Config.TargetFolder.IsIncludeProgramFilesFolder)
+                targetFolders.Add(new Config.Path(Constants.ProgramFilesFolder));
+
+            if (Config.TargetFolder.IsIncludeProgramFilesX86Folder)
+                targetFolders.Add(new Config.Path(Constants.ProgramFilesX86Folder));
 
             await _dataBase.UpdateIndexAsync(
                 targetFolders
-                .Select(Environment.ExpandEnvironmentVariables)
-                .Distinct());
+                .Select(f => Environment.ExpandEnvironmentVariables(f.Value))
+                .Distinct()
+                .Where(Directory.Exists));
         }
 
         public IEnumerable<ExecutableUnit> FindExecutableUnit(string name) =>
@@ -147,13 +154,13 @@ namespace Ann
                 return new Deserializer().Deserialize<Config.App>(reader);
         }
 
-        private void SaveConfig()
+        public void SaveConfig()
         {
             Config.HighPriorities = new ObservableCollection<string>(_highPriorities);
 
             using (var writer = new StringWriter())
             {
-                new Serializer().Serialize(writer, Config);
+                new Serializer(SerializationOptions.EmitDefaults).Serialize(writer, Config);
                 Directory.CreateDirectory(ConfigDirPath);
                 File.WriteAllText(ConfigFilePath, writer.ToString());
             }

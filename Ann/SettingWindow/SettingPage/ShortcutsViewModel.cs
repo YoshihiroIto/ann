@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using Ann.Foundation.Mvvm;
-using Reactive.Bindings;
 
 namespace Ann.SettingWindow.SettingPage
 {

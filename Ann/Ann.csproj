@@ -140,15 +140,24 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\Path.cs" />
     <Compile Include="Config\ShortcutKey.cs" />
     <Compile Include="SettingWindow\SettingPage\GeneralView.xaml.cs">
       <DependentUpon>GeneralView.xaml</DependentUpon>
     </Compile>
     <Compile Include="SettingWindow\SettingPage\GeneralViewModel.cs" />
+    <Compile Include="SettingWindow\SettingPage\FolderListBox.xaml.cs">
+      <DependentUpon>FolderListBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SettingWindow\SettingPage\PathViewModel.cs" />
     <Compile Include="SettingWindow\SettingPage\ShortcutsView.xaml.cs">
       <DependentUpon>ShortcutsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="SettingWindow\SettingPage\ShortcutsViewModel.cs" />
+    <Compile Include="SettingWindow\SettingPage\TargetFoldersView.xaml.cs">
+      <DependentUpon>TargetFoldersView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SettingWindow\SettingPage\TargetFoldersViewModel.cs" />
     <Compile Include="SettingWindow\SettingPanel.xaml.cs">
       <DependentUpon>SettingPanel.xaml</DependentUpon>
     </Compile>
@@ -185,7 +194,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="SettingWindow\SettingPage\FolderListBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="SettingWindow\SettingPage\ShortcutsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SettingWindow\SettingPage\TargetFoldersView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

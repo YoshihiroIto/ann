@@ -22,6 +22,7 @@ namespace Ann.SettingWindow
             Pages = new ViewModelBase[]
             {
                 new GeneralViewModel(model),
+                new TargetFoldersViewModel(model),
                 new ShortcutsViewModel(model)
             };
             SelectedPage = new ReactiveProperty<ViewModelBase>(Pages[0]).AddTo(CompositeDisposable);

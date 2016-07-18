@@ -167,10 +167,10 @@ namespace Ann.MainWindow
 
             SettingShowCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             SettingShowCommand.Subscribe(_ =>
-                Messenger.Raise(new TransitionMessage(
-                    new SettingViewModel(App.Instance.Config),
-                    "ShowSetting"))
-                ).AddTo(CompositeDisposable);
+            {
+                Messenger.Raise(new TransitionMessage(new SettingViewModel(App.Instance.Config), "ShowSetting"));
+                App.Instance.SaveConfig();
+            }).AddTo(CompositeDisposable);
 
             IsEnabledIndex = App.Instance.ObserveProperty(x => x.IsEnabledIndex)
                 .ToReadOnlyReactiveProperty()

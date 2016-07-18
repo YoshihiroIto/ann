@@ -56,6 +56,18 @@ namespace Ann.Config
 
         #endregion
 
+        #region IsIncludeSystemX86Folder
+
+        private bool _IsIncludeSystemX86Folder = true;
+
+        public bool IsIncludeSystemX86Folder
+        {
+            get { return _IsIncludeSystemX86Folder; }
+            set { SetProperty(ref _IsIncludeSystemX86Folder, value); }
+        }
+
+        #endregion
+
         #region IsIncludeProgramsFolder
 
         private bool _IsIncludeProgramsFolder = true;
@@ -68,15 +80,35 @@ namespace Ann.Config
 
         #endregion
 
+        #region IsIncludeProgramFilesFolder
+
+        private bool _IsIncludeProgramFilesFolder = true;
+
+        public bool IsIncludeProgramFilesFolder
+        {
+            get { return _IsIncludeProgramFilesFolder; }
+            set { SetProperty(ref _IsIncludeProgramFilesFolder, value); }
+        }
+
+        #endregion
+
+        #region IsIncludeProgramFilesX86Folder
+
+        private bool _IsIncludeProgramFilesX86Folder = true;
+
+        public bool IsIncludeProgramFilesX86Folder
+        {
+            get { return _IsIncludeProgramFilesX86Folder; }
+            set { SetProperty(ref _IsIncludeProgramFilesX86Folder, value); }
+        }
+
+        #endregion
+
         #region Folders
 
-        private ObservableCollection<string> _Folders = new ObservableCollection<string>
-            {
-                @"C:\Program Files",
-                @"C:\Program Files (x86)"
-            };
+        private ObservableCollection<Path> _Folders = new ObservableCollection<Path>();
 
-        public ObservableCollection<string> Folders
+        public ObservableCollection<Path> Folders
         {
             get { return _Folders; }
             set { SetProperty(ref _Folders, value); }
