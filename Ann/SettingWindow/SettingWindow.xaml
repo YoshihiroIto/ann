@@ -1,11 +1,13 @@
 ﻿<Window x:Class="Ann.SettingWindow.SettingWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:control="clr-namespace:Ann.Foundation.Control;assembly=Ann.Foundation"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:settingWindow="clr-namespace:Ann.SettingWindow"
         Title="Setting -- Ann"
-        Width="600"
+        Width="800"
         Height="500"
         d:DataContext="{d:DesignData SettingViewModel}"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
@@ -31,115 +33,25 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml" />
 
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PasswordBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ListBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml" />
+
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Menu.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <Style BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="{x:Type Button}" />
+            <Style BasedOn="{StaticResource MaterialDesignListBox}" TargetType="{x:Type ListBox}" />
+            <Style BasedOn="{StaticResource MaterialDesignTextBox}" TargetType="{x:Type control:ShortcutKeyInputBox}">
+                <Setter Property="materialDesign:TransitionAssist.DisableTransitions" Value="True" />
+                <Setter Property="materialDesign:HintAssist.Hint" Value="Key Stroke" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Margin" Value="0" />
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
 
-    <StackPanel>
-        <Grid Margin="16" VerticalAlignment="Top">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="100" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0"
-                       Grid.Column="0"
-                       Style="{StaticResource MaterialDesignHeadlineTextBlock}"
-                       Text="General Settings" />
-
-            <ComboBox Grid.Row="1"
-                      Grid.Column="0"
-                      Width="130"
-                      Margin="8,16,0,0"
-                      HorizontalAlignment="Left"
-                      materialDesign:HintAssist.Hint="Max Candidate Lines"
-                      ItemsSource="{Binding MaxCandidateLines}"
-                      SelectedItem="{Binding MaxCandidateLinesCount.Value}"
-                      Style="{StaticResource MaterialDesignFloatingHintComboBox}" />
-        </Grid>
-
-        <Grid Margin="0,80,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="32" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-
-            <Grid Grid.Column="0"
-                  Margin="16"
-                  VerticalAlignment="Top">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Row="0"
-                           Style="{StaticResource MaterialDesignHeadlineTextBlock}"
-                           Text="Target Folders" />
-
-                <ItemsControl Grid.Row="1"
-                              Margin="8,16,0,0"
-                              Focusable="False"
-                              ItemsSource="{Binding TargetFolders,
-                                                    Mode=OneWay}" />
-            </Grid>
-
-            <Grid Grid.Column="2"
-                  Margin="16"
-                  VerticalAlignment="Top">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Row="0"
-                           Grid.Column="0"
-                           Style="{StaticResource MaterialDesignHeadlineTextBlock}"
-                           Text="High Priorities" />
-
-                <ItemsControl Grid.Row="1"
-                              Margin="8,16,0,0"
-                              Focusable="False"
-                              ItemsSource="{Binding HighPriorities,
-                                                    Mode=OneWay}" />
-            </Grid>
-        </Grid>
-    </StackPanel>
+    <ScrollViewer>
+        <settingWindow:SettingPanel />
+    </ScrollViewer>
 </Window>
