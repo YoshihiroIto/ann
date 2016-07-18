@@ -58,6 +58,7 @@
     <Compile Include="Control\HotKeyRegister.cs" />
     <Compile Include="Control\ShortcutKeyInputBox.cs" />
     <Compile Include="Control\WindowHelper.cs" />
+    <Compile Include="DisposableChecker.cs" />
     <Compile Include="LruCache.cs" />
     <Compile Include="Mvvm\ModelBase.cs" />
     <Compile Include="Mvvm\ViewModelBase.cs" />

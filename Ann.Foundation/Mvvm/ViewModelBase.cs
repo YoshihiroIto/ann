@@ -11,5 +11,10 @@ namespace Ann.Foundation.Mvvm
         {
             get { return LazyInitializer.EnsureInitialized(ref _Messenger, () => new InteractionMessenger()); }
         }
+
+        public ViewModelBase(bool disableDisposableChecker = false)
+            : base(disableDisposableChecker)
+        {
+        }
     }
 }

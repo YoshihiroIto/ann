@@ -17,6 +17,17 @@ namespace Ann.Foundation.Mvvm
             get { return LazyInitializer.EnsureInitialized(ref _compositeDisposable, () => new LivetCompositeDisposable()); }
         }
 
+        private readonly bool _disableDisposableChecker;
+
+        public ModelBase(bool disableDisposableChecker = false)
+        {
+            _disableDisposableChecker = disableDisposableChecker;
+
+            if (_disableDisposableChecker == false)
+                DisposableChecker.Add(this);
+        }
+
+
         protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(storage, value))
@@ -49,6 +60,9 @@ namespace Ann.Foundation.Mvvm
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+
+            if (_disableDisposableChecker == false)
+                DisposableChecker.Remove(this);
         }
     }
 }
