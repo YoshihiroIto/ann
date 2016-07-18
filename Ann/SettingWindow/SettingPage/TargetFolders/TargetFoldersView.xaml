@@ -4,7 +4,6 @@
             xmlns:ann="clr-namespace:Ann"
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-            xmlns:settingPage="clr-namespace:Ann.SettingWindow.SettingPage"
             xmlns:targetFolders="clr-namespace:Ann.SettingWindow.SettingPage.TargetFolders"
             d:DataContext="{d:DesignData TargetFolder}"
             d:DesignHeight="300"

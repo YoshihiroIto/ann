@@ -4,7 +4,6 @@
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-            xmlns:settingPage="clr-namespace:Ann.SettingWindow.SettingPage"
             xmlns:targetFolders="clr-namespace:Ann.SettingWindow.SettingPage.TargetFolders"
             d:DesignHeight="300"
             d:DesignWidth="300"
@@ -22,7 +21,7 @@
 
     <ListBox HorizontalContentAlignment="Stretch" ItemsSource="{Binding Items, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type targetFolders:FolderListBox}}}">
         <ListBox.ItemTemplate>
-            <DataTemplate DataType="settingPage:PathViewModel">
+            <DataTemplate DataType="targetFolders:PathViewModel">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />

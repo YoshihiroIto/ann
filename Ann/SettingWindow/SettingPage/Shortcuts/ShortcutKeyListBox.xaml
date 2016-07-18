@@ -5,7 +5,6 @@
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-            xmlns:settingPage="clr-namespace:Ann.SettingWindow.SettingPage"
             xmlns:shortcuts="clr-namespace:Ann.SettingWindow.SettingPage.Shortcuts"
             d:DataContext="{d:DesignData ShortcutKeyListBoxViewModel}"
             d:DesignHeight="300"
@@ -45,7 +44,7 @@
                         <materialDesign:PackIcon Kind="Delete" />
                     </Button>
 
-                    <Button Grid.Column="1" Command="{Binding KeyRemoveCommand, Mode=OneTime}">
+                    <Button Grid.Column="1" >
                         <materialDesign:PackIcon Kind="Delete" />
 
                         <Button.Style>

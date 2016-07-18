@@ -1,8 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Linq;
-using System.Windows;
 using Ann.Foundation.Mvvm;
-using Ann.SettingWindow.SettingPage;
 using Ann.SettingWindow.SettingPage.General;
 using Ann.SettingWindow.SettingPage.Shortcuts;
 using Ann.SettingWindow.SettingPage.TargetFolders;
