@@ -1,42 +1,168 @@
-﻿using System;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using Ann.Foundation.Mvvm;
 
 namespace Ann.Config
 {
-    public class App
+    public class App : ModelBase
     {
-        public string[] TargetFolders { get; set; } =
+        #region TargetFolder
+
+        private TargetFolder _TargetFolder = new TargetFolder();
+
+        public TargetFolder TargetFolder
+        {
+            get { return _TargetFolder; }
+            set { SetProperty(ref _TargetFolder, value); }
+        }
+
+        #endregion
+
+        #region HighPriorities
+
+        private ObservableCollection<string> _HighPriorities = new ObservableCollection<string>();
+
+        public ObservableCollection<string> HighPriorities
+        {
+            get { return _HighPriorities; }
+            set { SetProperty(ref _HighPriorities, value); }
+        }
+        #endregion
+
+        #region MainWindow
+
+        private MainWindow _MainWindow = new MainWindow();
+
+        public MainWindow MainWindow
+        {
+            get { return _MainWindow; }
+            set { SetProperty(ref _MainWindow, value); }
+        }
+
+        #endregion
+    }
+
+    public class TargetFolder : ModelBase
+    {
+        #region IsIncludeSystemFolder
+
+        private bool _IsIncludeSystemFolder = true;
+
+        public bool IsIncludeSystemFolder
+        {
+            get { return _IsIncludeSystemFolder; }
+            set { SetProperty(ref _IsIncludeSystemFolder, value); }
+        }
+
+        #endregion
+
+        #region IsIncludeProgramsFolder
+
+        private bool _IsIncludeProgramsFolder = true;
+
+        public bool IsIncludeProgramsFolder
+        {
+            get { return _IsIncludeProgramsFolder; }
+            set { SetProperty(ref _IsIncludeProgramsFolder, value); }
+        }
+
+        #endregion
+
+        #region Folders
+
+        private ObservableCollection<string> _Folders = new ObservableCollection<string>
             {
                 @"C:\Program Files",
-                @"C:\Program Files (x86)",
-                Environment.GetFolderPath(Environment.SpecialFolder.System),
-                Environment.GetFolderPath(Environment.SpecialFolder.SystemX86),
-                Environment.GetFolderPath(Environment.SpecialFolder.Programs)
+                @"C:\Program Files (x86)"
             };
 
-        public string[] HighPriorities { get; set; }
-
-        public MainWindow MainWindow { get; set; }
+        public ObservableCollection<string> Folders
+        {
+            get { return _Folders; }
+            set { SetProperty(ref _Folders, value); }
+        }
+        #endregion
     }
 
-    public class MainWindow
+    public class MainWindow : ModelBase
     {
-        public double Left { get; set; } = double.NaN;
-        public double Top { get; set; } = double.NaN;
+        #region Left
 
-        public int MaxCandidateLinesCount { get; set; } = Constants.DefaultMaxCandidateLinesCount;
+        private double _Left = double.NaN;
 
-        public ShortcutKeys ShortcutKeys { get; set; } = new ShortcutKeys();
+        public double Left
+        {
+            get { return _Left; }
+            set { SetProperty(ref _Left, value); }
+        }
+
+        #endregion
+
+        #region Top
+
+        private double _Top = double.NaN;
+
+        public double Top
+        {
+            get { return _Top; }
+            set { SetProperty(ref _Top, value); }
+        }
+
+        #endregion
+
+        #region MaxCandidateLinesCount
+
+        private int _MaxCandidateLinesCount = Constants.DefaultMaxCandidateLinesCount;
+
+        public int MaxCandidateLinesCount
+        {
+            get { return _MaxCandidateLinesCount; }
+            set { SetProperty(ref _MaxCandidateLinesCount, value); }
+        }
+
+        #endregion
+
+        #region ShortcutKeys
+
+        private ShortcutKeys _ShortcutKeys = new ShortcutKeys();
+
+        public ShortcutKeys ShortcutKeys
+        {
+            get { return _ShortcutKeys; }
+            set { SetProperty(ref _ShortcutKeys, value); }
+        }
+
+        #endregion
     }
 
-    public class ShortcutKeys
+    public class ShortcutKeys : ModelBase
     {
-        public ShortcutKey Activate { get; set; } =
+        #region Activate
+
+        private ShortcutKey _Activate =
             new ShortcutKey {Key = Key.Space, Modifiers = ModifierKeys.Control};
 
-        public ShortcutKey[] Hide { get; set; } =
-            {
-                new ShortcutKey {Key = Key.J, Modifiers = ModifierKeys.Control}
-            };
+        public ShortcutKey Activate
+        {
+            get { return _Activate; }
+            set { SetProperty(ref _Activate, value); }
+        }
+
+        #endregion
+
+        #region Hide
+
+        private ObservableCollection<ShortcutKey> _Hide = new ObservableCollection<ShortcutKey>
+        {
+            new ShortcutKey {Key = Key.J, Modifiers = ModifierKeys.Control}
+        };
+
+        public ObservableCollection<ShortcutKey> Hide
+        {
+            get { return _Hide; }
+            set { SetProperty(ref _Hide, value); }
+        }
+
+        #endregion
     }
 }

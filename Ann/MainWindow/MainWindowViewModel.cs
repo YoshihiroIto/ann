@@ -61,10 +61,10 @@ namespace Ann.MainWindow
             IsIndexUpdating = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
             Visibility = new ReactiveProperty<Visibility>(System.Windows.Visibility.Visible).AddTo(CompositeDisposable);
 
-            Left = App.Instance.ToReactivePropertyAsSynchronized(x => x.MainWindowLeft).AddTo(CompositeDisposable);
-            Top = App.Instance.ToReactivePropertyAsSynchronized(x => x.MainWindowTop).AddTo(CompositeDisposable);
+            Left = App.Instance.Config.MainWindow.ToReactivePropertyAsSynchronized(x => x.Left).AddTo(CompositeDisposable);
+            Top = App.Instance.Config.MainWindow.ToReactivePropertyAsSynchronized(x => x.Top).AddTo(CompositeDisposable);
             MaxCandidatesLinesCount =
-                App.Instance.ToReactivePropertyAsSynchronized(x => x.MainWindowMaxCandidateLinesCount)
+                App.Instance.Config.MainWindow.ToReactivePropertyAsSynchronized(x => x.MaxCandidateLinesCount)
                     .AddTo(CompositeDisposable);
 
             CandidateItemHeight = new ReactiveProperty<double>().AddTo(CompositeDisposable);
@@ -164,7 +164,7 @@ namespace Ann.MainWindow
             SettingShowCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             SettingShowCommand.Subscribe(_ =>
                 Messenger.Raise(new TransitionMessage(
-                    new SettingViewModel(App.Instance.MakeCurrentConfig()),
+                    new SettingViewModel(App.Instance.Config),
                     "ShowSetting"))
                 ).AddTo(CompositeDisposable);
 

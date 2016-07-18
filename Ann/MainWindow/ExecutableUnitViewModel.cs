@@ -70,8 +70,8 @@ namespace Ann.MainWindow
             Path = model.Path;
 
             Observable.FromEventPattern(
-                h => App.Instance.HighPriorityChenged += h,
-                h => App.Instance.HighPriorityChenged -= h)
+                h => App.Instance.HighPriorityChanged += h,
+                h => App.Instance.HighPriorityChanged -= h)
                 .Subscribe(_ =>
                     // ReSharper disable once ExplicitCallerInfoArgument
                     RaisePropertyChanged(nameof(IsHighPriority))

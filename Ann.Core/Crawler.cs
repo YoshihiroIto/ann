@@ -29,8 +29,6 @@ namespace Ann.Core
 
                         ctx.GetTable<ExecutableUnit>().InsertAllOnSubmit(
                             targetFolders
-                                .Select(Environment.ExpandEnvironmentVariables)
-                                .Distinct()
                                 .SelectMany(targetFolder =>
                                     EnumerateAllFiles(targetFolder)
                                         .Where(f => executableExts.Contains(Path.GetExtension(f)?.ToLower()))

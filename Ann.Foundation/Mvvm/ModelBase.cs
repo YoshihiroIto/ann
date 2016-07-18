@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Livet;
+using YamlDotNet.Serialization;
 
 namespace Ann.Foundation.Mvvm
 {
     public class ModelBase : NotificationObject, IDisposable
     {
         private LivetCompositeDisposable _compositeDisposable;
+
+        [YamlIgnore]
         public LivetCompositeDisposable CompositeDisposable
         {
             get { return LazyInitializer.EnsureInitialized(ref _compositeDisposable, () => new LivetCompositeDisposable()); }

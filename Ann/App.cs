@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -15,8 +16,9 @@ namespace Ann
     {
         public static App Instance { get; } = new App();
 
+        public Config.App Config { get; private set; }
+
         private HashSet<string> _highPriorities = new HashSet<string>();
-        private string[] _targetFolders = {};
 
         private readonly ExecutableUnitDataBase _dataBase;
 
@@ -35,42 +37,6 @@ namespace Ann
 
         #endregion
 
-        #region MainWindowLeft
-
-        private double _MainWindowLeft = double.NaN;
-
-        public double MainWindowLeft
-        {
-            get { return _MainWindowLeft; }
-            set { SetProperty(ref _MainWindowLeft, value); }
-        }
-
-        #endregion
-
-        #region MainWindowTop
-
-        private double _MainWindowTop = double.NaN;
-
-        public double MainWindowTop
-        {
-            get { return _MainWindowTop; }
-            set { SetProperty(ref _MainWindowTop, value); }
-        }
-
-        #endregion
-
-        #region MainWindowMaxCandidateLinesCount
-
-        private int _MainWindowMaxCandidateLinesCount = Constants.DefaultMaxCandidateLinesCount;
-
-        public int MainWindowMaxCandidateLinesCount
-        {
-            get { return _MainWindowMaxCandidateLinesCount; }
-            set { SetProperty(ref _MainWindowMaxCandidateLinesCount, value); }
-        }
-
-        #endregion
-
         public static void Initialize()
         {
         }
@@ -81,7 +47,7 @@ namespace Ann
             Instance.Dispose();
         }
 
-        public event EventHandler HighPriorityChenged;
+        public event EventHandler HighPriorityChanged;
 
         public bool IsHighPriority(string path) => _highPriorities.Contains(path);
 
@@ -91,7 +57,7 @@ namespace Ann
                 return false;
 
             SaveConfig();
-            HighPriorityChenged?.Invoke(this, EventArgs.Empty);
+            HighPriorityChanged?.Invoke(this, EventArgs.Empty);
             return true;
         }
 
@@ -101,11 +67,28 @@ namespace Ann
                 return false;
 
             SaveConfig();
-            HighPriorityChenged?.Invoke(this, EventArgs.Empty);
+            HighPriorityChanged?.Invoke(this, EventArgs.Empty);
             return true;
         }
 
-        public async Task UpdateIndexAsync() => await _dataBase.UpdateIndexAsync(_targetFolders);
+        public async Task UpdateIndexAsync()
+        {
+            var targetFolders = Config.TargetFolder.Folders.ToList();
+
+            if (Config.TargetFolder.IsIncludeSystemFolder)
+            {
+                targetFolders.Add(Environment.GetFolderPath(Environment.SpecialFolder.System));
+                targetFolders.Add(Environment.GetFolderPath(Environment.SpecialFolder.SystemX86));
+            }
+
+            if (Config.TargetFolder.IsIncludeProgramsFolder)
+                targetFolders.Add(Environment.GetFolderPath(Environment.SpecialFolder.Programs));
+
+            await _dataBase.UpdateIndexAsync(
+                targetFolders
+                .Select(Environment.ExpandEnvironmentVariables)
+                .Distinct());
+        }
 
         public IEnumerable<ExecutableUnit> FindExecutableUnit(string name) =>
             _dataBase
@@ -146,33 +129,13 @@ namespace Ann
                 Assembly.GetExecutingAssembly(), typeof(AssemblyProductAttribute), false))
                 .Product;
 
-        public Config.App MakeCurrentConfig()
-        {
-            return new Config.App
-            {
-                HighPriorities = _highPriorities.ToArray(),
-                TargetFolders = _targetFolders,
-                MainWindow = new Config.MainWindow
-                {
-                    Left = MainWindowLeft,
-                    Top = MainWindowTop
-                }
-            };
-        }
-
         private void LoadConfig()
         {
-            var config = ReadConfigIfExist();
+            Config = ReadConfigIfExist();
 
-            _highPriorities = config.HighPriorities == null
+            _highPriorities = Config.HighPriorities == null
                 ? new HashSet<string>()
-                : new HashSet<string>(config.HighPriorities);
-            _targetFolders = config.TargetFolders;
-
-            MainWindowLeft = config.MainWindow?.Left ?? double.NaN;
-            MainWindowTop = config.MainWindow?.Top ?? double.NaN;
-            MainWindowMaxCandidateLinesCount = config.MainWindow?.MaxCandidateLinesCount ??
-                                               Constants.DefaultMaxCandidateLinesCount;
+                : new HashSet<string>(Config.HighPriorities);
         }
 
         private static Config.App ReadConfigIfExist()
@@ -186,9 +149,11 @@ namespace Ann
 
         private void SaveConfig()
         {
+            Config.HighPriorities = new ObservableCollection<string>(_highPriorities);
+
             using (var writer = new StringWriter())
             {
-                new Serializer().Serialize(writer, MakeCurrentConfig());
+                new Serializer().Serialize(writer, Config);
                 Directory.CreateDirectory(ConfigDirPath);
                 File.WriteAllText(ConfigFilePath, writer.ToString());
             }
