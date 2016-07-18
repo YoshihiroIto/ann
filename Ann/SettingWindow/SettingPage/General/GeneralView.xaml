@@ -1,10 +1,11 @@
-﻿<StackPanel x:Class="Ann.SettingWindow.SettingPage.GeneralView"
+﻿<StackPanel x:Class="Ann.SettingWindow.SettingPage.General.GeneralView"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             xmlns:settingPage="clr-namespace:Ann.SettingWindow.SettingPage"
+            xmlns:general="clr-namespace:Ann.SettingWindow.SettingPage.General"
             d:DataContext="{d:DesignData GeneralViewModel}"
             d:DesignHeight="300"
             d:DesignWidth="300"
@@ -26,7 +27,7 @@
               Margin="16,0,0,0"
               HorizontalAlignment="Left"
               materialDesign:TransitionAssist.DisableTransitions="True"
-              ItemsSource="{x:Static settingPage:GeneralViewModel.MaxCandidateLines}"
+              ItemsSource="{x:Static general:GeneralViewModel.MaxCandidateLines}"
               SelectedItem="{Binding MaxCandidateLinesCount.Value}"
               Style="{StaticResource MaterialDesignComboBox}" />
 </StackPanel>

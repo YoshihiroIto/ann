@@ -1,4 +1,4 @@
-﻿namespace Ann.SettingWindow.SettingPage
+﻿namespace Ann.SettingWindow.SettingPage.TargetFolders
 {
     /// <summary>
     /// TargetFoldersView.xaml の相互作用ロジック

@@ -4,6 +4,9 @@
            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
            xmlns:settingPage="clr-namespace:Ann.SettingWindow.SettingPage"
+           xmlns:general="clr-namespace:Ann.SettingWindow.SettingPage.General"
+           xmlns:targetFolders="clr-namespace:Ann.SettingWindow.SettingPage.TargetFolders"
+           xmlns:shortcuts="clr-namespace:Ann.SettingWindow.SettingPage.Shortcuts"
            Margin="24,16"
            d:DataContext="{d:DesignData SettingViewModel}"
            d:DesignHeight="300"
@@ -51,14 +54,14 @@
 
         <ContentControl Content="{Binding SelectedPage.Value, Mode=OneWay}">
             <ContentControl.Resources>
-                <DataTemplate DataType="{x:Type settingPage:GeneralViewModel}">
-                    <settingPage:GeneralView />
+                <DataTemplate DataType="{x:Type general:GeneralViewModel}">
+                    <general:GeneralView />
                 </DataTemplate>
-                <DataTemplate DataType="{x:Type settingPage:TargetFoldersViewModel}">
-                    <settingPage:TargetFoldersView />
+                <DataTemplate DataType="{x:Type targetFolders:TargetFoldersViewModel}">
+                    <targetFolders:TargetFoldersView />
                 </DataTemplate>
-                <DataTemplate DataType="{x:Type settingPage:ShortcutsViewModel}">
-                    <settingPage:ShortcutsView />
+                <DataTemplate DataType="{x:Type shortcuts:ShortcutsViewModel}">
+                    <shortcuts:ShortcutsView />
                 </DataTemplate>
             </ContentControl.Resources>
         </ContentControl>

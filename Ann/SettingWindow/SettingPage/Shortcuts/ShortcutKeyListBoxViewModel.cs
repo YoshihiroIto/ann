@@ -7,7 +7,7 @@ using Ann.Foundation.Mvvm;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 
-namespace Ann.SettingWindow.SettingPage
+namespace Ann.SettingWindow.SettingPage.Shortcuts
 {
     public class ShortcutKeyListBoxViewModel : ViewModelBase
     {

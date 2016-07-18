@@ -148,22 +148,22 @@
   <ItemGroup>
     <Compile Include="Config\Path.cs" />
     <Compile Include="Config\ShortcutKey.cs" />
-    <Compile Include="SettingWindow\SettingPage\GeneralView.xaml.cs">
+    <Compile Include="SettingWindow\SettingPage\General\GeneralView.xaml.cs">
       <DependentUpon>GeneralView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SettingWindow\SettingPage\GeneralViewModel.cs" />
-    <Compile Include="SettingWindow\SettingPage\FolderListBox.xaml.cs">
+    <Compile Include="SettingWindow\SettingPage\General\GeneralViewModel.cs" />
+    <Compile Include="SettingWindow\SettingPage\TargetFolders\FolderListBox.xaml.cs">
       <DependentUpon>FolderListBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SettingWindow\SettingPage\PathViewModel.cs" />
-    <Compile Include="SettingWindow\SettingPage\ShortcutsView.xaml.cs">
+    <Compile Include="SettingWindow\SettingPage\TargetFolders\PathViewModel.cs" />
+    <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutsView.xaml.cs">
       <DependentUpon>ShortcutsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SettingWindow\SettingPage\ShortcutsViewModel.cs" />
-    <Compile Include="SettingWindow\SettingPage\TargetFoldersView.xaml.cs">
+    <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutsViewModel.cs" />
+    <Compile Include="SettingWindow\SettingPage\TargetFolders\TargetFoldersView.xaml.cs">
       <DependentUpon>TargetFoldersView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SettingWindow\SettingPage\TargetFoldersViewModel.cs" />
+    <Compile Include="SettingWindow\SettingPage\TargetFolders\TargetFoldersViewModel.cs" />
     <Compile Include="SettingWindow\SettingPanel.xaml.cs">
       <DependentUpon>SettingPanel.xaml</DependentUpon>
     </Compile>
@@ -171,11 +171,11 @@
     <Compile Include="SettingWindow\SettingWindow.xaml.cs">
       <DependentUpon>SettingWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SettingWindow\SettingPage\ShortcutKeyListBox.xaml.cs">
+    <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutKeyListBox.xaml.cs">
       <DependentUpon>ShortcutKeyListBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SettingWindow\SettingPage\ShortcutKeyListBoxViewModel.cs" />
-    <Compile Include="SettingWindow\SettingPage\ShortcutKeyViewModel.cs" />
+    <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutKeyListBoxViewModel.cs" />
+    <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutKeyViewModel.cs" />
     <Page Include="Entry.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -196,19 +196,19 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="SettingWindow\SettingPage\GeneralView.xaml">
+    <Page Include="SettingWindow\SettingPage\General\GeneralView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SettingWindow\SettingPage\FolderListBox.xaml">
+    <Page Include="SettingWindow\SettingPage\TargetFolders\FolderListBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="SettingWindow\SettingPage\ShortcutsView.xaml">
+    <Page Include="SettingWindow\SettingPage\Shortcuts\ShortcutsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SettingWindow\SettingPage\TargetFoldersView.xaml">
+    <Page Include="SettingWindow\SettingPage\TargetFolders\TargetFoldersView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -220,7 +220,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SettingWindow\SettingPage\ShortcutKeyListBox.xaml">
+    <Page Include="SettingWindow\SettingPage\Shortcuts\ShortcutKeyListBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 
-namespace Ann.SettingWindow.SettingPage
+namespace Ann.SettingWindow.SettingPage.TargetFolders
 {
     /// <summary>
     /// FolderListBox.xaml の相互作用ロジック

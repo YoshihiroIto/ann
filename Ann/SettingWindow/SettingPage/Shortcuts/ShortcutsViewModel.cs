@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Ann.Foundation.Mvvm;
 
-namespace Ann.SettingWindow.SettingPage
+namespace Ann.SettingWindow.SettingPage.Shortcuts
 {
     public class ShortcutsViewModel : ViewModelBase
     {

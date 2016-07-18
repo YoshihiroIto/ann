@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings;
-using System.Linq;
 using Reactive.Bindings.Extensions;
 
-namespace Ann.SettingWindow.SettingPage
+namespace Ann.SettingWindow.SettingPage.General
 {
     public class GeneralViewModel : ViewModelBase
     {

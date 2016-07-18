@@ -1,4 +1,4 @@
-﻿namespace Ann.SettingWindow.SettingPage
+﻿namespace Ann.SettingWindow.SettingPage.General
 {
     /// <summary>
     /// GeneralView.xaml の相互作用ロジック

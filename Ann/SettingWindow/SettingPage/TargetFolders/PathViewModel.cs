@@ -2,11 +2,11 @@
 using System.Diagnostics;
 using Ann.Config;
 using Ann.Foundation.Mvvm;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using Microsoft.WindowsAPICodePack.Dialogs;
 
-namespace Ann.SettingWindow.SettingPage
+namespace Ann.SettingWindow.SettingPage.TargetFolders
 {
     public class PathViewModel : ViewModelBase
     {
