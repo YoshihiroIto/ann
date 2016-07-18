@@ -15,43 +15,45 @@ namespace Ann.SettingWindow.SettingPage.Shortcuts
         public ReactiveProperty<bool> IsAlt { get; }
         public ReactiveProperty<bool> IsShift { get; }
 
-        public ShortcutKeyViewModel(ShortcutKey data)
+        public ShortcutKeyViewModel(ShortcutKey model)
         {
-            Debug.Assert(data != null);
+            Debug.Assert(model != null);
 
-            Key = new ReactiveProperty<Key>(data.Key).AddTo(CompositeDisposable);
+            Key = model.ToReactivePropertyAsSynchronized(x => x.Key).AddTo(CompositeDisposable);
 
-            IsControl = new ReactiveProperty<bool>((data.Modifiers & ModifierKeys.Control) != 0)
-                .AddTo(CompositeDisposable);
-            IsAlt = new ReactiveProperty<bool>((data.Modifiers & ModifierKeys.Alt) != 0)
-                .AddTo(CompositeDisposable);
-            IsShift = new ReactiveProperty<bool>((data.Modifiers & ModifierKeys.Shift) != 0)
-                .AddTo(CompositeDisposable);
+            IsControl = new ReactiveProperty<bool>() .AddTo(CompositeDisposable);
+            IsAlt = new ReactiveProperty<bool>() .AddTo(CompositeDisposable);
+            IsShift = new ReactiveProperty<bool>() .AddTo(CompositeDisposable);
 
-            Key.Subscribe(k => data.Key = k).AddTo(CompositeDisposable);
+            model.ObserveProperty(x => x.Modifiers).Subscribe(m =>
+            {
+                IsControl.Value = (model.Modifiers & ModifierKeys.Control) != 0;
+                IsAlt.Value = (model.Modifiers & ModifierKeys.Alt) != 0;
+                IsShift.Value = (model.Modifiers & ModifierKeys.Shift) != 0;
+            }).AddTo(CompositeDisposable);
 
             IsControl.Subscribe(i =>
             {
                 if (i)
-                    data.Modifiers |= ModifierKeys.Control;
+                    model.Modifiers |= ModifierKeys.Control;
                 else
-                    data.Modifiers &= ~ModifierKeys.Control;
+                    model.Modifiers &= ~ModifierKeys.Control;
             }).AddTo(CompositeDisposable);
 
             IsAlt.Subscribe(i =>
             {
                 if (i)
-                    data.Modifiers |= ModifierKeys.Alt;
+                    model.Modifiers |= ModifierKeys.Alt;
                 else
-                    data.Modifiers &= ~ModifierKeys.Alt;
+                    model.Modifiers &= ~ModifierKeys.Alt;
             }).AddTo(CompositeDisposable);
 
             IsShift.Subscribe(i =>
             {
                 if (i)
-                    data.Modifiers |= ModifierKeys.Shift;
+                    model.Modifiers |= ModifierKeys.Shift;
                 else
-                    data.Modifiers &= ~ModifierKeys.Shift;
+                    model.Modifiers &= ~ModifierKeys.Shift;
             }).AddTo(CompositeDisposable);
         }
     }
