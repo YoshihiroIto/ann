@@ -39,11 +39,6 @@ namespace Ann.MainWindow
 
         private readonly IconDecoder _iconDecoder = new IconDecoder(App.IconCacheFilePath);
 
-        public Size IconSize
-        {
-            set { _iconDecoder.IconSize = value; }
-        }
-
         public ImageSource GetIcon(string path) => _iconDecoder.GetIcon(path);
         public ReadOnlyReactiveProperty<double> CandidatesListMaxHeight { get; }
         public ReactiveProperty<double> CandidateItemHeight { get; }

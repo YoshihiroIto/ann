@@ -33,7 +33,6 @@ namespace Ann.MainWindow
             WindowHelper.EnableBlur(this);
             SetupHotKey();
             SetupShortcutKey();
-            SetupIcon();
             Application.Current.Deactivated += (_, __) => Visibility = Visibility.Hidden;
             Keyboard.Focus(InputTextBox);
 
@@ -60,19 +59,6 @@ namespace Ann.MainWindow
         private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             _DataContext.CandidateItemHeight.Value = e.NewSize.Height;
-        }
-
-        private void SetupIcon()
-        {
-            var source = PresentationSource.FromVisual(this);
-
-            if (source?.CompositionTarget == null)
-                return;
-
-            _DataContext.IconSize =
-                new Size(
-                    Constants.IconSize*source.CompositionTarget.TransformToDevice.M11,
-                    Constants.IconSize*source.CompositionTarget.TransformToDevice.M22);
         }
 
         private async void PopupBox_Closed(object sender, RoutedEventArgs e)
