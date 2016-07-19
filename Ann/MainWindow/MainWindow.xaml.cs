@@ -28,7 +28,7 @@ namespace Ann.MainWindow
             InitializeComponent();
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             WindowHelper.EnableBlur(this);
             SetupHotKey();
@@ -38,6 +38,8 @@ namespace Ann.MainWindow
             Keyboard.Focus(InputTextBox);
 
             _DataContext.CompositeDisposable.Add(() => _activateHotKey?.Dispose());
+
+            await App.Instance.OpenIndexAsync();
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -94,7 +96,7 @@ namespace Ann.MainWindow
             _activateHotKey = new HotKeyRegister(
                 App.Instance.Config.MainWindow.ShortcutKeys.Activate.Modifiers,
                 App.Instance.Config.MainWindow.ShortcutKeys.Activate.Key,
-                this);
+                Application.Current.MainWindow);
 
             _activateHotKey.HotKeyPressed += (_, __) =>
             {

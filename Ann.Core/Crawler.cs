@@ -10,53 +10,56 @@ namespace Ann.Core
 {
     public static class Crawler
     {
-        public static async Task<bool> ExecuteAsync(string databaseFilePath, IEnumerable<string> targetFolders)
+        public static async Task ExecuteAsync(SQLiteConnection conn, IEnumerable<string> targetFolders)
         {
             await Task.Run(() =>
             {
-                var sb = new SQLiteConnectionStringBuilder {DataSource = databaseFilePath};
+                CreateTable(conn);
 
-                using (var conn = new SQLiteConnection(sb.ToString()))
+                using (var ctx = new DataContext(conn))
+                using (var t = conn.BeginTransaction())
                 {
-                    conn.Open();
+                    var executableExts = new HashSet<string> {".exe", ".lnk"};
 
-                    CreateTable(conn);
+                    ctx.GetTable<ExecutableUnit>().InsertAllOnSubmit(
+                        targetFolders
+                            .SelectMany(targetFolder =>
+                                EnumerateAllFiles(targetFolder)
+                                    .Where(f => executableExts.Contains(Path.GetExtension(f)?.ToLower()))
+                                    .Select(f =>
+                                    {
+                                        var fvi = FileVersionInfo.GetVersionInfo(f);
 
-                    using (var ctx = new DataContext(conn))
-                    {
-                        var executableExts = new HashSet<string> {".exe", ".lnk"};
+                                        var name = string.IsNullOrWhiteSpace(fvi.FileDescription)
+                                            ? Path.GetFileNameWithoutExtension(f)
+                                            : fvi.FileDescription;
 
-                        ctx.GetTable<ExecutableUnit>().InsertAllOnSubmit(
-                            targetFolders
-                                .SelectMany(targetFolder =>
-                                    EnumerateAllFiles(targetFolder)
-                                        .Where(f => executableExts.Contains(Path.GetExtension(f)?.ToLower()))
-                                        .Select(f =>
+                                        return new ExecutableUnit
                                         {
-                                            var fvi = FileVersionInfo.GetVersionInfo(f);
+                                            Path = f,
+                                            Name = name,
+                                            Directory = Path.GetDirectoryName(f) ?? string.Empty,
+                                            FileName = Path.GetFileNameWithoutExtension(f)
+                                        };
+                                    })
+                            ));
 
-                                            var name = string.IsNullOrWhiteSpace(fvi.FileDescription)
-                                                ? Path.GetFileNameWithoutExtension(f)
-                                                : fvi.FileDescription;
-
-                                            return new ExecutableUnit
-                                            {
-                                                Path = f,
-                                                Name = name,
-                                                Directory = Path.GetDirectoryName(f) ?? string.Empty,
-                                                FileName = Path.GetFileNameWithoutExtension(f)
-                                            };
-                                        })
-                                ));
-
-                        ctx.SubmitChanges();
-                    }
-
-                    conn.Close();
+                    t.Commit();
+                    ctx.SubmitChanges();
                 }
             });
+        }
 
-            return true;
+        public static async Task ExecuteAsync(string databaseFilePath, IEnumerable<string> targetFolders)
+        {
+            var sb = new SQLiteConnectionStringBuilder {DataSource = databaseFilePath};
+
+            using (var conn = new SQLiteConnection(sb.ToString()))
+            {
+                conn.Open();
+
+                await ExecuteAsync(conn, targetFolders);
+            }
         }
 
         public static IEnumerable<string> EnumerateAllFiles(string path)

@@ -108,9 +108,14 @@ namespace Ann
             _dataBase = new ExecutableUnitDataBase(IndexDbFilePath).AddTo(CompositeDisposable);
             _dataBase.Opend += (_, __) => IsEnabledIndex = true;
             _dataBase.Closed += (_, __) => IsEnabledIndex = false;
-            _dataBase.Open();
+
 
             LoadConfig();
+        }
+
+        public async Task OpenIndexAsync()
+        {
+            await _dataBase.OpenAsync();
         }
 
         #region config

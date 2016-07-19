@@ -14,13 +14,15 @@ namespace Ann.Core
         public event EventHandler Closed;
 
         private SQLiteConnection _conn;
+        private bool _isOpend;
+
         private readonly string _dataBaseFile;
 
         public ExecutableUnitDataBase(string databaseFile)
         {
             _dataBaseFile = databaseFile;
-
-            Open();
+            Opend += (_, __) => _isOpend = true;
+            Closed += (_, __) => _isOpend = false;
         }
 
         public void Dispose()
@@ -33,12 +35,15 @@ namespace Ann.Core
             if (name == null)
                 return Enumerable.Empty<ExecutableUnit>();
 
+            if (_conn == null)
+                return Enumerable.Empty<ExecutableUnit>();
+
+            if (_isOpend == false)
+                return Enumerable.Empty<ExecutableUnit>();
+
             name = name.Trim();
 
             if (name == string.Empty)
-                return Enumerable.Empty<ExecutableUnit>();
-
-            if (_conn == null)
                 return Enumerable.Empty<ExecutableUnit>();
 
             using (var ctx = new DataContext(_conn))
@@ -56,31 +61,49 @@ namespace Ann.Core
 
         public async Task UpdateIndexAsync(IEnumerable<string> targetFolders)
         {
-            Close();
-
             var dir = Path.GetDirectoryName(_dataBaseFile);
             if (dir != null)
                 Directory.CreateDirectory(dir);
 
-            await Crawler.ExecuteAsync(_dataBaseFile, targetFolders);
+            await Crawler.ExecuteAsync(_conn, targetFolders);
 
-            Open();
-        }
-
-        public void Open()
-        {
-            if (File.Exists(_dataBaseFile) == false)
-                return;
-
-            var sb = new SQLiteConnectionStringBuilder
+            await Task.Run(() =>
             {
-                DataSource = _dataBaseFile
-            };
-
-            _conn = new SQLiteConnection(sb.ToString());
-            _conn.Open();
+                using (var dst = new SQLiteConnection($"Data Source={_dataBaseFile};"))
+                {
+                    dst.Open();
+                    _conn.BackupDatabase(dst, "main", "main", -1, null, 0);
+                }
+            });
 
             Opend?.Invoke(this, EventArgs.Empty);
+        }
+
+        public async Task OpenAsync()
+        {
+            await Task.Run(() =>
+            {
+                var sb = new SQLiteConnectionStringBuilder
+                {
+                    DataSource = ":memory:",
+                    SyncMode = SynchronizationModes.Off,
+                    JournalMode = SQLiteJournalModeEnum.Memory
+                };
+
+                _conn = new SQLiteConnection(sb.ToString());
+                _conn.Open();
+
+                if (File.Exists(_dataBaseFile) == false)
+                    return;
+
+                using (var src = new SQLiteConnection($"Data Source={_dataBaseFile};"))
+                {
+                    src.Open();
+                    src.BackupDatabase(_conn, "main", "main", -1, null, 0);
+                }
+
+                Opend?.Invoke(this, EventArgs.Empty);
+            });
         }
 
         private void Close()
@@ -133,7 +156,6 @@ namespace Ann.Core
 
             return int.MaxValue;
         }
-
         // ReSharper restore PossibleNullReferenceException
     }
 }
