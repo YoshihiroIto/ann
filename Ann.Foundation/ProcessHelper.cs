@@ -17,7 +17,14 @@ namespace Ann.Foundation
                 if (isRunAsAdmin)
                     info.Verb = "runas";
 
-                Process.Start(info);
+                try
+                {
+                    Process.Start(info);
+                }
+                catch
+                {
+                    // ignored
+                }
             });
         }
     }
