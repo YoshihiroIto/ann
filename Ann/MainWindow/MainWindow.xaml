@@ -225,7 +225,6 @@
                                        Mode=OneWay}"
                  ScrollViewer.CanContentScroll="True"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 ScrollViewer.IsDeferredScrollingEnabled="True"
                  ScrollViewer.PanningMode="VerticalOnly"
                  SelectedItem="{Binding SelectedCandidate.Value,
                                         Mode=TwoWay}"
