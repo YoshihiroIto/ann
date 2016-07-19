@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Ann.Foundation;
 using Ann.Foundation.Control;
+using Reactive.Bindings.Extensions;
 
 namespace Ann.MainWindow
 {
@@ -15,8 +17,6 @@ namespace Ann.MainWindow
     public partial class MainWindow
     {
         private readonly MainWindowViewModel _DataContext = new MainWindowViewModel();
-
-        private HotKeyRegister _activateHotKey;
 
         public MainWindow()
         {
@@ -31,12 +31,10 @@ namespace Ann.MainWindow
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             WindowHelper.EnableBlur(this);
-            SetupHotKey();
-            SetupShortcutKey();
             Application.Current.Deactivated += (_, __) => Visibility = Visibility.Hidden;
             Keyboard.Focus(InputTextBox);
-
-            _DataContext.CompositeDisposable.Add(() => _activateHotKey?.Dispose());
+            InitializeHotKey();
+            InitializeShortcutKey();
 
             await App.Instance.OpenIndexAsync();
         }
@@ -74,6 +72,26 @@ namespace Ann.MainWindow
             _DataContext.SelectedCandidate.Value = item;
             _DataContext.RunCommand.Execute(null);
         }
+
+        private void InitializeHotKey()
+        {
+            SetupHotKey();
+
+            _DataContext.CompositeDisposable.Add(() => _activateHotKey?.Dispose());
+            
+            Observable.FromEventPattern(
+                h => App.Instance.ActivateShortcutKeyChanged += h,
+                h => App.Instance.ActivateShortcutKeyChanged -= h)
+                .Subscribe(_ => SetupHotKey())
+                .AddTo(_DataContext.CompositeDisposable);
+        }
+
+        private void InitializeShortcutKey()
+        {
+            SetupShortcutKey();
+        }
+
+        private HotKeyRegister _activateHotKey;
 
         private void SetupHotKey()
         {

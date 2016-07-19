@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Ann.Core;
@@ -25,6 +26,9 @@ namespace Ann
         private static string IndexDbFilePath => Path.Combine(ConfigDirPath, "Index.db");
         public static string IconCacheFilePath => Path.Combine(ConfigDirPath, "IconCache.db");
 
+        public event EventHandler HighPriorityChanged;
+        public event EventHandler ActivateShortcutKeyChanged;
+
         #region IsEnabledIndex
 
         private bool _IsEnabledIndex;
@@ -46,8 +50,6 @@ namespace Ann
             Instance.SaveConfig();
             Instance.Dispose();
         }
-
-        public event EventHandler HighPriorityChanged;
 
         public bool IsHighPriority(string path) => _highPriorities.Contains(path);
 
@@ -109,8 +111,13 @@ namespace Ann
             _dataBase.Opend += (_, __) => IsEnabledIndex = true;
             _dataBase.Closed += (_, __) => IsEnabledIndex = false;
 
-
             LoadConfig();
+
+            Observable
+                .Merge(Config.MainWindow.ShortcutKeys.Activate.ObserveProperty(x => x.Key).ToUnit())
+                .Merge(Config.MainWindow.ShortcutKeys.Activate.ObserveProperty(x => x.Modifiers).ToUnit())
+                .Subscribe(_ => ActivateShortcutKeyChanged?.Invoke(this, EventArgs.Empty))
+                .AddTo(CompositeDisposable);
         }
 
         public async Task OpenIndexAsync()

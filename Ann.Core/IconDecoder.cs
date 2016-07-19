@@ -92,6 +92,6 @@ namespace Ann.Core
             }
         }
 
-        private readonly LruCache<string, ImageSource> _IconCache = new LruCache<string, ImageSource>(64, false);
+        private readonly LruCache<string, ImageSource> _IconCache = new LruCache<string, ImageSource>(256, false);
     }
 }
