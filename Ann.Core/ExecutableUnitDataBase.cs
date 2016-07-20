@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -63,6 +64,7 @@ namespace Ann.Core
                 : _prevResult;
 
             _prevResult = target
+                .AsParallel()
                 .Where(u => u.Name.ToLower().Contains(keyword) ||
                             u.Directory.ToLower().Contains(keyword) ||
                             u.FileName.ToLower().Contains(keyword))
