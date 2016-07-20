@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Ann.Foundation;
 using Jil;
 
 namespace Ann.Core
@@ -63,13 +63,16 @@ namespace Ann.Core
                 ? _executableUnits
                 : _prevResult;
 
-            _prevResult = target
-                .AsParallel()
-                .Where(u => u.Name.ToLower().Contains(keyword) ||
-                            u.Directory.ToLower().Contains(keyword) ||
-                            u.FileName.ToLower().Contains(keyword))
-                .OrderBy(u => MakeRank(u, keyword))
-                .ToArray();
+            using (new TimeMeasure("Filtering"))
+            {
+                _prevResult = target
+                    .AsParallel()
+                    .Where(u => u.LowerName.Contains(keyword) ||
+                                u.LowerDirectory.Contains(keyword) ||
+                                u.LowerFileName.Contains(keyword))
+                    .OrderBy(u => MakeRank(u, keyword))
+                    .ToArray();
+            }
 
             _prevKeyword = keyword;
 
@@ -122,8 +125,6 @@ namespace Ann.Core
 
             Func<int, string, int> makeRankSub = (rankBase, target) =>
             {
-                target = target.ToLower();
-
                 if (target == name)
                     return (rankBase + 0)*10000 + unitNameLength;
 
@@ -143,15 +144,15 @@ namespace Ann.Core
 
             var b = 0;
 
-            var rankFileName = makeRankSub(++b, u.FileName);
+            var rankFileName = makeRankSub(++b, u.LowerFileName);
             if (rankFileName != int.MaxValue)
                 return rankFileName;
 
-            var rankName = makeRankSub(++b, u.Name);
+            var rankName = makeRankSub(++b, u.LowerName);
             if (rankName != int.MaxValue)
                 return rankName;
 
-            var rankDir = makeRankSub(++b, u.Directory);
+            var rankDir = makeRankSub(++b, u.LowerDirectory);
             if (rankDir != int.MaxValue)
                 return rankDir;
 

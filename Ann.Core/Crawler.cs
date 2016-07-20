@@ -30,8 +30,9 @@ namespace Ann.Core
                                 {
                                     Path = f,
                                     Name = name,
-                                    Directory = Path.GetDirectoryName(f) ?? string.Empty,
-                                    FileName = Path.GetFileNameWithoutExtension(f)
+                                    LowerName = name.ToLower(),
+                                    LowerDirectory = (Path.GetDirectoryName(f) ?? string.Empty).ToLower(),
+                                    LowerFileName = Path.GetFileNameWithoutExtension(f).ToLower()
                                 };
                             })
                     ).ToArray();

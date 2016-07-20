@@ -4,7 +4,8 @@
     {
         public string Path { get; set; }
         public string Name { get; set; }
-        public string Directory { get; set; }
-        public string FileName { get; set; }
+        public string LowerName { get; set; }
+        public string LowerDirectory { get; set; }
+        public string LowerFileName { get; set; }
     }
 }
