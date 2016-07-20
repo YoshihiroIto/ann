@@ -1,6 +1,4 @@
-﻿using System;
-using System.Data.SQLite;
-using System.IO;
+﻿using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media;
@@ -10,29 +8,8 @@ using Microsoft.WindowsAPICodePack.Shell;
 
 namespace Ann.Core
 {
-    public class IconDecoder : IDisposable
+    public class IconDecoder
     {
-        private readonly SQLiteConnection _conn;
-
-        public IconDecoder(string databaseFile)
-        {
-            if (File.Exists(databaseFile) == false)
-                return;
-
-            var sb = new SQLiteConnectionStringBuilder
-            {
-                DataSource = databaseFile
-            };
-
-            _conn = new SQLiteConnection(sb.ToString());
-            _conn.Open();
-        }
-
-        public void Dispose()
-        {
-            _conn?.Dispose();
-        }
-
         public ImageSource GetIcon(string path)
         {
             if (File.Exists(path) == false)

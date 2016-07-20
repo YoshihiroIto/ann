@@ -37,7 +37,7 @@ namespace Ann.MainWindow
         public ReactiveProperty<double> Top { get; }
         public ReactiveProperty<int> MaxCandidatesLinesCount { get; }
 
-        private readonly IconDecoder _iconDecoder = new IconDecoder(App.IconCacheFilePath);
+        private readonly IconDecoder _iconDecoder = new IconDecoder();
 
         public ImageSource GetIcon(string path) => _iconDecoder.GetIcon(path);
         public ReadOnlyReactiveProperty<double> CandidatesListMaxHeight { get; }

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Linq;
-using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using YamlDotNet.Serialization;
 
 namespace Ann.Core
 {
@@ -13,14 +12,13 @@ namespace Ann.Core
         public event EventHandler Opend;
         public event EventHandler Closed;
 
-        private SQLiteConnection _conn;
         private bool _isOpend;
 
-        private readonly string _dataBaseFile;
+        private readonly string _indexFile;
 
-        public ExecutableUnitDataBase(string databaseFile)
+        public ExecutableUnitDataBase(string indexFile)
         {
-            _dataBaseFile = databaseFile;
+            _indexFile = indexFile;
             Opend += (_, __) => _isOpend = true;
             Closed += (_, __) => _isOpend = false;
         }
@@ -35,9 +33,6 @@ namespace Ann.Core
             if (name == null)
                 return Enumerable.Empty<ExecutableUnit>();
 
-            if (_conn == null)
-                return Enumerable.Empty<ExecutableUnit>();
-
             if (_isOpend == false)
                 return Enumerable.Empty<ExecutableUnit>();
 
@@ -46,35 +41,32 @@ namespace Ann.Core
             if (name == string.Empty)
                 return Enumerable.Empty<ExecutableUnit>();
 
-            using (var ctx = new DataContext(_conn))
-            {
-                name = name.ToLower();
+            name = name.ToLower();
 
-                return ctx.GetTable<ExecutableUnit>()
+            return
+                _executableUnits
                     .Where(u => u.Name.ToLower().Contains(name) ||
                                 u.Directory.ToLower().Contains(name) ||
                                 u.FileName.ToLower().Contains(name))
-                    .ToArray()
                     .OrderBy(u => MakeRank(u, name));
-            }
         }
+
+        private ExecutableUnit[] _executableUnits;
 
         public async Task UpdateIndexAsync(IEnumerable<string> targetFolders)
         {
-            var dir = Path.GetDirectoryName(_dataBaseFile);
-            if (dir != null)
-                Directory.CreateDirectory(dir);
+            _executableUnits = await Crawler.ExecuteAsync(targetFolders);
 
-            await Crawler.ExecuteAsync(_conn, targetFolders);
-
-            await Task.Run(() =>
+            using (var writer = new StringWriter())
             {
-                using (var dst = new SQLiteConnection($"Data Source={_dataBaseFile};"))
-                {
-                    dst.Open();
-                    _conn.BackupDatabase(dst, "main", "main", -1, null, 0);
-                }
-            });
+                new Serializer(SerializationOptions.EmitDefaults).Serialize(writer, _executableUnits);
+
+                var dir = Path.GetDirectoryName(_indexFile);
+                if (dir != null)
+                    Directory.CreateDirectory(dir);
+
+                File.WriteAllText(_indexFile, writer.ToString());
+            }
 
             Opend?.Invoke(this, EventArgs.Empty);
         }
@@ -83,24 +75,11 @@ namespace Ann.Core
         {
             await Task.Run(() =>
             {
-                var sb = new SQLiteConnectionStringBuilder
-                {
-                    DataSource = ":memory:",
-                    SyncMode = SynchronizationModes.Off,
-                    JournalMode = SQLiteJournalModeEnum.Memory
-                };
-
-                _conn = new SQLiteConnection(sb.ToString());
-                _conn.Open();
-
-                if (File.Exists(_dataBaseFile) == false)
+                if (File.Exists(_indexFile) == false)
                     return;
 
-                using (var src = new SQLiteConnection($"Data Source={_dataBaseFile};"))
-                {
-                    src.Open();
-                    src.BackupDatabase(_conn, "main", "main", -1, null, 0);
-                }
+                using (var reader = new StringReader(File.ReadAllText(_indexFile)))
+                    _executableUnits = new Deserializer().Deserialize<ExecutableUnit[]>(reader);
 
                 Opend?.Invoke(this, EventArgs.Empty);
             });
@@ -108,9 +87,6 @@ namespace Ann.Core
 
         private void Close()
         {
-            _conn?.Dispose();
-            _conn = null;
-
             Closed?.Invoke(this, EventArgs.Empty);
         }
 
@@ -156,6 +132,7 @@ namespace Ann.Core
 
             return int.MaxValue;
         }
+
         // ReSharper restore PossibleNullReferenceException
     }
 }

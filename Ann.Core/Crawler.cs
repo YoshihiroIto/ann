@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Data.Linq;
-using System.Data.SQLite;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -10,59 +8,37 @@ namespace Ann.Core
 {
     public static class Crawler
     {
-        public static async Task ExecuteAsync(SQLiteConnection conn, IEnumerable<string> targetFolders)
+        public static async Task<ExecutableUnit[]> ExecuteAsync(IEnumerable<string> targetFolders)
         {
-            await Task.Run(() =>
+            return await Task.Run(() =>
             {
-                CreateTable(conn);
+                var executableExts = new HashSet<string> {".exe", ".lnk"};
 
-                using (var ctx = new DataContext(conn))
-                using (var t = conn.BeginTransaction())
-                {
-                    var executableExts = new HashSet<string> {".exe", ".lnk"};
+                return targetFolders
+                    .SelectMany(targetFolder =>
+                        EnumerateAllFiles(targetFolder)
+                            .Where(f => executableExts.Contains(Path.GetExtension(f)?.ToLower()))
+                            .Select(f =>
+                            {
+                                var fvi = FileVersionInfo.GetVersionInfo(f);
 
-                    ctx.GetTable<ExecutableUnit>().InsertAllOnSubmit(
-                        targetFolders
-                            .SelectMany(targetFolder =>
-                                EnumerateAllFiles(targetFolder)
-                                    .Where(f => executableExts.Contains(Path.GetExtension(f)?.ToLower()))
-                                    .Select(f =>
-                                    {
-                                        var fvi = FileVersionInfo.GetVersionInfo(f);
+                                var name = string.IsNullOrWhiteSpace(fvi.FileDescription)
+                                    ? Path.GetFileNameWithoutExtension(f)
+                                    : fvi.FileDescription;
 
-                                        var name = string.IsNullOrWhiteSpace(fvi.FileDescription)
-                                            ? Path.GetFileNameWithoutExtension(f)
-                                            : fvi.FileDescription;
-
-                                        return new ExecutableUnit
-                                        {
-                                            Path = f,
-                                            Name = name,
-                                            Directory = Path.GetDirectoryName(f) ?? string.Empty,
-                                            FileName = Path.GetFileNameWithoutExtension(f)
-                                        };
-                                    })
-                            ));
-
-                    t.Commit();
-                    ctx.SubmitChanges();
-                }
+                                return new ExecutableUnit
+                                {
+                                    Path = f,
+                                    Name = name,
+                                    Directory = Path.GetDirectoryName(f) ?? string.Empty,
+                                    FileName = Path.GetFileNameWithoutExtension(f)
+                                };
+                            })
+                    ).ToArray();
             });
         }
 
-        public static async Task ExecuteAsync(string databaseFilePath, IEnumerable<string> targetFolders)
-        {
-            var sb = new SQLiteConnectionStringBuilder {DataSource = databaseFilePath};
-
-            using (var conn = new SQLiteConnection(sb.ToString()))
-            {
-                conn.Open();
-
-                await ExecuteAsync(conn, targetFolders);
-            }
-        }
-
-        public static IEnumerable<string> EnumerateAllFiles(string path)
+        private static IEnumerable<string> EnumerateAllFiles(string path)
         {
             try
             {
@@ -74,25 +50,6 @@ namespace Ann.Core
             catch
             {
                 return Enumerable.Empty<string>();
-            }
-        }
-
-        private static void CreateTable(SQLiteConnection conn)
-        {
-            var commandTexts = new[]
-            {
-                $"drop table if exists {nameof(ExecutableUnit)}",
-                $"create table {nameof(ExecutableUnit)} (Path TEXT PRIMARY KEY, Name TEXT, Directory TEXT, FileName TEXT)",
-                $"delete from {nameof(ExecutableUnit)}"
-            };
-
-            foreach (var commandText in commandTexts)
-            {
-                using (var cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = commandText;
-                    cmd.ExecuteNonQuery();
-                }
             }
         }
     }

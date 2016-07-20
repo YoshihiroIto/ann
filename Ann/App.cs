@@ -22,8 +22,7 @@ namespace Ann
 
         private readonly ExecutableUnitDataBase _dataBase;
 
-        private static string IndexDbFilePath => Path.Combine(ConfigDirPath, "Index.db");
-        public static string IconCacheFilePath => Path.Combine(ConfigDirPath, "IconCache.db");
+        private static string IndexFilePath => Path.Combine(ConfigDirPath, "index.yaml");
 
         public event EventHandler HighPriorityChanged;
         public event EventHandler ShortcutKeyChanged;
@@ -109,7 +108,7 @@ namespace Ann
 
         private App()
         {
-            _dataBase = new ExecutableUnitDataBase(IndexDbFilePath).AddTo(CompositeDisposable);
+            _dataBase = new ExecutableUnitDataBase(IndexFilePath).AddTo(CompositeDisposable);
             _dataBase.Opend += (_, __) => IsEnabledIndex = true;
             _dataBase.Closed += (_, __) => IsEnabledIndex = false;
 
