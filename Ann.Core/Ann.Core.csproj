@@ -33,6 +33,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Jil, Version=2.14.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jil.2.14.3\lib\net45\Jil.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\WindowsAPICodePack-Core.1.1.2\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
       <Private>True</Private>
@@ -43,16 +48,17 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Sigil, Version=4.7.0.0, Culture=neutral, PublicKeyToken=2d06c3494341c8ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sigil.4.7.0\lib\net45\Sigil.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Data" />
     <Reference Include="WindowsBase" />
-    <Reference Include="YamlDotNet, Version=3.9.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\YamlDotNet.3.9.0\lib\net35\YamlDotNet.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Crawler.cs" />
@@ -63,7 +69,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Ann.Foundation\Ann.Foundation.csproj">

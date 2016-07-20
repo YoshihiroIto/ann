@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using YamlDotNet.Serialization;
+using Jil;
 
 namespace Ann.Core
 {
@@ -82,7 +82,7 @@ namespace Ann.Core
 
             using (var writer = new StringWriter())
             {
-                new Serializer(SerializationOptions.EmitDefaults).Serialize(writer, _executableUnits);
+                JSON.Serialize(_executableUnits, writer);
 
                 var dir = Path.GetDirectoryName(_indexFile);
                 if (dir != null)
@@ -102,7 +102,7 @@ namespace Ann.Core
                     return;
 
                 using (var reader = new StringReader(File.ReadAllText(_indexFile)))
-                    _executableUnits = new Deserializer().Deserialize<ExecutableUnit[]>(reader);
+                    _executableUnits = JSON.Deserialize<ExecutableUnit[]>(reader);
 
                 Opend?.Invoke(this, EventArgs.Empty);
             });

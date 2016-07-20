@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using Livet;
-using YamlDotNet.Serialization;
 
 namespace Ann.Foundation.Mvvm
 {
@@ -9,7 +8,6 @@ namespace Ann.Foundation.Mvvm
     {
         private LivetCompositeDisposable _compositeDisposable;
 
-        [YamlIgnore]
         public LivetCompositeDisposable CompositeDisposable
         {
             get { return LazyInitializer.EnsureInitialized(ref _compositeDisposable, () => new LivetCompositeDisposable()); }

@@ -7,8 +7,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
+using Jil;
 using Reactive.Bindings.Extensions;
-using YamlDotNet.Serialization;
 
 namespace Ann
 {
@@ -22,7 +22,7 @@ namespace Ann
 
         private readonly ExecutableUnitDataBase _dataBase;
 
-        private static string IndexFilePath => Path.Combine(ConfigDirPath, "index.yaml");
+        private static string IndexFilePath => Path.Combine(ConfigDirPath, "index.dat");
 
         public event EventHandler HighPriorityChanged;
         public event EventHandler ShortcutKeyChanged;
@@ -131,7 +131,7 @@ namespace Ann
             }
         }
 
-        public static string ConfigFilePath => Path.Combine(ConfigDirPath, ProductName + ".yaml");
+        public static string ConfigFilePath => Path.Combine(ConfigDirPath, ProductName + ".json");
 
         private static string CompanyName =>
             ((AssemblyCompanyAttribute) Attribute.GetCustomAttribute(
@@ -158,7 +158,7 @@ namespace Ann
                 return new Config.App();
 
             using (var reader = new StringReader(File.ReadAllText(ConfigFilePath)))
-                return new Deserializer().Deserialize<Config.App>(reader);
+                return JSON.Deserialize<Config.App>(reader);
         }
 
         public void SaveConfig()
@@ -167,7 +167,7 @@ namespace Ann
 
             using (var writer = new StringWriter())
             {
-                new Serializer(SerializationOptions.EmitDefaults).Serialize(writer, Config);
+                JSON.Serialize(Config, writer, Options.PrettyPrint);
                 Directory.CreateDirectory(ConfigDirPath);
                 File.WriteAllText(ConfigFilePath, writer.ToString());
             }
