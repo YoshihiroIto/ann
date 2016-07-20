@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Ann.Config;
@@ -11,22 +10,26 @@ namespace Ann.SettingWindow.SettingPage.Shortcuts
 {
     public class ShortcutKeyListBoxViewModel : ViewModelBase
     {
-        public ObservableCollection<ShortcutKeyViewModel> Keys { get; set; } =
-            new ObservableCollection<ShortcutKeyViewModel>();
+        public ReadOnlyReactiveCollection<ShortcutKeyViewModel> Keys { get; set; }
 
-        public ReactiveCommand HideKeyAddCommand { get; }
+        public ReactiveCommand KeyAddCommand { get; }
+        public ReactiveCommand<ShortcutKeyViewModel> KeyRemoveCommand { get; }
 
-        public ShortcutKeyListBoxViewModel(IEnumerable<ShortcutKey> data)
+        public ShortcutKeyListBoxViewModel(ObservableCollection<ShortcutKey> model)
         {
-            CompositeDisposable.Add(() => Keys.ForEach(k => k.Dispose()));
+            Keys = model.ToReadOnlyReactiveCollection(k => new ShortcutKeyViewModel(k))
+                .AddTo(CompositeDisposable);
 
-            foreach (var d in data)
-                Keys.Add(new ShortcutKeyViewModel(d));
+            KeyAddCommand = new ReactiveCommand().AddTo(CompositeDisposable);
+            KeyAddCommand.Subscribe(_ => model.Add(new ShortcutKey()))
+                .AddTo(CompositeDisposable);
 
-            HideKeyAddCommand = new ReactiveCommand().AddTo(CompositeDisposable);
-            HideKeyAddCommand.Subscribe(_ =>
+            KeyRemoveCommand = new ReactiveCommand<ShortcutKeyViewModel>().AddTo(CompositeDisposable);
+            KeyRemoveCommand.Subscribe(p =>
             {
-                Keys.Add(new ShortcutKeyViewModel(new ShortcutKey()));
+                var t = model.FirstOrDefault(f => (f.Key == p.Key.Value) &&  (f.Modifiers == p.Modifiers));
+                if (t != null)
+                    model.Remove(t);
             }).AddTo(CompositeDisposable);
         }
     }

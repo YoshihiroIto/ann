@@ -80,8 +80,8 @@ namespace Ann.MainWindow
             _DataContext.CompositeDisposable.Add(() => _activateHotKey?.Dispose());
             
             Observable.FromEventPattern(
-                h => App.Instance.ActivateShortcutKeyChanged += h,
-                h => App.Instance.ActivateShortcutKeyChanged -= h)
+                h => App.Instance.ShortcutKeyChanged += h,
+                h => App.Instance.ShortcutKeyChanged -= h)
                 .Subscribe(_ => SetupHotKey())
                 .AddTo(_DataContext.CompositeDisposable);
         }
@@ -89,6 +89,12 @@ namespace Ann.MainWindow
         private void InitializeShortcutKey()
         {
             SetupShortcutKey();
+            
+            Observable.FromEventPattern(
+                h => App.Instance.ShortcutKeyChanged += h,
+                h => App.Instance.ShortcutKeyChanged -= h)
+                .Subscribe(_ => SetupShortcutKey())
+                .AddTo(_DataContext.CompositeDisposable);
         }
 
         private HotKeyRegister _activateHotKey;

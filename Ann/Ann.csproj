@@ -152,6 +152,9 @@
       <DependentUpon>GeneralView.xaml</DependentUpon>
     </Compile>
     <Compile Include="SettingWindow\SettingPage\General\GeneralViewModel.cs" />
+    <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutkeyListBox.xaml.cs">
+      <DependentUpon>ShortcutkeyListBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SettingWindow\SettingPage\TargetFolders\FolderListBox.xaml.cs">
       <DependentUpon>FolderListBox.xaml</DependentUpon>
     </Compile>
@@ -170,9 +173,6 @@
     <Compile Include="SettingWindow\SettingViewModel.cs" />
     <Compile Include="SettingWindow\SettingWindow.xaml.cs">
       <DependentUpon>SettingWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutKeyListBox.xaml.cs">
-      <DependentUpon>ShortcutKeyListBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutKeyListBoxViewModel.cs" />
     <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutKeyViewModel.cs" />
@@ -200,6 +200,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="SettingWindow\SettingPage\Shortcuts\ShortcutkeyListBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="SettingWindow\SettingPage\TargetFolders\FolderListBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -217,10 +221,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SettingWindow\SettingWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="SettingWindow\SettingPage\Shortcuts\ShortcutKeyListBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

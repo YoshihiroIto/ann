@@ -15,6 +15,23 @@ namespace Ann.SettingWindow.SettingPage.Shortcuts
         public ReactiveProperty<bool> IsAlt { get; }
         public ReactiveProperty<bool> IsShift { get; }
 
+        public ModifierKeys Modifiers
+        {
+            get
+            {
+                var m = ModifierKeys.None;
+
+                if (IsControl.Value)
+                    m |= ModifierKeys.Control;
+                if (IsAlt.Value)
+                    m |= ModifierKeys.Alt;
+                if (IsShift.Value)
+                    m |= ModifierKeys.Shift;
+
+                return m;
+            }
+        }
+
         public ShortcutKeyViewModel(ShortcutKey model)
         {
             Debug.Assert(model != null);

@@ -165,6 +165,7 @@ namespace Ann.MainWindow
             {
                 Messenger.Raise(new TransitionMessage(new SettingViewModel(App.Instance.Config), "ShowSetting"));
                 App.Instance.SaveConfig();
+                App.Instance.InvokeShortcutKeyChanged();
             }).AddTo(CompositeDisposable);
 
             IsEnabledIndex = App.Instance.ObserveProperty(x => x.IsEnabledIndex)
