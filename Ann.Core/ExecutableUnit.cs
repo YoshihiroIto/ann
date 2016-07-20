@@ -7,5 +7,6 @@
         public string LowerName { get; set; }
         public string LowerDirectory { get; set; }
         public string LowerFileName { get; set; }
+        public string SearchKey { get; set; }
     }
 }

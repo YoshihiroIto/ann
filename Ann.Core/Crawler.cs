@@ -32,7 +32,8 @@ namespace Ann.Core
                                     Name = name,
                                     LowerName = name.ToLower(),
                                     LowerDirectory = (Path.GetDirectoryName(f) ?? string.Empty).ToLower(),
-                                    LowerFileName = Path.GetFileNameWithoutExtension(f).ToLower()
+                                    LowerFileName = Path.GetFileNameWithoutExtension(f).ToLower(),
+                                    SearchKey = $"{name}*{Path.GetDirectoryName(f) ?? string.Empty}*{Path.GetFileNameWithoutExtension(f)}"
                                 };
                             })
                     ).ToArray();

@@ -67,9 +67,7 @@ namespace Ann.Core
             {
                 _prevResult = target
                     .AsParallel()
-                    .Where(u => u.LowerName.Contains(keyword) ||
-                                u.LowerDirectory.Contains(keyword) ||
-                                u.LowerFileName.Contains(keyword))
+                    .Where(u => u.SearchKey.Contains(keyword))
                     .OrderBy(u => MakeRank(u, keyword))
                     .ToArray();
             }
