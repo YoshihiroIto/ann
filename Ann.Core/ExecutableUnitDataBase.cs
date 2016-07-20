@@ -28,27 +28,50 @@ namespace Ann.Core
             Close();
         }
 
-        public IEnumerable<ExecutableUnit> Find(string name)
+        private string _prevKeyword;
+        private ExecutableUnit[] _prevResult;
+
+        public IEnumerable<ExecutableUnit> Find(string keyword)
         {
-            if (name == null)
+            if (keyword == null)
+            {
+                _prevKeyword = null;
+                _prevResult = null;
                 return Enumerable.Empty<ExecutableUnit>();
+            }
 
             if (_isOpend == false)
+            {
+                _prevKeyword = null;
+                _prevResult = null;
                 return Enumerable.Empty<ExecutableUnit>();
+            }
 
-            name = name.Trim();
+            keyword = keyword.Trim();
 
-            if (name == string.Empty)
+            if (keyword == string.Empty)
+            {
+                _prevKeyword = null;
+                _prevResult = null;
                 return Enumerable.Empty<ExecutableUnit>();
+            }
 
-            name = name.ToLower();
+            keyword = keyword.ToLower();
 
-            return
-                _executableUnits
-                    .Where(u => u.Name.ToLower().Contains(name) ||
-                                u.Directory.ToLower().Contains(name) ||
-                                u.FileName.ToLower().Contains(name))
-                    .OrderBy(u => MakeRank(u, name));
+            var target = _prevKeyword == null || keyword.StartsWith(_prevKeyword) == false
+                ? _executableUnits
+                : _prevResult;
+
+            _prevResult = target
+                .Where(u => u.Name.ToLower().Contains(keyword) ||
+                            u.Directory.ToLower().Contains(keyword) ||
+                            u.FileName.ToLower().Contains(keyword))
+                .OrderBy(u => MakeRank(u, keyword))
+                .ToArray();
+
+            _prevKeyword = keyword;
+
+            return _prevResult;
         }
 
         private ExecutableUnit[] _executableUnits;
