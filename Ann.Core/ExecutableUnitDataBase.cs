@@ -128,38 +128,35 @@ namespace Ann.Core
             });
         }
 
-        public async Task OpenAsync()
+        public void Open()
         {
-            await Task.Run(() =>
+            if (File.Exists(_indexFile) == false)
+                return;
+
+            var data = new ByteBuffer(File.ReadAllBytes(_indexFile));
+
+            using (new TimeMeasure("Index Deserializing"))
             {
-                if (File.Exists(_indexFile) == false)
-                    return;
+                var root = IndexFile.File.GetRootAsFile(data);
 
-                var data = new ByteBuffer(File.ReadAllBytes(_indexFile));
+                _executableUnits = new ExecutableUnit[root.RowsLength];
 
-                using (new TimeMeasure("Index Deserializing"))
+                var temp = new IndexFile.ExecutableUnit();
+
+                for (var i = 0; i != root.RowsLength; ++i)
                 {
-                    var root = IndexFile.File.GetRootAsFile(data);
+                    root.GetRows(temp, i);
 
-                    _executableUnits = new ExecutableUnit[root.RowsLength];
-
-                    var temp = new IndexFile.ExecutableUnit();
-
-                    for (var i = 0; i != root.RowsLength; ++i)
-                    {
-                        root.GetRows(temp, i);
-
-                        _executableUnits[i].Path = temp.Path;
-                        _executableUnits[i].Name = temp.Name;
-                        _executableUnits[i].LowerName = temp.LowerName;
-                        _executableUnits[i].LowerDirectory = temp.LowerDirectory;
-                        _executableUnits[i].LowerFileName = temp.LowerFileName;
-                        _executableUnits[i].SearchKey = temp.SearchKey;
-                    }
+                    _executableUnits[i].Path = temp.Path;
+                    _executableUnits[i].Name = temp.Name;
+                    _executableUnits[i].LowerName = temp.LowerName;
+                    _executableUnits[i].LowerDirectory = temp.LowerDirectory;
+                    _executableUnits[i].LowerFileName = temp.LowerFileName;
+                    _executableUnits[i].SearchKey = temp.SearchKey;
                 }
+            }
 
-                Opend?.Invoke(this, EventArgs.Empty);
-            });
+            Opend?.Invoke(this, EventArgs.Empty);
         }
 
         private void Close()

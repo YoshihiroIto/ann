@@ -7,7 +7,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Ann.Foundation;
 using Ann.Foundation.Control;
-using Livet;
 using Reactive.Bindings.Extensions;
 
 namespace Ann.MainWindow
@@ -29,7 +28,7 @@ namespace Ann.MainWindow
             InitializeComponent();
         }
 
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             WindowHelper.EnableBlur(this);
             Application.Current.Deactivated += (_, __) => Visibility = Visibility.Hidden;
@@ -37,12 +36,7 @@ namespace Ann.MainWindow
             InitializeHotKey();
             InitializeShortcutKey();
 
-            using (new AnonymousDisposable(() => _DataContext.InProgressMessage.Value = string.Empty))
-            {
-                _DataContext.InProgressMessage.Value = "Index Initializing...";
-                await App.Instance.OpenIndexAsync();
-               // await Task.Delay(TimeSpan.FromMilliseconds(5000));
-            }
+            App.Instance.OpenIndex();
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

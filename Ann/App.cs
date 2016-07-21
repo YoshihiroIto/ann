@@ -115,9 +115,9 @@ namespace Ann
             LoadConfig();
         }
 
-        public async Task OpenIndexAsync()
+        public void OpenIndex()
         {
-            await _dataBase.OpenAsync();
+            _dataBase.Open();
         }
 
         #region config
