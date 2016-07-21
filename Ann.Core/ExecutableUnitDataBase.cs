@@ -81,18 +81,19 @@ namespace Ann.Core
 
         public async Task UpdateIndexAsync(IEnumerable<string> targetFolders)
         {
-            _executableUnits = await Crawler.ExecuteAsync(targetFolders);
+            using (new TimeMeasure("Index Crawlering"))
+                _executableUnits = await Crawler.ExecuteAsync(targetFolders);
 
-            using (var writer = new StringWriter())
-            {
-                JSON.Serialize(_executableUnits, writer);
+            var dir = Path.GetDirectoryName(_indexFile);
+            if (dir != null)
+                Directory.CreateDirectory(dir);
 
-                var dir = Path.GetDirectoryName(_indexFile);
-                if (dir != null)
-                    Directory.CreateDirectory(dir);
+            string text;
 
-                File.WriteAllText(_indexFile, writer.ToString());
-            }
+            using (new TimeMeasure("Index Serializing"))
+                text = JSON.Serialize(_executableUnits);
+
+            File.WriteAllText(_indexFile, text);
 
             Opend?.Invoke(this, EventArgs.Empty);
         }
@@ -104,8 +105,10 @@ namespace Ann.Core
                 if (File.Exists(_indexFile) == false)
                     return;
 
-                using (var reader = new StringReader(File.ReadAllText(_indexFile)))
-                    _executableUnits = JSON.Deserialize<ExecutableUnit[]>(reader);
+                var text = File.ReadAllText(_indexFile);
+
+                using (new TimeMeasure("Index Deserializing"))
+                    _executableUnits = JSON.Deserialize<ExecutableUnit[]>(text);
 
                 Opend?.Invoke(this, EventArgs.Empty);
             });
