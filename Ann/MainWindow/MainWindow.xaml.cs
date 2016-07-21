@@ -41,7 +41,7 @@ namespace Ann.MainWindow
             {
                 _DataContext.InProgressMessage.Value = "Index Initializing...";
                 await App.Instance.OpenIndexAsync();
-                await Task.Delay(TimeSpan.FromMilliseconds(5000));
+               // await Task.Delay(TimeSpan.FromMilliseconds(5000));
             }
         }
 
