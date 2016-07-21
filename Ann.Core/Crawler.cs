@@ -15,6 +15,7 @@ namespace Ann.Core
                 var executableExts = new HashSet<string> {".exe", ".lnk"};
 
                 return targetFolders
+                    .AsParallel()
                     .SelectMany(targetFolder =>
                         EnumerateAllFiles(targetFolder)
                             .Where(f => executableExts.Contains(Path.GetExtension(f)?.ToLower()))
