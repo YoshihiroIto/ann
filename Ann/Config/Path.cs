@@ -1,5 +1,5 @@
 ﻿using Ann.Foundation.Mvvm;
-using Jil;
+using YamlDotNet.Serialization;
 
 namespace Ann.Config
 {
@@ -9,7 +9,7 @@ namespace Ann.Config
 
         private string _Value = string.Empty;
 
-        [JilDirective("Path")]
+        [YamlMember(Alias = "Path")]
         public string Value
         {
             get { return _Value; }
