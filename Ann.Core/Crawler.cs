@@ -27,15 +27,18 @@ namespace Ann.Core
                                     ? Path.GetFileNameWithoutExtension(f)
                                     : fvi.FileDescription;
 
-                                return new ExecutableUnit
+                                var eu = new ExecutableUnit
                                 {
                                     Path = f,
                                     Name = name,
                                     LowerName = name.ToLower(),
                                     LowerDirectory = (Path.GetDirectoryName(f) ?? string.Empty).ToLower(),
-                                    LowerFileName = Path.GetFileNameWithoutExtension(f).ToLower(),
-                                    SearchKey = $"{name}*{Path.GetDirectoryName(f) ?? string.Empty}*{Path.GetFileNameWithoutExtension(f)}"
+                                    LowerFileName = Path.GetFileNameWithoutExtension(f).ToLower()
                                 };
+
+                                eu.SearchKey = $"{eu.LowerName}*{eu.LowerDirectory}*{eu.LowerFileName}";
+
+                                return eu;
                             })
                     ).ToArray();
             });
