@@ -8,6 +8,7 @@ using Ann.Core;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 using Ann.SettingWindow;
+using Livet;
 using Livet.Messaging;
 using Livet.Messaging.Windows;
 using Reactive.Bindings;
@@ -18,7 +19,7 @@ namespace Ann.MainWindow
     public class MainWindowViewModel : ViewModelBase
     {
         public ReactiveProperty<string> Input { get; }
-        public ReactiveProperty<bool> IsIndexUpdating { get; }
+        public ReactiveProperty<string> InProgressMessage { get; }
         public ReactiveCommand IndexUpdateCommand { get; }
 
         public ReadOnlyReactiveProperty<ObservableCollection<ExecutableUnitViewModel>> Candidates { get; }
@@ -53,7 +54,7 @@ namespace Ann.MainWindow
         public MainWindowViewModel()
         {
             Input = new ReactiveProperty<string>().AddTo(CompositeDisposable);
-            IsIndexUpdating = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
+            InProgressMessage = new ReactiveProperty<string>(string.Empty).AddTo(CompositeDisposable);
             Visibility = new ReactiveProperty<Visibility>(System.Windows.Visibility.Visible).AddTo(CompositeDisposable);
 
             Left =
@@ -72,18 +73,19 @@ namespace Ann.MainWindow
                     .ToReadOnlyReactiveProperty()
                     .AddTo(CompositeDisposable);
 
-            IndexUpdateCommand = IsIndexUpdating.Select(i => i == false)
+            IndexUpdateCommand = InProgressMessage.Select(string.IsNullOrEmpty)
                 .ToReactiveCommand().AddTo(CompositeDisposable);
 
             IndexUpdateCommand
                 .Subscribe(async _ =>
                 {
-                    IsIndexUpdating.Value = true;
+                    using (new AnonymousDisposable(() => InProgressMessage.Value = string.Empty))
+                    {
+                        InProgressMessage.Value = "Index Updating...";
 
-                    await App.Instance.UpdateIndexAsync();
-                    Input.ForceNotify();
-
-                    IsIndexUpdating.Value = false;
+                        await App.Instance.UpdateIndexAsync();
+                        Input.ForceNotify();
+                    }
                 }).AddTo(CompositeDisposable);
 
             Candidates = Input

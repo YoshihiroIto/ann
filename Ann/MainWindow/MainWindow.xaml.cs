@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Ann.Foundation;
 using Ann.Foundation.Control;
+using Livet;
 using Reactive.Bindings.Extensions;
 
 namespace Ann.MainWindow
@@ -36,7 +37,12 @@ namespace Ann.MainWindow
             InitializeHotKey();
             InitializeShortcutKey();
 
-            await App.Instance.OpenIndexAsync();
+            using (new AnonymousDisposable(() => _DataContext.InProgressMessage.Value = string.Empty))
+            {
+                _DataContext.InProgressMessage.Value = "Index Initializing...";
+                await App.Instance.OpenIndexAsync();
+                await Task.Delay(TimeSpan.FromMilliseconds(5000));
+            }
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
