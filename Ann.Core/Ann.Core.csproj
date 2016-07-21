@@ -53,17 +53,16 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Crawler.cs" />
     <Compile Include="ExecutableUnit.cs" />
     <Compile Include="ExecutableUnitDataBase.cs" />
-    <Compile Include="FlatBuffers\IndexFile\ExecutableUnit.cs" />
-    <Compile Include="FlatBuffers\IndexFile\File.cs" />
+    <Compile Include="IndexFile\ExecutableUnit.cs" />
+    <Compile Include="IndexFile\File.cs" />
     <Compile Include="IconDecoder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="FlatBuffers\ExecutableUnit.fbs" />
+    <None Include="IndexFile.fbs" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
