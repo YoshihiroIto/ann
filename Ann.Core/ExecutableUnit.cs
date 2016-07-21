@@ -1,12 +1,12 @@
 ﻿namespace Ann.Core
 {
-    public class ExecutableUnit
+    public struct ExecutableUnit
     {
-        public string Path { get; set; }
-        public string Name { get; set; }
-        public string LowerName { get; set; }
-        public string LowerDirectory { get; set; }
-        public string LowerFileName { get; set; }
-        public string SearchKey { get; set; }
+        public string Path;
+        public string Name;
+        public string LowerName;
+        public string LowerDirectory;
+        public string LowerFileName;
+        public string SearchKey;
     }
 }

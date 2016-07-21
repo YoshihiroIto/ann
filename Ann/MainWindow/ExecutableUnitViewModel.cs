@@ -62,7 +62,6 @@ namespace Ann.MainWindow
         public ExecutableUnitViewModel(MainWindowViewModel parent, ExecutableUnit model)
         {
             Debug.Assert(parent != null);
-            Debug.Assert(model != null);
 
             _parent = parent;
 

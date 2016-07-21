@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Ann.Foundation;
-using Jil;
+using FlatBuffers;
 
 namespace Ann.Core
 {
@@ -84,18 +84,48 @@ namespace Ann.Core
             using (new TimeMeasure("Index Crawlering"))
                 _executableUnits = await Crawler.ExecuteAsync(targetFolders);
 
-            var dir = Path.GetDirectoryName(_indexFile);
-            if (dir != null)
-                Directory.CreateDirectory(dir);
+            await Task.Run(() =>
+            {
+                var dir = Path.GetDirectoryName(_indexFile);
+                if (dir != null)
+                    Directory.CreateDirectory(dir);
 
-            string text;
+                byte[] data;
 
-            using (new TimeMeasure("Index Serializing"))
-                text = JSON.Serialize(_executableUnits);
+                using (new TimeMeasure("Index Serializing"))
+                {
+                    var fbb = new FlatBufferBuilder(1);
 
-            File.WriteAllText(_indexFile, text);
+                    var euOffsets = new Offset<IndexFile.ExecutableUnit>[_executableUnits.Length];
 
-            Opend?.Invoke(this, EventArgs.Empty);
+                    for (var i = 0; i != _executableUnits.Length; ++ i)
+                    {
+                        euOffsets[i] =
+                            IndexFile.ExecutableUnit.CreateExecutableUnit(fbb,
+                                fbb.CreateString(_executableUnits[i].Path),
+                                fbb.CreateString(_executableUnits[i].Name),
+                                fbb.CreateString(_executableUnits[i].LowerName),
+                                fbb.CreateString(_executableUnits[i].LowerDirectory),
+                                fbb.CreateString(_executableUnits[i].LowerFileName),
+                                fbb.CreateString(_executableUnits[i].SearchKey));
+                    }
+
+                    var rowsOffset = IndexFile.File.CreateRowsVector(fbb, euOffsets);
+
+                    IndexFile.File.StartFile(fbb);
+                    IndexFile.File.AddRows(fbb, rowsOffset);
+
+                    var endFile = IndexFile.File.EndFile(fbb);
+
+                    fbb.Finish(endFile.Value);
+
+                    data = fbb.SizedByteArray();
+                }
+
+                File.WriteAllBytes(_indexFile, data);
+
+                Opend?.Invoke(this, EventArgs.Empty);
+            });
         }
 
         public async Task OpenAsync()
@@ -105,10 +135,28 @@ namespace Ann.Core
                 if (File.Exists(_indexFile) == false)
                     return;
 
-                var text = File.ReadAllText(_indexFile);
+                var data = new ByteBuffer(File.ReadAllBytes(_indexFile));
 
                 using (new TimeMeasure("Index Deserializing"))
-                    _executableUnits = JSON.Deserialize<ExecutableUnit[]>(text);
+                {
+                    var root = IndexFile.File.GetRootAsFile(data);
+
+                    _executableUnits = new ExecutableUnit[root.RowsLength];
+
+                    var temp = new IndexFile.ExecutableUnit();
+
+                    for (var i = 0; i != root.RowsLength; ++i)
+                    {
+                        root.GetRows(temp, i);
+
+                        _executableUnits[i].Path = temp.Path;
+                        _executableUnits[i].Name = temp.Name;
+                        _executableUnits[i].LowerName = temp.LowerName;
+                        _executableUnits[i].LowerDirectory = temp.LowerDirectory;
+                        _executableUnits[i].LowerFileName = temp.LowerFileName;
+                        _executableUnits[i].SearchKey = temp.SearchKey;
+                    }
+                }
 
                 Opend?.Invoke(this, EventArgs.Empty);
             });

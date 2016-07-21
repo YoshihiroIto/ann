@@ -1,0 +1,18 @@
+namespace IndexFile;
+
+table ExecutableUnit
+{
+   Path             :string;
+   Name             :string;
+   LowerName        :string;
+   LowerDirectory   :string;
+   LowerFileName    :string;
+   SearchKey        :string;
+}
+
+table File
+{
+    Rows            :[ExecutableUnit];
+}
+
+root_type File;
