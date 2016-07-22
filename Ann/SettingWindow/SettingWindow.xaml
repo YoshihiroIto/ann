@@ -11,8 +11,11 @@
         Title="Setting -- Ann"
         Width="800"
         Height="500"
+        MinWidth="400"
+        MinHeight="250"
         d:DataContext="{d:DesignData SettingViewModel}"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
+        ResizeMode="CanResizeWithGrip"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
     <Window.Resources>
