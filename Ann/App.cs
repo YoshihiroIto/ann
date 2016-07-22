@@ -168,8 +168,15 @@ namespace Ann
             if (File.Exists(ConfigFilePath) == false)
                 return new Config.App();
 
-            using (var reader = new StringReader(File.ReadAllText(ConfigFilePath)))
-                return new Deserializer().Deserialize<Config.App>(reader);
+            try
+            {
+                using (var reader = new StringReader(File.ReadAllText(ConfigFilePath)))
+                    return new Deserializer().Deserialize<Config.App>(reader);
+            }
+            catch
+            {
+                return new Config.App();
+            }
         }
 
         public void SaveConfig()
