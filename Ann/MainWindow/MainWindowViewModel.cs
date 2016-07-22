@@ -57,6 +57,8 @@ namespace Ann.MainWindow
             InProgressMessage = new ReactiveProperty<string>(string.Empty).AddTo(CompositeDisposable);
             Visibility = new ReactiveProperty<Visibility>(System.Windows.Visibility.Visible).AddTo(CompositeDisposable);
 
+            CompositeDisposable.Add(DisposeCandidates);
+
             InProgress = InProgressMessage
                 .Select(m => string.IsNullOrEmpty(m) == false)
                 .ToReadOnlyReactiveProperty()
@@ -96,10 +98,7 @@ namespace Ann.MainWindow
             Candidates = Input
                 .Select(i =>
                 {
-                    var candidates = Candidates?.Value;
-                    if (candidates != null)
-                        foreach (var c in candidates)
-                            c.Dispose();
+                    DisposeCandidates();
 
                     return
                         new ObservableCollection<ExecutableUnitViewModel>(
@@ -183,6 +182,14 @@ namespace Ann.MainWindow
                 .Select(i => i ? string.Empty : "Activation Hotkey is already in use.")
                 .ToReadOnlyReactiveProperty()
                 .AddTo(CompositeDisposable);
+        }
+
+        private void DisposeCandidates()
+        {
+            var candidates = Candidates?.Value;
+            if (candidates != null)
+                foreach (var c in candidates)
+                    c.Dispose();
         }
 
         private int IndexOfCandidates(string path)
