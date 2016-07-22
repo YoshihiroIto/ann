@@ -6,32 +6,28 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ann.Foundation;
 using FlatBuffers;
+using IndexFile;
+using File = System.IO.File;
 
 namespace Ann.Core
 {
-    public class ExecutableUnitDataBase : IDisposable
+    public class ExecutableUnitDataBase
     {
-        public event EventHandler Opend;
-        public event EventHandler Closed;
-
-        private bool _isOpend;
-
         private readonly string _indexFile;
 
         public ExecutableUnitDataBase(string indexFile)
         {
             _indexFile = indexFile;
-            Opend += (_, __) => _isOpend = true;
-            Closed += (_, __) => _isOpend = false;
         }
 
-        public void Dispose()
-        {
-            Close();
-        }
 
-        private string _prevKeyword;
+        private ExecutableUnit[] _executableUnits;
         private ExecutableUnit[] _prevResult;
+        private string _prevKeyword;
+
+        private bool IsOpend => _executableUnits != null;
+
+        private Versions CurrentIndexVersion = Versions.V1;
 
         public IEnumerable<ExecutableUnit> Find(string keyword)
         {
@@ -42,7 +38,7 @@ namespace Ann.Core
                 return Enumerable.Empty<ExecutableUnit>();
             }
 
-            if (_isOpend == false)
+            if (IsOpend == false)
             {
                 _prevKeyword = null;
                 _prevResult = null;
@@ -78,12 +74,13 @@ namespace Ann.Core
             return _prevResult;
         }
 
-        private ExecutableUnit[] _executableUnits;
-
-        public async Task UpdateIndexAsync(IEnumerable<string> targetFolders)
+        public async Task<IndexOpeningResults> UpdateIndexAsync(IEnumerable<string> targetFolders)
         {
             using (new TimeMeasure("Index Crawlering"))
                 _executableUnits = await ExecuteAsync(targetFolders);
+
+            if (_executableUnits == null)
+                return IndexOpeningResults.CanNotOpen;
 
             await Task.Run(() =>
             {
@@ -114,6 +111,7 @@ namespace Ann.Core
                     var rowsOffset = IndexFile.File.CreateRowsVector(fbb, euOffsets);
 
                     IndexFile.File.StartFile(fbb);
+                    IndexFile.File.AddVersion(fbb, CurrentIndexVersion);
                     IndexFile.File.AddRows(fbb, rowsOffset);
 
                     var endFile = IndexFile.File.EndFile(fbb);
@@ -124,15 +122,17 @@ namespace Ann.Core
                 }
 
                 File.WriteAllBytes(_indexFile, data);
-
-                Opend?.Invoke(this, EventArgs.Empty);
             });
+
+            return IndexOpeningResults.Ok;
         }
 
-        public void Open()
+        public IndexOpeningResults OpenIndex()
         {
+            _executableUnits = null;
+
             if (File.Exists(_indexFile) == false)
-                return;
+                return IndexOpeningResults.NotFound;
 
             try
             {
@@ -141,6 +141,9 @@ namespace Ann.Core
                 using (new TimeMeasure("Index Deserializing"))
                 {
                     var root = IndexFile.File.GetRootAsFile(data);
+
+                    if (root.Version != CurrentIndexVersion)
+                        return IndexOpeningResults.OldIndex;
 
                     _executableUnits = new ExecutableUnit[root.RowsLength];
 
@@ -159,17 +162,12 @@ namespace Ann.Core
                     }
                 }
 
-                Opend?.Invoke(this, EventArgs.Empty);
+                return IndexOpeningResults.Ok;
             }
             catch
             {
-                // ignored
+                return IndexOpeningResults.CanNotOpen;
             }
-        }
-
-        private void Close()
-        {
-            Closed?.Invoke(this, EventArgs.Empty);
         }
 
         // ReSharper disable PossibleNullReferenceException
@@ -221,35 +219,42 @@ namespace Ann.Core
         {
             return await Task.Run(() =>
             {
-                var executableExts = new HashSet<string> {".exe", ".lnk"};
+                try
+                {
+                    var executableExts = new HashSet<string> {".exe", ".lnk"};
 
-                return targetFolders
-                    .AsParallel()
-                    .SelectMany(targetFolder =>
-                        EnumerateAllFiles(targetFolder)
-                            .Where(f => executableExts.Contains(Path.GetExtension(f)?.ToLower()))
-                            .Select(f =>
-                            {
-                                var fvi = FileVersionInfo.GetVersionInfo(f);
-
-                                var name = string.IsNullOrWhiteSpace(fvi.FileDescription)
-                                    ? Path.GetFileNameWithoutExtension(f)
-                                    : fvi.FileDescription;
-
-                                var eu = new ExecutableUnit
+                    return targetFolders
+                        .AsParallel()
+                        .SelectMany(targetFolder =>
+                            EnumerateAllFiles(targetFolder)
+                                .Where(f => executableExts.Contains(Path.GetExtension(f)?.ToLower()))
+                                .Select(f =>
                                 {
-                                    Path = f,
-                                    Name = name,
-                                    LowerName = name.ToLower(),
-                                    LowerDirectory = (Path.GetDirectoryName(f) ?? string.Empty).ToLower(),
-                                    LowerFileName = Path.GetFileNameWithoutExtension(f).ToLower()
-                                };
+                                    var fvi = FileVersionInfo.GetVersionInfo(f);
 
-                                eu.SearchKey = $"{eu.LowerName}*{eu.LowerDirectory}*{eu.LowerFileName}";
+                                    var name = string.IsNullOrWhiteSpace(fvi.FileDescription)
+                                        ? Path.GetFileNameWithoutExtension(f)
+                                        : fvi.FileDescription;
 
-                                return eu;
-                            })
-                    ).ToArray();
+                                    var eu = new ExecutableUnit
+                                    {
+                                        Path = f,
+                                        Name = name,
+                                        LowerName = name.ToLower(),
+                                        LowerDirectory = (Path.GetDirectoryName(f) ?? string.Empty).ToLower(),
+                                        LowerFileName = Path.GetFileNameWithoutExtension(f).ToLower()
+                                    };
+
+                                    eu.SearchKey = $"{eu.LowerName}*{eu.LowerDirectory}*{eu.LowerFileName}";
+
+                                    return eu;
+                                })
+                        ).ToArray();
+                }
+                catch
+                {
+                    return null;
+                }
             });
         }
 

@@ -1,18 +1,25 @@
 namespace IndexFile;
 
+enum Versions : int
+{
+    V0 = 0,
+    V1 = 0x19770322
+}
+
 table ExecutableUnit
 {
-    Path            :string;
-    Name            :string;
-    LowerName       :string;
-    LowerDirectory  :string;
-    LowerFileName   :string;
-    SearchKey       :string;
+    Path           :string;
+    Name           :string;
+    LowerName      :string;
+    LowerDirectory :string;
+    LowerFileName  :string;
+    SearchKey      :string;
 }
 
 table File
 {
-    Rows            :[ExecutableUnit];
+    Version :Versions;
+    Rows    :[ExecutableUnit];
 }
 
 root_type File;

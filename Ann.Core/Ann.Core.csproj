@@ -58,6 +58,7 @@
     <Compile Include="IndexFile\ExecutableUnit.cs" />
     <Compile Include="IndexFile\File.cs" />
     <Compile Include="IconDecoder.cs" />
+    <Compile Include="IndexFile\Versions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -6,8 +6,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Ann.Core;
+using Ann.Foundation;
 using Ann.Foundation.Mvvm;
-using Reactive.Bindings.Extensions;
 using YamlDotNet.Serialization;
 
 namespace Ann
@@ -27,20 +27,21 @@ namespace Ann
         public event EventHandler HighPriorityChanged;
         public event EventHandler ShortcutKeyChanged;
 
-        #region IsEnabledIndex
+        #region IndexOpeningResult
 
-        private bool _IsEnabledIndex;
+        private IndexOpeningResults _IndexOpeningResult;
 
-        public bool IsEnabledIndex
+        public IndexOpeningResults IndexOpeningResult
         {
-            get { return _IsEnabledIndex; }
-            set { SetProperty(ref _IsEnabledIndex, value); }
+            get { return _IndexOpeningResult; }
+            set { SetProperty(ref _IndexOpeningResult, value); }
         }
 
         #endregion
 
         public static void Initialize()
         {
+            Instance.OpenIndex();
         }
 
         public static void Destory()
@@ -74,6 +75,11 @@ namespace Ann
             return true;
         }
 
+        public void OpenIndex()
+        {
+            IndexOpeningResult = _dataBase.OpenIndex();
+        }
+
         public async Task UpdateIndexAsync()
         {
             var targetFolders = Config.TargetFolder.Folders.ToList();
@@ -93,7 +99,7 @@ namespace Ann
             if (Config.TargetFolder.IsIncludeProgramFilesX86Folder)
                 targetFolders.Add(new Config.Path(Constants.ProgramFilesX86Folder));
 
-            await _dataBase.UpdateIndexAsync(
+            IndexOpeningResult = await _dataBase.UpdateIndexAsync(
                 targetFolders
                 .Select(f => Environment.ExpandEnvironmentVariables(f.Value))
                 .Distinct()
@@ -108,16 +114,9 @@ namespace Ann
 
         private App()
         {
-            _dataBase = new ExecutableUnitDataBase(IndexFilePath).AddTo(CompositeDisposable);
-            _dataBase.Opend += (_, __) => IsEnabledIndex = true;
-            _dataBase.Closed += (_, __) => IsEnabledIndex = false;
+            _dataBase = new ExecutableUnitDataBase(IndexFilePath);
 
             LoadConfig();
-        }
-
-        public void OpenIndex()
-        {
-            _dataBase.Open();
         }
 
         #region config

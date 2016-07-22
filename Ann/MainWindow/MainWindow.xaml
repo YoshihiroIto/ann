@@ -4,6 +4,7 @@
         xmlns:ann="clr-namespace:Ann"
         xmlns:behaviors="http://schemas.livet-mvvm.net/2011/wpf"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:foundation="clr-namespace:Ann.Foundation;assembly=Ann.Foundation"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:interactivity="clr-namespace:Reactive.Bindings.Interactivity;assembly=ReactiveProperty.NET46"
         xmlns:mainWindow="clr-namespace:Ann.MainWindow"
@@ -124,13 +125,64 @@
                 </Border.Style>
             </Border>
 
+            <StackPanel Margin="12,0,0,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        DockPanel.Dock="Right">
+                <StackPanel.Style>
+                    <Style TargetType="{x:Type StackPanel}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding InProgress.Value, Mode=OneWay}" Value="False">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding InProgress.Value, Mode=OneWay}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+
+                <Button Width="24"
+                        Height="24"
+                        Command="{Binding IndexUpdateCommand,
+                                          Mode=OneTime}"
+                        Padding="0">
+                    <materialDesign:PackIcon Width="24"
+                                             Height="24"
+                                             Foreground="Orange"
+                                             Kind="SyncAlert" />
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource MaterialDesignToolForegroundButton}" TargetType="{x:Type Button}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static foundation:IndexOpeningResults.OldIndex}">
+                                    <Setter Property="ToolTip" Value="Index is too old. Please update index." />
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static foundation:IndexOpeningResults.CanNotOpen}">
+                                    <Setter Property="ToolTip" Value="Index is not opened." />
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static foundation:IndexOpeningResults.NotFound}">
+                                    <Setter Property="ToolTip" Value="Index not found. Please update index." />
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static foundation:IndexOpeningResults.Ok}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+
             <ProgressBar Margin="12,0,0,0"
                          HorizontalAlignment="Right"
                          VerticalAlignment="Center"
                          DockPanel.Dock="Right"
                          Foreground="White"
                          IsIndeterminate="True"
-                         ToolTip="{Binding InProgressMessage.Value, Mode=OneWay}"
+                         ToolTip="{Binding InProgressMessage.Value,
+                                           Mode=OneWay}"
                          Value="0">
                 <ProgressBar.Style>
                     <Style BasedOn="{StaticResource MaterialDesignCircularProgressBar}" TargetType="{x:Type ProgressBar}">
@@ -142,38 +194,6 @@
                     </Style>
                 </ProgressBar.Style>
             </ProgressBar>
-
-            <Button Width="24"
-                    Height="24"
-                    Margin="12,0,0,0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Command="{Binding IndexUpdateCommand,
-                                      Mode=OneTime}"
-                    DockPanel.Dock="Right"
-                    Padding="0"
-                    ToolTip="Index not found. Please update index.">
-                <materialDesign:PackIcon Width="24"
-                                         Height="24"
-                                         Foreground="Orange"
-                                         Kind="SyncAlert" />
-                <Button.Style>
-                    <Style BasedOn="{StaticResource MaterialDesignToolForegroundButton}" TargetType="{x:Type Button}">
-
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsEnabledIndex.Value, Mode=OneWay}" Value="True">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding InProgressMessage.Value, Mode=OneWay}" Value="">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding IsEnabledIndex.Value, Mode=OneWay}" Value="False">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
 
             <TextBox x:Name="InputTextBox"
                      Background="Transparent"

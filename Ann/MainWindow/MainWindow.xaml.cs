@@ -31,12 +31,10 @@ namespace Ann.MainWindow
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             WindowHelper.EnableBlur(this);
-            Application.Current.Deactivated += (_, __) => Visibility = Visibility.Hidden;
+//            Application.Current.Deactivated += (_, __) => Visibility = Visibility.Hidden;
             Keyboard.Focus(InputTextBox);
             InitializeHotKey();
             InitializeShortcutKey();
-
-            App.Instance.OpenIndex();
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

@@ -20,6 +20,7 @@ namespace Ann.MainWindow
     {
         public ReactiveProperty<string> Input { get; }
         public ReactiveProperty<string> InProgressMessage { get; }
+        public ReadOnlyReactiveProperty<bool> InProgress { get; }
         public ReactiveCommand IndexUpdateCommand { get; }
 
         public ReadOnlyReactiveProperty<ObservableCollection<ExecutableUnitViewModel>> Candidates { get; }
@@ -46,9 +47,8 @@ namespace Ann.MainWindow
 
         public ReactiveCommand SettingShowCommand { get; }
 
-        public ReadOnlyReactiveProperty<bool> IsEnabledIndex { get; }
+        public ReadOnlyReactiveProperty<IndexOpeningResults> IndexOpeningResult { get; }
         public ReactiveProperty<bool> IsEnableActivateHotKey { get; }
-
         public ReadOnlyReactiveProperty<string> Message { get; }
 
         public MainWindowViewModel()
@@ -56,6 +56,11 @@ namespace Ann.MainWindow
             Input = new ReactiveProperty<string>().AddTo(CompositeDisposable);
             InProgressMessage = new ReactiveProperty<string>(string.Empty).AddTo(CompositeDisposable);
             Visibility = new ReactiveProperty<Visibility>(System.Windows.Visibility.Visible).AddTo(CompositeDisposable);
+
+            InProgress = InProgressMessage
+                .Select(m => string.IsNullOrEmpty(m) == false)
+                .ToReadOnlyReactiveProperty()
+                .AddTo(CompositeDisposable);
 
             Left =
                 App.Instance.Config.MainWindow.ToReactivePropertyAsSynchronized(x => x.Left).AddTo(CompositeDisposable);
@@ -169,7 +174,7 @@ namespace Ann.MainWindow
                 App.Instance.InvokeShortcutKeyChanged();
             }).AddTo(CompositeDisposable);
 
-            IsEnabledIndex = App.Instance.ObserveProperty(x => x.IsEnabledIndex)
+            IndexOpeningResult = App.Instance.ObserveProperty(x => x.IndexOpeningResult)
                 .ToReadOnlyReactiveProperty()
                 .AddTo(CompositeDisposable);
 
