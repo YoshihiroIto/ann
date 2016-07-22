@@ -2,6 +2,7 @@
 using System.Linq;
 using Ann.Foundation.Mvvm;
 using Ann.SettingWindow.SettingPage.General;
+using Ann.SettingWindow.SettingPage.PriorityFiles;
 using Ann.SettingWindow.SettingPage.Shortcuts;
 using Ann.SettingWindow.SettingPage.TargetFolders;
 using Livet;
@@ -24,8 +25,9 @@ namespace Ann.SettingWindow
             Pages = new ViewModelBase[]
             {
                 new GeneralViewModel(model),
+                new ShortcutsViewModel(model),
                 new TargetFoldersViewModel(model),
-                new ShortcutsViewModel(model)
+                new PriorityFilesViewModel(model)
             };
             SelectedPage = new ReactiveProperty<ViewModelBase>(Pages[0]).AddTo(CompositeDisposable);
         }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using Ann.Config;
+using Ann.Core;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -47,7 +47,7 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                 model.TargetFolder.ToReactivePropertyAsSynchronized(x => x.IsIncludeProgramFilesX86Folder)
                     .AddTo(CompositeDisposable);
 
-            Folders = model.TargetFolder.Folders.ToReadOnlyReactiveCollection(p => new PathViewModel(Messenger, true, p))
+            Folders = model.TargetFolder.Folders.ToReadOnlyReactiveCollection(p => new PathViewModel(p, Messenger, true))
                 .AddTo(CompositeDisposable);
 
             FolderAddCommand = new ReactiveCommand().AddTo(CompositeDisposable);

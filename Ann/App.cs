@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -8,7 +9,9 @@ using System.Threading.Tasks;
 using Ann.Core;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm;
+using Reactive.Bindings.Extensions;
 using YamlDotNet.Serialization;
+using Path = Ann.Core.Path;
 
 namespace Ann
 {
@@ -18,11 +21,11 @@ namespace Ann
 
         public Config.App Config { get; private set; }
 
-        private HashSet<string> _highPriorities = new HashSet<string>();
+        private HashSet<string> _priorityFiles = new HashSet<string>();
 
         private readonly ExecutableUnitDataBase _dataBase;
 
-        private static string IndexFilePath => Path.Combine(ConfigDirPath, "index.dat");
+        private static string IndexFilePath => System.IO.Path.Combine(ConfigDirPath, "index.dat");
 
         public event EventHandler HighPriorityChanged;
         public event EventHandler ShortcutKeyChanged;
@@ -53,12 +56,11 @@ namespace Ann
         public void InvokeShortcutKeyChanged() =>
             ShortcutKeyChanged?.Invoke(this, EventArgs.Empty);
 
-        public bool IsHighPriority(string path) => _highPriorities.Contains(path);
+        public bool IsHighPriority(string path) => _priorityFiles.Contains(path);
 
         public bool AddHighPriorityPath(string path)
         {
-            if (_highPriorities.Add(path) == false)
-                return false;
+            Config.PriorityFiles.Add(new Path(path));
 
             SaveConfig();
             HighPriorityChanged?.Invoke(this, EventArgs.Empty);
@@ -67,8 +69,7 @@ namespace Ann
 
         public bool RemoveHighPriorityPath(string path)
         {
-            if (_highPriorities.Remove(path) == false)
-                return false;
+            Config.PriorityFiles.Remove(new Path(path));
 
             SaveConfig();
             HighPriorityChanged?.Invoke(this, EventArgs.Empty);
@@ -85,19 +86,19 @@ namespace Ann
             var targetFolders = Config.TargetFolder.Folders.ToList();
 
             if (Config.TargetFolder.IsIncludeSystemFolder)
-                targetFolders.Add(new Config.Path(Constants.SystemFolder));
+                targetFolders.Add(new Path(Constants.SystemFolder));
 
             if (Config.TargetFolder.IsIncludeSystemX86Folder)
-                targetFolders.Add(new Config.Path(Constants.SystemX86Folder));
+                targetFolders.Add(new Path(Constants.SystemX86Folder));
 
             if (Config.TargetFolder.IsIncludeProgramsFolder)
-                targetFolders.Add(new Config.Path(Constants.ProgramsFolder));
+                targetFolders.Add(new Path(Constants.ProgramsFolder));
 
             if (Config.TargetFolder.IsIncludeProgramFilesFolder)
-                targetFolders.Add(new Config.Path(Constants.ProgramFilesFolder));
+                targetFolders.Add(new Path(Constants.ProgramFilesFolder));
 
             if (Config.TargetFolder.IsIncludeProgramFilesX86Folder)
-                targetFolders.Add(new Config.Path(Constants.ProgramFilesX86Folder));
+                targetFolders.Add(new Path(Constants.ProgramFilesX86Folder));
 
             IndexOpeningResult = await _dataBase.UpdateIndexAsync(
                 targetFolders
@@ -126,11 +127,11 @@ namespace Ann
             get
             {
                 var dir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                return Path.Combine(dir, CompanyName, ProductName);
+                return System.IO.Path.Combine(dir, CompanyName, ProductName);
             }
         }
 
-        public static string ConfigFilePath => Path.Combine(ConfigDirPath, ProductName + ".yaml");
+        public static string ConfigFilePath => System.IO.Path.Combine(ConfigDirPath, ProductName + ".yaml");
 
         private static string CompanyName =>
             ((AssemblyCompanyAttribute) Attribute.GetCustomAttribute(
@@ -144,11 +145,22 @@ namespace Ann
 
         private void LoadConfig()
         {
+            Debug.Assert(Config == null);
+
             Config = ReadConfigIfExist();
 
-            _highPriorities = Config.HighPriorities == null
-                ? new HashSet<string>()
-                : new HashSet<string>(Config.HighPriorities);
+            if (Config.PriorityFiles == null)
+                Config.PriorityFiles = new ObservableCollection<Path>();
+
+            _priorityFiles = new HashSet<string>(Config.PriorityFiles.Select(p => p.Value));
+
+            Config.PriorityFiles.ObserveAddChanged()
+                .Subscribe(p => _priorityFiles.Add(p.Value))
+                .AddTo(CompositeDisposable);
+
+            Config.PriorityFiles.ObserveRemoveChanged()
+                .Subscribe(p => _priorityFiles.Remove(p.Value))
+                .AddTo(CompositeDisposable);
         }
 
         private static Config.App ReadConfigIfExist()
@@ -162,8 +174,6 @@ namespace Ann
 
         public void SaveConfig()
         {
-            Config.HighPriorities = new ObservableCollection<string>(_highPriorities);
-
             using (var writer = new StringWriter())
             {
                 new Serializer(SerializationOptions.EmitDefaults).Serialize(writer, Config);

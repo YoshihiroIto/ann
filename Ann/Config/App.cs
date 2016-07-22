@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using Ann.Core;
 using Ann.Foundation.Mvvm;
 
 namespace Ann.Config
@@ -18,14 +19,14 @@ namespace Ann.Config
 
         #endregion
 
-        #region HighPriorities
+        #region PriorityFiles
 
-        private ObservableCollection<string> _HighPriorities = new ObservableCollection<string>();
+        private ObservableCollection<Path> _PriorityFiles = new ObservableCollection<Path>();
 
-        public ObservableCollection<string> HighPriorities
+        public ObservableCollection<Path> PriorityFiles
         {
-            get { return _HighPriorities; }
-            set { SetProperty(ref _HighPriorities, value); }
+            get { return _PriorityFiles; }
+            set { SetProperty(ref _PriorityFiles, value); }
         }
         #endregion
 

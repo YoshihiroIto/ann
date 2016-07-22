@@ -5,7 +5,7 @@ using System.Windows.Input;
 namespace Ann.SettingWindow.SettingPage.Shortcuts
 {
     /// <summary>
-    /// FolderListBox.xaml の相互作用ロジック
+    /// FileOrFolderListBox.xaml の相互作用ロジック
     /// </summary>
     public partial class ShortcutkeyListBox
     {

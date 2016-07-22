@@ -2,12 +2,12 @@
 using System.Windows;
 using System.Windows.Input;
 
-namespace Ann.SettingWindow.SettingPage.TargetFolders
+namespace Ann.SettingWindow.SettingPage
 {
     /// <summary>
-    /// FolderListBox.xaml の相互作用ロジック
+    /// FileOrFolderListBox.xaml の相互作用ロジック
     /// </summary>
-    public partial class FolderListBox
+    public partial class FileOrFolderListBox
     {
         #region AddCommand
 
@@ -21,7 +21,7 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
             DependencyProperty.Register(
                 nameof(AddCommand),
                 typeof(ICommand),
-                typeof(FolderListBox),
+                typeof(FileOrFolderListBox),
                 new FrameworkPropertyMetadata
                 {
                     DefaultValue = default(ICommand),
@@ -43,7 +43,7 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
             DependencyProperty.Register(
                 nameof(RemoveCommand),
                 typeof(ICommand),
-                typeof(FolderListBox),
+                typeof(FileOrFolderListBox),
                 new FrameworkPropertyMetadata
                 {
                     DefaultValue = default(ICommand),
@@ -65,7 +65,7 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
             DependencyProperty.Register(
                 nameof(Items),
                 typeof(IList),
-                typeof(FolderListBox),
+                typeof(FileOrFolderListBox),
                 new FrameworkPropertyMetadata
                 {
                     DefaultValue = default(IList),
@@ -75,7 +75,51 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
 
         #endregion
 
-        public FolderListBox()
+        #region AddButtonText
+
+        public string AddButtonText
+        {
+            get { return (string)GetValue(AddButtonTextProperty); }
+            set { SetValue(AddButtonTextProperty, value); }
+        }
+
+        public static readonly DependencyProperty AddButtonTextProperty =
+            DependencyProperty.Register(
+                nameof (AddButtonText),
+                typeof (string),
+                typeof (FileOrFolderListBox),
+                new FrameworkPropertyMetadata
+                {
+                    DefaultValue            = default(string),
+                    BindsTwoWayByDefault    = true
+                }
+            );
+
+        #endregion
+
+        #region IsFolderPicker
+
+        public bool IsFolderPicker
+        {
+            get { return (bool)GetValue(IsFolderPickerProperty); }
+            set { SetValue(IsFolderPickerProperty, value); }
+        }
+
+        public static readonly DependencyProperty IsFolderPickerProperty =
+            DependencyProperty.Register(
+                nameof (IsFolderPicker),
+                typeof (bool),
+                typeof (FileOrFolderListBox),
+                new FrameworkPropertyMetadata
+                {
+                    DefaultValue            = default(bool),
+                    BindsTwoWayByDefault    = true
+                }
+            );
+
+        #endregion
+
+        public FileOrFolderListBox()
         {
             InitializeComponent();
         }

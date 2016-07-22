@@ -84,7 +84,7 @@ namespace Ann.Core
 
             await Task.Run(() =>
             {
-                var dir = Path.GetDirectoryName(_indexFile);
+                var dir = System.IO.Path.GetDirectoryName(_indexFile);
                 if (dir != null)
                     Directory.CreateDirectory(dir);
 
@@ -227,13 +227,13 @@ namespace Ann.Core
                         .AsParallel()
                         .SelectMany(targetFolder =>
                             EnumerateAllFiles(targetFolder)
-                                .Where(f => executableExts.Contains(Path.GetExtension(f)?.ToLower()))
+                                .Where(f => executableExts.Contains(System.IO.Path.GetExtension(f)?.ToLower()))
                                 .Select(f =>
                                 {
                                     var fvi = FileVersionInfo.GetVersionInfo(f);
 
                                     var name = string.IsNullOrWhiteSpace(fvi.FileDescription)
-                                        ? Path.GetFileNameWithoutExtension(f)
+                                        ? System.IO.Path.GetFileNameWithoutExtension(f)
                                         : fvi.FileDescription;
 
                                     var eu = new ExecutableUnit
@@ -241,8 +241,8 @@ namespace Ann.Core
                                         Path = f,
                                         Name = name,
                                         LowerName = name.ToLower(),
-                                        LowerDirectory = (Path.GetDirectoryName(f) ?? string.Empty).ToLower(),
-                                        LowerFileName = Path.GetFileNameWithoutExtension(f).ToLower()
+                                        LowerDirectory = (System.IO.Path.GetDirectoryName(f) ?? string.Empty).ToLower(),
+                                        LowerFileName = System.IO.Path.GetFileNameWithoutExtension(f).ToLower()
                                     };
 
                                     eu.SearchKey = $"{eu.LowerName}*{eu.LowerDirectory}*{eu.LowerFileName}";

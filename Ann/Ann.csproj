@@ -129,19 +129,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Config\Path.cs" />
     <Compile Include="Config\ShortcutKey.cs" />
     <Compile Include="SettingWindow\SettingPage\General\GeneralView.xaml.cs">
       <DependentUpon>GeneralView.xaml</DependentUpon>
     </Compile>
     <Compile Include="SettingWindow\SettingPage\General\GeneralViewModel.cs" />
+    <Compile Include="SettingWindow\SettingPage\PriorityFiles\PriorityFiles.xaml.cs">
+      <DependentUpon>PriorityFiles.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SettingWindow\SettingPage\PriorityFiles\PriorityFilesViewModel.cs" />
     <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutkeyListBox.xaml.cs">
       <DependentUpon>ShortcutkeyListBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SettingWindow\SettingPage\TargetFolders\FolderListBox.xaml.cs">
-      <DependentUpon>FolderListBox.xaml</DependentUpon>
+    <Compile Include="SettingWindow\SettingPage\FileOrFolderListBox.xaml.cs">
+      <DependentUpon>FileOrFolderListBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SettingWindow\SettingPage\TargetFolders\PathViewModel.cs" />
+    <Compile Include="SettingWindow\SettingPage\PathViewModel.cs" />
     <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutsView.xaml.cs">
       <DependentUpon>ShortcutsView.xaml</DependentUpon>
     </Compile>
@@ -183,11 +186,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="SettingWindow\SettingPage\PriorityFiles\PriorityFiles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="SettingWindow\SettingPage\Shortcuts\ShortcutkeyListBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="SettingWindow\SettingPage\TargetFolders\FolderListBox.xaml">
+    <Page Include="SettingWindow\SettingPage\FileOrFolderListBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

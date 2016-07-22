@@ -1,7 +1,7 @@
 ﻿using Ann.Foundation.Mvvm;
 using YamlDotNet.Serialization;
 
-namespace Ann.Config
+namespace Ann.Core
 {
     public class Path : ModelBase
     {

@@ -7,6 +7,7 @@
            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
            xmlns:shortcuts="clr-namespace:Ann.SettingWindow.SettingPage.Shortcuts"
            xmlns:targetFolders="clr-namespace:Ann.SettingWindow.SettingPage.TargetFolders"
+           xmlns:priorityFiles="clr-namespace:Ann.SettingWindow.SettingPage.PriorityFiles"
            Margin="24,16"
            d:DataContext="{d:DesignData SettingViewModel}"
            d:DesignHeight="300"
@@ -82,6 +83,12 @@
             <DataTemplate DataType="{x:Type targetFolders:TargetFoldersViewModel}">
                 <ContentControl Style="{StaticResource PageStyle}">
                     <targetFolders:TargetFoldersView />
+                </ContentControl>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type priorityFiles:PriorityFilesViewModel}">
+                <ContentControl Style="{StaticResource PageStyle}">
+                    <priorityFiles:PriorityFiles />
                 </ContentControl>
             </DataTemplate>
 
