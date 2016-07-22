@@ -5,6 +5,9 @@
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             xmlns:targetFolders="clr-namespace:Ann.SettingWindow.SettingPage.TargetFolders"
+            xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+            xmlns:messaging="http://schemas.livet-mvvm.net/2011/wpf"
+            xmlns:message="clr-namespace:Ann.Foundation.Mvvm.Message;assembly=Ann.Foundation"
             d:DataContext="{d:DesignData TargetFolder}"
             d:DesignHeight="300"
             d:DesignWidth="300"
@@ -24,6 +27,12 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </StackPanel.Resources>
+
+    <i:Interaction.Triggers>
+        <messaging:InteractionMessageTrigger MessageKey="FileOrFolderSelect" Messenger="{Binding Messenger, Mode=OneTime}">
+            <message:FileOrFolderSelectDialogInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
+        </messaging:InteractionMessageTrigger>
+    </i:Interaction.Triggers>
 
     <TextBlock Margin="0,0,0,8"
                Style="{StaticResource MaterialDesignSubheadingTextBlock}"

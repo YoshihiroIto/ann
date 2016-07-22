@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using Ann.Config;
 using Ann.Foundation.Mvvm;
+using Ann.Foundation.Mvvm.Message;
+using Livet.Messaging;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -14,8 +16,9 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
 
         public ReactiveCommand FolderSelectDialogOpenCommand { get; }
         
-        public PathViewModel(Path model)
+        public PathViewModel(InteractionMessenger messenger, bool isFolder, Path model)
         {
+            Debug.Assert(messenger != null);
             Debug.Assert(model != null);
             
             Path = model.ToReactivePropertyAsSynchronized(x => x.Value).AddTo(CompositeDisposable);
@@ -23,15 +26,14 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
             FolderSelectDialogOpenCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             FolderSelectDialogOpenCommand.Subscribe(_ =>
             {
-                // todo:viewを操作している
-                using (var dialog = new CommonOpenFileDialog())
-                {
-                    dialog.IsFolderPicker = true;
+                var res = messenger.GetResponse(
+                    new FileOrFolderSelectMessage("FileOrFolderSelect")
+                    {
+                        IsFolderPicker = isFolder
+                    });
 
-                    var r = dialog.ShowDialog();
-                    if (r == CommonFileDialogResult.Ok)
-                        Path.Value = dialog.FileName;
-                }
+                if (res?.Response != null)
+                    Path.Value = res?.Response;
             }).AddTo(CompositeDisposable);
         }
     }
