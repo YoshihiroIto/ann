@@ -7,6 +7,7 @@ namespace Ann.SettingWindow.SettingPage.Shortcuts
     public class ShortcutsViewModel : ViewModelBase
     {
         public string Name { get; } = "Shortcuts";
+        public bool IsAbout { get; } = false;
 
         public ShortcutKeyViewModel Activate { get; set; }
         public ShortcutKeyListBoxViewModel HideShortcuts { get; }

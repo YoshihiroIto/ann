@@ -177,6 +177,8 @@ namespace Ann.MainWindow
 
                 Messenger.Raise(new TransitionMessage(new SettingViewModel(App.Instance.Config), "ShowSetting"));
 
+                Visibility.Value = System.Windows.Visibility.Visible;
+
                 App.Instance.SaveConfig();
                 App.Instance.InvokeShortcutKeyChanged();
             }).AddTo(CompositeDisposable);

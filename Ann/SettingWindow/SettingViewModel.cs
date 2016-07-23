@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Linq;
 using Ann.Foundation.Mvvm;
+using Ann.SettingWindow.SettingPage.About;
 using Ann.SettingWindow.SettingPage.General;
 using Ann.SettingWindow.SettingPage.PriorityFiles;
 using Ann.SettingWindow.SettingPage.Shortcuts;
@@ -27,7 +28,8 @@ namespace Ann.SettingWindow
                 new GeneralViewModel(model),
                 new ShortcutsViewModel(model),
                 new TargetFoldersViewModel(model),
-                new PriorityFilesViewModel(model)
+                new PriorityFilesViewModel(model),
+                new AboutViewModel() 
             };
             SelectedPage = new ReactiveProperty<ViewModelBase>(Pages[0]).AddTo(CompositeDisposable);
         }

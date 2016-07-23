@@ -9,6 +9,7 @@ namespace Ann.SettingWindow.SettingPage.General
     public class GeneralViewModel : ViewModelBase
     {
         public string Name { get; } = "General";
+        public bool IsAbout { get; } = false;
 
         public ReactiveProperty<int> MaxCandidateLinesCount { get; }
 

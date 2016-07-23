@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Ann.Core;
+using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 
 namespace Ann.Config
@@ -145,7 +146,7 @@ namespace Ann.Config
 
         #region MaxCandidateLinesCount
 
-        private int _MaxCandidateLinesCount = Constants.DefaultMaxCandidateLinesCount;
+        private int _MaxCandidateLinesCount = 8;
 
         public int MaxCandidateLinesCount
         {

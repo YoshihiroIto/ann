@@ -130,6 +130,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config\ShortcutKey.cs" />
+    <Compile Include="SettingWindow\SettingPage\About\AboutView.xaml.cs">
+      <DependentUpon>AboutView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SettingWindow\SettingPage\About\AboutViewModel.cs" />
     <Compile Include="SettingWindow\SettingPage\General\GeneralView.xaml.cs">
       <DependentUpon>GeneralView.xaml</DependentUpon>
     </Compile>
@@ -169,7 +173,6 @@
     </Page>
     <Compile Include="App.cs" />
     <Compile Include="Config\App.cs" />
-    <Compile Include="Constants.cs" />
     <Compile Include="Entry.xaml.cs">
       <DependentUpon>Entry.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -179,6 +182,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="SettingWindow\SettingPage\About\AboutView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="SettingWindow\SettingPage\General\GeneralView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

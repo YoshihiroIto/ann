@@ -31,10 +31,16 @@ namespace Ann.MainWindow
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             WindowHelper.EnableBlur(this);
-            Application.Current.Deactivated += (_, __) => Visibility = Visibility.Hidden;
-            Keyboard.Focus(InputTextBox);
+            InputTextBox.Focus();
             InitializeHotKey();
             InitializeShortcutKey();
+
+            Application.Current.Deactivated += (_, __) =>
+            {
+                var windows = Application.Current.Windows.OfType<Window>().ToArray();
+                if (windows.Length == 1 && Equals(windows[0], this))
+                    Visibility = Visibility.Hidden;
+            };
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -57,18 +63,36 @@ namespace Ann.MainWindow
             _DataContext.CandidateItemHeight.Value = e.NewSize.Height;
         }
 
-        private async void PopupBox_Closed(object sender, RoutedEventArgs e)
-        {
-            await Task.Delay(TimeSpan.FromMilliseconds(20));
-            InputTextBox.Focus();
-        }
-
         private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var item = (sender as FrameworkElement)?.DataContext as ExecutableUnitViewModel;
 
             _DataContext.SelectedCandidate.Value = item;
             _DataContext.RunCommand.Execute(null);
+        }
+
+        private async void Window_Activated(object sender, EventArgs e)
+        {
+            await FocusInputTextBlockIfVisibled();
+        }
+
+        private async void PopupBox_Closed(object sender, RoutedEventArgs e)
+        {
+            await FocusInputTextBlockIfVisibled();
+        }
+
+        private async void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            await FocusInputTextBlockIfVisibled();
+        }
+
+        private async Task FocusInputTextBlockIfVisibled()
+        {
+            if (Visibility != Visibility.Visible)
+                return;
+
+            await Task.Delay(TimeSpan.FromMilliseconds(20));
+            InputTextBox.Focus();
         }
 
         private void InitializeHotKey()
@@ -119,7 +143,6 @@ namespace Ann.MainWindow
                 {
                     Visibility = Visibility.Visible;
                     Activate();
-                    Keyboard.Focus(InputTextBox);
                 }
                 else
                     Visibility = Visibility.Hidden;

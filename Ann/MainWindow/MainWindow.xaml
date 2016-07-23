@@ -1,7 +1,6 @@
 ﻿<Window x:Class="Ann.MainWindow.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:ann="clr-namespace:Ann"
         xmlns:behaviors="http://schemas.livet-mvvm.net/2011/wpf"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:foundation="clr-namespace:Ann.Foundation;assembly=Ann.Foundation"
@@ -31,11 +30,10 @@
         TextOptions.TextRenderingMode="Auto"
         Top="{Binding Top.Value,
                       Mode=TwoWay}"
-        Topmost="True"
         Visibility="{Binding Visibility.Value,
                              Mode=TwoWay}"
         WindowStyle="None"
-        mc:Ignorable="d">
+        mc:Ignorable="d" IsVisibleChanged="Window_IsVisibleChanged" Activated="Window_Activated">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closed">
             <behaviors:DataContextDisposeAction />
@@ -267,8 +265,8 @@
                         </Grid.ColumnDefinitions>
 
                         <Image Grid.Column="0"
-                               Width="{x:Static ann:Constants.IconSize}"
-                               Height="{x:Static ann:Constants.IconSize}"
+                               Width="{x:Static foundation:Constants.IconSize}"
+                               Height="{x:Static foundation:Constants.IconSize}"
                                Margin="4"
                                Source="{Binding Icon,
                                                 Mode=OneWay}" />
