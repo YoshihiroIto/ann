@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using Livet.Behaviors.Messaging;
 using Livet.Messaging;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -26,8 +27,10 @@ namespace Ann.Foundation.Mvvm.Message
                         dialog.Filters.Add(filter);
                 }
 
+                var topWindow = Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive);
+
                 folderSelectionMessage.Response =
-                    dialog.ShowDialog() == CommonFileDialogResult.Ok
+                    dialog.ShowDialog(topWindow) == CommonFileDialogResult.Ok
                         ? dialog.FileName
                         : null;
             }
