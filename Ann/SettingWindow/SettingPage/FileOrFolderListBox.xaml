@@ -40,7 +40,7 @@
                         </materialDesign:PackIcon>
                     </Button>
 
-                    <TextBox Grid.Column="1" Text="{Binding Path.Value}">
+                    <TextBox Grid.Column="1" Text="{Binding Path.Value, UpdateSourceTrigger=PropertyChanged}">
                         <TextBox.Style>
                             <Style BasedOn="{StaticResource MaterialDesignTextBox}" TargetType="{x:Type TextBox}">
                                 <Style.Triggers>

@@ -344,10 +344,10 @@
                             <Button.Style>
                                 <Style BasedOn="{StaticResource MaterialDesignToolButton}" TargetType="{x:Type Button}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsHighPriority, Mode=OneWay}" Value="True">
+                                        <DataTrigger Binding="{Binding IsPriorityFile, Mode=OneWay}" Value="True">
                                             <Setter Property="Foreground" Value="Yellow" />
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsHighPriority, Mode=OneWay}" Value="False">
+                                        <DataTrigger Binding="{Binding IsPriorityFile, Mode=OneWay}" Value="False">
                                             <Setter Property="Foreground" Value="#888" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -356,7 +356,7 @@
 
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
-                                    <interactivity:EventToReactiveCommand Command="{Binding HighPriorityFlipCommand, Mode=OneTime}" />
+                                    <interactivity:EventToReactiveCommand Command="{Binding IsPriorityFileFlipCommand, Mode=OneTime}" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>

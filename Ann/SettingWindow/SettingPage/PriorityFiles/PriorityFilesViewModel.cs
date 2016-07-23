@@ -29,8 +29,19 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
                 new CommonFileDialogFilter("All file", "*.*") 
             };
 
-            Files = model.PriorityFiles.ToReadOnlyReactiveCollection(p => new PathViewModel(p, Messenger, false, filters))
-                .AddTo(CompositeDisposable);
+            Files = model.PriorityFiles.ToReadOnlyReactiveCollection(p =>
+            {
+                var pvm =new PathViewModel(p, Messenger, false, filters);
+
+                pvm.Path.Subscribe(_ =>
+                {
+                    App.Instance.RefreshPriorityFiles();
+                    App.Instance.InvokePriorityFilesChanged();
+                })
+                    .AddTo(pvm.CompositeDisposable);
+
+                return pvm;
+            }).AddTo(CompositeDisposable);
 
             FileAddCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             FileAddCommand.Subscribe(_ => model.PriorityFiles.Add(new Path(string.Empty)))

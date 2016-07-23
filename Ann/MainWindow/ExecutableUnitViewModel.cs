@@ -37,25 +37,25 @@ namespace Ann.MainWindow
 
         public ImageSource Icon => _parent.GetIcon(Path);
 
-        public bool IsHighPriority
+        public bool IsPriorityFile
         {
-            get { return App.Instance.IsHighPriority(Path); }
+            get { return App.Instance.IsPriorityFile(Path); }
             set
             {
                 if (value)
                 {
-                    if (App.Instance.AddHighPriorityPath(Path))
+                    if (App.Instance.AddPriorityFile(Path))
                         RaisePropertyChanged();
                 }
                 else
                 {
-                    if (App.Instance.RemoveHighPriorityPath(Path))
+                    if (App.Instance.RemovePriorityFile(Path))
                         RaisePropertyChanged();
                 }
             }
         }
 
-        public ReactiveCommand HighPriorityFlipCommand { get; }
+        public ReactiveCommand IsPriorityFileFlipCommand { get; }
 
         private readonly MainWindowViewModel _parent;
 
@@ -69,16 +69,16 @@ namespace Ann.MainWindow
             Path = model.Path;
 
             Observable.FromEventPattern(
-                h => App.Instance.HighPriorityChanged += h,
-                h => App.Instance.HighPriorityChanged -= h)
+                h => App.Instance.PriorityFilesChanged += h,
+                h => App.Instance.PriorityFilesChanged -= h)
                 .Subscribe(_ =>
                     // ReSharper disable once ExplicitCallerInfoArgument
-                    RaisePropertyChanged(nameof(IsHighPriority))
+                    RaisePropertyChanged(nameof(IsPriorityFile))
                 ).AddTo(CompositeDisposable);
 
-            HighPriorityFlipCommand = new ReactiveCommand().AddTo(CompositeDisposable);
-            HighPriorityFlipCommand
-                .Subscribe(_ => IsHighPriority = !IsHighPriority)
+            IsPriorityFileFlipCommand = new ReactiveCommand().AddTo(CompositeDisposable);
+            IsPriorityFileFlipCommand
+                .Subscribe(_ => IsPriorityFile = !IsPriorityFile)
                 .AddTo(CompositeDisposable);
         }
     }

@@ -27,8 +27,11 @@ namespace Ann
 
         private static string IndexFilePath => System.IO.Path.Combine(ConfigDirPath, "index.dat");
 
-        public event EventHandler HighPriorityChanged;
+        public event EventHandler PriorityFilesChanged;
         public event EventHandler ShortcutKeyChanged;
+
+        public void InvokePriorityFilesChanged() => PriorityFilesChanged?.Invoke(this, EventArgs.Empty);
+        public void InvokeShortcutKeyChanged() => ShortcutKeyChanged?.Invoke(this, EventArgs.Empty);
 
         #region IndexOpeningResult
 
@@ -53,12 +56,9 @@ namespace Ann
             Instance.Dispose();
         }
 
-        public void InvokeShortcutKeyChanged() =>
-            ShortcutKeyChanged?.Invoke(this, EventArgs.Empty);
+        public bool IsPriorityFile(string path) => _priorityFiles.Contains(path);
 
-        public bool IsHighPriority(string path) => _priorityFiles.Contains(path);
-
-        public bool AddHighPriorityPath(string path)
+        public bool AddPriorityFile(string path)
         {
             if (_priorityFiles.Contains(path))
                 return false;
@@ -67,7 +67,7 @@ namespace Ann
             return true;
         }
 
-        public bool RemoveHighPriorityPath(string path)
+        public bool RemovePriorityFile(string path)
         {
             if (_priorityFiles.Contains(path) == false)
                 return false;
@@ -110,7 +110,7 @@ namespace Ann
         public IEnumerable<ExecutableUnit> FindExecutableUnit(string name) =>
             _dataBase
                 .Find(name)
-                .OrderByDescending(u => IsHighPriority(u.Path))
+                .OrderByDescending(u => IsPriorityFile(u.Path))
                 .Take(100);
 
         private App()
@@ -118,6 +118,11 @@ namespace Ann
             _dataBase = new ExecutableUnitDataBase(IndexFilePath);
 
             LoadConfig();
+        }
+
+        public void RefreshPriorityFiles()
+        {
+            _priorityFiles = new HashSet<string>(Config.PriorityFiles.Select(p => p.Value));
         }
 
         #region config
@@ -152,14 +157,14 @@ namespace Ann
             if (Config.PriorityFiles == null)
                 Config.PriorityFiles = new ObservableCollection<Path>();
 
-            _priorityFiles = new HashSet<string>(Config.PriorityFiles.Select(p => p.Value));
+            RefreshPriorityFiles();
 
             Config.PriorityFiles.ObserveAddChanged()
                 .Subscribe(p =>
                 {
                     _priorityFiles.Add(p.Value);
                     SaveConfig();
-                    HighPriorityChanged?.Invoke(this, EventArgs.Empty);
+                    InvokePriorityFilesChanged();
                 })
                 .AddTo(CompositeDisposable);
 
@@ -168,7 +173,7 @@ namespace Ann
                 {
                     _priorityFiles.Remove(p.Value);
                     SaveConfig();
-                    HighPriorityChanged?.Invoke(this, EventArgs.Empty);
+                    InvokePriorityFilesChanged();
                 })
                 .AddTo(CompositeDisposable);
         }
