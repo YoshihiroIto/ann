@@ -1,12 +1,15 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using Ann.Core;
+using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 using Ann.SettingWindow;
+using Livet;
 using Livet.Messaging;
 using Livet.Messaging.Windows;
 using Reactive.Bindings;
@@ -17,16 +20,16 @@ namespace Ann.MainWindow
     public class MainWindowViewModel : ViewModelBase
     {
         public ReactiveProperty<string> Input { get; }
-        public ReactiveProperty<string> Message { get; }
-
-        public ReactiveProperty<bool> CanIndexUpdate { get; }
+        public ReactiveProperty<string> InProgressMessage { get; }
+        public ReadOnlyReactiveProperty<bool> InProgress { get; }
         public ReactiveCommand IndexUpdateCommand { get; }
 
-        public ReadOnlyReactiveProperty<ExecutableUnitViewModel[]> Candidates { get; }
+        public ReadOnlyReactiveProperty<ObservableCollection<ExecutableUnitViewModel>> Candidates { get; }
         public ReactiveProperty<ExecutableUnitViewModel> SelectedCandidate { get; }
         public ReactiveCommand<object> SelectedCandidateMoveCommand { get; }
 
-        public ReactiveCommand RunCommand { get; }
+        public ReactiveCommand<string> RunCommand { get; }
+        public ReactiveCommand ContainingFolderOpenCommand { get; }
 
         public ReactiveProperty<Visibility> Visibility { get; }
 
@@ -37,12 +40,7 @@ namespace Ann.MainWindow
         public ReactiveProperty<double> Top { get; }
         public ReactiveProperty<int> MaxCandidatesLinesCount { get; }
 
-        private readonly IconDecoder _iconDecoder = new IconDecoder(App.IconCacheFilePath);
-
-        public Size IconSize
-        {
-            set { _iconDecoder.IconSize = value; }
-        }
+        private readonly IconDecoder _iconDecoder = new IconDecoder();
 
         public ImageSource GetIcon(string path) => _iconDecoder.GetIcon(path);
         public ReadOnlyReactiveProperty<double> CandidatesListMaxHeight { get; }
@@ -50,50 +48,63 @@ namespace Ann.MainWindow
 
         public ReactiveCommand SettingShowCommand { get; }
 
+        public ReadOnlyReactiveProperty<IndexOpeningResults> IndexOpeningResult { get; }
+        public ReactiveProperty<bool> IsEnableActivateHotKey { get; }
+        public ReadOnlyReactiveProperty<string> Message { get; }
+
         public MainWindowViewModel()
         {
             Input = new ReactiveProperty<string>().AddTo(CompositeDisposable);
-            Message = new ReactiveProperty<string>(string.Empty).AddTo(CompositeDisposable);
-            CanIndexUpdate = new ReactiveProperty<bool>(true).AddTo(CompositeDisposable);
+            InProgressMessage = new ReactiveProperty<string>(string.Empty).AddTo(CompositeDisposable);
             Visibility = new ReactiveProperty<Visibility>(System.Windows.Visibility.Visible).AddTo(CompositeDisposable);
 
-            Left = App.Instance.ToReactivePropertyAsSynchronized(x => x.MainWindowLeft).AddTo(CompositeDisposable);
-            Top = App.Instance.ToReactivePropertyAsSynchronized(x => x.MainWindowTop).AddTo(CompositeDisposable);
+            CompositeDisposable.Add(DisposeCandidates);
+
+            InProgress = InProgressMessage
+                .Select(m => string.IsNullOrEmpty(m) == false)
+                .ToReadOnlyReactiveProperty()
+                .AddTo(CompositeDisposable);
+
+            Left =
+                App.Instance.Config.MainWindow.ToReactivePropertyAsSynchronized(x => x.Left).AddTo(CompositeDisposable);
+            Top = App.Instance.Config.MainWindow.ToReactivePropertyAsSynchronized(x => x.Top).AddTo(CompositeDisposable);
             MaxCandidatesLinesCount =
-                App.Instance.ToReactivePropertyAsSynchronized(x => x.MainWindowMaxCandidateLinesCount)
+                App.Instance.Config.MainWindow.ToReactivePropertyAsSynchronized(x => x.MaxCandidateLinesCount)
                     .AddTo(CompositeDisposable);
 
             CandidateItemHeight = new ReactiveProperty<double>().AddTo(CompositeDisposable);
             CandidatesListMaxHeight =
-                CandidateItemHeight
-                    .Select(h => (h + 2)*MaxCandidatesLinesCount.Value + 4)
+                Observable
+                    .Merge(MaxCandidatesLinesCount.ToUnit())
+                    .Merge(CandidateItemHeight.ToUnit())
+                    .Select(_ => CandidateItemHeight.Value*MaxCandidatesLinesCount.Value + 4)
                     .ToReadOnlyReactiveProperty()
                     .AddTo(CompositeDisposable);
 
-            IndexUpdateCommand = CanIndexUpdate
+            IndexUpdateCommand = InProgressMessage.Select(string.IsNullOrEmpty)
                 .ToReactiveCommand().AddTo(CompositeDisposable);
+
             IndexUpdateCommand
                 .Subscribe(async _ =>
                 {
-                    CanIndexUpdate.Value = false;
-                    Message.Value = "Updating...";
+                    using (new AnonymousDisposable(() => InProgressMessage.Value = string.Empty))
+                    {
+                        InProgressMessage.Value = "Index Updating...";
 
-                    await App.Instance.UpdateIndexAsync();
-                    Input.ForceNotify();
-
-                    Message.Value = string.Empty;
-                    CanIndexUpdate.Value = true;
+                        await App.Instance.UpdateIndexAsync();
+                        Input.ForceNotify();
+                    }
                 }).AddTo(CompositeDisposable);
 
             Candidates = Input
-                .Throttle(TimeSpan.FromMilliseconds(50))
                 .Select(i =>
                 {
-                    Candidates.Value?.ForEach(c => c.Dispose());
+                    DisposeCandidates();
 
-                    return App.Instance.FindExecutableUnit(i)
-                        .Select(u => new ExecutableUnitViewModel(this, u))
-                        .ToArray();
+                    return
+                        new ObservableCollection<ExecutableUnitViewModel>(
+                            App.Instance.FindExecutableUnit(i)
+                                .Select(u => new ExecutableUnitViewModel(this, u)));
                 })
                 .ToReadOnlyReactiveProperty()
                 .AddTo(CompositeDisposable);
@@ -113,8 +124,8 @@ namespace Ann.MainWindow
                     var next = current + int.Parse((string) p);
 
                     if (next == -1)
-                        next = Candidates.Value.Length - 1;
-                    else if (next == Candidates.Value.Length)
+                        next = Candidates.Value.Count - 1;
+                    else if (next == Candidates.Value.Count)
                         next = 0;
 
                     SelectedCandidate.Value = Candidates.Value[next];
@@ -122,7 +133,7 @@ namespace Ann.MainWindow
 
             RunCommand = SelectedCandidate
                 .Select(i => i != null)
-                .ToReactiveCommand().AddTo(CompositeDisposable);
+                .ToReactiveCommand<string>().AddTo(CompositeDisposable);
             string path = null;
             RunCommand
                 .Do(_ =>
@@ -131,11 +142,19 @@ namespace Ann.MainWindow
                     Input.Value = string.Empty;
                 })
                 .Delay(TimeSpan.FromMilliseconds(20))
-                .Subscribe(_ =>
+                .Subscribe(async p =>
                 {
                     Visibility.Value = System.Windows.Visibility.Hidden;
-                    Process.Start(path);
+                    await ProcessHelper.Run(path, string.Empty, p == "admin");
                 }).AddTo(CompositeDisposable);
+
+            ContainingFolderOpenCommand = SelectedCandidate
+                .Select(i => i != null)
+                .ToReactiveCommand().AddTo(CompositeDisposable);
+            ContainingFolderOpenCommand
+                .Subscribe(
+                    async _ => await ProcessHelper.Run("EXPLORER", $"/select,\"{SelectedCandidate.Value.Path}\"", false))
+                .AddTo(CompositeDisposable);
 
             AppHideCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             AppHideCommand.Subscribe(_ => Visibility.Value = System.Windows.Visibility.Hidden)
@@ -148,9 +167,39 @@ namespace Ann.MainWindow
             Visibility.Subscribe(_ => Input.Value = string.Empty).AddTo(CompositeDisposable);
 
             SettingShowCommand = new ReactiveCommand().AddTo(CompositeDisposable);
-            SettingShowCommand.Subscribe(
-                _ => { Messenger.Raise(new TransitionMessage(new SettingViewModel(), "ShowSetting")); })
+            SettingShowCommand.Subscribe(_ =>
+            {
+                // 一旦止める
+                var key = App.Instance.Config.MainWindow.ShortcutKeys.Activate.Key;
+                App.Instance.Config.MainWindow.ShortcutKeys.Activate.Key = Key.None;
+                App.Instance.InvokeShortcutKeyChanged();
+                App.Instance.Config.MainWindow.ShortcutKeys.Activate.Key = key;
+
+                Messenger.Raise(new TransitionMessage(new SettingViewModel(App.Instance.Config), "ShowSetting"));
+
+                Visibility.Value = System.Windows.Visibility.Visible;
+
+                App.Instance.SaveConfig();
+                App.Instance.InvokeShortcutKeyChanged();
+            }).AddTo(CompositeDisposable);
+
+            IndexOpeningResult = App.Instance.ObserveProperty(x => x.IndexOpeningResult)
+                .ToReadOnlyReactiveProperty()
                 .AddTo(CompositeDisposable);
+
+            IsEnableActivateHotKey = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
+            Message = IsEnableActivateHotKey
+                .Select(i => i ? string.Empty : "Activation Hotkey is already in use.")
+                .ToReadOnlyReactiveProperty()
+                .AddTo(CompositeDisposable);
+        }
+
+        private void DisposeCandidates()
+        {
+            var candidates = Candidates?.Value;
+            if (candidates != null)
+                foreach (var c in candidates)
+                    c.Dispose();
         }
 
         private int IndexOfCandidates(string path)

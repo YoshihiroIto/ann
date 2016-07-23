@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime;
 using System.Windows;
+using Ann.Foundation;
 
 namespace Ann
 {
@@ -15,11 +16,15 @@ namespace Ann
             ProfileOptimization.SetProfileRoot(App.ConfigDirPath);
             ProfileOptimization.StartProfile("Startup.Profile");
 
-            var e = new Entry();
-            e.InitializeComponent();
-            e.Run();
+            DisposableChecker.Start();
+            {
+                var e = new Entry();
+                e.InitializeComponent();
+                e.Run();
 
-            App.Destory();
+                App.Destory();
+            }
+            DisposableChecker.End();
         }
 
         protected override void OnStartup(StartupEventArgs e)

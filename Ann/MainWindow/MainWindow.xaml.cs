@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Ann.Foundation;
-using HotKey;
+using Ann.Foundation.Control;
+using Reactive.Bindings.Extensions;
 
 namespace Ann.MainWindow
 {
@@ -18,16 +21,26 @@ namespace Ann.MainWindow
         public MainWindow()
         {
             DataContext = _DataContext;
+
+            if (double.IsNaN(App.Instance.Config.MainWindow.Left))
+                WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
             InitializeComponent();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             WindowHelper.EnableBlur(this);
-            SetupHotKey();
-            SetupIcon();
-            Application.Current.Deactivated += (_, __) => Visibility = Visibility.Hidden;
-            Keyboard.Focus(InputTextBox);
+            InputTextBox.Focus();
+            InitializeHotKey();
+            InitializeShortcutKey();
+
+            Application.Current.Deactivated += (_, __) =>
+            {
+                var windows = Application.Current.Windows.OfType<Window>().ToArray();
+                if (windows.Length == 1 && Equals(windows[0], this))
+                    Visibility = Visibility.Hidden;
+            };
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -45,52 +58,122 @@ namespace Ann.MainWindow
             candidate.ScrollIntoView(candidate.SelectedItem);
         }
 
-        private void ListBox_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            var item = (sender as ListBoxItem)?.DataContext as ExecutableUnitViewModel;
-
-            _DataContext.SelectedCandidate.Value = item;
-            _DataContext.RunCommand.Execute(null);
-        }
-
         private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             _DataContext.CandidateItemHeight.Value = e.NewSize.Height;
         }
 
-        private void SetupIcon()
+        private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var source = PresentationSource.FromVisual(this);
+            var item = (sender as FrameworkElement)?.DataContext as ExecutableUnitViewModel;
 
-            if (source?.CompositionTarget == null)
+            _DataContext.SelectedCandidate.Value = item;
+            _DataContext.RunCommand.Execute(null);
+        }
+
+        private async void Window_Activated(object sender, EventArgs e)
+        {
+            await FocusInputTextBlockIfVisibled();
+        }
+
+        private async void PopupBox_Closed(object sender, RoutedEventArgs e)
+        {
+            await FocusInputTextBlockIfVisibled();
+        }
+
+        private async void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            await FocusInputTextBlockIfVisibled();
+        }
+
+        private async Task FocusInputTextBlockIfVisibled()
+        {
+            if (Visibility != Visibility.Visible)
                 return;
 
-            _DataContext.IconSize =
-                new Size(
-                    Constants.IconSize*source.CompositionTarget.TransformToDevice.M11,
-                    Constants.IconSize*source.CompositionTarget.TransformToDevice.M22);
+            await Task.Delay(TimeSpan.FromMilliseconds(20));
+            InputTextBox.Focus();
         }
+
+        private void InitializeHotKey()
+        {
+            SetupHotKey();
+
+            _DataContext.CompositeDisposable.Add(() => _activateHotKey?.Dispose());
+            
+            Observable.FromEventPattern(
+                h => App.Instance.ShortcutKeyChanged += h,
+                h => App.Instance.ShortcutKeyChanged -= h)
+                .Subscribe(_ => SetupHotKey())
+                .AddTo(_DataContext.CompositeDisposable);
+        }
+
+        private void InitializeShortcutKey()
+        {
+            SetupShortcutKey();
+            
+            Observable.FromEventPattern(
+                h => App.Instance.ShortcutKeyChanged += h,
+                h => App.Instance.ShortcutKeyChanged -= h)
+                .Subscribe(_ => SetupShortcutKey())
+                .AddTo(_DataContext.CompositeDisposable);
+        }
+
+        private HotKeyRegister _activateHotKey;
 
         private void SetupHotKey()
         {
-            var switchVisibility = new HotKeyRegister(MOD_KEY.CONTROL, System.Windows.Forms.Keys.Space, this);
-            switchVisibility.HotKeyPressed += _ =>
+            _activateHotKey?.Dispose();
+            _activateHotKey = null;
+
+            if (App.Instance.Config.MainWindow.ShortcutKeys.Activate.Key == Key.None)
+            {
+                _DataContext.IsEnableActivateHotKey.Value = true;
+                return;
+            }
+
+            _activateHotKey = new HotKeyRegister(
+                App.Instance.Config.MainWindow.ShortcutKeys.Activate.Modifiers,
+                App.Instance.Config.MainWindow.ShortcutKeys.Activate.Key,
+                Application.Current.MainWindow);
+
+            _activateHotKey.HotKeyPressed += (_, __) =>
             {
                 if (Visibility == Visibility.Hidden)
                 {
                     Visibility = Visibility.Visible;
                     Activate();
-                    Keyboard.Focus(InputTextBox);
                 }
                 else
                     Visibility = Visibility.Hidden;
             };
+
+            _DataContext.IsEnableActivateHotKey.Value = _activateHotKey.Register();
+
+            if (_DataContext.IsEnableActivateHotKey.Value == false)
+            {
+                _activateHotKey.Dispose();
+                _activateHotKey = null;
+            }
         }
 
-        private async void PopupBox_Closed(object sender, RoutedEventArgs e)
+        private void SetupShortcutKey()
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(20));
-            InputTextBox.Focus();
+            InputBindings.Clear();
+
+            // 標準
+            InputBindings.Add(new KeyBinding {Key = Key.Enter, Command = _DataContext.RunCommand});
+            InputBindings.Add(new KeyBinding {Key = Key.Escape, Command = _DataContext.AppHideCommand});
+
+            // コンフィグから指定されたもの
+            InputBindings.AddRange(App.Instance.Config.MainWindow.ShortcutKeys.Hide
+                .Select(k =>
+                    new KeyBinding
+                    {
+                        Key = k.Key,
+                        Modifiers = k.Modifiers,
+                        Command = _DataContext.AppHideCommand
+                    }).ToArray());
         }
     }
 }

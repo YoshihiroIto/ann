@@ -1,14 +1,12 @@
-﻿using System.Data.Linq.Mapping;
-
-namespace Ann.Core
+﻿namespace Ann.Core
 {
-    [Table(Name = "ExecutableUnit")]
-    public class ExecutableUnit
+    public struct ExecutableUnit
     {
-        [Column(Name = "Path", DbType = "NVARCHAR", CanBeNull = false, UpdateCheck = UpdateCheck.Never, IsPrimaryKey = true)]
-        public string Path { get; set; }
-
-        [Column(Name = "Name", DbType = "NVARCHAR", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
-        public string Name { get; set; }
+        public string Path;
+        public string Name;
+        public string LowerName;
+        public string LowerDirectory;
+        public string LowerFileName;
+        public string SearchKey;
     }
 }

@@ -1,26 +1,191 @@
 ﻿<Window x:Class="Ann.SettingWindow.SettingWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:about="clr-namespace:Ann.SettingWindow.SettingPage.About"
+        xmlns:behaviors="http://schemas.livet-mvvm.net/2011/wpf"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:general="clr-namespace:Ann.SettingWindow.SettingPage.General"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:settingWindow="clr-namespace:Ann.SettingWindow"
-        Title="Setting -- Ann"
-        Width="800"
-        Height="600"
+        xmlns:priorityFiles="clr-namespace:Ann.SettingWindow.SettingPage.PriorityFiles"
+        xmlns:shortcuts="clr-namespace:Ann.SettingWindow.SettingPage.Shortcuts"
+        xmlns:targetFolders="clr-namespace:Ann.SettingWindow.SettingPage.TargetFolders"
+        Title="Settings"
+        Width="700"
+        Height="500"
+        MinWidth="350"
+        MinHeight="250"
+        d:DataContext="{d:DesignData SettingViewModel}"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
-        ResizeMode="NoResize"
+        ResizeMode="CanResizeWithGrip"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closed">
+            <behaviors:DataContextDisposeAction />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
-    <settingWindow:SettingPanel />
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <DockPanel Margin="24,16" LastChildFill="True">
+            <DockPanel.Resources>
+                <ResourceDictionary>
+                    <ResourceDictionary.MergedDictionaries>
+                        <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Red.xaml" />
+                        <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Red.xaml" />
+                    </ResourceDictionary.MergedDictionaries>
+
+                    <Style BasedOn="{StaticResource MaterialDesignCheckBox}" TargetType="{x:Type CheckBox}" />
+                    <Style BasedOn="{StaticResource MaterialDesignComboBox}" TargetType="{x:Type ComboBox}" />
+                    <Style BasedOn="{StaticResource MaterialDesignListBox}" TargetType="{x:Type ListBox}" />
+                </ResourceDictionary>
+            </DockPanel.Resources>
+
+            <StackPanel DockPanel.Dock="Left">
+                <TextBlock Style="{StaticResource MaterialDesignHeadlineTextBlock}" Text="Ann" />
+
+                <ListBox Margin="-24,16,0,0"
+                         HorizontalContentAlignment="Stretch"
+                         Focusable="False"
+                         IsSynchronizedWithCurrentItem="True"
+                         IsTabStop="False"
+                         ItemsSource="{Binding Pages,
+                                               Mode=OneWay}"
+                         SelectedItem="{Binding SelectedPage.Value}"
+                         Style="{StaticResource MaterialDesignListBox}">
+                    <ListBox.Resources>
+                        <Style x:Key="SettingListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="SnapsToDevicePixels" Value="True" />
+                            <Setter Property="Padding" Value="0,8" />
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="IsTabStop" Value="False" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                        <Border x:Name="Bd"
+                                                Background="{TemplateBinding Background}"
+                                                BorderBrush="#4E5764"
+                                                BorderThickness="6,0,0,0"
+                                                Padding="{TemplateBinding Padding}"
+                                                SnapsToDevicePixels="true">
+                                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                            <Border.Style>
+                                                <Style TargetType="{x:Type Border}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsAbout, Mode=OneTime}" Value="True">
+                                                            <Setter Property="Margin" Value="0,32,0,0"></Setter>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                    <Condition Property="IsSelected" Value="False" />
+                                                </MultiTrigger.Conditions>
+                                                <Setter TargetName="Bd" Property="BorderBrush" Value="Transparent" />
+                                                <Setter TargetName="Bd" Property="TextElement.Foreground" Value="DarkGray" />
+                                            </MultiTrigger>
+                                            <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                    <Condition Property="IsSelected" Value="True" />
+                                                </MultiTrigger.Conditions>
+                                            </MultiTrigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.Resources>
+
+                    <ListBox.ItemContainerStyle>
+                        <Style BasedOn="{StaticResource SettingListBoxItemStyle}" TargetType="{x:Type ListBoxItem}" />
+                    </ListBox.ItemContainerStyle>
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
+                            <TextBlock Margin="16,0,0,0"
+                                       Padding="0"
+                                       Text="{Binding Name,
+                                                      Mode=OneTime}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+
+            <ContentControl Content="{Binding SelectedPage.Value,
+                                              Mode=OneWay}"
+                            Focusable="False"
+                            IsTabStop="False">
+                <ContentControl.Resources>
+                    <Style TargetType="{x:Type materialDesign:Transitioner}">
+                        <Setter Property="IsTabStop" Value="False" />
+                        <Setter Property="Focusable" Value="False" />
+                    </Style>
+
+                    <Style x:Key="PageStyle" TargetType="{x:Type ContentControl}">
+                        <Setter Property="IsTabStop" Value="False" />
+                        <Setter Property="Focusable" Value="False" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ContentControl}">
+                                    <StackPanel Margin="64,0,0,0">
+                                        <materialDesign:Transitioner SelectedIndex="0">
+                                            <materialDesign:TransitionerSlide OpeningEffect="{materialDesign:TransitionEffect SlideInFromLeft, Duration=0:0:0.20}">
+                                                <TextBlock Style="{StaticResource MaterialDesignHeadlineTextBlock}" Text="{Binding Name, Mode=OneWay}" />
+                                            </materialDesign:TransitionerSlide>
+                                        </materialDesign:Transitioner>
+
+                                        <Separator Style="{StaticResource MaterialDesignSeparator}" />
+
+                                        <materialDesign:Transitioner SelectedIndex="0">
+                                            <materialDesign:TransitionerSlide OpeningEffect="{materialDesign:TransitionEffect SlideInFromLeft, Duration=0:0:0.25}">
+                                                <ContentPresenter />
+                                            </materialDesign:TransitionerSlide>
+                                        </materialDesign:Transitioner>
+                                    </StackPanel>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+
+                    <DataTemplate DataType="{x:Type general:GeneralViewModel}">
+                        <ContentControl Style="{StaticResource PageStyle}">
+                            <general:GeneralView />
+                        </ContentControl>
+                    </DataTemplate>
+
+                    <DataTemplate DataType="{x:Type targetFolders:TargetFoldersViewModel}">
+                        <ContentControl Style="{StaticResource PageStyle}">
+                            <targetFolders:TargetFoldersView />
+                        </ContentControl>
+                    </DataTemplate>
+
+                    <DataTemplate DataType="{x:Type priorityFiles:PriorityFilesViewModel}">
+                        <ContentControl Style="{StaticResource PageStyle}">
+                            <priorityFiles:PriorityFiles />
+                        </ContentControl>
+                    </DataTemplate>
+
+                    <DataTemplate DataType="{x:Type shortcuts:ShortcutsViewModel}">
+                        <ContentControl Style="{StaticResource PageStyle}">
+                            <shortcuts:ShortcutsView />
+                        </ContentControl>
+                    </DataTemplate>
+
+                    <DataTemplate DataType="{x:Type about:AboutViewModel}">
+                        <ContentControl Style="{StaticResource PageStyle}">
+                            <about:AboutView />
+                        </ContentControl>
+                    </DataTemplate>
+                </ContentControl.Resources>
+            </ContentControl>
+        </DockPanel>
+    </ScrollViewer>
 </Window>

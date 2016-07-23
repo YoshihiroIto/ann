@@ -1,38 +1,15 @@
-﻿using System;
-using System.Data.SQLite;
-using System.IO;
+﻿using System.IO;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media;
+using Ann.Foundation;
 using Jewelry.Collections;
 using Microsoft.WindowsAPICodePack.Shell;
 
 namespace Ann.Core
 {
-    public class IconDecoder : IDisposable
+    public class IconDecoder
     {
-        public Size IconSize { get; set; }
-
-        private readonly SQLiteConnection _conn;
-
-        public IconDecoder(string databaseFile)
-        {
-            if (File.Exists(databaseFile) == false)
-                return;
-
-            var sb = new SQLiteConnectionStringBuilder
-            {
-                DataSource = databaseFile
-            };
-
-            _conn = new SQLiteConnection(sb.ToString());
-            _conn.Open();
-        }
-
-        public void Dispose()
-        {
-            _conn?.Dispose();
-        }
-
         public ImageSource GetIcon(string path)
         {
             if (File.Exists(path) == false)
@@ -43,11 +20,55 @@ namespace Ann.Core
                 using (var file = ShellFile.FromFilePath(p))
                 {
                     file.Thumbnail.CurrentSize = IconSize;
-                    return file.Thumbnail.BitmapSource;
+
+                    var bi = file.Thumbnail.BitmapSource;
+                    if (bi.CanFreeze && bi.IsFrozen == false)
+                        bi.Freeze();
+
+                    return bi;
                 }
             });
         }
 
-        private readonly LruCache<string, ImageSource> _IconCache = new LruCache<string, ImageSource>(512, false);
+        public class RefSize
+        {
+            public Size Size;
+        }
+
+        private static RefSize _IconRefSize;
+
+        private static Size IconSize
+        {
+            get
+            {
+                LazyInitializer.EnsureInitialized(ref _IconRefSize, () =>
+                {
+                    var source = PresentationSource.FromVisual(Application.Current.MainWindow);
+
+                    if (source?.CompositionTarget == null)
+                        return new RefSize
+                        {
+                            Size =
+                            {
+                                Width = Constants.IconSize,
+                                Height = Constants.IconSize
+                            }
+                        };
+
+                    return new RefSize
+                    {
+                        Size =
+                        {
+                            Width = Constants.IconSize*source.CompositionTarget.TransformToDevice.M11,
+                            Height = Constants.IconSize*source.CompositionTarget.TransformToDevice.M22
+                        }
+                    };
+                });
+
+                return _IconRefSize.Size;
+            }
+        }
+
+        private readonly LruCache<string, ImageSource> _IconCache = new LruCache<string, ImageSource>(256, false);
     }
 }

@@ -1,0 +1,83 @@
+﻿<StackPanel x:Class="Ann.SettingWindow.SettingPage.Shortcuts.ShortcutkeyListBox"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:control="clr-namespace:Ann.Foundation.Control;assembly=Ann.Foundation"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:shortcuts="clr-namespace:Ann.SettingWindow.SettingPage.Shortcuts"
+            d:DesignHeight="300"
+            d:DesignWidth="300"
+            Grid.IsSharedSizeScope="True"
+            mc:Ignorable="d">
+    <ListBox HorizontalContentAlignment="Stretch" ItemsSource="{Binding Items, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type shortcuts:ShortcutkeyListBox}}}">
+        <ListBox.ItemTemplate>
+            <DataTemplate DataType="shortcuts:ShortcutKeyViewModel">
+                <Grid Margin="0,0,0,4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <!--  位置合わせ  -->
+                    <Button Grid.Column="0"
+                            Style="{StaticResource FlatIconButtonStyle}"
+                            Visibility="Hidden">
+                        <materialDesign:PackIcon Kind="Delete" />
+                    </Button>
+
+                    <control:ShortcutKeyInputBox Key="{Binding Key.Value}"
+                                                 Grid.Column="0"
+                                                 Margin="0"
+                                                 materialDesign:HintAssist.Hint="Key Stroke"
+                                                 IsAlt="{Binding IsAlt.Value}"
+                                                 IsControl="{Binding IsControl.Value}"
+                                                 IsShift="{Binding IsShift.Value}"
+                                                 Style="{StaticResource MaterialDesignTextBox}" />
+
+                    <Button Grid.Column="1"
+                            Margin="0,0,4,0"
+                            Command="{Binding RemoveCommand,
+                                              RelativeSource={RelativeSource FindAncestor,
+                                                                             AncestorType={x:Type shortcuts:ShortcutkeyListBox}}}"
+                            CommandParameter="{Binding}">
+                        <materialDesign:PackIcon Kind="Delete" />
+
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource FlatIconButtonStyle}" TargetType="{x:Type Button}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="False">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+
+        <ListBox.ItemContainerStyle>
+            <Style TargetType="{x:Type ListBoxItem}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ContentControl}">
+                            <ContentPresenter />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ListBox.ItemContainerStyle>
+    </ListBox>
+
+    <Button HorizontalAlignment="Left"
+            HorizontalContentAlignment="Left"
+            Command="{Binding AddCommand,
+                              RelativeSource={RelativeSource FindAncestor,
+                                                             AncestorType={x:Type shortcuts:ShortcutkeyListBox}}}"
+            Content="Add key"
+            Style="{StaticResource FlatButtonStyle}" />
+</StackPanel>

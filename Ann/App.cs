@@ -1,63 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Ann.Core;
+using Ann.Foundation;
 using Ann.Foundation.Mvvm;
+using Reactive.Bindings.Extensions;
 using YamlDotNet.Serialization;
+using Path = Ann.Core.Path;
 
 namespace Ann
 {
-    public class App : ModelBase
+    public class App : DisposableModelBase
     {
         public static App Instance { get; } = new App();
 
-        private HashSet<string> _highPriorities = new HashSet<string>();
-        private readonly ExecutableUnitDataBase _ExecutableUnitDataBase = new ExecutableUnitDataBase(IndexDbFilePath);
+        public Config.App Config { get; private set; }
 
-        private static string IndexDbFilePath => Path.Combine(ConfigDirPath, "Index.db");
-        public static string IconCacheFilePath => Path.Combine(ConfigDirPath, "IconCache.db");
+        private HashSet<string> _priorityFiles = new HashSet<string>();
 
-        #region MainWindowLeft
+        private readonly ExecutableUnitDataBase _dataBase;
 
-        private double _MainWindowLeft;
+        private static string IndexFilePath => System.IO.Path.Combine(ConfigDirPath, "index.dat");
 
-        public double MainWindowLeft
+        public event EventHandler PriorityFilesChanged;
+        public event EventHandler ShortcutKeyChanged;
+
+        public void InvokePriorityFilesChanged() => PriorityFilesChanged?.Invoke(this, EventArgs.Empty);
+        public void InvokeShortcutKeyChanged() => ShortcutKeyChanged?.Invoke(this, EventArgs.Empty);
+
+        #region IndexOpeningResult
+
+        private IndexOpeningResults _IndexOpeningResult;
+
+        public IndexOpeningResults IndexOpeningResult
         {
-            get { return _MainWindowLeft; }
-            set { SetProperty(ref _MainWindowLeft, value); }
-        }
-
-        #endregion
-
-        #region MainWindowTop
-
-        private double _MainWindowTop;
-
-        public double MainWindowTop
-        {
-            get { return _MainWindowTop; }
-            set { SetProperty(ref _MainWindowTop, value); }
-        }
-
-        #endregion
-
-        #region MainWindowTop
-
-        private int _MainWindowMaxCandidateLinesCount = Constants.DefaultMaxCandidateLinesCount;
-
-        public int MainWindowMaxCandidateLinesCount
-        {
-            get { return _MainWindowMaxCandidateLinesCount; }
-            set { SetProperty(ref _MainWindowMaxCandidateLinesCount, value); }
+            get { return _IndexOpeningResult; }
+            set { SetProperty(ref _IndexOpeningResult, value); }
         }
 
         #endregion
 
         public static void Initialize()
         {
+            Instance.OpenIndex();
         }
 
         public static void Destory()
@@ -66,42 +56,73 @@ namespace Ann
             Instance.Dispose();
         }
 
-        public bool IsHighPriority(string path) => _highPriorities.Contains(path);
+        public bool IsPriorityFile(string path) => _priorityFiles.Contains(path);
 
-        public bool AddHighPriorityPath(string path)
+        public bool AddPriorityFile(string path)
         {
-            if (_highPriorities.Add(path))
-            {
-                SaveConfig();
-                return true;
-            }
+            if (_priorityFiles.Contains(path))
+                return false;
 
-            return false;
+            Config.PriorityFiles.Add(new Path(path));
+            return true;
         }
 
-        public bool RemoveHighPriorityPath(string path)
+        public bool RemovePriorityFile(string path)
         {
-            if (_highPriorities.Remove(path))
-            {
-                SaveConfig();
-                return true;
-            }
+            if (_priorityFiles.Contains(path) == false)
+                return false;
 
-            return false;
+            Config.PriorityFiles.Remove(new Path(path));
+            return true;
         }
 
-        public async Task UpdateIndexAsync() =>
-            await _ExecutableUnitDataBase.UpdateIndexAsync();
+        public void OpenIndex()
+        {
+            IndexOpeningResult = _dataBase.OpenIndex();
+        }
+
+        public async Task UpdateIndexAsync()
+        {
+            var targetFolders = Config.TargetFolder.Folders.ToList();
+
+            if (Config.TargetFolder.IsIncludeSystemFolder)
+                targetFolders.Add(new Path(Constants.SystemFolder));
+
+            if (Config.TargetFolder.IsIncludeSystemX86Folder)
+                targetFolders.Add(new Path(Constants.SystemX86Folder));
+
+            if (Config.TargetFolder.IsIncludeProgramsFolder)
+                targetFolders.Add(new Path(Constants.ProgramsFolder));
+
+            if (Config.TargetFolder.IsIncludeProgramFilesFolder)
+                targetFolders.Add(new Path(Constants.ProgramFilesFolder));
+
+            if (Config.TargetFolder.IsIncludeProgramFilesX86Folder)
+                targetFolders.Add(new Path(Constants.ProgramFilesX86Folder));
+
+            IndexOpeningResult = await _dataBase.UpdateIndexAsync(
+                targetFolders
+                .Select(f => Environment.ExpandEnvironmentVariables(f.Value))
+                .Distinct()
+                .Where(Directory.Exists));
+        }
 
         public IEnumerable<ExecutableUnit> FindExecutableUnit(string name) =>
-            _ExecutableUnitDataBase
+            _dataBase
                 .Find(name)
-                .OrderByDescending(u => IsHighPriority(u.Path));
+                .OrderByDescending(u => IsPriorityFile(u.Path))
+                .Take(100);
 
         private App()
         {
-            CompositeDisposable.Add(_ExecutableUnitDataBase);
+            _dataBase = new ExecutableUnitDataBase(IndexFilePath);
+
             LoadConfig();
+        }
+
+        public void RefreshPriorityFiles()
+        {
+            _priorityFiles = new HashSet<string>(Config.PriorityFiles.Select(p => p.Value));
         }
 
         #region config
@@ -111,11 +132,11 @@ namespace Ann
             get
             {
                 var dir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                return Path.Combine(dir, CompanyName, ProductName);
+                return System.IO.Path.Combine(dir, CompanyName, ProductName);
             }
         }
 
-        public static string ConfigFilePath => Path.Combine(ConfigDirPath, ProductName + ".yaml");
+        public static string ConfigFilePath => System.IO.Path.Combine(ConfigDirPath, ProductName + ".yaml");
 
         private static string CompanyName =>
             ((AssemblyCompanyAttribute) Attribute.GetCustomAttribute(
@@ -129,38 +150,55 @@ namespace Ann
 
         private void LoadConfig()
         {
+            Debug.Assert(Config == null);
+
+            Config = ReadConfigIfExist();
+
+            if (Config.PriorityFiles == null)
+                Config.PriorityFiles = new ObservableCollection<Path>();
+
+            RefreshPriorityFiles();
+
+            Config.PriorityFiles.ObserveAddChanged()
+                .Subscribe(p =>
+                {
+                    _priorityFiles.Add(p.Value);
+                    SaveConfig();
+                    InvokePriorityFilesChanged();
+                })
+                .AddTo(CompositeDisposable);
+
+            Config.PriorityFiles.ObserveRemoveChanged()
+                .Subscribe(p =>
+                {
+                    _priorityFiles.Remove(p.Value);
+                    SaveConfig();
+                    InvokePriorityFilesChanged();
+                })
+                .AddTo(CompositeDisposable);
+        }
+
+        private static Config.App ReadConfigIfExist()
+        {
             if (File.Exists(ConfigFilePath) == false)
-                return;
+                return new Config.App();
 
-            using (var reader = new StringReader(File.ReadAllText(ConfigFilePath)))
+            try
             {
-                var config = new Deserializer().Deserialize<Config.App>(reader);
-
-                _highPriorities = config.HighPriorities == null
-                    ? new HashSet<string>()
-                    : new HashSet<string>(config.HighPriorities);
-
-                MainWindowLeft = config.MainWindow?.Left ?? 0;
-                MainWindowTop = config.MainWindow?.Top ?? 0;
-                MainWindowMaxCandidateLinesCount = config.MainWindow?.MaxCandidateLinesCount ?? Constants.DefaultMaxCandidateLinesCount;
+                using (var reader = new StringReader(File.ReadAllText(ConfigFilePath)))
+                    return new Deserializer().Deserialize<Config.App>(reader);
+            }
+            catch
+            {
+                return new Config.App();
             }
         }
 
-        private void SaveConfig()
+        public void SaveConfig()
         {
-            var config = new Config.App
-            {
-                HighPriorities = _highPriorities.ToArray(),
-                MainWindow = new Config.MainWindow
-                {
-                    Left = MainWindowLeft,
-                    Top = MainWindowTop
-                }
-            };
-
             using (var writer = new StringWriter())
             {
-                new Serializer().Serialize(writer, config);
+                new Serializer(SerializationOptions.EmitDefaults).Serialize(writer, Config);
                 Directory.CreateDirectory(ConfigDirPath);
                 File.WriteAllText(ConfigFilePath, writer.ToString());
             }
