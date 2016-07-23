@@ -173,7 +173,7 @@ namespace Ann.Config
         #region Activate
 
         private ShortcutKey _Activate =
-            new ShortcutKey {Key = Key.Space, Modifiers = ModifierKeys.Control};
+            new ShortcutKey {Key = Key.None};
 
         public ShortcutKey Activate
         {
@@ -185,10 +185,7 @@ namespace Ann.Config
 
         #region Hide
 
-        private ObservableCollection<ShortcutKey> _Hide = new ObservableCollection<ShortcutKey>
-        {
-            new ShortcutKey {Key = Key.J, Modifiers = ModifierKeys.Control}
-        };
+        private ObservableCollection<ShortcutKey> _Hide = new ObservableCollection<ShortcutKey>();
 
         public ObservableCollection<ShortcutKey> Hide
         {
