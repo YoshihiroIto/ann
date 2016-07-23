@@ -8,27 +8,10 @@
             xmlns:message="clr-namespace:Ann.Foundation.Mvvm.Message;assembly=Ann.Foundation"
             xmlns:messaging="http://schemas.livet-mvvm.net/2011/wpf"
             xmlns:settingPage="clr-namespace:Ann.SettingWindow.SettingPage"
-            xmlns:targetFolders="clr-namespace:Ann.SettingWindow.SettingPage.TargetFolders"
             d:DataContext="{d:DesignData TargetFolder}"
             d:DesignHeight="300"
             d:DesignWidth="300"
             mc:Ignorable="d">
-    <StackPanel.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBlock.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ComboBox.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Shadows.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml" />
-
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </StackPanel.Resources>
-
     <i:Interaction.Triggers>
         <messaging:InteractionMessageTrigger MessageKey="FileOrFolderSelect" Messenger="{Binding Messenger, Mode=OneTime}">
             <message:FileOrFolderSelectDialogInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
@@ -36,7 +19,7 @@
     </i:Interaction.Triggers>
 
     <TextBlock Margin="0,0,0,8"
-               Style="{StaticResource MaterialDesignSubheadingTextBlock}"
+               Style="{StaticResource SubheadingTextBlockStyle}"
                Text="Frequently used folders" />
 
     <CheckBox Margin="16,0,0,8"
@@ -56,10 +39,10 @@
               IsChecked="{Binding IsIncludeProgramFilesFolder.Value}" />
 
     <TextBlock Margin="0,48,0,8"
-               Style="{StaticResource MaterialDesignSubheadingTextBlock}"
+               Style="{StaticResource SubheadingTextBlockStyle}"
                Text="User folders" />
 
-    <settingPage:FileOrFolderListBox Margin="16,-8,0,8"
+    <settingPage:FileOrFolderListBox Margin="16,0,0,8"
                                      AddButtonText="Add folder"
                                      AddCommand="{Binding FolderAddCommand,
                                                           Mode=OneWay}"

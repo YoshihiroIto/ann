@@ -153,9 +153,6 @@
       <DependentUpon>TargetFoldersView.xaml</DependentUpon>
     </Compile>
     <Compile Include="SettingWindow\SettingPage\TargetFolders\TargetFoldersViewModel.cs" />
-    <Compile Include="SettingWindow\SettingPanel.xaml.cs">
-      <DependentUpon>SettingPanel.xaml</DependentUpon>
-    </Compile>
     <Compile Include="SettingWindow\SettingViewModel.cs" />
     <Compile Include="SettingWindow\SettingWindow.xaml.cs">
       <DependentUpon>SettingWindow.xaml</DependentUpon>
@@ -203,10 +200,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SettingWindow\SettingPage\TargetFolders\TargetFoldersView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="SettingWindow\SettingPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

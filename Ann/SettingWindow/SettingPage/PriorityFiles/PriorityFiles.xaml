@@ -11,34 +11,18 @@
             d:DesignHeight="300"
             d:DesignWidth="300"
             mc:Ignorable="d">
-    <StackPanel.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBlock.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ComboBox.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Shadows.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml" />
-
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </StackPanel.Resources>
-
     <i:Interaction.Triggers>
         <messaging:InteractionMessageTrigger MessageKey="FileOrFolderSelect" Messenger="{Binding Messenger, Mode=OneTime}">
             <message:FileOrFolderSelectDialogInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
         </messaging:InteractionMessageTrigger>
     </i:Interaction.Triggers>
 
-    <settingPage:FileOrFolderListBox Margin="0,-8,0,8"
+    <settingPage:FileOrFolderListBox Margin="0,0,0,8"
                                      AddButtonText="Add executable file"
                                      AddCommand="{Binding FileAddCommand,
-                                                          Mode=OneWay}"
+                                                          Mode=OneTime}"
                                      IsFolderPicker="False"
                                      Items="{Binding Files}"
                                      RemoveCommand="{Binding FileRemoveCommand,
-                                                             Mode=OneWay}" />
+                                                             Mode=OneTime}" />
 </StackPanel>

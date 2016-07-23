@@ -10,24 +10,8 @@
             d:DesignHeight="300"
             d:DesignWidth="300"
             mc:Ignorable="d">
-    <StackPanel.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBlock.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ComboBox.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Shadows.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml" />
-
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </StackPanel.Resources>
-
     <TextBlock Margin="0,0,0,8"
-               Style="{StaticResource MaterialDesignSubheadingTextBlock}"
+               Style="{StaticResource SubheadingTextBlockStyle}"
                Text="Activate" />
 
     <control:ShortcutKeyInputBox Key="{Binding Key.Value}"
@@ -42,11 +26,11 @@
                                  Style="{StaticResource MaterialDesignTextBox}" />
 
     <TextBlock Margin="0,48,0,8"
-               Style="{StaticResource MaterialDesignSubheadingTextBlock}"
+               Style="{StaticResource SubheadingTextBlockStyle}"
                Text="Hide" />
 
     <shortcuts:ShortcutkeyListBox Width="240"
-                                  Margin="16,-8,0,8"
+                                  Margin="16,0,0,8"
                                   HorizontalAlignment="Left"
                                   AddCommand="{Binding KeyAddCommand,
                                                        Mode=OneWay}"

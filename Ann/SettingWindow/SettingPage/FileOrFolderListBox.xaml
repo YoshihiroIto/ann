@@ -9,27 +9,21 @@
             d:DesignWidth="300"
             Grid.IsSharedSizeScope="True"
             mc:Ignorable="d">
-    <StackPanel.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ListBox.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </StackPanel.Resources>
-
     <ListBox HorizontalContentAlignment="Stretch" ItemsSource="{Binding Items, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type settingPage:FileOrFolderListBox}}}">
         <ListBox.ItemTemplate>
             <DataTemplate DataType="settingPage:PathViewModel">
-                <Grid>
+                <Grid Margin="0,0,0,4">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <Button Grid.Column="0" Command="{Binding FolderSelectDialogOpenCommand, Mode=OneTime}">
+                    <Button Grid.Column="0"
+                            Margin="0,0,4,0"
+                            Command="{Binding FolderSelectDialogOpenCommand,
+                                              Mode=OneTime}"
+                            Style="{StaticResource FlatIconButtonStyle}">
                         <materialDesign:PackIcon Margin="0" Padding="0">
                             <materialDesign:PackIcon.Style>
                                 <Style TargetType="{x:Type materialDesign:PackIcon}">
@@ -44,15 +38,9 @@
                                 </Style>
                             </materialDesign:PackIcon.Style>
                         </materialDesign:PackIcon>
-
-                        <Button.Style>
-                            <Style BasedOn="{StaticResource MaterialDesignToolForegroundButton}" TargetType="{x:Type Button}" />
-                        </Button.Style>
                     </Button>
 
-                    <TextBox Grid.Column="1"
-                             Margin="0"
-                             Text="{Binding Path.Value}">
+                    <TextBox Grid.Column="1" Text="{Binding Path.Value}">
                         <TextBox.Style>
                             <Style BasedOn="{StaticResource MaterialDesignTextBox}" TargetType="{x:Type TextBox}">
                                 <Style.Triggers>
@@ -75,7 +63,7 @@
                         <materialDesign:PackIcon Kind="Delete" />
 
                         <Button.Style>
-                            <Style BasedOn="{StaticResource MaterialDesignToolForegroundButton}" TargetType="{x:Type Button}">
+                            <Style BasedOn="{StaticResource FlatIconButtonStyle}" TargetType="{x:Type Button}">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
                                         <Setter Property="Visibility" Value="Visible" />
@@ -93,6 +81,7 @@
 
         <ListBox.ItemContainerStyle>
             <Style TargetType="{x:Type ListBoxItem}">
+                <Setter Property="IsTabStop" Value="False" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ContentControl}">
@@ -111,12 +100,6 @@
                                                              AncestorType={x:Type settingPage:FileOrFolderListBox}}}"
             Content="{Binding AddButtonText,
                               RelativeSource={RelativeSource FindAncestor,
-                                                             AncestorType={x:Type settingPage:FileOrFolderListBox}}}">
-        <Button.Style>
-            <Style BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="{x:Type Button}">
-                <Setter Property="Margin" Value="0" />
-                <Setter Property="Padding" Value="0" />
-            </Style>
-        </Button.Style>
-    </Button>
+                                                             AncestorType={x:Type settingPage:FileOrFolderListBox}}}"
+            Style="{StaticResource FlatButtonStyle}" />
 </StackPanel>

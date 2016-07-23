@@ -10,27 +10,19 @@
             d:DesignWidth="300"
             Grid.IsSharedSizeScope="True"
             mc:Ignorable="d">
-    <StackPanel.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ListBox.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </StackPanel.Resources>
-
     <ListBox HorizontalContentAlignment="Stretch" ItemsSource="{Binding Items, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type shortcuts:ShortcutkeyListBox}}}">
         <ListBox.ItemTemplate>
             <DataTemplate DataType="shortcuts:ShortcutKeyViewModel">
-                <Grid>
+                <Grid Margin="0,0,0,4">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
                     <!--  位置合わせ  -->
-                    <Button Grid.Column="0" Visibility="Hidden">
+                    <Button Grid.Column="0"
+                            Style="{StaticResource FlatIconButtonStyle}"
+                            Visibility="Hidden">
                         <materialDesign:PackIcon Kind="Delete" />
                     </Button>
 
@@ -44,6 +36,7 @@
                                                  Style="{StaticResource MaterialDesignTextBox}" />
 
                     <Button Grid.Column="1"
+                            Margin="0,0,4,0"
                             Command="{Binding RemoveCommand,
                                               RelativeSource={RelativeSource FindAncestor,
                                                                              AncestorType={x:Type shortcuts:ShortcutkeyListBox}}}"
@@ -51,7 +44,7 @@
                         <materialDesign:PackIcon Kind="Delete" />
 
                         <Button.Style>
-                            <Style BasedOn="{StaticResource MaterialDesignToolForegroundButton}" TargetType="{x:Type Button}">
+                            <Style BasedOn="{StaticResource FlatIconButtonStyle}" TargetType="{x:Type Button}">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
                                         <Setter Property="Visibility" Value="Visible" />
@@ -85,12 +78,6 @@
             Command="{Binding AddCommand,
                               RelativeSource={RelativeSource FindAncestor,
                                                              AncestorType={x:Type shortcuts:ShortcutkeyListBox}}}"
-            Content="Add key">
-        <Button.Style>
-            <Style BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="{x:Type Button}">
-                <Setter Property="Margin" Value="0" />
-                <Setter Property="Padding" Value="0" />
-            </Style>
-        </Button.Style>
-    </Button>
+            Content="Add key"
+            Style="{StaticResource FlatButtonStyle}" />
 </StackPanel>
