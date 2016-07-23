@@ -68,9 +68,8 @@ namespace Ann.Foundation
             new OpenSource
             {
                 Name = "Reactive Extensions",
-                Auther = "Microsoft",
-                Summry =
-                    "Reactive Extensions Main Library combining the interfaces, core, LINQ, and platform services libraries.",
+                Auther = ".NET Foundation and Contributors",
+                Summry = "Reactive Extensions Main Library combining the interfaces, core, LINQ, and platform services libraries.",
                 Url = "https://github.com/Reactive-Extensions/Rx.NET"
             },
             new OpenSource
