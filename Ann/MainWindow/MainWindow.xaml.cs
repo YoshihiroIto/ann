@@ -100,6 +100,13 @@ namespace Ann.MainWindow
         private void SetupHotKey()
         {
             _activateHotKey?.Dispose();
+            _activateHotKey = null;
+
+            if (App.Instance.Config.MainWindow.ShortcutKeys.Activate.Key == Key.None)
+            {
+                _DataContext.IsEnableActivateHotKey.Value = true;
+                return;
+            }
 
             _activateHotKey = new HotKeyRegister(
                 App.Instance.Config.MainWindow.ShortcutKeys.Activate.Modifiers,

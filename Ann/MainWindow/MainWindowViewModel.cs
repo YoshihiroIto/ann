@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using Ann.Core;
 using Ann.Foundation;
@@ -168,7 +169,14 @@ namespace Ann.MainWindow
             SettingShowCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             SettingShowCommand.Subscribe(_ =>
             {
+                // 一旦止める
+                var key = App.Instance.Config.MainWindow.ShortcutKeys.Activate.Key;
+                App.Instance.Config.MainWindow.ShortcutKeys.Activate.Key = Key.None;
+                App.Instance.InvokeShortcutKeyChanged();
+                App.Instance.Config.MainWindow.ShortcutKeys.Activate.Key = key;
+
                 Messenger.Raise(new TransitionMessage(new SettingViewModel(App.Instance.Config), "ShowSetting"));
+
                 App.Instance.SaveConfig();
                 App.Instance.InvokeShortcutKeyChanged();
             }).AddTo(CompositeDisposable);
