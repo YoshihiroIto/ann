@@ -60,19 +60,19 @@ namespace Ann
 
         public bool AddHighPriorityPath(string path)
         {
-            Config.PriorityFiles.Add(new Path(path));
+            if (_priorityFiles.Contains(path))
+                return false;
 
-            SaveConfig();
-            HighPriorityChanged?.Invoke(this, EventArgs.Empty);
+            Config.PriorityFiles.Add(new Path(path));
             return true;
         }
 
         public bool RemoveHighPriorityPath(string path)
         {
-            Config.PriorityFiles.Remove(new Path(path));
+            if (_priorityFiles.Contains(path) == false)
+                return false;
 
-            SaveConfig();
-            HighPriorityChanged?.Invoke(this, EventArgs.Empty);
+            Config.PriorityFiles.Remove(new Path(path));
             return true;
         }
 
@@ -155,11 +155,21 @@ namespace Ann
             _priorityFiles = new HashSet<string>(Config.PriorityFiles.Select(p => p.Value));
 
             Config.PriorityFiles.ObserveAddChanged()
-                .Subscribe(p => _priorityFiles.Add(p.Value))
+                .Subscribe(p =>
+                {
+                    _priorityFiles.Add(p.Value);
+                    SaveConfig();
+                    HighPriorityChanged?.Invoke(this, EventArgs.Empty);
+                })
                 .AddTo(CompositeDisposable);
 
             Config.PriorityFiles.ObserveRemoveChanged()
-                .Subscribe(p => _priorityFiles.Remove(p.Value))
+                .Subscribe(p =>
+                {
+                    _priorityFiles.Remove(p.Value);
+                    SaveConfig();
+                    HighPriorityChanged?.Invoke(this, EventArgs.Empty);
+                })
                 .AddTo(CompositeDisposable);
         }
 
