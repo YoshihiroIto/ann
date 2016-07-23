@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Ann.Core;
-using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 
 namespace Ann.Config

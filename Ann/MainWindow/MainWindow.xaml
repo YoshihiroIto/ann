@@ -59,7 +59,7 @@
                 <ContextMenu>
                     <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="Update Index" />
                     <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="Settings..." />
-                    <Separator />
+                    <Separator Margin="-100,8,-100,8"/>
                     <MenuItem Command="{Binding AppExitCommand, Mode=OneTime}" Header="Exit" />
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
@@ -74,7 +74,7 @@
                 <StackPanel>
                     <Button Command="{Binding IndexUpdateCommand, Mode=OneTime}" Content="Update Index" />
                     <Button Command="{Binding SettingShowCommand, Mode=OneTime}" Content="Settings..." />
-                    <Separator Style="{StaticResource MaterialDesignSeparator}" />
+                    <Separator />
                     <Button Command="{Binding AppExitCommand, Mode=OneTime}" Content="Exit" />
                 </StackPanel>
             </materialDesign:PopupBox>

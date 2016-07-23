@@ -21,6 +21,9 @@
             </ResourceDictionary.MergedDictionaries>
 
             <Style BasedOn="{StaticResource MaterialDesignToolTip}" TargetType="{x:Type ToolTip}" />
+            <Style BasedOn="{StaticResource MaterialDesignContextMenu}" TargetType="{x:Type ContextMenu}" />
+            <Style BasedOn="{StaticResource MaterialDesignMenuItem}" TargetType="{x:Type MenuItem}" />
+            <Style BasedOn="{StaticResource MaterialDesignSeparator}" TargetType="{x:Type Separator}" />
 
             <Style x:Key="SubheadingTextBlockStyle"
                    BasedOn="{StaticResource MaterialDesignSubheadingTextBlock}"
