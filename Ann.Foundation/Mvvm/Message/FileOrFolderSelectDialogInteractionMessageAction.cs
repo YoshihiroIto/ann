@@ -27,7 +27,9 @@ namespace Ann.Foundation.Mvvm.Message
                         dialog.Filters.Add(filter);
                 }
 
-                var topWindow = Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive);
+                var topWindow = Application.Current.Windows
+                    .OfType<Window>()
+                    .FirstOrDefault(w => w.IsActive);
 
                 folderSelectionMessage.Response =
                     dialog.ShowDialog(topWindow) == CommonFileDialogResult.Ok
