@@ -10,9 +10,6 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
 {
     public class TargetFoldersViewModel : ViewModelBase
     {
-        public string Name { get; } = "Target Folders";
-        public bool IsAbout { get; } = false;
-
         public ReactiveProperty<bool> IsIncludeSystemFolder { get; }
         public ReactiveProperty<bool> IsIncludeSystemX86Folder { get; }
         public ReactiveProperty<bool> IsIncludeProgramsFolder { get; }

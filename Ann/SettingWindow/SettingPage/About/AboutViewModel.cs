@@ -8,9 +8,6 @@ namespace Ann.SettingWindow.SettingPage.About
 {
     public class AboutViewModel : ViewModelBase
     {
-        public string Name { get; } = "About";
-        public bool IsAbout { get; } = true;
-
         public string Version { get; }
 
         public ReactiveCommand<string> OpenUrlCommand { get; }

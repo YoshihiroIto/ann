@@ -11,9 +11,6 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
 {
     public class PriorityFilesViewModel : ViewModelBase
     {
-        public string Name { get; } = "Priority Files";
-        public bool IsAbout { get; } = false;
-
         public ReadOnlyReactiveCollection<PathViewModel> Files { get; set; }
 
         public ReactiveCommand FileAddCommand { get; }
