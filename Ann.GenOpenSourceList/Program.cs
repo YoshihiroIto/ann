@@ -18,8 +18,10 @@ namespace Ann.GenOpenSourceList
 
         private static string Generate(string packagesConfigPath)
         {
+            using (new TimeMeasure())
+            {
             var packages = XElement.Load(packagesConfigPath).Elements("package");
-            var openSources = packages.Select(p => GeneratePackage(p.Attribute("id").Value)).ToList();
+            var openSources = packages.AsParallel().Select(p => GeneratePackage(p.Attribute("id").Value)).ToList();
 
             // nuget   以：外
             openSources.Add(
@@ -44,6 +46,8 @@ namespace Ann.GenOpenSourceList
             {
                 new Serializer(SerializationOptions.EmitDefaults).Serialize(writer, openSources.OrderBy(x => x.Name));
                 return writer.ToString();
+            }
+                
             }
         }
 
