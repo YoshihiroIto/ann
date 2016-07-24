@@ -16,7 +16,7 @@ namespace Ann.SettingWindow
 {
     public class SettingViewModel : ViewModel
     {
-        public ViewModelBase[] Pages { get; set; }
+        public ViewModelBase[] Pages { get; }
         public ReactiveProperty<ViewModelBase> SelectedPage { get; }
 
         public ReactiveCommand CloseCommand { get; }
