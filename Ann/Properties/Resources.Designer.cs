@@ -22,7 +22,7 @@ namespace Ann.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Ann.Properties {
         ///   このクラスで使用されているキャッシュされた ResourceManager インスタンスを返します。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Ann.Properties.Resources", typeof(Resources).Assembly);
@@ -51,12 +51,93 @@ namespace Ann.Properties {
         ///   現在のスレッドの CurrentUICulture プロパティをオーバーライドします。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Max Candidate Lines に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MaxCandidateLines {
+            get {
+                return ResourceManager.GetString("MaxCandidateLines", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Exit に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MenuItem_Exit {
+            get {
+                return ResourceManager.GetString("MenuItem_Exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Setting... に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MenuItem_Setting {
+            get {
+                return ResourceManager.GetString("MenuItem_Setting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Update Index に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MenuItem_UpdateIndex {
+            get {
+                return ResourceManager.GetString("MenuItem_UpdateIndex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   About に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Setting_About {
+            get {
+                return ResourceManager.GetString("Setting_About", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   General に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Setting_General {
+            get {
+                return ResourceManager.GetString("Setting_General", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Priority Files に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Setting_PriorityFiles {
+            get {
+                return ResourceManager.GetString("Setting_PriorityFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Shortcuts に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Setting_Shortcuts {
+            get {
+                return ResourceManager.GetString("Setting_Shortcuts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Target Folders に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Setting_TargetFolders {
+            get {
+                return ResourceManager.GetString("Setting_TargetFolders", resourceCulture);
             }
         }
     }

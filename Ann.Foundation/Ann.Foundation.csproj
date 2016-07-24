@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Control\HotKeyRegister.cs" />
     <Compile Include="Control\ShortcutKeyInputBox.cs" />
+    <Compile Include="Control\TypeofConverter.cs" />
     <Compile Include="Control\WindowHelper.cs" />
     <Compile Include="DisposableChecker.cs" />
     <Compile Include="FlatBuffers\ByteBuffer.cs" />

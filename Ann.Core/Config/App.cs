@@ -64,6 +64,18 @@ namespace Ann.Core.Config
         }
 
         #endregion
+
+        #region Culture
+
+        private string _Culture = string.Empty;
+
+        public string Culture
+        {
+            get { return _Culture; }
+            set { SetProperty(ref _Culture, value); }
+        }
+
+        #endregion
     }
 
     public class TargetFolder : ModelBase

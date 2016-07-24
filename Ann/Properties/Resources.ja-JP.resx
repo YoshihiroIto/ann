@@ -118,30 +118,30 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="MaxCandidateLines" xml:space="preserve">
-    <value>Max Candidate Lines</value>
+    <value>表示候補数</value>
   </data>
   <data name="MenuItem_Exit" xml:space="preserve">
-    <value>Exit</value>
+    <value>終了</value>
   </data>
   <data name="MenuItem_Setting" xml:space="preserve">
-    <value>Setting...</value>
+    <value>設定...</value>
   </data>
   <data name="MenuItem_UpdateIndex" xml:space="preserve">
-    <value>Update Index</value>
+    <value>インデックスの更新</value>
   </data>
   <data name="Setting_About" xml:space="preserve">
-    <value>About</value>
+    <value>概要</value>
   </data>
   <data name="Setting_General" xml:space="preserve">
-    <value>General</value>
+    <value>全般</value>
   </data>
   <data name="Setting_PriorityFiles" xml:space="preserve">
-    <value>Priority Files</value>
+    <value>優先ファイル</value>
   </data>
   <data name="Setting_Shortcuts" xml:space="preserve">
-    <value>Shortcuts</value>
+    <value>ショートカット</value>
   </data>
   <data name="Setting_TargetFolders" xml:space="preserve">
-    <value>Target Folders</value>
+    <value>対象フォルダー</value>
   </data>
 </root>

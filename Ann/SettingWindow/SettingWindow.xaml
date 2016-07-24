@@ -2,7 +2,9 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:about="clr-namespace:Ann.SettingWindow.SettingPage.About"
+        xmlns:app="clr-namespace:Ann"
         xmlns:behaviors="http://schemas.livet-mvvm.net/2011/wpf"
+        xmlns:control="clr-namespace:Ann.Foundation.Control;assembly=Ann.Foundation"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:general="clr-namespace:Ann.SettingWindow.SettingPage.General"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
@@ -32,7 +34,7 @@
     </i:Interaction.Triggers>
 
     <Window.InputBindings>
-        <KeyBinding Gesture="Esc" Command="{Binding CloseCommand, Mode=OneTime}" />
+        <KeyBinding Command="{Binding CloseCommand, Mode=OneTime}" Gesture="Esc" />
     </Window.InputBindings>
 
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
@@ -43,6 +45,8 @@
                         <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Red.xaml" />
                         <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Red.xaml" />
                     </ResourceDictionary.MergedDictionaries>
+
+                    <control:TypeofConverter x:Key="Typeof" />
 
                     <Style BasedOn="{StaticResource MaterialDesignCheckBox}" TargetType="{x:Type CheckBox}" />
                     <Style BasedOn="{StaticResource MaterialDesignComboBox}" TargetType="{x:Type ComboBox}" />
@@ -85,7 +89,7 @@
                                                 <Style TargetType="{x:Type Border}">
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding IsAbout, Mode=OneTime}" Value="True">
-                                                            <Setter Property="Margin" Value="0,32,0,0"></Setter>
+                                                            <Setter Property="Margin" Value="0,32,0,0" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -131,11 +135,30 @@
 
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                            <TextBlock Margin="16,0,0,0"
-                                       Padding="0"
-                                       Text="{Binding Name,
-                                                      Mode=OneTime}" />
+                            <TextBlock Margin="16,0,0,0" Padding="0">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type about:AboutViewModel}">
+                                                <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Setting_About, Mode=OneWay}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type general:GeneralViewModel}">
+                                                <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Setting_General, Mode=OneWay}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type priorityFiles:PriorityFilesViewModel}">
+                                                <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Setting_PriorityFiles, Mode=OneWay}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type shortcuts:ShortcutsViewModel}">
+                                                <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Setting_Shortcuts, Mode=OneWay}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type targetFolders:TargetFoldersViewModel}">
+                                                <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Setting_TargetFolders, Mode=OneWay}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -160,7 +183,29 @@
                                     <StackPanel Margin="64,0,0,0">
                                         <materialDesign:Transitioner SelectedIndex="0">
                                             <materialDesign:TransitionerSlide OpeningEffect="{materialDesign:TransitionEffect SlideInFromLeft, Duration=0:0:0.20}">
-                                                <TextBlock Style="{StaticResource MaterialDesignHeadlineTextBlock}" Text="{Binding Name, Mode=OneWay}" />
+                                                <TextBlock>
+                                                    <TextBlock.Style>
+                                                        <Style BasedOn="{StaticResource MaterialDesignHeadlineTextBlock}" TargetType="{x:Type TextBlock}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type about:AboutViewModel}">
+                                                                    <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Setting_About, Mode=OneWay}" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type general:GeneralViewModel}">
+                                                                    <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Setting_General, Mode=OneWay}" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type priorityFiles:PriorityFilesViewModel}">
+                                                                    <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Setting_PriorityFiles, Mode=OneWay}" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type shortcuts:ShortcutsViewModel}">
+                                                                    <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Setting_Shortcuts, Mode=OneWay}" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type targetFolders:TargetFoldersViewModel}">
+                                                                    <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Setting_TargetFolders, Mode=OneWay}" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
                                             </materialDesign:TransitionerSlide>
                                         </materialDesign:Transitioner>
 
