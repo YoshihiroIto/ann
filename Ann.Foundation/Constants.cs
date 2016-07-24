@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using Ann.Foundation.Properties;
 using YamlDotNet.Serialization;
 
@@ -46,6 +47,16 @@ namespace Ann.Foundation
                 }
             }
         }
+
+        public static string CompanyName =>
+            ((AssemblyCompanyAttribute) Attribute.GetCustomAttribute(
+                Assembly.GetEntryAssembly(), typeof(AssemblyCompanyAttribute), false))
+                .Company;
+
+        public static string ProductName =>
+            ((AssemblyProductAttribute) Attribute.GetCustomAttribute(
+                Assembly.GetEntryAssembly(), typeof(AssemblyProductAttribute), false))
+                .Product;
     }
 
     public enum IndexOpeningResults
