@@ -1,33 +1,61 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using Ann.Foundation;
+using Ann.Foundation.Mvvm;
 using Jewelry.Collections;
 using Microsoft.WindowsAPICodePack.Shell;
 
 namespace Ann.Core
 {
-    public class IconDecoder
+    public class IconDecoder : ModelBase
     {
+        #region IconCacheSize
+
+        private int _IconCacheSize;
+
+        public int IconCacheSize
+        {
+            get { return _IconCacheSize; }
+            set
+            {
+                value = Math.Max(value, 0);
+
+                if (SetProperty(ref _IconCacheSize, value))
+                {
+                    _IconCache = IconCacheSize == 0
+                        ? null
+                        : new LruCache<string, ImageSource>(_IconCacheSize, false);
+                }
+            }
+        }
+
+        #endregion
+
         public ImageSource GetIcon(string path)
         {
             if (File.Exists(path) == false)
                 return null;
 
-            return _IconCache.GetOrAdd(path, p =>
+            return _IconCache == null
+                ? DecodeIcon(path)
+                : _IconCache.GetOrAdd(path, DecodeIcon);
+        }
+
+        private static ImageSource DecodeIcon(string path)
+        {
+            using (var file = ShellFile.FromFilePath(path))
             {
-                using (var file = ShellFile.FromFilePath(p))
-                {
-                    file.Thumbnail.CurrentSize = IconSize;
+                file.Thumbnail.CurrentSize = IconSize;
 
-                    var bi = file.Thumbnail.BitmapSource;
-                    if (bi.CanFreeze && bi.IsFrozen == false)
-                        bi.Freeze();
+                var bi = file.Thumbnail.BitmapSource;
+                if (bi.CanFreeze && bi.IsFrozen == false)
+                    bi.Freeze();
 
-                    return bi;
-                }
-            });
+                return bi;
+            }
         }
 
         public class RefSize
@@ -69,6 +97,6 @@ namespace Ann.Core
             }
         }
 
-        private readonly LruCache<string, ImageSource> _IconCache = new LruCache<string, ImageSource>(256, false);
+        private LruCache<string, ImageSource> _IconCache;
     }
 }

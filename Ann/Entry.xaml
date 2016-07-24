@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.CheckBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ComboBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Expander.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ListBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Menu.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
@@ -23,6 +24,7 @@
             <Style BasedOn="{StaticResource MaterialDesignContextMenu}" TargetType="{x:Type ContextMenu}" />
             <Style BasedOn="{StaticResource MaterialDesignMenuItem}" TargetType="{x:Type MenuItem}" />
             <Style BasedOn="{StaticResource MaterialDesignSeparator}" TargetType="{x:Type Separator}" />
+            <Style BasedOn="{StaticResource MaterialDesignExpander}" TargetType="{x:Type Expander}" />
 
             <Style BasedOn="{StaticResource MaterialDesignToolTip}" TargetType="{x:Type ToolTip}">
                 <Setter Property="ContentTemplate">

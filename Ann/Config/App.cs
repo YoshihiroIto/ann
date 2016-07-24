@@ -41,6 +41,18 @@ namespace Ann.Config
         }
 
         #endregion
+
+        #region IconCacheSize
+
+        private int _IconCacheSize = 256;
+
+        public int IconCacheSize
+        {
+            get { return _IconCacheSize; }
+            set { SetProperty(ref _IconCacheSize, value); }
+        }
+
+        #endregion
     }
 
     public class TargetFolder : ModelBase

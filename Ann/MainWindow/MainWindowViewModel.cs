@@ -192,6 +192,10 @@ namespace Ann.MainWindow
                 .Select(i => i ? string.Empty : "Activation Hotkey is already in use.")
                 .ToReadOnlyReactiveProperty()
                 .AddTo(CompositeDisposable);
+
+            App.Instance.Config.ObserveProperty(x => x.IconCacheSize)
+                .Subscribe(x => _iconDecoder.IconCacheSize = x)
+                .AddTo(CompositeDisposable);
         }
 
         private void DisposeCandidates()
