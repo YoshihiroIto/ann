@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using Ann.Foundation;
 using Newtonsoft.Json;
@@ -20,45 +21,45 @@ namespace Ann.GenOpenSourceList
         {
             using (new TimeMeasure())
             {
-            var packages = XElement.Load(packagesConfigPath).Elements("package");
-            var openSources = packages.AsParallel().Select(p => GeneratePackage(p.Attribute("id").Value)).ToList();
+                var packages = XElement.Load(packagesConfigPath).Elements("package");
+                var genPackageTasks = packages.Select(p => GeneratePackageAsync(p.Attribute("id").Value));
+                var openSources = Task.WhenAll(genPackageTasks).Result.ToList();
 
-            // nuget   以：外
-            openSources.Add(
-                new OpenSource
+                // nuget以外
+                openSources.Add(
+                    new OpenSource
+                    {
+                        Name = "FlatBuffers",
+                        Auther = "Google",
+                        Summry = "Memory Efficient Serialization Library",
+                        Url = "https://github.com/google/flatbuffers"
+                    });
+
+                openSources.Add(
+                    new OpenSource
+                    {
+                        Name = "LRU Cache",
+                        Auther = "Yoshihiro Ito",
+                        Summry = "Simple Implementation C# LRU Cache",
+                        Url = "https://github.com/YoshihiroIto/Jewelry"
+                    });
+
+                using (var writer = new StringWriter())
                 {
-                    Name = "FlatBuffers",
-                    Auther = "Google",
-                    Summry = "Memory Efficient Serialization Library",
-                    Url = "https://github.com/google/flatbuffers"
-                });
-
-            openSources.Add(
-                new OpenSource
-                {
-                    Name = "LRU Cache",
-                    Auther = "Yoshihiro Ito",
-                    Summry = "Simple Implementation C# LRU Cache",
-                    Url = "https://github.com/YoshihiroIto/Jewelry"
-                });
-
-            using (var writer = new StringWriter())
-            {
-                new Serializer(SerializationOptions.EmitDefaults).Serialize(writer, openSources.OrderBy(x => x.Name));
-                return writer.ToString();
-            }
-                
+                    new Serializer(SerializationOptions.EmitDefaults).Serialize(writer, openSources.OrderBy(x => x.Name));
+                    return writer.ToString();
+                }
             }
         }
 
-        private static OpenSource GeneratePackage(string id)
+        private static async Task<OpenSource> GeneratePackageAsync(string id)
         {
             var url = $"http://api-v2v3search-0.nuget.org/query?q={id}";
 
             using (var wc = new System.Net.WebClient())
             {
                 wc.Encoding = System.Text.Encoding.UTF8;
-                var jsonText = wc.DownloadString(url);
+                var jsonText = await wc.DownloadStringTaskAsync(url);
                 var json = JsonConvert.DeserializeObject<Rootobject>(jsonText);
 
                 var data = json.data.Single(x => x.id == id);
