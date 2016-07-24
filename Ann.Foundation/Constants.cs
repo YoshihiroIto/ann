@@ -74,7 +74,7 @@ namespace Ann.Foundation
             },
             new OpenSource
             {
-                Name = "System.Interactive",
+                Name = "Interactive Extensions",
                 Auther = ".NET Foundation and Contributors",
                 Summry = "Interactive Extensions Main Library used to express queries over enumerable sequences.",
                 Url = "https://github.com/Reactive-Extensions/Rx.NET"
