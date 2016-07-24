@@ -25,7 +25,15 @@
         <i:EventTrigger EventName="Closed">
             <behaviors:DataContextDisposeAction />
         </i:EventTrigger>
+
+        <behaviors:InteractionMessageTrigger MessageKey="WindowAction" Messenger="{Binding Messenger, Mode=OneTime}">
+            <behaviors:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
+        </behaviors:InteractionMessageTrigger>
     </i:Interaction.Triggers>
+
+    <Window.InputBindings>
+        <KeyBinding Gesture="Esc" Command="{Binding CloseCommand, Mode=OneTime}" />
+    </Window.InputBindings>
 
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
         <DockPanel Margin="24,16" LastChildFill="True">
