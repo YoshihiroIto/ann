@@ -16,7 +16,7 @@ namespace Ann.SettingWindow.SettingPage.General
         public static int[] MaxCandidateLines { get; }
             = Enumerable.Range(1, 10).ToArray();
 
-        public GeneralViewModel(Config.App model)
+        public GeneralViewModel(Core.Config.App model)
         {
             Debug.Assert(model != null);
 

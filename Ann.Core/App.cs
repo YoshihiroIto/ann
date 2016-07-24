@@ -5,14 +5,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Ann.Core;
-using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings.Extensions;
 using YamlDotNet.Serialization;
-using Path = Ann.Core.Path;
 
-namespace Ann
+namespace Ann.Core
 {
     public class App : DisposableModelBase
     {

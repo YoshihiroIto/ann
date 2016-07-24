@@ -12,7 +12,7 @@ namespace Ann.SettingWindow.SettingPage.Shortcuts
         public ShortcutKeyViewModel Activate { get; set; }
         public ShortcutKeyListBoxViewModel HideShortcuts { get; }
 
-        public ShortcutsViewModel(Config.App model)
+        public ShortcutsViewModel(Core.Config.App model)
         {
             Debug.Assert(model != null);
 

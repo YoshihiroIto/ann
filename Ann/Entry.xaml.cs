@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime;
 using System.Windows;
+using Ann.Core;
 using Ann.Foundation;
 
 namespace Ann

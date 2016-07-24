@@ -24,7 +24,7 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
         public ReactiveCommand FolderAddCommand { get; }
         public ReactiveCommand<PathViewModel> FolderRemoveCommand { get; }
 
-        public TargetFoldersViewModel(Config.App model)
+        public TargetFoldersViewModel(Core.Config.App model)
         {
             Debug.Assert(model != null);
 

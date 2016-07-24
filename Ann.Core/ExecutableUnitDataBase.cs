@@ -20,7 +20,6 @@ namespace Ann.Core
             _indexFile = indexFile;
         }
 
-
         private ExecutableUnit[] _executableUnits;
         private ExecutableUnit[] _prevResult;
         private string _prevKeyword;

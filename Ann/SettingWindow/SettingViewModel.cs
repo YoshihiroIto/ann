@@ -21,7 +21,7 @@ namespace Ann.SettingWindow
 
         public ReactiveCommand CloseCommand { get; }
 
-        public SettingViewModel(Config.App model)
+        public SettingViewModel(Core.Config.App model)
         {
             Debug.Assert(model != null);
 

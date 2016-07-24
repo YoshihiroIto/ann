@@ -3,7 +3,6 @@ using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media;
-using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 using Jewelry.Collections;
 using Microsoft.WindowsAPICodePack.Shell;

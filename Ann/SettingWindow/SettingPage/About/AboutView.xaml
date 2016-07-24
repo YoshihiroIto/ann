@@ -5,6 +5,7 @@
             xmlns:foundation="clr-namespace:Ann.Foundation;assembly=Ann.Foundation"
             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:core="clr-namespace:Ann.Core;assembly=Ann.Core"
             x:Name="This"
             d:DataContext="{d:DesignData GeneralViewModel}"
             d:DesignHeight="600"
@@ -49,7 +50,7 @@
                Style="{StaticResource SubheadingTextBlockStyle}"
                Text="Open Source Libraries" />
 
-    <ItemsControl ItemsSource="{x:Static foundation:Constants.OpenSources}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+    <ItemsControl ItemsSource="{x:Static core:Constants.OpenSources}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
         <ItemsControl.ItemTemplate>
             <DataTemplate DataType="{x:Type foundation:OpenSource}">
                 <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->

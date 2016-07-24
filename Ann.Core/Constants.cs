@@ -1,10 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using Ann.Foundation.Properties;
+using Ann.Core.Properties;
+using Ann.Foundation;
 using YamlDotNet.Serialization;
 
-namespace Ann.Foundation
+namespace Ann.Core
 {
     public static class Constants
     {

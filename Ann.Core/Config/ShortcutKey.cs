@@ -1,7 +1,7 @@
 ﻿using System.Windows.Input;
 using Ann.Foundation.Mvvm;
 
-namespace Ann.Config
+namespace Ann.Core.Config
 {
     public class ShortcutKey : ModelBase
     {

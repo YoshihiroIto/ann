@@ -14,7 +14,7 @@ namespace Ann.GenOpenSourceList
         static void Main()
         {
             var yaml = Generate(@"..\..\..\Ann\packages.config");
-            File.WriteAllText(@"..\..\..\Ann.Foundation\OpenSourceList.yaml", yaml);
+            File.WriteAllText(@"..\..\..\Ann.Core\OpenSourceList.yaml", yaml);
         }
 
         private static string Generate(string packagesConfigPath)

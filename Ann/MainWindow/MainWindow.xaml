@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:behaviors="http://schemas.livet-mvvm.net/2011/wpf"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:foundation="clr-namespace:Ann.Foundation;assembly=Ann.Foundation"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:interactivity="clr-namespace:Reactive.Bindings.Interactivity;assembly=ReactiveProperty.NET46"
         xmlns:mainWindow="clr-namespace:Ann.MainWindow"
@@ -11,6 +10,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:settingWindow="clr-namespace:Ann.SettingWindow"
         xmlns:tb="http://www.hardcodet.net/taskbar"
+        xmlns:core="clr-namespace:Ann.Core;assembly=Ann.Core"
         Width="600"
         d:DataContext="{d:DesignData mainWindow:MainWindowViewModel}"
         AllowsTransparency="True"
@@ -136,19 +136,19 @@
                     <Button.Style>
                         <Style BasedOn="{StaticResource MaterialDesignToolForegroundButton}" TargetType="{x:Type Button}">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static foundation:IndexOpeningResults.OldIndex}">
+                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.OldIndex}">
                                     <Setter Property="ToolTip" Value="Index is too old. Please update index." />
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static foundation:IndexOpeningResults.CanNotOpen}">
+                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.CanNotOpen}">
                                     <Setter Property="ToolTip" Value="Index is not opened." />
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static foundation:IndexOpeningResults.NotFound}">
+                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.NotFound}">
                                     <Setter Property="ToolTip" Value="Index not found. Please update index." />
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static foundation:IndexOpeningResults.Ok}">
+                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.Ok}">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -265,8 +265,8 @@
                         </Grid.ColumnDefinitions>
 
                         <Image Grid.Column="0"
-                               Width="{x:Static foundation:Constants.IconSize}"
-                               Height="{x:Static foundation:Constants.IconSize}"
+                               Width="{x:Static core:Constants.IconSize}"
+                               Height="{x:Static core:Constants.IconSize}"
                                Margin="4"
                                Source="{Binding Icon,
                                                 Mode=OneWay}" />
