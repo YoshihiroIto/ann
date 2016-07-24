@@ -58,12 +58,11 @@
                                           Mode=OneTime,
                                           Path=DataContext.OpenSourceOpenCommand}"
                         CommandParameter="{Binding Mode=OneTime}"
-                        Style="{StaticResource MaterialDesignRaisedLightButton}">
-                    <Button.ToolTip>
-                        <StackPanel>
-                            <TextBlock Text="{Binding Summry, Mode=OneTime}" />
-                        </StackPanel>
-                    </Button.ToolTip>
+                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                        ToolTip="{Binding Summry,
+                                          Mode=OneTime}"
+                        ToolTipService.InitialShowDelay="0"
+                        ToolTipService.ShowDuration="100000000">
                     <TextBlock Text="{Binding Name, Mode=OneTime}" />
                 </Button>
             </DataTemplate>

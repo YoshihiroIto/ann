@@ -41,7 +41,7 @@ namespace Ann.Foundation
                 Name = "Hardcodet WPF NotifyIcon",
                 Auther = "Philipp Sumi",
                 Summry =
-                    "This is an implementation of a NotifyIcon (aka system tray icon or taskbar icon) for the WPF platform.",
+                    "This is an implementation of a NotifyIcon (aka system tray icon or taskbar icon) for the WPF platform. It does not just rely on the Windows Forms NotifyIcon component, but is a purely independent control which leverages several features of the WPF framework in order to display rich tooltips, popups, context menus, and balloon messages. It can be used directly in code or embedded in any XAML file.",
                 Url = "http://www.hardcodet.net/wpf-notifyicon"
             },
             new OpenSource
@@ -60,6 +60,14 @@ namespace Ann.Foundation
             },
             new OpenSource
             {
+                Name = "Material Design Icons",
+                Auther = "Austin Andrews",
+                Summry =
+                    "Material Design Icons' growing icon collection allows designers and developers targeting various platforms to download icons in the format, color and size they need for any project.",
+                Url = "https://materialdesignicons.com/"
+            },
+            new OpenSource
+            {
                 Name = "ReactiveProperty",
                 Auther = "neuecc xin9le okazuki",
                 Summry = "ReactiveProperty is MVVM and Asynchronous Extensions for Reactive Extensions(Rx-Main).",
@@ -69,7 +77,8 @@ namespace Ann.Foundation
             {
                 Name = "Reactive Extensions",
                 Auther = ".NET Foundation and Contributors",
-                Summry = "Reactive Extensions Main Library combining the interfaces, core, LINQ, and platform services libraries.",
+                Summry =
+                    "Reactive Extensions Main Library combining the interfaces, core, LINQ, and platform services libraries.",
                 Url = "https://github.com/Reactive-Extensions/Rx.NET"
             },
             new OpenSource
