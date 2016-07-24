@@ -53,6 +53,18 @@ namespace Ann.Config
         }
 
         #endregion
+
+        #region CandidatesCensoringSize
+
+        private int _CandidatesCensoringSize = 100;
+
+        public int CandidatesCensoringSize
+        {
+            get { return _CandidatesCensoringSize; }
+            set { SetProperty(ref _CandidatesCensoringSize, value); }
+        }
+
+        #endregion
     }
 
     public class TargetFolder : ModelBase

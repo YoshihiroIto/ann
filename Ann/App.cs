@@ -110,8 +110,7 @@ namespace Ann
         public IEnumerable<ExecutableUnit> FindExecutableUnit(string name) =>
             _dataBase
                 .Find(name)
-                .OrderByDescending(u => IsPriorityFile(u.Path))
-                .Take(100);
+                .OrderByDescending(u => IsPriorityFile(u.Path));
 
         private App()
         {
