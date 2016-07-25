@@ -184,7 +184,7 @@
                                     <StackPanel Margin="64,0,0,0">
                                         <materialDesign:Transitioner SelectedIndex="0">
                                             <materialDesign:TransitionerSlide OpeningEffect="{materialDesign:TransitionEffect SlideInFromLeft, Duration=0:0:0.20}">
-                                                <TextBlock FontSize="24" Style="{StaticResource PageCaptionTextBlockStyle}" />
+                                                <TextBlock Style="{control:MultiStyle PageCaptionTextBlockStyle MaterialDesignHeadlineTextBlock}" />
                                             </materialDesign:TransitionerSlide>
                                         </materialDesign:Transitioner>
 

@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Control\HotKeyRegister.cs" />
+    <Compile Include="Control\MultiStyleExtension.cs" />
     <Compile Include="Control\ShortcutKeyInputBox.cs" />
     <Compile Include="Control\TypeofConverter.cs" />
     <Compile Include="Control\WindowHelper.cs" />
