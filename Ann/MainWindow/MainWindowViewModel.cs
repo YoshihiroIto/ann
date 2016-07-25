@@ -47,7 +47,7 @@ namespace Ann.MainWindow
         public ReadOnlyReactiveProperty<double> CandidatesListMaxHeight { get; }
         public ReactiveProperty<double> CandidateItemHeight { get; }
 
-        public ReactiveCommand SettingShowCommand { get; }
+        public AsyncReactiveCommand SettingShowCommand { get; }
 
         public ReadOnlyReactiveProperty<IndexOpeningResults> IndexOpeningResult { get; }
         public ReactiveProperty<bool> IsEnableActivateHotKey { get; }
@@ -182,8 +182,8 @@ namespace Ann.MainWindow
 
             Visibility.Subscribe(_ => Input.Value = string.Empty).AddTo(CompositeDisposable);
 
-            SettingShowCommand = new ReactiveCommand().AddTo(CompositeDisposable);
-            SettingShowCommand.Subscribe(_ =>
+            SettingShowCommand = new AsyncReactiveCommand().AddTo(CompositeDisposable);
+            SettingShowCommand.Subscribe(async _ =>
             {
                 // 一旦止める
                 var key = App.Instance.Config.ShortcutKeys.Activate.Key;
@@ -191,7 +191,7 @@ namespace Ann.MainWindow
                 App.Instance.InvokeShortcutKeyChanged();
                 App.Instance.Config.ShortcutKeys.Activate.Key = key;
 
-                Messenger.Raise(new TransitionMessage(new SettingViewModel(App.Instance.Config), "ShowSetting"));
+                await Messenger.RaiseAsync(new TransitionMessage(new SettingViewModel(App.Instance.Config), "ShowSetting"));
 
                 Visibility.Value = System.Windows.Visibility.Visible;
 
