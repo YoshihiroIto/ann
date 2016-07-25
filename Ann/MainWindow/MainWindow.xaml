@@ -140,15 +140,15 @@
                         <Style BasedOn="{StaticResource MaterialDesignToolForegroundButton}" TargetType="{x:Type Button}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.OldIndex}">
-                                    <Setter Property="ToolTip" Value="Index is too old. Please update index." />
+                                    <Setter Property="ToolTip" Value="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Message_IndexIsOld, Mode=OneWay}" />
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.CanNotOpen}">
-                                    <Setter Property="ToolTip" Value="Index is not opened." />
+                                    <Setter Property="ToolTip" Value="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Message_IndexIsNotOpened, Mode=OneWay}" />
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.NotFound}">
-                                    <Setter Property="ToolTip" Value="Index not found. Please update index." />
+                                    <Setter Property="ToolTip" Value="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Message_IndexNotFound, Mode=OneWay}" />
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.Ok}">

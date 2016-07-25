@@ -144,4 +144,67 @@
   <data name="Setting_TargetFolders" xml:space="preserve">
     <value>対象フォルダー</value>
   </data>
+  <data name="Setting_Activate" xml:space="preserve">
+    <value>アクティブ化</value>
+  </data>
+  <data name="Setting_Hide" xml:space="preserve">
+    <value>非表示</value>
+  </data>
+  <data name="Setting_AddKey" xml:space="preserve">
+    <value>キー追加</value>
+  </data>
+  <data name="Setting_KeyStroke" xml:space="preserve">
+    <value>キーストローク</value>
+  </data>
+  <data name="Setting_FrequentlyUsedFolders" xml:space="preserve">
+    <value>よく使われるフォルダー</value>
+  </data>
+  <data name="Setting_UserFolders" xml:space="preserve">
+    <value>フォルダー</value>
+  </data>
+  <data name="Setting_AddFolder" xml:space="preserve">
+    <value>フォルダー追加</value>
+  </data>
+  <data name="Folder" xml:space="preserve">
+    <value>フォルダー</value>
+  </data>
+  <data name="File" xml:space="preserve">
+    <value>ファイル</value>
+  </data>
+  <data name="Setting_AddExecutableFile" xml:space="preserve">
+    <value>実行可能ファイル追加</value>
+  </data>
+  <data name="ExecutableFile" xml:space="preserve">
+    <value>実行可能ファイル</value>
+  </data>
+  <data name="AllFile" xml:space="preserve">
+    <value>すべてのファイル</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>バージョン</value>
+  </data>
+  <data name="Ann_Introduction" xml:space="preserve">
+    <value>シンプルなコマンドラインランチャー</value>
+  </data>
+  <data name="OpenSourceLibraries" xml:space="preserve">
+    <value>オープンソースライブラリ</value>
+  </data>
+  <data name="Setting" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="Message_IndexIsOld" xml:space="preserve">
+    <value>インデックスが古いです。インデックスを更新してください。</value>
+  </data>
+  <data name="Message_IndexIsNotOpened" xml:space="preserve">
+    <value>インデックスが開けません。</value>
+  </data>
+  <data name="Message_IndexNotFound" xml:space="preserve">
+    <value>インデックスが見つかりません。インデックスを更新してください。</value>
+  </data>
+  <data name="Message_IndexUpdating" xml:space="preserve">
+    <value>インデックス更新中...</value>
+  </data>
+  <data name="Message_ActivationShortcutKeyIsAlreadyInUse." xml:space="preserve">
+    <value>アクティブ化ショートカットキーはすでに使われています。</value>
+  </data>
 </root>

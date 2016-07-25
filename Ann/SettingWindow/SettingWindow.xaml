@@ -13,7 +13,7 @@
         xmlns:priorityFiles="clr-namespace:Ann.SettingWindow.SettingPage.PriorityFiles"
         xmlns:shortcuts="clr-namespace:Ann.SettingWindow.SettingPage.Shortcuts"
         xmlns:targetFolders="clr-namespace:Ann.SettingWindow.SettingPage.TargetFolders"
-        Title="Settings"
+        Title="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Setting, Mode=OneWay}"
         Width="700"
         Height="500"
         MinWidth="400"

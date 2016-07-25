@@ -17,7 +17,7 @@ namespace Ann.SettingWindow.SettingPage
 
         public ReactiveCommand FolderSelectDialogOpenCommand { get; }
         
-        public PathViewModel(Path model, InteractionMessenger messenger, bool isFolder, IEnumerable<CommonFileDialogFilter> filters = null)
+        public PathViewModel(Path model, InteractionMessenger messenger, bool isFolder, Func<IEnumerable<CommonFileDialogFilter>> makeFilters = null)
         {
             Debug.Assert(messenger != null);
             Debug.Assert(model != null);
@@ -31,7 +31,7 @@ namespace Ann.SettingWindow.SettingPage
                     new FileOrFolderSelectMessage("FileOrFolderSelect")
                     {
                         IsFolderPicker = isFolder,
-                        Filters = filters
+                        Filters = makeFilters?.Invoke()
                     });
 
                 if (res?.Response != null)

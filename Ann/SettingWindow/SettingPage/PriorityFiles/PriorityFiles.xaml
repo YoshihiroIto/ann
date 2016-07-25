@@ -1,5 +1,6 @@
 ﻿<StackPanel x:Class="Ann.SettingWindow.SettingPage.PriorityFiles.PriorityFiles"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:app="clr-namespace:Ann"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
@@ -18,7 +19,7 @@
     </i:Interaction.Triggers>
 
     <settingPage:FileOrFolderListBox Margin="0,0,0,8"
-                                     AddButtonText="Add executable file"
+                                     AddButtonText="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Setting_AddExecutableFile, Mode=OneWay}"
                                      AddCommand="{Binding FileAddCommand,
                                                           Mode=OneTime}"
                                      IsFolderPicker="False"

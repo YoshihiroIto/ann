@@ -61,6 +61,51 @@ namespace Ann.Properties {
         }
         
         /// <summary>
+        ///   All file に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string AllFile {
+            get {
+                return ResourceManager.GetString("AllFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Simple implementation commandline launcher に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Ann_Introduction {
+            get {
+                return ResourceManager.GetString("Ann_Introduction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Executable file に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ExecutableFile {
+            get {
+                return ResourceManager.GetString("ExecutableFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   File に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string File {
+            get {
+                return ResourceManager.GetString("File", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Folder に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Folder {
+            get {
+                return ResourceManager.GetString("Folder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Max Candidate Lines に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string MaxCandidateLines {
@@ -97,6 +142,69 @@ namespace Ann.Properties {
         }
         
         /// <summary>
+        ///   Activation ShortcutKey is already in use. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Message_ActivationShortcutKeyIsAlreadyInUse_ {
+            get {
+                return ResourceManager.GetString("Message_ActivationShortcutKeyIsAlreadyInUse.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Index is not opened. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Message_IndexIsNotOpened {
+            get {
+                return ResourceManager.GetString("Message_IndexIsNotOpened", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Index is old. Please update index. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Message_IndexIsOld {
+            get {
+                return ResourceManager.GetString("Message_IndexIsOld", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Index not found. Please update index. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Message_IndexNotFound {
+            get {
+                return ResourceManager.GetString("Message_IndexNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Index Updating... に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Message_IndexUpdating {
+            get {
+                return ResourceManager.GetString("Message_IndexUpdating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Open Source Libraries に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string OpenSourceLibraries {
+            get {
+                return ResourceManager.GetString("OpenSourceLibraries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Setting に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Setting {
+            get {
+                return ResourceManager.GetString("Setting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   About に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string Setting_About {
@@ -106,11 +214,74 @@ namespace Ann.Properties {
         }
         
         /// <summary>
+        ///   Activate に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Setting_Activate {
+            get {
+                return ResourceManager.GetString("Setting_Activate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Add executable file に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Setting_AddExecutableFile {
+            get {
+                return ResourceManager.GetString("Setting_AddExecutableFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Add folder に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Setting_AddFolder {
+            get {
+                return ResourceManager.GetString("Setting_AddFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Add key に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Setting_AddKey {
+            get {
+                return ResourceManager.GetString("Setting_AddKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Frequently used folders に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Setting_FrequentlyUsedFolders {
+            get {
+                return ResourceManager.GetString("Setting_FrequentlyUsedFolders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   General に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string Setting_General {
             get {
                 return ResourceManager.GetString("Setting_General", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Hide に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Setting_Hide {
+            get {
+                return ResourceManager.GetString("Setting_Hide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Key Stroke に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Setting_KeyStroke {
+            get {
+                return ResourceManager.GetString("Setting_KeyStroke", resourceCulture);
             }
         }
         
@@ -138,6 +309,24 @@ namespace Ann.Properties {
         public static string Setting_TargetFolders {
             get {
                 return ResourceManager.GetString("Setting_TargetFolders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   User Folders に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Setting_UserFolders {
+            get {
+                return ResourceManager.GetString("Setting_UserFolders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Version に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Version {
+            get {
+                return ResourceManager.GetString("Version", resourceCulture);
             }
         }
     }

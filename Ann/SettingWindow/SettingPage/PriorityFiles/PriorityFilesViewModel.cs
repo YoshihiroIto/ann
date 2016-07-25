@@ -20,22 +20,20 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
         {
             Debug.Assert(model != null);
 
-            var filters = new[]
-            {
-                new CommonFileDialogFilter("Executable file", "*.exe, *.lnk"), 
-                new CommonFileDialogFilter("All file", "*.*") 
-            };
-
             Files = model.PriorityFiles.ToReadOnlyReactiveCollection(p =>
             {
-                var pvm =new PathViewModel(p, Messenger, false, filters);
+                var pvm = new PathViewModel(p, Messenger, false,
+                    () => new[]
+                    {
+                        new CommonFileDialogFilter(Properties.Resources.ExecutableFile, "*.exe, *.lnk"),
+                        new CommonFileDialogFilter(Properties.Resources.AllFile, "*.*")
+                    });
 
                 pvm.Path.Subscribe(_ =>
                 {
                     App.Instance.RefreshPriorityFiles();
                     App.Instance.InvokePriorityFilesChanged();
-                })
-                    .AddTo(pvm.CompositeDisposable);
+                }).AddTo(pvm.CompositeDisposable);
 
                 return pvm;
             }).AddTo(CompositeDisposable);

@@ -5,6 +5,7 @@
             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             xmlns:settingPage="clr-namespace:Ann.SettingWindow.SettingPage"
+            xmlns:app="clr-namespace:Ann"
             d:DesignHeight="300"
             d:DesignWidth="300"
             Grid.IsSharedSizeScope="True"
@@ -45,10 +46,10 @@
                             <Style BasedOn="{StaticResource MaterialDesignTextBox}" TargetType="{x:Type TextBox}">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsFolderPicker, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type settingPage:FileOrFolderListBox}}}" Value="True">
-                                        <Setter Property="materialDesign:HintAssist.Hint" Value="Folder" />
+                                        <Setter Property="materialDesign:HintAssist.Hint" Value="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Folder, Mode=OneWay}" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding IsFolderPicker, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type settingPage:FileOrFolderListBox}}}" Value="False">
-                                        <Setter Property="materialDesign:HintAssist.Hint" Value="File" />
+                                        <Setter Property="materialDesign:HintAssist.Hint" Value="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.File, Mode=OneWay}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>

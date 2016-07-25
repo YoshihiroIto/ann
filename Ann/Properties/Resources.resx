@@ -144,4 +144,67 @@
   <data name="Setting_TargetFolders" xml:space="preserve">
     <value>Target Folders</value>
   </data>
+  <data name="Setting_Activate" xml:space="preserve">
+    <value>Activate</value>
+  </data>
+  <data name="Setting_Hide" xml:space="preserve">
+    <value>Hide</value>
+  </data>
+  <data name="Setting_AddKey" xml:space="preserve">
+    <value>Add key</value>
+  </data>
+  <data name="Setting_KeyStroke" xml:space="preserve">
+    <value>Key Stroke</value>
+  </data>
+  <data name="Setting_FrequentlyUsedFolders" xml:space="preserve">
+    <value>Frequently used folders</value>
+  </data>
+  <data name="Setting_UserFolders" xml:space="preserve">
+    <value>User Folders</value>
+  </data>
+  <data name="Setting_AddFolder" xml:space="preserve">
+    <value>Add folder</value>
+  </data>
+  <data name="Folder" xml:space="preserve">
+    <value>Folder</value>
+  </data>
+  <data name="File" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="Setting_AddExecutableFile" xml:space="preserve">
+    <value>Add executable file</value>
+  </data>
+  <data name="ExecutableFile" xml:space="preserve">
+    <value>Executable file</value>
+  </data>
+  <data name="AllFile" xml:space="preserve">
+    <value>All file</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="Ann_Introduction" xml:space="preserve">
+    <value>Simple implementation commandline launcher</value>
+  </data>
+  <data name="OpenSourceLibraries" xml:space="preserve">
+    <value>Open Source Libraries</value>
+  </data>
+  <data name="Setting" xml:space="preserve">
+    <value>Setting</value>
+  </data>
+  <data name="Message_IndexIsOld" xml:space="preserve">
+    <value>Index is old. Please update index.</value>
+  </data>
+  <data name="Message_IndexIsNotOpened" xml:space="preserve">
+    <value>Index is not opened.</value>
+  </data>
+  <data name="Message_IndexNotFound" xml:space="preserve">
+    <value>Index not found. Please update index.</value>
+  </data>
+  <data name="Message_IndexUpdating" xml:space="preserve">
+    <value>Index Updating...</value>
+  </data>
+  <data name="Message_ActivationShortcutKeyIsAlreadyInUse." xml:space="preserve">
+    <value>Activation ShortcutKey is already in use.</value>
+  </data>
 </root>

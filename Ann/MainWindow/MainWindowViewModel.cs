@@ -101,7 +101,7 @@ namespace Ann.MainWindow
                 {
                     using (new AnonymousDisposable(() => InProgressMessage.Value = string.Empty))
                     {
-                        InProgressMessage.Value = "Index Updating...";
+                        InProgressMessage.Value = Properties.Resources.Message_IndexUpdating;
 
                         await App.Instance.UpdateIndexAsync();
                         Input.ForceNotify();
@@ -205,7 +205,7 @@ namespace Ann.MainWindow
 
             IsEnableActivateHotKey = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
             Message = IsEnableActivateHotKey
-                .Select(i => i ? string.Empty : "Activation Hotkey is already in use.")
+                .Select(i => i ? string.Empty : Properties.Resources.Message_ActivationShortcutKeyIsAlreadyInUse_)
                 .ToReadOnlyReactiveProperty()
                 .AddTo(CompositeDisposable);
 
