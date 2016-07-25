@@ -65,7 +65,8 @@ namespace Ann.Core
             if (_priorityFiles.Contains(path) == false)
                 return false;
 
-            Config.PriorityFiles.Remove(new Path(path));
+            var found = Config.PriorityFiles.First(p => p.Value == path);
+            Config.PriorityFiles.Remove(found);
             return true;
         }
 
