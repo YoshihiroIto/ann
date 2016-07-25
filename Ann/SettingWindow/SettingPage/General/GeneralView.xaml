@@ -4,13 +4,31 @@
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:general="clr-namespace:Ann.SettingWindow.SettingPage.General"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:app="clr-namespace:Ann"
             d:DataContext="{d:DesignData GeneralViewModel}"
             d:DesignHeight="300"
             d:DesignWidth="300"
             mc:Ignorable="d">
     <TextBlock Margin="0,0,0,8"
                Style="{StaticResource SubheadingTextBlockStyle}"
-               Text="Max Candidate Lines" />
+               Text="Language" />
+
+    <ComboBox MinWidth="150"
+              Margin="16,0,0,0"
+              HorizontalAlignment="Left"
+              SelectedItem="{Binding SelectedCulture.Value}"
+              ItemsSource="{x:Static general:GeneralViewModel.SelectableCulture}">
+              <ComboBox.ItemTemplate>
+                  <DataTemplate>
+                      <TextBlock Text="{Binding Caption, Mode=OneTime}"></TextBlock>
+                  </DataTemplate>
+              </ComboBox.ItemTemplate>
+        
+    </ComboBox>
+
+    <TextBlock Margin="0,32,0,8"
+               Style="{StaticResource SubheadingTextBlockStyle}"
+               Text="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.MaxCandidateLines, Mode=OneWay}" />
 
     <ComboBox MinWidth="150"
               Margin="16,0,0,0"

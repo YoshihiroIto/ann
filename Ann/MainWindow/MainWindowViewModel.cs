@@ -96,18 +96,22 @@ namespace Ann.MainWindow
                     }
                 }).AddTo(CompositeDisposable);
 
-            Candidates = Input
-                .Select(i =>
-                {
-                    DisposeCandidates();
+            Candidates =
+                Observable
+                    .Merge(Input.ToUnit())
+                    .Merge(App.Instance.Config.ObserveProperty(x => x.CandidatesCensoringSize).ToUnit())
+                    .Select(_ =>
+                    {
+                        DisposeCandidates();
 
-                    return
-                        new ObservableCollection<ExecutableUnitViewModel>(
-                            App.Instance.FindExecutableUnit(i)
-                                .Select(u => new ExecutableUnitViewModel(this, u)));
-                })
-                .ToReadOnlyReactiveProperty()
-                .AddTo(CompositeDisposable);
+                        return
+                            new ObservableCollection<ExecutableUnitViewModel>(
+                                App.Instance.FindExecutableUnit(Input.Value)
+                                    .Take(App.Instance.Config.CandidatesCensoringSize)
+                                    .Select(u => new ExecutableUnitViewModel(this, u)));
+                    })
+                    .ToReadOnlyReactiveProperty()
+                    .AddTo(CompositeDisposable);
 
             SelectedCandidate = Candidates
                 .Select(c => c?.FirstOrDefault())
@@ -191,6 +195,10 @@ namespace Ann.MainWindow
             Message = IsEnableActivateHotKey
                 .Select(i => i ? string.Empty : "Activation Hotkey is already in use.")
                 .ToReadOnlyReactiveProperty()
+                .AddTo(CompositeDisposable);
+
+            App.Instance.Config.ObserveProperty(x => x.IconCacheSize)
+                .Subscribe(x => _iconDecoder.IconCacheSize = x)
                 .AddTo(CompositeDisposable);
         }
 

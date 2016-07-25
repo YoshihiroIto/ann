@@ -1,9 +1,10 @@
 ﻿<Window x:Class="Ann.MainWindow.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:app="clr-namespace:Ann"
         xmlns:behaviors="http://schemas.livet-mvvm.net/2011/wpf"
+        xmlns:core="clr-namespace:Ann.Core;assembly=Ann.Core"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:foundation="clr-namespace:Ann.Foundation;assembly=Ann.Foundation"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:interactivity="clr-namespace:Reactive.Bindings.Interactivity;assembly=ReactiveProperty.NET46"
         xmlns:mainWindow="clr-namespace:Ann.MainWindow"
@@ -13,11 +14,13 @@
         xmlns:tb="http://www.hardcodet.net/taskbar"
         Width="600"
         d:DataContext="{d:DesignData mainWindow:MainWindowViewModel}"
+        Activated="Window_Activated"
         AllowsTransparency="True"
         Background="#9000"
         BorderBrush="#C000"
         BorderThickness="1"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
+        IsVisibleChanged="Window_IsVisibleChanged"
         Left="{Binding Left.Value,
                        Mode=TwoWay}"
         Loaded="Window_Loaded"
@@ -33,7 +36,7 @@
         Visibility="{Binding Visibility.Value,
                              Mode=TwoWay}"
         WindowStyle="None"
-        mc:Ignorable="d" IsVisibleChanged="Window_IsVisibleChanged" Activated="Window_Activated">
+        mc:Ignorable="d">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closed">
             <behaviors:DataContextDisposeAction />
@@ -57,10 +60,10 @@
                         Visibility="Visible">
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="Update Index" />
-                    <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="Settings..." />
-                    <Separator Margin="-100,8,-100,8"/>
-                    <MenuItem Command="{Binding AppExitCommand, Mode=OneTime}" Header="Exit" />
+                    <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.MenuItem_UpdateIndex, Mode=OneWay}" />
+                    <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.MenuItem_Setting, Mode=OneWay}" />
+                    <Separator Margin="-100,8,-100,8" />
+                    <MenuItem Command="{Binding AppExitCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.MenuItem_Exit, Mode=OneWay}" />
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>
@@ -72,10 +75,10 @@
                                      Foreground="Gainsboro"
                                      PlacementMode="BottomAndAlignRightEdges">
                 <StackPanel>
-                    <Button Command="{Binding IndexUpdateCommand, Mode=OneTime}" Content="Update Index" />
-                    <Button Command="{Binding SettingShowCommand, Mode=OneTime}" Content="Settings..." />
+                    <Button Command="{Binding IndexUpdateCommand, Mode=OneTime}" Content="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.MenuItem_UpdateIndex, Mode=OneWay}" />
+                    <Button Command="{Binding SettingShowCommand, Mode=OneTime}" Content="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.MenuItem_Setting, Mode=OneWay}" />
                     <Separator />
-                    <Button Command="{Binding AppExitCommand, Mode=OneTime}" Content="Exit" />
+                    <Button Command="{Binding AppExitCommand, Mode=OneTime}" Content="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.MenuItem_Exit, Mode=OneWay}" />
                 </StackPanel>
             </materialDesign:PopupBox>
 
@@ -136,19 +139,19 @@
                     <Button.Style>
                         <Style BasedOn="{StaticResource MaterialDesignToolForegroundButton}" TargetType="{x:Type Button}">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static foundation:IndexOpeningResults.OldIndex}">
+                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.OldIndex}">
                                     <Setter Property="ToolTip" Value="Index is too old. Please update index." />
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static foundation:IndexOpeningResults.CanNotOpen}">
+                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.CanNotOpen}">
                                     <Setter Property="ToolTip" Value="Index is not opened." />
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static foundation:IndexOpeningResults.NotFound}">
+                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.NotFound}">
                                     <Setter Property="ToolTip" Value="Index not found. Please update index." />
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static foundation:IndexOpeningResults.Ok}">
+                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.Ok}">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -265,8 +268,8 @@
                         </Grid.ColumnDefinitions>
 
                         <Image Grid.Column="0"
-                               Width="{x:Static foundation:Constants.IconSize}"
-                               Height="{x:Static foundation:Constants.IconSize}"
+                               Width="{x:Static core:Constants.IconSize}"
+                               Height="{x:Static core:Constants.IconSize}"
                                Margin="4"
                                Source="{Binding Icon,
                                                 Mode=OneWay}" />

@@ -7,7 +7,7 @@
             xmlns:message="clr-namespace:Ann.Foundation.Mvvm.Message;assembly=Ann.Foundation"
             xmlns:messaging="http://schemas.livet-mvvm.net/2011/wpf"
             xmlns:settingPage="clr-namespace:Ann.SettingWindow.SettingPage"
-            xmlns:foundation="clr-namespace:Ann.Foundation;assembly=Ann.Foundation"
+            xmlns:core="clr-namespace:Ann.Core;assembly=Ann.Core"
             d:DataContext="{d:DesignData TargetFolder}"
             d:DesignHeight="300"
             d:DesignWidth="300"
@@ -23,19 +23,19 @@
                Text="Frequently used folders" />
 
     <CheckBox Margin="16,0,0,8"
-              Content="{x:Static foundation:Constants.SystemFolder}"
+              Content="{x:Static core:Constants.SystemFolder}"
               IsChecked="{Binding IsIncludeSystemFolder.Value}" />
     <CheckBox Margin="16,0,0,8"
-              Content="{x:Static foundation:Constants.SystemX86Folder}"
+              Content="{x:Static core:Constants.SystemX86Folder}"
               IsChecked="{Binding IsIncludeSystemX86Folder.Value}" />
     <CheckBox Margin="16,0,0,8"
-              Content="{x:Static foundation:Constants.ProgramsFolder}"
+              Content="{x:Static core:Constants.ProgramsFolder}"
               IsChecked="{Binding IsIncludeProgramsFolder.Value}" />
     <CheckBox Margin="16,0,0,8"
-              Content="{x:Static foundation:Constants.ProgramFilesX86Folder}"
+              Content="{x:Static core:Constants.ProgramFilesX86Folder}"
               IsChecked="{Binding IsIncludeProgramFilesX86Folder.Value}" />
     <CheckBox Margin="16,0,0,8"
-              Content="{x:Static foundation:Constants.ProgramFilesFolder}"
+              Content="{x:Static core:Constants.ProgramFilesFolder}"
               IsChecked="{Binding IsIncludeProgramFilesFolder.Value}" />
 
     <TextBlock Margin="0,48,0,8"

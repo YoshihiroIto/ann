@@ -4,16 +4,12 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
-using Ann.Core;
-using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings.Extensions;
 using YamlDotNet.Serialization;
-using Path = Ann.Core.Path;
 
-namespace Ann
+namespace Ann.Core
 {
     public class App : DisposableModelBase
     {
@@ -21,17 +17,15 @@ namespace Ann
 
         public Config.App Config { get; private set; }
 
-        private HashSet<string> _priorityFiles = new HashSet<string>();
-
-        private readonly ExecutableUnitDataBase _dataBase;
-
-        private static string IndexFilePath => System.IO.Path.Combine(ConfigDirPath, "index.dat");
-
         public event EventHandler PriorityFilesChanged;
         public event EventHandler ShortcutKeyChanged;
 
         public void InvokePriorityFilesChanged() => PriorityFilesChanged?.Invoke(this, EventArgs.Empty);
         public void InvokeShortcutKeyChanged() => ShortcutKeyChanged?.Invoke(this, EventArgs.Empty);
+
+        private HashSet<string> _priorityFiles = new HashSet<string>();
+        private readonly ExecutableUnitDataBase _dataBase;
+        private static string IndexFilePath => System.IO.Path.Combine(ConfigDirPath, "index.dat");
 
         #region IndexOpeningResult
 
@@ -110,8 +104,7 @@ namespace Ann
         public IEnumerable<ExecutableUnit> FindExecutableUnit(string name) =>
             _dataBase
                 .Find(name)
-                .OrderByDescending(u => IsPriorityFile(u.Path))
-                .Take(100);
+                .OrderByDescending(u => IsPriorityFile(u.Path));
 
         private App()
         {
@@ -132,21 +125,11 @@ namespace Ann
             get
             {
                 var dir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                return System.IO.Path.Combine(dir, CompanyName, ProductName);
+                return System.IO.Path.Combine(dir, Constants.CompanyName, Constants.ProductName);
             }
         }
 
-        public static string ConfigFilePath => System.IO.Path.Combine(ConfigDirPath, ProductName + ".yaml");
-
-        private static string CompanyName =>
-            ((AssemblyCompanyAttribute) Attribute.GetCustomAttribute(
-                Assembly.GetExecutingAssembly(), typeof(AssemblyCompanyAttribute), false))
-                .Company;
-
-        private static string ProductName =>
-            ((AssemblyProductAttribute) Attribute.GetCustomAttribute(
-                Assembly.GetExecutingAssembly(), typeof(AssemblyProductAttribute), false))
-                .Product;
+        public static string ConfigFilePath => System.IO.Path.Combine(ConfigDirPath, Constants.ProductName + ".yaml");
 
         private void LoadConfig()
         {

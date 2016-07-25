@@ -1,9 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
-using Ann.Core;
 using Ann.Foundation.Mvvm;
 
-namespace Ann.Config
+namespace Ann.Core.Config
 {
     public class App : ModelBase
     {
@@ -38,6 +37,42 @@ namespace Ann.Config
         {
             get { return _MainWindow; }
             set { SetProperty(ref _MainWindow, value); }
+        }
+
+        #endregion
+
+        #region IconCacheSize
+
+        private int _IconCacheSize = 256;
+
+        public int IconCacheSize
+        {
+            get { return _IconCacheSize; }
+            set { SetProperty(ref _IconCacheSize, value); }
+        }
+
+        #endregion
+
+        #region CandidatesCensoringSize
+
+        private int _CandidatesCensoringSize = 100;
+
+        public int CandidatesCensoringSize
+        {
+            get { return _CandidatesCensoringSize; }
+            set { SetProperty(ref _CandidatesCensoringSize, value); }
+        }
+
+        #endregion
+
+        #region Culture
+
+        private string _Culture = string.Empty;
+
+        public string Culture
+        {
+            get { return _Culture; }
+            set { SetProperty(ref _Culture, value); }
         }
 
         #endregion

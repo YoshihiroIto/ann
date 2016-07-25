@@ -117,31 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="MaxCandidateLines" xml:space="preserve">
-    <value>Max Candidate Lines</value>
-  </data>
-  <data name="MenuItem_Exit" xml:space="preserve">
-    <value>Exit</value>
-  </data>
-  <data name="MenuItem_Setting" xml:space="preserve">
-    <value>Setting...</value>
-  </data>
-  <data name="MenuItem_UpdateIndex" xml:space="preserve">
-    <value>Update Index</value>
-  </data>
-  <data name="Setting_About" xml:space="preserve">
-    <value>About</value>
-  </data>
-  <data name="Setting_General" xml:space="preserve">
-    <value>General</value>
-  </data>
-  <data name="Setting_PriorityFiles" xml:space="preserve">
-    <value>Priority Files</value>
-  </data>
-  <data name="Setting_Shortcuts" xml:space="preserve">
-    <value>Shortcuts</value>
-  </data>
-  <data name="Setting_TargetFolders" xml:space="preserve">
-    <value>Target Folders</value>
-  </data>
 </root>
