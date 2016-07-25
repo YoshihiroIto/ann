@@ -6,6 +6,18 @@ namespace Ann.Core.Config
 {
     public class App : ModelBase
     {
+        #region ShortcutKeys
+
+        private ShortcutKeys _ShortcutKeys = new ShortcutKeys();
+
+        public ShortcutKeys ShortcutKeys
+        {
+            get { return _ShortcutKeys; }
+            set { SetProperty(ref _ShortcutKeys, value); }
+        }
+
+        #endregion
+
         #region TargetFolder
 
         private TargetFolder _TargetFolder = new TargetFolder();
@@ -27,6 +39,7 @@ namespace Ann.Core.Config
             get { return _PriorityFiles; }
             set { SetProperty(ref _PriorityFiles, value); }
         }
+
         #endregion
 
         #region IconCacheSize
@@ -73,18 +86,6 @@ namespace Ann.Core.Config
         {
             get { return _MaxCandidateLinesCount; }
             set { SetProperty(ref _MaxCandidateLinesCount, value); }
-        }
-
-        #endregion
-
-        #region ShortcutKeys
-
-        private ShortcutKeys _ShortcutKeys = new ShortcutKeys();
-
-        public ShortcutKeys ShortcutKeys
-        {
-            get { return _ShortcutKeys; }
-            set { SetProperty(ref _ShortcutKeys, value); }
         }
 
         #endregion
@@ -161,6 +162,7 @@ namespace Ann.Core.Config
             get { return _Folders; }
             set { SetProperty(ref _Folders, value); }
         }
+
         #endregion
     }
 
@@ -218,5 +220,4 @@ namespace Ann.Core.Config
 
         #endregion
     }
-
 }
