@@ -22,10 +22,12 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
 
             Files = model.PriorityFiles.ToReadOnlyReactiveCollection(p =>
             {
+                var executableExts = string.Join(", ", model.ExecutableFileExts.Select(e => "*." + e));
+
                 var pvm = new PathViewModel(p, Messenger, false,
                     () => new[]
                     {
-                        new CommonFileDialogFilter(Properties.Resources.ExecutableFile, "*.exe, *.lnk"),
+                        new CommonFileDialogFilter(Properties.Resources.ExecutableFile, executableExts),
                         new CommonFileDialogFilter(Properties.Resources.AllFile, "*.*")
                     });
 

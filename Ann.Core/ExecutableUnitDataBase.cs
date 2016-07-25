@@ -73,10 +73,10 @@ namespace Ann.Core
             return _prevResult;
         }
 
-        public async Task<IndexOpeningResults> UpdateIndexAsync(IEnumerable<string> targetFolders)
+        public async Task<IndexOpeningResults> UpdateIndexAsync(IEnumerable<string> targetFolders, IEnumerable<string> executableFileExts)
         {
             using (new TimeMeasure("Index Crawlering"))
-                _executableUnits = await ExecuteAsync(targetFolders);
+                _executableUnits = await ExecuteAsync(targetFolders, executableFileExts);
 
             if (_executableUnits == null)
                 return IndexOpeningResults.CanNotOpen;
@@ -214,13 +214,13 @@ namespace Ann.Core
 
         #region Crawler
 
-        private static async Task<ExecutableUnit[]> ExecuteAsync(IEnumerable<string> targetFolders)
+        private static async Task<ExecutableUnit[]> ExecuteAsync(IEnumerable<string> targetFolders, IEnumerable<string> executableFileExts)
         {
             return await Task.Run(() =>
             {
                 try
                 {
-                    var executableExts = new HashSet<string> {".exe", ".lnk"};
+                    var executableExts = new HashSet<string>(executableFileExts.Select(e => "." + e));
 
                     return targetFolders
                         .AsParallel()

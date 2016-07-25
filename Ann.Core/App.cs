@@ -98,7 +98,8 @@ namespace Ann.Core
                 targetFolders
                 .Select(f => Environment.ExpandEnvironmentVariables(f.Value))
                 .Distinct()
-                .Where(Directory.Exists));
+                .Where(Directory.Exists),
+                Config.ExecutableFileExts);
         }
 
         public IEnumerable<ExecutableUnit> FindExecutableUnit(string name) =>

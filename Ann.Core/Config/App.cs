@@ -89,6 +89,18 @@ namespace Ann.Core.Config
         }
 
         #endregion
+
+        #region ExecutableFileExts
+
+        private ObservableCollection<string> _ExecutableFileExts = new ObservableCollection<string>{"exe", "lnk"};
+
+        public ObservableCollection<string> ExecutableFileExts
+        {
+            get { return _ExecutableFileExts; }
+            set { SetProperty(ref _ExecutableFileExts, value); }
+        }
+
+        #endregion
     }
 
     public class TargetFolder : ModelBase
