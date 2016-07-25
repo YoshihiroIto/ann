@@ -14,7 +14,7 @@ namespace Ann
         [STAThread]
         public static void Main(string[] args)
         {
-            ProfileOptimization.SetProfileRoot(App.ConfigDirPath);
+            ProfileOptimization.SetProfileRoot(ConfigHelper.ConfigDirPath);
             ProfileOptimization.StartProfile("Startup.Profile");
 
             DisposableChecker.Start();

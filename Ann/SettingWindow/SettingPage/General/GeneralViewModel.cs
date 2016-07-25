@@ -25,7 +25,7 @@ namespace Ann.SettingWindow.SettingPage.General
         {
             Debug.Assert(model != null);
 
-            MaxCandidateLinesCount = model.MainWindow.ToReactivePropertyAsSynchronized(x => x.MaxCandidateLinesCount)
+            MaxCandidateLinesCount = model.ToReactivePropertyAsSynchronized(x => x.MaxCandidateLinesCount)
                 .AddTo(CompositeDisposable);
 
             SelectedCulture =

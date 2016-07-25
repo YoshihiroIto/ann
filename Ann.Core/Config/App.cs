@@ -29,18 +29,6 @@ namespace Ann.Core.Config
         }
         #endregion
 
-        #region MainWindow
-
-        private MainWindow _MainWindow = new MainWindow();
-
-        public MainWindow MainWindow
-        {
-            get { return _MainWindow; }
-            set { SetProperty(ref _MainWindow, value); }
-        }
-
-        #endregion
-
         #region IconCacheSize
 
         private int _IconCacheSize = 256;
@@ -73,6 +61,30 @@ namespace Ann.Core.Config
         {
             get { return _Culture; }
             set { SetProperty(ref _Culture, value); }
+        }
+
+        #endregion
+
+        #region MaxCandidateLinesCount
+
+        private int _MaxCandidateLinesCount = 8;
+
+        public int MaxCandidateLinesCount
+        {
+            get { return _MaxCandidateLinesCount; }
+            set { SetProperty(ref _MaxCandidateLinesCount, value); }
+        }
+
+        #endregion
+
+        #region ShortcutKeys
+
+        private ShortcutKeys _ShortcutKeys = new ShortcutKeys();
+
+        public ShortcutKeys ShortcutKeys
+        {
+            get { return _ShortcutKeys; }
+            set { SetProperty(ref _ShortcutKeys, value); }
         }
 
         #endregion
@@ -152,52 +164,28 @@ namespace Ann.Core.Config
         #endregion
     }
 
-    public class MainWindow : ModelBase
+    public class ShortcutKey : ModelBase
     {
-        #region Left
+        #region Key
 
-        private double _Left = double.NaN;
+        private Key _Key;
 
-        public double Left
+        public Key Key
         {
-            get { return _Left; }
-            set { SetProperty(ref _Left, value); }
+            get { return _Key; }
+            set { SetProperty(ref _Key, value); }
         }
 
         #endregion
 
-        #region Top
+        #region Modifiers
 
-        private double _Top = double.NaN;
+        private ModifierKeys _Modifiers;
 
-        public double Top
+        public ModifierKeys Modifiers
         {
-            get { return _Top; }
-            set { SetProperty(ref _Top, value); }
-        }
-
-        #endregion
-
-        #region MaxCandidateLinesCount
-
-        private int _MaxCandidateLinesCount = 8;
-
-        public int MaxCandidateLinesCount
-        {
-            get { return _MaxCandidateLinesCount; }
-            set { SetProperty(ref _MaxCandidateLinesCount, value); }
-        }
-
-        #endregion
-
-        #region ShortcutKeys
-
-        private ShortcutKeys _ShortcutKeys = new ShortcutKeys();
-
-        public ShortcutKeys ShortcutKeys
-        {
-            get { return _ShortcutKeys; }
-            set { SetProperty(ref _ShortcutKeys, value); }
+            get { return _Modifiers; }
+            set { SetProperty(ref _Modifiers, value); }
         }
 
         #endregion
@@ -230,4 +218,5 @@ namespace Ann.Core.Config
 
         #endregion
     }
+
 }

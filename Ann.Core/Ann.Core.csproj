@@ -75,7 +75,7 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="Config\App.cs" />
-    <Compile Include="Config\ShortcutKey.cs" />
+    <Compile Include="Config\MainWindow.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="ExecutableUnit.cs" />
     <Compile Include="ExecutableUnitDataBase.cs" />
