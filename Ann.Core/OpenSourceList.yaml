@@ -6,6 +6,10 @@
   Auther: Philipp Sumi
   Summry: NotifyIcon (aka system tray icon or taskbar icon) for the WPF platform.
   Url: http://www.hardcodet.net/projects/wpf-notifyicon
+- Name: Json.NET
+  Auther: James Newton-King
+  Summry: Json.NET is a popular high-performance JSON framework for .NET
+  Url: http://www.newtonsoft.com/json
 - Name: Livet Cask
   Auther: Livet Project
   Summry: WPF 4/4.5 MVVM Infrastructure.
