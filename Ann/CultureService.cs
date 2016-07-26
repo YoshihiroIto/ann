@@ -12,10 +12,10 @@ namespace Ann
 {
     public class CultureService : DisposableModelBase
     {
-        public static CultureService Current { get; } = new CultureService();
-        public Resources Resources { get; } = new Resources();
+        public static CultureService Instance { get; } = new CultureService();
+        public static readonly CultureSummry[] SupportedCultures;
 
-        public static readonly CultureSummry[] AvailableCultures;
+        public Resources Resources { get; } = new Resources();
 
         #region CultureName
 
@@ -52,7 +52,7 @@ namespace Ann
             var dir = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) ?? string.Empty;
             var resFiles = Directory.EnumerateFiles(dir, "Ann.resources.dll", SearchOption.AllDirectories);
 
-            AvailableCultures = resFiles.Select(f =>
+            SupportedCultures = resFiles.Select(f =>
             {
                 var name = System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(f));
                 if (name == null)
@@ -67,9 +67,9 @@ namespace Ann
             .Where(x => x != null)
             .ToArray();
 
-            if (AvailableCultures.IsEmpty())
+            if (SupportedCultures.IsEmpty())
             {
-                AvailableCultures = new[]
+                SupportedCultures = new[]
                 {
                     new CultureSummry
                     {

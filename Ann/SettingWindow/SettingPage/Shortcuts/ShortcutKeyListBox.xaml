@@ -30,7 +30,7 @@
                     <control:ShortcutKeyInputBox Key="{Binding Key.Value}"
                                                  Grid.Column="0"
                                                  Margin="0"
-                                                 materialDesign:HintAssist.Hint="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Setting_KeyStroke, Mode=OneWay}"
+                                                 materialDesign:HintAssist.Hint="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Setting_KeyStroke, Mode=OneWay}"
                                                  IsAlt="{Binding IsAlt.Value}"
                                                  IsControl="{Binding IsControl.Value}"
                                                  IsShift="{Binding IsShift.Value}"
@@ -79,6 +79,6 @@
             Command="{Binding AddCommand,
                               RelativeSource={RelativeSource FindAncestor,
                                                              AncestorType={x:Type shortcuts:ShortcutkeyListBox}}}"
-            Content="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Setting_AddKey, Mode=OneWay}"
+            Content="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Setting_AddKey, Mode=OneWay}"
             Style="{StaticResource FlatButtonStyle}" />
 </StackPanel>

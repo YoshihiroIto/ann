@@ -46,10 +46,10 @@
                             <Style BasedOn="{StaticResource MaterialDesignTextBox}" TargetType="{x:Type TextBox}">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsFolderPicker, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type settingPage:FileOrFolderListBox}}}" Value="True">
-                                        <Setter Property="materialDesign:HintAssist.Hint" Value="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Folder, Mode=OneWay}" />
+                                        <Setter Property="materialDesign:HintAssist.Hint" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Folder, Mode=OneWay}" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding IsFolderPicker, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type settingPage:FileOrFolderListBox}}}" Value="False">
-                                        <Setter Property="materialDesign:HintAssist.Hint" Value="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.File, Mode=OneWay}" />
+                                        <Setter Property="materialDesign:HintAssist.Hint" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.File, Mode=OneWay}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>

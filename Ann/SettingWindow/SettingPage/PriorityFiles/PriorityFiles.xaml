@@ -19,7 +19,7 @@
     </i:Interaction.Triggers>
 
     <settingPage:FileOrFolderListBox Margin="0,0,0,8"
-                                     AddButtonText="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Setting_AddExecutableFile, Mode=OneWay}"
+                                     AddButtonText="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Setting_AddExecutableFile, Mode=OneWay}"
                                      AddCommand="{Binding FileAddCommand,
                                                           Mode=OneTime}"
                                      IsFolderPicker="False"

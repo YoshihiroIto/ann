@@ -24,7 +24,7 @@ namespace Ann.SettingWindow.SettingPage.General
             SelectedCulture =
                 model.ToReactivePropertyAsSynchronized(
                     x => x.Culture,
-                    convert: x => CultureService.AvailableCultures.FirstOrDefault(y => y.CultureName == x) ?? CultureService.AvailableCultures[0],
+                    convert: x => CultureService.SupportedCultures.FirstOrDefault(y => y.CultureName == x) ?? CultureService.SupportedCultures[0],
                     convertBack: x => x.CultureName
                     ).AddTo(CompositeDisposable);
         }

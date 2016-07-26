@@ -21,7 +21,7 @@
 
     <TextBlock Margin="0,0,0,8"
                Style="{StaticResource SubheadingTextBlockStyle}"
-               Text="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Setting_FrequentlyUsedFolders, Mode=OneWay}" />
+               Text="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Setting_FrequentlyUsedFolders, Mode=OneWay}" />
 
     <CheckBox Margin="16,0,0,8"
               Content="{x:Static core:Constants.SystemFolder}"
@@ -41,10 +41,10 @@
 
     <TextBlock Margin="0,48,0,8"
                Style="{StaticResource SubheadingTextBlockStyle}"
-               Text="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Setting_UserFolders, Mode=OneWay}" />
+               Text="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Setting_UserFolders, Mode=OneWay}" />
 
     <settingPage:FileOrFolderListBox Margin="16,0,0,8"
-                                     AddButtonText="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.Setting_AddFolder, Mode=OneWay}"
+                                     AddButtonText="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Setting_AddFolder, Mode=OneWay}"
                                      AddCommand="{Binding FolderAddCommand,
                                                           Mode=OneWay}"
                                      IsFolderPicker="True"
