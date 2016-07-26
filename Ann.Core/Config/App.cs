@@ -68,7 +68,7 @@ namespace Ann.Core.Config
 
         #region Culture
 
-        private string _Culture = string.Empty;
+        private string _Culture = "en";
 
         public string Culture
         {

@@ -9,17 +9,10 @@ namespace Ann.SettingWindow.SettingPage.General
     public class GeneralViewModel : ViewModelBase
     {
         public ReactiveProperty<int> MaxCandidateLinesCount { get; }
-        public ReactiveProperty<SelectableCulture> SelectedCulture { get; }
+        public ReactiveProperty<CultureSummry> SelectedCulture { get; }
 
         public static readonly int[] MaxCandidateLines
             = Enumerable.Range(1, 10).ToArray();
-
-        public static readonly SelectableCulture[] SelectableCulture =
-        {
-            new SelectableCulture {Caption = "<Auto>", CultureName = string.Empty},
-            new SelectableCulture {Caption = "English", CultureName = "en-US"},
-            new SelectableCulture {Caption = "日本語", CultureName = "ja-JP"}
-        };
 
         public GeneralViewModel(Core.Config.App model)
         {
@@ -31,7 +24,7 @@ namespace Ann.SettingWindow.SettingPage.General
             SelectedCulture =
                 model.ToReactivePropertyAsSynchronized(
                     x => x.Culture,
-                    convert: x => SelectableCulture.FirstOrDefault(y => y.CultureName == x) ?? SelectableCulture[0],
+                    convert: x => CultureService.AvailableCultures.FirstOrDefault(y => y.CultureName == x) ?? CultureService.AvailableCultures[0],
                     convertBack: x => x.CultureName
                     ).AddTo(CompositeDisposable);
         }

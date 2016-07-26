@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
 using Ann.Properties;
@@ -11,6 +14,8 @@ namespace Ann
     {
         public static CultureService Current { get; } = new CultureService();
         public Resources Resources { get; } = new Resources();
+
+        public static readonly CultureSummry[] AvailableCultures;
 
         #region CultureName
 
@@ -41,5 +46,44 @@ namespace Ann
 
             App.Instance.CompositeDisposable.Add(this);
         }
+
+        static CultureService()
+        {
+            var dir = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) ?? string.Empty;
+            var resFiles = Directory.EnumerateFiles(dir, "Ann.resources.dll", SearchOption.AllDirectories);
+
+            AvailableCultures = resFiles.Select(f =>
+            {
+                var name = System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(f));
+                if (name == null)
+                    return null;
+
+                return new CultureSummry
+                {
+                    Caption = CultureInfo.GetCultureInfo(name).NativeName,
+                    CultureName = name
+                };
+            })
+            .Where(x => x != null)
+            .ToArray();
+
+            if (AvailableCultures.IsEmpty())
+            {
+                AvailableCultures = new[]
+                {
+                    new CultureSummry
+                    {
+                        Caption = "Default",
+                        CultureName = string.Empty
+                    }
+                };
+            }
+        }
+    }
+
+    public class CultureSummry
+    {
+        public string Caption { get; set; }
+        public string CultureName { get; set; }
     }
 }

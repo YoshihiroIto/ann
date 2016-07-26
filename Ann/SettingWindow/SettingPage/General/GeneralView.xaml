@@ -16,7 +16,7 @@
     <ComboBox MinWidth="150"
               Margin="16,0,0,0"
               HorizontalAlignment="Left"
-              ItemsSource="{x:Static general:GeneralViewModel.SelectableCulture}"
+              ItemsSource="{x:Static app:CultureService.AvailableCultures}"
               SelectedItem="{Binding SelectedCulture.Value}">
         <ComboBox.ItemContainerStyle>
             <Style BasedOn="{StaticResource MaterialDesignComboBoxItemStyle}" TargetType="{x:Type ComboBoxItem}">
