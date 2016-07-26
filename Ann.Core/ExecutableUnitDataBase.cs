@@ -61,10 +61,12 @@ namespace Ann.Core
 
             using (new TimeMeasure("Filtering"))
             {
+                var keywords = keyword.Split(' ');
+
                 _prevResult = target
                     .AsParallel()
-                    .Where(u => u.SearchKey.Contains(keyword))
-                    .OrderBy(u => MakeRank(u, keyword))
+                    .Where(u => keywords.All(u.SearchKey.Contains))
+                    .OrderBy(u => keywords.Sum(k => MakeRank(u, k))/keywords.Length)
                     .ToArray();
             }
 
@@ -73,7 +75,8 @@ namespace Ann.Core
             return _prevResult;
         }
 
-        public async Task<IndexOpeningResults> UpdateIndexAsync(IEnumerable<string> targetFolders, IEnumerable<string> executableFileExts)
+        public async Task<IndexOpeningResults> UpdateIndexAsync(IEnumerable<string> targetFolders,
+            IEnumerable<string> executableFileExts)
         {
             using (new TimeMeasure("Index Crawlering"))
                 _executableUnits = await ExecuteAsync(targetFolders, executableFileExts);
@@ -214,7 +217,8 @@ namespace Ann.Core
 
         #region Crawler
 
-        private static async Task<ExecutableUnit[]> ExecuteAsync(IEnumerable<string> targetFolders, IEnumerable<string> executableFileExts)
+        private static async Task<ExecutableUnit[]> ExecuteAsync(IEnumerable<string> targetFolders,
+            IEnumerable<string> executableFileExts)
         {
             return await Task.Run(() =>
             {
