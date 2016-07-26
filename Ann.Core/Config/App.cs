@@ -92,7 +92,7 @@ namespace Ann.Core.Config
 
         #region ExecutableFileExts
 
-        private ObservableCollection<string> _ExecutableFileExts = new ObservableCollection<string>{"exe", "lnk"};
+        private ObservableCollection<string> _ExecutableFileExts = new ObservableCollection<string>{"exe", "lnk", "bat", "cmd"};
 
         public ObservableCollection<string> ExecutableFileExts
         {
