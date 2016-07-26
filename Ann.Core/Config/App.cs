@@ -42,6 +42,33 @@ namespace Ann.Core.Config
 
         #endregion
 
+        #region MaxCandidateLinesCount
+
+        private int _MaxCandidateLinesCount = 8;
+
+        public int MaxCandidateLinesCount
+        {
+            get { return _MaxCandidateLinesCount; }
+            set { SetProperty(ref _MaxCandidateLinesCount, value); }
+        }
+
+        #endregion
+
+        #region Culture
+
+        private string _Culture = "en";
+
+        public string Culture
+        {
+            get { return _Culture; }
+            set { SetProperty(ref _Culture, value); }
+        }
+
+        #endregion
+
+        #region ExecutableFileExts
+
+
         #region IconCacheSize
 
         private int _IconCacheSize = 256;
@@ -65,32 +92,6 @@ namespace Ann.Core.Config
         }
 
         #endregion
-
-        #region Culture
-
-        private string _Culture = "en";
-
-        public string Culture
-        {
-            get { return _Culture; }
-            set { SetProperty(ref _Culture, value); }
-        }
-
-        #endregion
-
-        #region MaxCandidateLinesCount
-
-        private int _MaxCandidateLinesCount = 8;
-
-        public int MaxCandidateLinesCount
-        {
-            get { return _MaxCandidateLinesCount; }
-            set { SetProperty(ref _MaxCandidateLinesCount, value); }
-        }
-
-        #endregion
-
-        #region ExecutableFileExts
 
         private ObservableCollection<string> _ExecutableFileExts = new ObservableCollection<string>{"exe", "lnk", "bat", "cmd"};
 
