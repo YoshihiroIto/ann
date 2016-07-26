@@ -37,7 +37,7 @@
         <KeyBinding Command="{Binding CloseCommand, Mode=OneTime}" Gesture="Esc" />
     </Window.InputBindings>
 
-    <DockPanel Margin="24,16,0,16" LastChildFill="True">
+    <DockPanel Margin="24,16,0,0" LastChildFill="True">
         <DockPanel.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
@@ -193,12 +193,12 @@
                                         </materialDesign:TransitionerSlide>
                                     </materialDesign:Transitioner>
 
-                                    <Separator Grid.Row="1" Style="{StaticResource MaterialDesignSeparator}" />
+                                    <Separator Grid.Row="1" Style="{StaticResource MaterialDesignSeparator}" Margin="0,16,0,0"  SnapsToDevicePixels="True" Height="1" />
 
                                     <materialDesign:Transitioner Grid.Row="2" SelectedIndex="0">
                                         <materialDesign:TransitionerSlide OpeningEffect="{materialDesign:TransitionEffect SlideInFromLeft, Duration=0:0:0.25}">
                                             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" >
-                                                <ContentPresenter />
+                                                <ContentPresenter Margin="0,8,8,8" />
                                             </ScrollViewer>
                                         </materialDesign:TransitionerSlide>
                                     </materialDesign:Transitioner>
