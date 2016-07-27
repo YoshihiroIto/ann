@@ -30,6 +30,30 @@
   Auther: GitHub
   Summry: An async-based GitHub API client library for .NET
   Url: https://github.com/octokit/octokit.net
+- Name: Reactive Extensions - Core Library
+  Auther: .NET Foundation and Contributors
+  Summry: Reactive Extensions Core Library containing base classes and scheduler infrastructure.
+  Url: http://go.microsoft.com/fwlink/?LinkId=261273
+- Name: Reactive Extensions - Interfaces Library
+  Auther: .NET Foundation and Contributors
+  Summry: Reactive Extensions Interfaces Library containing essential interfaces.
+  Url: http://go.microsoft.com/fwlink/?LinkId=261273
+- Name: Reactive Extensions - Main Library
+  Auther: .NET Foundation and Contributors
+  Summry: Reactive Extensions Main Library combining the interfaces, core, LINQ, and platform services libraries.
+  Url: http://go.microsoft.com/fwlink/?LinkId=261273
+- Name: Reactive Extensions - Platform Services Library
+  Auther: .NET Foundation and Contributors
+  Summry: Reactive Extensions Platform Services Library used to access platform-specific functionality and enlightenment services.
+  Url: http://go.microsoft.com/fwlink/?LinkId=261273
+- Name: Reactive Extensions - Query Library
+  Auther: .NET Foundation and Contributors
+  Summry: Reactive Extensions Query Library used to express complex event processing queries over observable sequences.
+  Url: http://go.microsoft.com/fwlink/?LinkId=261273
+- Name: Reactive Extensions - XAML Support Library
+  Auther: .NET Foundation and Contributors
+  Summry: XAML support library for Rx. Contains scheduler functionality for the UI dispatcher.
+  Url: http://go.microsoft.com/fwlink/?LinkId=261273
 - Name: ReactiveProperty
   Auther: neuecc xin9le okazuki
   Summry: ReactiveProperty is MVVM and Asynchronous Extensions for Reactive Extensions(Rx-Main). Target is .NET 4, .NET 4.x, WP8, Windows store apps(Win8.1), Windows Phone 8.1, UWP.
