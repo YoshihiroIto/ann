@@ -6,7 +6,6 @@
         <title>$title$</title>
         <authors>$author$</authors>
         <owners>$author$</owners>
-        <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>$description$</description>
     </metadata>
     <files>
