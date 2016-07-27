@@ -1,3 +1,7 @@
+- Name: DeltaCompressionDotNet
+  Auther: ta.speot.is
+  Summry: A managed wrapper around Microsoft's delta compression application programming interfaces.
+  Url: 
 - Name: FlatBuffers
   Auther: Google
   Summry: Memory Efficient Serialization Library
@@ -26,6 +30,10 @@
   Auther: James Willock
   Summry: ResourceDictionary instances containing Material Design templates and styles for WPF controls.
   Url: https://github.com/ButchersBoy/MaterialDesignInXamlToolkit
+- Name: Mono.Cecil
+  Auther: Jb Evain
+  Summry: Cecil is a library written by Jb Evain to generate and inspect programs and libraries in the ECMA CIL format.
+  Url: http://github.com/jbevain/cecil/
 - Name: Reactive Extensions - Core Library
   Auther: .NET Foundation and Contributors
   Summry: Reactive Extensions Core Library containing base classes and scheduler infrastructure.
@@ -54,6 +62,14 @@
   Auther: neuecc xin9le okazuki
   Summry: ReactiveProperty is MVVM and Asynchronous Extensions for Reactive Extensions(Rx-Main). Target is .NET 4, .NET 4.x, WP8, Windows store apps(Win8.1), Windows Phone 8.1, UWP.
   Url: https://github.com/runceel/ReactiveProperty
+- Name: Splat
+  Auther: Paul Betts
+  Summry: A library to make things cross-platform that should be
+  Url: https://github.com/paulcbetts/splat
+- Name: Squirrel for Windows
+  Auther: GitHub
+  Summry: An installation and update framework for Windows applications
+  Url: https://github.com/squirrel/Squirrel.Windows
 - Name: System.Interactive
   Auther: .NET Foundation and Contributors
   Summry: Interactive Extensions Main Library used to express queries over enumerable sequences.
