@@ -205,7 +205,7 @@ namespace Ann.MainWindow
 
             IsEnableActivateHotKey = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
             Message = IsEnableActivateHotKey
-                .Select(i => i ? string.Empty : Properties.Resources.Message_ActivationShortcutKeyIsAlreadyInUse_)
+                .Select(i => i ? string.Empty : Properties.Resources.Message_ActivationShortcutKeyIsAlreadyInUse)
                 .ToReadOnlyReactiveProperty()
                 .AddTo(CompositeDisposable);
 

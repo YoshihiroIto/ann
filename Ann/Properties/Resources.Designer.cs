@@ -79,6 +79,15 @@ namespace Ann.Properties {
         }
         
         /// <summary>
+        ///   Download に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Download {
+            get {
+                return ResourceManager.GetString("Download", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Executable file に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string ExecutableFile {
@@ -144,9 +153,9 @@ namespace Ann.Properties {
         /// <summary>
         ///   Activation ShortcutKey is already in use. に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string Message_ActivationShortcutKeyIsAlreadyInUse_ {
+        public static string Message_ActivationShortcutKeyIsAlreadyInUse {
             get {
-                return ResourceManager.GetString("Message_ActivationShortcutKeyIsAlreadyInUse.", resourceCulture);
+                return ResourceManager.GetString("Message_ActivationShortcutKeyIsAlreadyInUse", resourceCulture);
             }
         }
         
@@ -327,6 +336,42 @@ namespace Ann.Properties {
         public static string Version {
             get {
                 return ResourceManager.GetString("Version", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Check For Updates に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string VersionChecker_Checking {
+            get {
+                return ResourceManager.GetString("VersionChecker_Checking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   This latest version に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string VersionChecker_Latest {
+            get {
+                return ResourceManager.GetString("VersionChecker_Latest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   New release  is now available に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string VersionChecker_Old {
+            get {
+                return ResourceManager.GetString("VersionChecker_Old", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Can not confirm the version に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string VersionChecker_Unknown {
+            get {
+                return ResourceManager.GetString("VersionChecker_Unknown", resourceCulture);
             }
         }
     }

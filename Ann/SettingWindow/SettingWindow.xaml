@@ -24,6 +24,10 @@
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
     <i:Interaction.Triggers>
+        <i:EventTrigger EventName="ContentRendered">
+            <behaviors:LivetCallMethodAction MethodTarget="{Binding}" MethodName="Initialize"/>
+        </i:EventTrigger>
+
         <i:EventTrigger EventName="Closed">
             <behaviors:DataContextDisposeAction />
         </i:EventTrigger>

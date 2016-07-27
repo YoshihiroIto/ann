@@ -1,12 +1,12 @@
 ﻿<StackPanel x:Class="Ann.SettingWindow.SettingPage.About.AboutView"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:app="clr-namespace:Ann"
             xmlns:core="clr-namespace:Ann.Core;assembly=Ann.Core"
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:foundation="clr-namespace:Ann.Foundation;assembly=Ann.Foundation"
             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-            xmlns:app="clr-namespace:Ann"
             x:Name="This"
             d:DataContext="{d:DesignData GeneralViewModel}"
             d:DesignHeight="600"
@@ -17,15 +17,99 @@
                Text="Ann" />
     <TextBlock Text="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Ann_Introduction, Mode=OneWay}" />
 
-    <StackPanel Orientation="Horizontal">
+    <StackPanel Margin="0,32,0,0" Orientation="Horizontal">
         <TextBlock Text="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Version, Mode=OneWay}" />
-        <TextBlock Text="{Binding Version, Mode=OneTime}" Margin="4,0,0,0" />
+        <TextBlock Margin="4,0,0,0" Text="{Binding Version, Mode=OneTime}" />
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+        <ContentControl VerticalAlignment="Center" Margin="0,0,4,0">
+            <ContentControl.Resources>
+                <Style TargetType="{x:Type materialDesign:PackIcon}">
+                    <Setter Property="Width" Value="16" />
+                    <Setter Property="Height" Value="16" />
+                    <Setter Property="Padding" Value="0" />
+                    <Setter Property="Margin" Value="0" />
+                </Style>
+            </ContentControl.Resources>
+            <ContentControl.Style>
+                <Style TargetType="{x:Type ContentControl}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Checking}">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <ProgressBar Width="16"
+                                                 Height="16"
+                                                 Margin="0"
+                                                 Foreground="DimGray"
+                                                 IsIndeterminate="True"
+                                                 Padding="0"
+                                                 Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                                 Value="0" VerticalAlignment="Center" />
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Latest}">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <materialDesign:PackIcon Foreground="DodgerBlue" Kind="CheckboxMarkedCircle" />
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Old}">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <materialDesign:PackIcon Foreground="Orange" Kind="NewBox" />
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Unknown}">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <materialDesign:PackIcon Foreground="LightSeaGreen" Kind="ServerRemove" />
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
+
+        <TextBlock>
+            <TextBlock.Style>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Checking}">
+                            <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.VersionChecker_Checking, Mode=OneWay}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Latest}">
+                            <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.VersionChecker_Latest, Mode=OneWay}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Old}">
+                            <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.VersionChecker_Old, Mode=OneWay}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Unknown}">
+                            <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.VersionChecker_Unknown, Mode=OneWay}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
     </StackPanel>
 
-    <StackPanel Margin="0,8,0,0"
-                HorizontalAlignment="Left"
-                Orientation="Horizontal">
-        <Button Margin="0,0,8,0"
+    <UniformGrid Margin="0,32,0,0"
+                 HorizontalAlignment="Left"
+                 Columns="3">
+        <Button Margin="0,0,4,0"
+                Command="{Binding OpenUrlCommand,
+                                  Mode=OneTime}"
+                CommandParameter="https://github.com/YoshihiroIto/ann/releases/latest"
+                Style="{StaticResource MaterialDesignRaisedButton}">
+            <TextBlock VerticalAlignment="Center" Text="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Download, Mode=OneWay}" />
+        </Button>
+        <Button Margin="4,0"
                 Command="{Binding OpenUrlCommand,
                                   Mode=OneTime}"
                 CommandParameter="https://github.com/YoshihiroIto/ann"
@@ -35,7 +119,7 @@
                 <TextBlock Margin="4,0,0,0" VerticalAlignment="Center">GitHub</TextBlock>
             </StackPanel>
         </Button>
-        <Button Margin="0,0,8,0"
+        <Button Margin="4,0,0,0"
                 Command="{Binding OpenUrlCommand,
                                   Mode=OneTime}"
                 CommandParameter="https://twitter.com/yoiyoi322"
@@ -45,11 +129,13 @@
                 <TextBlock Margin="4,0,0,0" VerticalAlignment="Center">Twitter</TextBlock>
             </StackPanel>
         </Button>
-    </StackPanel>
+    </UniformGrid>
 
     <TextBlock Margin="0,32,0,8"
                Style="{StaticResource SubheadingTextBlockStyle}"
-               Text="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.OpenSourceLibraries, Mode=OneWay}" />
+               Text="{Binding Source={x:Static app:CultureService.Instance},
+                              Path=Resources.OpenSourceLibraries,
+                              Mode=OneWay}" />
 
     <ItemsControl ItemsSource="{x:Static core:Constants.OpenSources}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
         <ItemsControl.ItemTemplate>
