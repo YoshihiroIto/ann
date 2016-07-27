@@ -204,7 +204,22 @@
   <data name="Message_IndexUpdating" xml:space="preserve">
     <value>インデックス更新中...</value>
   </data>
-  <data name="Message_ActivationShortcutKeyIsAlreadyInUse." xml:space="preserve">
+  <data name="Message_ActivationShortcutKeyIsAlreadyInUse" xml:space="preserve">
     <value>アクティブ化ショートカットキーはすでに使われています。</value>
+  </data>
+  <data name="VersionChecker_Checking" xml:space="preserve">
+    <value>新しいバージョンを確認しています。</value>
+  </data>
+  <data name="VersionChecker_Old" xml:space="preserve">
+    <value>新しいバージョンをダウンロードできます。</value>
+  </data>
+  <data name="VersionChecker_Latest" xml:space="preserve">
+    <value>最新バージョンです。</value>
+  </data>
+  <data name="VersionChecker_Unknown" xml:space="preserve">
+    <value>バージョン確認ができません。</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>ダウンロード</value>
   </data>
 </root>

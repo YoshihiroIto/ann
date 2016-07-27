@@ -38,9 +38,16 @@ namespace Ann.SettingWindow
                 new ShortcutsViewModel(model),
                 new TargetFoldersViewModel(model),
                 new PriorityFilesViewModel(model),
-                new AboutViewModel() 
+                _about = new AboutViewModel() 
             };
             SelectedPage = new ReactiveProperty<ViewModelBase>(Pages[0]).AddTo(CompositeDisposable);
+        }
+
+        private readonly AboutViewModel _about;
+
+        public async void Initialize()
+        {
+            await _about.CheckVersion();
         }
     }
 }
