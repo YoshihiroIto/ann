@@ -105,7 +105,7 @@ namespace Ann.Core.Config
             "wsf",
             "wsh",
             "lnk",
-            "appref-ms",
+            "appref-ms"
         };
 
         public ObservableCollection<string> ExecutableFileExts

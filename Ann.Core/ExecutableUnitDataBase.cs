@@ -224,7 +224,7 @@ namespace Ann.Core
             {
                 try
                 {
-                    var executableExts = new HashSet<string>(executableFileExts.Select(e => "." + e));
+                    var executableExts = new HashSet<string>(executableFileExts.Select(e => "." + e.ToLower()));
 
                     return targetFolders
                         .AsParallel()
