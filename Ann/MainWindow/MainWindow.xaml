@@ -54,7 +54,7 @@
     </i:Interaction.Triggers>
 
     <StackPanel Margin="16">
-        <!--<tb:TaskbarIcon IconSource="/app.ico"
+        <tb:TaskbarIcon IconSource="/app.ico"
                         MenuActivation="RightClick"
                         ToolTipText="Ann"
                         Visibility="Visible">
@@ -66,7 +66,7 @@
                     <MenuItem Command="{Binding AppExitCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Exit, Mode=OneWay}" />
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
-        </tb:TaskbarIcon>-->
+        </tb:TaskbarIcon>
 
         <DockPanel LastChildFill="True">
             <materialDesign:PopupBox Margin="0,0,-12,0"

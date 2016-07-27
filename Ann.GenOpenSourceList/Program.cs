@@ -56,7 +56,7 @@ namespace Ann.GenOpenSourceList
 
                 using (var writer = new StringWriter())
                 {
-                    new Serializer(SerializationOptions.EmitDefaults).Serialize(writer, openSources.OrderBy(x => x.Name));
+                    new Serializer(SerializationOptions.EmitDefaults).Serialize(writer, openSources.Where(x => x != null).OrderBy(x => x.Name));
                     return writer.ToString();
                 }
             }
@@ -70,17 +70,25 @@ namespace Ann.GenOpenSourceList
             {
                 wc.Encoding = System.Text.Encoding.UTF8;
                 var jsonText = await wc.DownloadStringTaskAsync(url);
-                var json = JsonConvert.DeserializeObject<Rootobject>(jsonText);
 
-                var data = json.data.Single(x => x.id == id);
-
-                return new OpenSource
+                try
                 {
-                    Name = data.title,
-                    Auther = string.Join(" ", data.authors),
-                    Summry = string.IsNullOrEmpty(data.summary) ? data.description : data.summary,
-                    Url = data.projectUrl
-                };
+                    var json = JsonConvert.DeserializeObject<Rootobject>(jsonText);
+
+                    var data = json.data.Single(x => x.id == id);
+
+                    return new OpenSource
+                    {
+                        Name = data.title,
+                        Auther = string.Join(" ", data.authors),
+                        Summry = string.IsNullOrEmpty(data.summary) ? data.description : data.summary,
+                        Url = data.projectUrl
+                    };
+                }
+                catch
+                {
+                    return null;
+                }
             }
         }
 
