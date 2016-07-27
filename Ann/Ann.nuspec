@@ -17,6 +17,8 @@
         <file src="bin\Release\Ann.exe.config" target="lib\net461\Ann.exe.config" />
         <file src="bin\Release\Ann.Foundation.dll" target="lib\net461\Ann.Foundation.dll" />
         <file src="bin\Release\DeltaCompressionDotNet.dll" target="lib\net461\DeltaCompressionDotNet.dll" />
+        <file src="bin\Release\DeltaCompressionDotNet.MsDelta.dll" target="lib\net461\DeltaCompressionDotNet.MsDelta.dll" />
+        <file src="bin\Release\DeltaCompressionDotNet.PatchApi.dll" target="lib\net461\DeltaCompressionDotNet.PatchApi.dll" />
         <file src="bin\Release\Hardcodet.Wpf.TaskbarNotification.dll" target="lib\net461\Hardcodet.Wpf.TaskbarNotification.dll" />
         <file src="bin\Release\ICSharpCode.SharpZipLib.dll" target="lib\net461\ICSharpCode.SharpZipLib.dll" />
         <file src="bin\Release\Livet.dll" target="lib\net461\Livet.dll" />
@@ -30,6 +32,7 @@
         <file src="bin\Release\Mono.Cecil.Pdb.dll" target="lib\net461\Mono.Cecil.Pdb.dll" />
         <file src="bin\Release\Mono.Cecil.Rocks.dll" target="lib\net461\Mono.Cecil.Rocks.dll" />
         <file src="bin\Release\NuGet.Squirrel.dll" target="lib\net461\NuGet.Squirrel.dll" />
+        <file src="bin\Release\ReactiveProperty.DataAnnotations.dll" target="lib\net461\ReactiveProperty.DataAnnotations.dll" />
         <file src="bin\Release\ReactiveProperty.dll" target="lib\net461\ReactiveProperty.dll" />
         <file src="bin\Release\ReactiveProperty.NET46.dll" target="lib\net461\ReactiveProperty.NET46.dll" />
         <file src="bin\Release\Splat.dll" target="lib\net461\Splat.dll" />
@@ -38,6 +41,7 @@
         <file src="bin\Release\System.Reactive.Core.dll" target="lib\net461\System.Reactive.Core.dll" />
         <file src="bin\Release\System.Reactive.Interfaces.dll" target="lib\net461\System.Reactive.Interfaces.dll" />
         <file src="bin\Release\System.Reactive.Linq.dll" target="lib\net461\System.Reactive.Linq.dll" />
+        <file src="bin\Release\System.Reactive.PlatformServices.dll" target="lib\net461\System.Reactive.PlatformServices.dll" />
         <file src="bin\Release\System.Windows.Interactivity.dll" target="lib\net461\System.Windows.Interactivity.dll" />
         <file src="bin\Release\YamlDotNet.dll" target="lib\net461\YamlDotNet.dll" />
     </files>
