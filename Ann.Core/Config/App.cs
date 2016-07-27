@@ -68,7 +68,6 @@ namespace Ann.Core.Config
 
         #region ExecutableFileExts
 
-
         #region IconCacheSize
 
         private int _IconCacheSize = 256;
@@ -93,7 +92,21 @@ namespace Ann.Core.Config
 
         #endregion
 
-        private ObservableCollection<string> _ExecutableFileExts = new ObservableCollection<string>{"exe", "lnk", "bat", "cmd"};
+        private ObservableCollection<string> _ExecutableFileExts = new ObservableCollection<string>
+        {
+            "com",
+            "exe",
+            "bat",
+            "cmd",
+            "vbs",
+            "vbe",
+            "js",
+            "jse",
+            "wsf",
+            "wsh",
+            "lnk",
+            "appref-ms",
+        };
 
         public ObservableCollection<string> ExecutableFileExts
         {
