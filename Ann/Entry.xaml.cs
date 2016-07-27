@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Runtime;
+using System.Threading.Tasks;
 using System.Windows;
 using Ann.Core;
 using Ann.Foundation;
+using Squirrel;
 
 namespace Ann
 {
@@ -16,6 +18,14 @@ namespace Ann
         {
             ProfileOptimization.SetProfileRoot(ConfigHelper.ConfigDirPath);
             ProfileOptimization.StartProfile("Startup.Profile");
+
+            Task.Run(async () =>
+            {
+                using (var mgr = UpdateManager.GitHubUpdateManager("https://github.com/YoshihiroIto/ann"))
+                {
+                    await mgr.Result.UpdateApp();
+                }
+            });
 
             DisposableChecker.Start();
             {
