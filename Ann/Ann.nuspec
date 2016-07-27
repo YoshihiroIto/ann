@@ -18,8 +18,6 @@
         <file src="bin\Release\DeltaCompressionDotNet.dll" target="lib\net461\DeltaCompressionDotNet.dll" />
         <file src="bin\Release\DeltaCompressionDotNet.MsDelta.dll" target="lib\net461\DeltaCompressionDotNet.MsDelta.dll" />
         <file src="bin\Release\DeltaCompressionDotNet.PatchApi.dll" target="lib\net461\DeltaCompressionDotNet.PatchApi.dll" />
-        <file src="bin\Release\Hardcodet.Wpf.TaskbarNotification.dll" target="lib\net461\Hardcodet.Wpf.TaskbarNotification.dll" />
-        <file src="bin\Release\Hardcodet.Wpf.TaskbarNotification.xml" target="lib\net461\Hardcodet.Wpf.TaskbarNotification.xml" />
         <file src="bin\Release\ICSharpCode.SharpZipLib.dll" target="lib\net461\ICSharpCode.SharpZipLib.dll" />
         <file src="bin\Release\ICSharpCode.SharpZipLib.xml" target="lib\net461\ICSharpCode.SharpZipLib.xml" />
         <file src="bin\Release\Livet.dll" target="lib\net461\Livet.dll" />
