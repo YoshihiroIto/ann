@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,16 +14,25 @@ namespace Ann.GenOpenSourceList
     {
         static void Main()
         {
-            var yaml = Generate(@"..\..\..\Ann\packages.config");
+            var packagesConfigPaths = Directory.EnumerateFiles(
+                @"..\..\..\",
+                "packages.config", SearchOption.AllDirectories);
+
+            var yaml = Generate(packagesConfigPaths);
             File.WriteAllText(@"..\..\..\Ann.Core\OpenSourceList.yaml", yaml);
         }
 
-        private static string Generate(string packagesConfigPath)
+        private static string Generate(IEnumerable<string> packagesConfigPaths)
         {
             using (new TimeMeasure())
             {
-                var packages = XElement.Load(packagesConfigPath).Elements("package");
-                var genPackageTasks = packages.Select(p => GeneratePackageAsync(p.Attribute("id").Value));
+                var packageNames = packagesConfigPaths
+                    .Select(XElement.Load)
+                    .SelectMany(p => p.Elements("package"))
+                    .Select(p => p.Attribute("id").Value)
+                    .Distinct();
+
+                var genPackageTasks = packageNames.Select(GeneratePackageAsync);
                 var openSources = Task.WhenAll(genPackageTasks).Result.ToList();
 
                 // nuget以外

@@ -13,10 +13,10 @@ namespace Ann.SettingWindow.SettingPage.Shortcuts
         {
             Debug.Assert(model != null);
 
-            Activate = new ShortcutKeyViewModel(model.MainWindow.ShortcutKeys.Activate)
+            Activate = new ShortcutKeyViewModel(model.ShortcutKeys.Activate)
                 .AddTo(CompositeDisposable);
 
-            HideShortcuts = new ShortcutKeyListBoxViewModel(model.MainWindow.ShortcutKeys.Hide)
+            HideShortcuts = new ShortcutKeyListBoxViewModel(model.ShortcutKeys.Hide)
                 .AddTo(CompositeDisposable);
         }
     }

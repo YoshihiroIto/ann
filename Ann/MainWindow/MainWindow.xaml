@@ -60,10 +60,10 @@
                         Visibility="Visible">
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.MenuItem_UpdateIndex, Mode=OneWay}" />
-                    <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.MenuItem_Setting, Mode=OneWay}" />
+                    <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_UpdateIndex, Mode=OneWay}" />
+                    <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Setting, Mode=OneWay}" />
                     <Separator Margin="-100,8,-100,8" />
-                    <MenuItem Command="{Binding AppExitCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.MenuItem_Exit, Mode=OneWay}" />
+                    <MenuItem Command="{Binding AppExitCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Exit, Mode=OneWay}" />
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>
@@ -75,10 +75,10 @@
                                      Foreground="Gainsboro"
                                      PlacementMode="BottomAndAlignRightEdges">
                 <StackPanel>
-                    <Button Command="{Binding IndexUpdateCommand, Mode=OneTime}" Content="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.MenuItem_UpdateIndex, Mode=OneWay}" />
-                    <Button Command="{Binding SettingShowCommand, Mode=OneTime}" Content="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.MenuItem_Setting, Mode=OneWay}" />
+                    <Button Command="{Binding IndexUpdateCommand, Mode=OneTime}" Content="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_UpdateIndex, Mode=OneWay}" />
+                    <Button Command="{Binding SettingShowCommand, Mode=OneTime}" Content="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Setting, Mode=OneWay}" />
                     <Separator />
-                    <Button Command="{Binding AppExitCommand, Mode=OneTime}" Content="{Binding Source={x:Static app:CultureService.Current}, Path=Resources.MenuItem_Exit, Mode=OneWay}" />
+                    <Button Command="{Binding AppExitCommand, Mode=OneTime}" Content="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Exit, Mode=OneWay}" />
                 </StackPanel>
             </materialDesign:PopupBox>
 
@@ -140,15 +140,15 @@
                         <Style BasedOn="{StaticResource MaterialDesignToolForegroundButton}" TargetType="{x:Type Button}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.OldIndex}">
-                                    <Setter Property="ToolTip" Value="Index is too old. Please update index." />
+                                    <Setter Property="ToolTip" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Message_IndexIsOld, Mode=OneWay}" />
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.CanNotOpen}">
-                                    <Setter Property="ToolTip" Value="Index is not opened." />
+                                    <Setter Property="ToolTip" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Message_IndexIsNotOpened, Mode=OneWay}" />
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.NotFound}">
-                                    <Setter Property="ToolTip" Value="Index not found. Please update index." />
+                                    <Setter Property="ToolTip" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Message_IndexNotFound, Mode=OneWay}" />
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.Ok}">

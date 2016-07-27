@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows;
@@ -46,14 +47,18 @@ namespace Ann.MainWindow
         public ReadOnlyReactiveProperty<double> CandidatesListMaxHeight { get; }
         public ReactiveProperty<double> CandidateItemHeight { get; }
 
-        public ReactiveCommand SettingShowCommand { get; }
+        public AsyncReactiveCommand SettingShowCommand { get; }
 
         public ReadOnlyReactiveProperty<IndexOpeningResults> IndexOpeningResult { get; }
         public ReactiveProperty<bool> IsEnableActivateHotKey { get; }
         public ReadOnlyReactiveProperty<string> Message { get; }
 
+        public Core.Config.MainWindow Config { get; private set; }
+
         public MainWindowViewModel()
         {
+            LoadConfig();
+            
             Input = new ReactiveProperty<string>().AddTo(CompositeDisposable);
             InProgressMessage = new ReactiveProperty<string>(string.Empty).AddTo(CompositeDisposable);
             Visibility = new ReactiveProperty<Visibility>(System.Windows.Visibility.Visible).AddTo(CompositeDisposable);
@@ -65,11 +70,18 @@ namespace Ann.MainWindow
                 .ToReadOnlyReactiveProperty()
                 .AddTo(CompositeDisposable);
 
-            Left =
-                App.Instance.Config.MainWindow.ToReactivePropertyAsSynchronized(x => x.Left).AddTo(CompositeDisposable);
-            Top = App.Instance.Config.MainWindow.ToReactivePropertyAsSynchronized(x => x.Top).AddTo(CompositeDisposable);
+            Left = Config.ToReactivePropertyAsSynchronized(x => x.Left).AddTo(CompositeDisposable);
+            Top = Config.ToReactivePropertyAsSynchronized(x => x.Top).AddTo(CompositeDisposable);
+
+            Observable
+                .Merge(Left)
+                .Merge(Top)
+                .Throttle(TimeSpan.FromSeconds(2))
+                .Subscribe(_ => SaveConfig())
+                .AddTo(CompositeDisposable);
+
             MaxCandidatesLinesCount =
-                App.Instance.Config.MainWindow.ToReactivePropertyAsSynchronized(x => x.MaxCandidateLinesCount)
+                App.Instance.Config.ToReactivePropertyAsSynchronized(x => x.MaxCandidateLinesCount)
                     .AddTo(CompositeDisposable);
 
             CandidateItemHeight = new ReactiveProperty<double>().AddTo(CompositeDisposable);
@@ -89,7 +101,7 @@ namespace Ann.MainWindow
                 {
                     using (new AnonymousDisposable(() => InProgressMessage.Value = string.Empty))
                     {
-                        InProgressMessage.Value = "Index Updating...";
+                        InProgressMessage.Value = Properties.Resources.Message_IndexUpdating;
 
                         await App.Instance.UpdateIndexAsync();
                         Input.ForceNotify();
@@ -170,16 +182,16 @@ namespace Ann.MainWindow
 
             Visibility.Subscribe(_ => Input.Value = string.Empty).AddTo(CompositeDisposable);
 
-            SettingShowCommand = new ReactiveCommand().AddTo(CompositeDisposable);
-            SettingShowCommand.Subscribe(_ =>
+            SettingShowCommand = new AsyncReactiveCommand().AddTo(CompositeDisposable);
+            SettingShowCommand.Subscribe(async _ =>
             {
                 // 一旦止める
-                var key = App.Instance.Config.MainWindow.ShortcutKeys.Activate.Key;
-                App.Instance.Config.MainWindow.ShortcutKeys.Activate.Key = Key.None;
+                var key = App.Instance.Config.ShortcutKeys.Activate.Key;
+                App.Instance.Config.ShortcutKeys.Activate.Key = Key.None;
                 App.Instance.InvokeShortcutKeyChanged();
-                App.Instance.Config.MainWindow.ShortcutKeys.Activate.Key = key;
+                App.Instance.Config.ShortcutKeys.Activate.Key = key;
 
-                Messenger.Raise(new TransitionMessage(new SettingViewModel(App.Instance.Config), "ShowSetting"));
+                await Messenger.RaiseAsync(new TransitionMessage(new SettingViewModel(App.Instance.Config), "ShowSetting"));
 
                 Visibility.Value = System.Windows.Visibility.Visible;
 
@@ -193,7 +205,7 @@ namespace Ann.MainWindow
 
             IsEnableActivateHotKey = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
             Message = IsEnableActivateHotKey
-                .Select(i => i ? string.Empty : "Activation Hotkey is already in use.")
+                .Select(i => i ? string.Empty : Properties.Resources.Message_ActivationShortcutKeyIsAlreadyInUse_)
                 .ToReadOnlyReactiveProperty()
                 .AddTo(CompositeDisposable);
 
@@ -222,6 +234,18 @@ namespace Ann.MainWindow
             }
 
             return -1;
+        }
+
+        private void LoadConfig()
+        {
+            Debug.Assert(Config == null);
+
+            Config = ConfigHelper.ReadConfig<Core.Config.MainWindow>(ConfigHelper.Category.MainWindow);
+        }
+
+        private void SaveConfig()
+        {
+            ConfigHelper.WriteConfig(ConfigHelper.Category.MainWindow, Config);
         }
     }
 }

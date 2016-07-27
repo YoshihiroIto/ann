@@ -23,7 +23,7 @@ namespace Ann.MainWindow
         {
             DataContext = _DataContext;
 
-            if (double.IsNaN(App.Instance.Config.MainWindow.Left))
+            if (double.IsNaN(_DataContext.Config.Left))
                 WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             InitializeComponent();
@@ -127,15 +127,15 @@ namespace Ann.MainWindow
             _activateHotKey?.Dispose();
             _activateHotKey = null;
 
-            if (App.Instance.Config.MainWindow.ShortcutKeys.Activate.Key == Key.None)
+            if (App.Instance.Config.ShortcutKeys.Activate.Key == Key.None)
             {
                 _DataContext.IsEnableActivateHotKey.Value = true;
                 return;
             }
 
             _activateHotKey = new HotKeyRegister(
-                App.Instance.Config.MainWindow.ShortcutKeys.Activate.Modifiers,
-                App.Instance.Config.MainWindow.ShortcutKeys.Activate.Key,
+                App.Instance.Config.ShortcutKeys.Activate.Modifiers,
+                App.Instance.Config.ShortcutKeys.Activate.Key,
                 Application.Current.MainWindow);
 
             _activateHotKey.HotKeyPressed += (_, __) =>
@@ -167,7 +167,7 @@ namespace Ann.MainWindow
             InputBindings.Add(new KeyBinding {Key = Key.Escape, Command = _DataContext.AppHideCommand});
 
             // コンフィグから指定されたもの
-            InputBindings.AddRange(App.Instance.Config.MainWindow.ShortcutKeys.Hide
+            InputBindings.AddRange(App.Instance.Config.ShortcutKeys.Hide
                 .Select(k =>
                     new KeyBinding
                     {

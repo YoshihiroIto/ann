@@ -8,6 +8,7 @@
             xmlns:messaging="http://schemas.livet-mvvm.net/2011/wpf"
             xmlns:settingPage="clr-namespace:Ann.SettingWindow.SettingPage"
             xmlns:core="clr-namespace:Ann.Core;assembly=Ann.Core"
+            xmlns:app="clr-namespace:Ann"
             d:DataContext="{d:DesignData TargetFolder}"
             d:DesignHeight="300"
             d:DesignWidth="300"
@@ -20,7 +21,7 @@
 
     <TextBlock Margin="0,0,0,8"
                Style="{StaticResource SubheadingTextBlockStyle}"
-               Text="Frequently used folders" />
+               Text="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Setting_FrequentlyUsedFolders, Mode=OneWay}" />
 
     <CheckBox Margin="16,0,0,8"
               Content="{x:Static core:Constants.SystemFolder}"
@@ -40,10 +41,10 @@
 
     <TextBlock Margin="0,48,0,8"
                Style="{StaticResource SubheadingTextBlockStyle}"
-               Text="User folders" />
+               Text="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Setting_UserFolders, Mode=OneWay}" />
 
     <settingPage:FileOrFolderListBox Margin="16,0,0,8"
-                                     AddButtonText="Add folder"
+                                     AddButtonText="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Setting_AddFolder, Mode=OneWay}"
                                      AddCommand="{Binding FolderAddCommand,
                                                           Mode=OneWay}"
                                      IsFolderPicker="True"

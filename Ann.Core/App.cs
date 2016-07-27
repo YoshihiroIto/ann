@@ -5,9 +5,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings.Extensions;
-using YamlDotNet.Serialization;
 
 namespace Ann.Core
 {
@@ -25,7 +25,7 @@ namespace Ann.Core
 
         private HashSet<string> _priorityFiles = new HashSet<string>();
         private readonly ExecutableUnitDataBase _dataBase;
-        private static string IndexFilePath => System.IO.Path.Combine(ConfigDirPath, "index.dat");
+        private static string IndexFilePath => System.IO.Path.Combine(ConfigHelper.ConfigDirPath, "index.dat");
 
         #region IndexOpeningResult
 
@@ -46,7 +46,6 @@ namespace Ann.Core
 
         public static void Destory()
         {
-            Instance.SaveConfig();
             Instance.Dispose();
         }
 
@@ -66,7 +65,8 @@ namespace Ann.Core
             if (_priorityFiles.Contains(path) == false)
                 return false;
 
-            Config.PriorityFiles.Remove(new Path(path));
+            var found = Config.PriorityFiles.First(p => p.Value == path);
+            Config.PriorityFiles.Remove(found);
             return true;
         }
 
@@ -98,7 +98,8 @@ namespace Ann.Core
                 targetFolders
                 .Select(f => Environment.ExpandEnvironmentVariables(f.Value))
                 .Distinct()
-                .Where(Directory.Exists));
+                .Where(Directory.Exists),
+                Config.ExecutableFileExts);
         }
 
         public IEnumerable<ExecutableUnit> FindExecutableUnit(string name) =>
@@ -120,22 +121,11 @@ namespace Ann.Core
 
         #region config
 
-        public static string ConfigDirPath
-        {
-            get
-            {
-                var dir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                return System.IO.Path.Combine(dir, Constants.CompanyName, Constants.ProductName);
-            }
-        }
-
-        public static string ConfigFilePath => System.IO.Path.Combine(ConfigDirPath, Constants.ProductName + ".yaml");
-
         private void LoadConfig()
         {
             Debug.Assert(Config == null);
 
-            Config = ReadConfigIfExist();
+            Config = ConfigHelper.ReadConfig<Config.App>(ConfigHelper.Category.App);
 
             if (Config.PriorityFiles == null)
                 Config.PriorityFiles = new ObservableCollection<Path>();
@@ -161,30 +151,9 @@ namespace Ann.Core
                 .AddTo(CompositeDisposable);
         }
 
-        private static Config.App ReadConfigIfExist()
-        {
-            if (File.Exists(ConfigFilePath) == false)
-                return new Config.App();
-
-            try
-            {
-                using (var reader = new StringReader(File.ReadAllText(ConfigFilePath)))
-                    return new Deserializer().Deserialize<Config.App>(reader);
-            }
-            catch
-            {
-                return new Config.App();
-            }
-        }
-
         public void SaveConfig()
         {
-            using (var writer = new StringWriter())
-            {
-                new Serializer(SerializationOptions.EmitDefaults).Serialize(writer, Config);
-                Directory.CreateDirectory(ConfigDirPath);
-                File.WriteAllText(ConfigFilePath, writer.ToString());
-            }
+            ConfigHelper.WriteConfig(ConfigHelper.Category.App, Config);
         }
 
         #endregion

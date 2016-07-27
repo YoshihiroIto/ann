@@ -6,6 +6,18 @@ namespace Ann.Core.Config
 {
     public class App : ModelBase
     {
+        #region ShortcutKeys
+
+        private ShortcutKeys _ShortcutKeys = new ShortcutKeys();
+
+        public ShortcutKeys ShortcutKeys
+        {
+            get { return _ShortcutKeys; }
+            set { SetProperty(ref _ShortcutKeys, value); }
+        }
+
+        #endregion
+
         #region TargetFolder
 
         private TargetFolder _TargetFolder = new TargetFolder();
@@ -27,19 +39,35 @@ namespace Ann.Core.Config
             get { return _PriorityFiles; }
             set { SetProperty(ref _PriorityFiles, value); }
         }
+
         #endregion
 
-        #region MainWindow
+        #region MaxCandidateLinesCount
 
-        private MainWindow _MainWindow = new MainWindow();
+        private int _MaxCandidateLinesCount = 8;
 
-        public MainWindow MainWindow
+        public int MaxCandidateLinesCount
         {
-            get { return _MainWindow; }
-            set { SetProperty(ref _MainWindow, value); }
+            get { return _MaxCandidateLinesCount; }
+            set { SetProperty(ref _MaxCandidateLinesCount, value); }
         }
 
         #endregion
+
+        #region Culture
+
+        private string _Culture = "en";
+
+        public string Culture
+        {
+            get { return _Culture; }
+            set { SetProperty(ref _Culture, value); }
+        }
+
+        #endregion
+
+        #region ExecutableFileExts
+
 
         #region IconCacheSize
 
@@ -65,14 +93,12 @@ namespace Ann.Core.Config
 
         #endregion
 
-        #region Culture
+        private ObservableCollection<string> _ExecutableFileExts = new ObservableCollection<string>{"exe", "lnk", "bat", "cmd"};
 
-        private string _Culture = string.Empty;
-
-        public string Culture
+        public ObservableCollection<string> ExecutableFileExts
         {
-            get { return _Culture; }
-            set { SetProperty(ref _Culture, value); }
+            get { return _ExecutableFileExts; }
+            set { SetProperty(ref _ExecutableFileExts, value); }
         }
 
         #endregion
@@ -149,55 +175,32 @@ namespace Ann.Core.Config
             get { return _Folders; }
             set { SetProperty(ref _Folders, value); }
         }
+
         #endregion
     }
 
-    public class MainWindow : ModelBase
+    public class ShortcutKey : ModelBase
     {
-        #region Left
+        #region Key
 
-        private double _Left = double.NaN;
+        private Key _Key;
 
-        public double Left
+        public Key Key
         {
-            get { return _Left; }
-            set { SetProperty(ref _Left, value); }
+            get { return _Key; }
+            set { SetProperty(ref _Key, value); }
         }
 
         #endregion
 
-        #region Top
+        #region Modifiers
 
-        private double _Top = double.NaN;
+        private ModifierKeys _Modifiers;
 
-        public double Top
+        public ModifierKeys Modifiers
         {
-            get { return _Top; }
-            set { SetProperty(ref _Top, value); }
-        }
-
-        #endregion
-
-        #region MaxCandidateLinesCount
-
-        private int _MaxCandidateLinesCount = 8;
-
-        public int MaxCandidateLinesCount
-        {
-            get { return _MaxCandidateLinesCount; }
-            set { SetProperty(ref _MaxCandidateLinesCount, value); }
-        }
-
-        #endregion
-
-        #region ShortcutKeys
-
-        private ShortcutKeys _ShortcutKeys = new ShortcutKeys();
-
-        public ShortcutKeys ShortcutKeys
-        {
-            get { return _ShortcutKeys; }
-            set { SetProperty(ref _ShortcutKeys, value); }
+            get { return _Modifiers; }
+            set { SetProperty(ref _Modifiers, value); }
         }
 
         #endregion
