@@ -26,9 +26,9 @@ namespace Ann.Core
 
         private bool IsOpend => _executableUnits != null;
 
-        private Versions CurrentIndexVersion = Versions.V1;
+        private const Versions CurrentIndexVersion = Versions.V1;
 
-        public IEnumerable<ExecutableUnit> Find(string keyword)
+        public IEnumerable<ExecutableUnit> Find(string keyword, IEnumerable<string> executableFileExts)
         {
             if (keyword == null)
             {
@@ -52,21 +52,23 @@ namespace Ann.Core
                 _prevResult = null;
                 return Enumerable.Empty<ExecutableUnit>();
             }
-
             keyword = keyword.ToLower();
 
-            var target = _prevKeyword == null || keyword.StartsWith(_prevKeyword) == false
+            var targets = _prevKeyword == null || keyword.StartsWith(_prevKeyword) == false
                 ? _executableUnits
                 : _prevResult;
 
             using (new TimeMeasure("Filtering"))
             {
+                var extRanks = new Dictionary<string, int>();
+                executableFileExts.ForEach((e, i) => extRanks["." + e] = i);
+
                 var keywords = keyword.Split(' ');
 
-                _prevResult = target
+                _prevResult = targets
                     .AsParallel()
                     .Where(u => keywords.All(u.SearchKey.Contains))
-                    .OrderBy(u => keywords.Sum(k => MakeRank(u, k))/keywords.Length)
+                    .OrderBy(u => keywords.Sum(k => MakeRank(u, k, extRanks))/keywords.Length)
                     .ToArray();
             }
 
@@ -79,7 +81,7 @@ namespace Ann.Core
             IEnumerable<string> executableFileExts)
         {
             using (new TimeMeasure("Index Crawlering"))
-                _executableUnits = await ExecuteAsync(targetFolders, executableFileExts);
+                _executableUnits = await CrawlAsync(targetFolders, executableFileExts);
 
             if (_executableUnits == null)
                 return IndexOpeningResults.CanNotOpen;
@@ -173,7 +175,7 @@ namespace Ann.Core
         }
 
         // ReSharper disable PossibleNullReferenceException
-        private static int MakeRank(ExecutableUnit u, string name)
+        private static int MakeRank(ExecutableUnit u, string name, Dictionary<string, int> extRanks)
         {
             var unitNameLength = Math.Min(u.Name.Length, 9999);
 
@@ -196,19 +198,24 @@ namespace Ann.Core
                 return int.MaxValue;
             };
 
+            var ext = System.IO.Path.GetExtension(u.Path).ToLower();
+
+            Debug.Assert(extRanks.ContainsKey(ext));
+            var extRank = extRanks[ext];
+
             var b = 0;
 
             var rankFileName = makeRankSub(++b, u.LowerFileName);
             if (rankFileName != int.MaxValue)
-                return rankFileName;
+                return rankFileName * extRanks.Count + extRank;
 
             var rankName = makeRankSub(++b, u.LowerName);
             if (rankName != int.MaxValue)
-                return rankName;
+                return rankName * extRanks.Count + extRank;
 
             var rankDir = makeRankSub(++b, u.LowerDirectory);
             if (rankDir != int.MaxValue)
-                return rankDir;
+                return rankDir * extRanks.Count + extRank;
 
             return int.MaxValue;
         }
@@ -217,7 +224,8 @@ namespace Ann.Core
 
         #region Crawler
 
-        private static async Task<ExecutableUnit[]> ExecuteAsync(IEnumerable<string> targetFolders,
+        private static async Task<ExecutableUnit[]> CrawlAsync(
+            IEnumerable<string> targetFolders,
             IEnumerable<string> executableFileExts)
         {
             return await Task.Run(() =>

@@ -104,7 +104,7 @@ namespace Ann.Core
 
         public IEnumerable<ExecutableUnit> FindExecutableUnit(string name) =>
             _dataBase
-                .Find(name)
+                .Find(name, Config.ExecutableFileExts)
                 .OrderByDescending(u => IsPriorityFile(u.Path));
 
         private App()

@@ -94,18 +94,18 @@ namespace Ann.Core.Config
 
         private ObservableCollection<string> _ExecutableFileExts = new ObservableCollection<string>
         {
-            "com",
             "exe",
+            "lnk",
+            "appref-ms",
             "bat",
             "cmd",
+            "com",
             "vbs",
             "vbe",
             "js",
             "jse",
             "wsf",
-            "wsh",
-            "lnk",
-            "appref-ms"
+            "wsh"
         };
 
         public ObservableCollection<string> ExecutableFileExts
