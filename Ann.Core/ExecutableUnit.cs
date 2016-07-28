@@ -1,6 +1,6 @@
 ﻿namespace Ann.Core
 {
-    public struct ExecutableUnit
+    public class ExecutableUnit
     {
         public string Path;
         public string Name;
@@ -8,5 +8,8 @@
         public string LowerDirectory;
         public string LowerFileName;
         public string SearchKey;
+
+        //
+        public int Rank;
     }
 }

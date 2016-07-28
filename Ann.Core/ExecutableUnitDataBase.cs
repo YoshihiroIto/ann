@@ -65,11 +65,26 @@ namespace Ann.Core
 
                 var keywords = keyword.Split(' ');
 
+#if false
                 _prevResult = targets
                     .AsParallel()
                     .Where(u => keywords.All(u.SearchKey.Contains))
                     .OrderBy(u => keywords.Sum(k => MakeRank(u, k, extRanks))/keywords.Length)
                     .ToArray();
+#else
+                _prevResult = targets
+                    .AsParallel()
+                    .Where(u =>
+                    {
+                        if (keywords.All(u.SearchKey.Contains) == false)
+                            return false;
+
+                        u.Rank = keywords.Sum(k => MakeRank(u, k, extRanks))/keywords.Length;
+                        return true;
+                    })
+                    .OrderBy(u => u.Rank)
+                    .ToArray();
+#endif
             }
 
             _prevKeyword = keyword;
@@ -157,12 +172,15 @@ namespace Ann.Core
                     {
                         root.GetRows(temp, i);
 
-                        _executableUnits[i].Path = temp.Path;
-                        _executableUnits[i].Name = temp.Name;
-                        _executableUnits[i].LowerName = temp.LowerName;
-                        _executableUnits[i].LowerDirectory = temp.LowerDirectory;
-                        _executableUnits[i].LowerFileName = temp.LowerFileName;
-                        _executableUnits[i].SearchKey = temp.SearchKey;
+                        _executableUnits[i] = new ExecutableUnit
+                        {
+                            Path = temp.Path,
+                            Name = temp.Name,
+                            LowerName = temp.LowerName,
+                            LowerDirectory = temp.LowerDirectory,
+                            LowerFileName = temp.LowerFileName,
+                            SearchKey = temp.SearchKey
+                        };
                     }
                 }
 
@@ -177,23 +195,15 @@ namespace Ann.Core
         // ReSharper disable PossibleNullReferenceException
         private static int MakeRank(ExecutableUnit u, string name, Dictionary<string, int> extRanks)
         {
-            var unitNameLength = Math.Min(u.Name.Length, 9999);
-
             Func<int, string, int> makeRankSub = (rankBase, target) =>
             {
                 if (target == name)
-                    return (rankBase + 0)*10000 + unitNameLength;
+                    return (rankBase + 0)*2;
 
                 var parts = target.Split(new[] {' ', '_', '-', '/', '\\'}, StringSplitOptions.RemoveEmptyEntries);
 
-                if (parts.Any(t => t.StartsWith(name)))
-                    return (rankBase + 1)*10000 + unitNameLength;
-
-                if (target.StartsWith(name))
-                    return (rankBase + 2)*10000 + unitNameLength;
-
-                if (target.Contains(name))
-                    return (rankBase + 3)*10000 + unitNameLength;
+                if (parts.Any(p => p.StartsWith(name)))
+                    return (rankBase + 1)*2;
 
                 return int.MaxValue;
             };
@@ -207,22 +217,21 @@ namespace Ann.Core
 
             var rankFileName = makeRankSub(++b, u.LowerFileName);
             if (rankFileName != int.MaxValue)
-                return rankFileName * extRanks.Count + extRank;
-
+                return (rankFileName * extRanks.Count + extRank) * 200 + u.LowerFileName.Length;
+ 
             var rankName = makeRankSub(++b, u.LowerName);
             if (rankName != int.MaxValue)
-                return rankName * extRanks.Count + extRank;
+                return (rankName * extRanks.Count + extRank) * 200 + u.LowerName.Length;
 
             var rankDir = makeRankSub(++b, u.LowerDirectory);
             if (rankDir != int.MaxValue)
-                return rankDir * extRanks.Count + extRank;
+                return (rankDir * extRanks.Count + extRank)  * 200 + u.LowerDirectory.Length;
 
             return int.MaxValue;
         }
-
         // ReSharper restore PossibleNullReferenceException
 
-        #region Crawler
+#region Crawler
 
         private static async Task<ExecutableUnit[]> CrawlAsync(
             IEnumerable<string> targetFolders,
@@ -284,6 +293,6 @@ namespace Ann.Core
             }
         }
 
-        #endregion
+#endregion
     }
 }
