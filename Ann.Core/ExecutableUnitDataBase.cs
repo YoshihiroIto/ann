@@ -51,6 +51,7 @@ namespace Ann.Core
                 _prevResult = null;
                 return Enumerable.Empty<ExecutableUnit>();
             }
+
             input = input.ToLower();
 
             var targets = _prevKeyword == null || input.StartsWith(_prevKeyword) == false
@@ -63,54 +64,9 @@ namespace Ann.Core
                 executableFileExts.ForEach((e, i) => extRanks["." + e] = i);
 
                 var inputs = input.Split(' ');
-
-#if false
-                _prevResult = targets
-                    .AsParallel()
-                    .Where(u => keywords.All(u.SearchKey.Contains))
-                    .OrderBy(u => keywords.Sum(k => MakeRank(u, k, extRanks))/keywords.Length)
-                    .ToArray();
-#else
-
-#if false
-                _prevResult = targets
-                    .AsParallel()
-                    .Where(u =>
-                    {
-                        if (keywords.All(u.SearchKey.Contains) == false)
-                            return false;
-
-                        u.Rank = keywords.Sum(k => MakeRank(u, k, extRanks))/keywords.Length;
-                        return true;
-                    })
-                    .OrderBy(u => u.Rank)
-                    .ToArray();
-#else
-
-#if false
-                var temp = new ExecutableUnit[targets.Length];
-                var count = 0;
-
-                Parallel.ForEach(targets, u =>
-                {
-                    if (keywords.All(u.SearchKey.Contains) == false)
-                        return;
-
-                    var i = Interlocked.Increment(ref count);
-
-                    u.Rank = keywords.Sum(k => MakeRank(u, k, extRanks))/keywords.Length;
-
-                    temp[i - 1] = u;
-                });
-
-                Array.Sort(temp, 0, count);
-                _prevResult = new ExecutableUnit[count];
-                Array.Copy(temp, 0, _prevResult, 0, count);
-#else
+                var temp = new List<ExecutableUnit> {Capacity = targets.Length};
 
                 var lockObj = new object();
-
-                var temp = new List<ExecutableUnit> {Capacity = targets.Length};
 
                 Parallel.ForEach(
                     targets,
@@ -135,11 +91,6 @@ namespace Ann.Core
 
                 temp.Sort();
                 _prevResult = temp.ToArray();
-#endif
-
-#endif
-
-#endif
             }
 
             _prevKeyword = input;
@@ -160,7 +111,7 @@ namespace Ann.Core
                 rank += r;
             }
 
-            return rank / inputs.Length;
+            return rank/inputs.Length;
         }
 
         private static int MakeRank(ExecutableUnit u, string input, Dictionary<string, int> extRanks)
@@ -292,6 +243,7 @@ namespace Ann.Core
                 }
             });
         }
+
         #region Crawler
 
         private static async Task<ExecutableUnit[]> CrawlAsync(
