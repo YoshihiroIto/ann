@@ -19,6 +19,7 @@
         Background="#9000"
         BorderBrush="#C000"
         BorderThickness="1"
+        ContentRendered="Window_ContentRendered"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
         IsVisibleChanged="Window_IsVisibleChanged"
         Left="{Binding Left.Value,
@@ -92,7 +93,9 @@
                     DockPanel.Dock="Right"
                     Padding="0"
                     ToolTip="{Binding Message.Value,
-                                      Mode=OneWay}">
+                                      Mode=OneWay}"
+                    ToolTipService.InitialShowDelay="0"
+                    ToolTipService.ShowDuration="100000000">
                 <materialDesign:PackIcon Width="24"
                                          Height="24"
                                          Foreground="DodgerBlue"
@@ -139,6 +142,9 @@
                     <Button.Style>
                         <Style BasedOn="{StaticResource MaterialDesignToolForegroundButton}" TargetType="{x:Type Button}">
                             <Style.Triggers>
+                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.InOpening}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
                                 <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.OldIndex}">
                                     <Setter Property="ToolTip" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Message_IndexIsOld, Mode=OneWay}" />
                                     <Setter Property="Visibility" Value="Visible" />

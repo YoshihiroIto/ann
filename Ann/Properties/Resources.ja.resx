@@ -222,4 +222,7 @@
   <data name="Download" xml:space="preserve">
     <value>ダウンロード</value>
   </data>
+  <data name="Message_InOpening" xml:space="preserve">
+    <value>インデックス初期化中...</value>
+  </data>
 </root>

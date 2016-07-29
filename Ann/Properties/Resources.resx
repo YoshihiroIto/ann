@@ -222,4 +222,7 @@
   <data name="Download" xml:space="preserve">
     <value>Download</value>
   </data>
+  <data name="Message_InOpening" xml:space="preserve">
+    <value>Index Initializing...</value>
+  </data>
 </root>

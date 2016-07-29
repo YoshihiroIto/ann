@@ -203,11 +203,29 @@ namespace Ann.MainWindow
                 .ToReadOnlyReactiveProperty()
                 .AddTo(CompositeDisposable);
 
-            IsEnableActivateHotKey = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
-            Message = IsEnableActivateHotKey
-                .Select(i => i ? string.Empty : Properties.Resources.Message_ActivationShortcutKeyIsAlreadyInUse)
-                .ToReadOnlyReactiveProperty()
+            IndexOpeningResult
+                .Where(r => r == IndexOpeningResults.Ok)
+                .Subscribe(_ => Input.ForceNotify())
                 .AddTo(CompositeDisposable);
+
+            IsEnableActivateHotKey = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
+
+            Message = 
+                Observable
+                    .Merge(IndexOpeningResult.ToUnit())
+                    .Merge(IsEnableActivateHotKey.ToUnit())
+                    .Select(_ =>
+                    {
+                        if (IsEnableActivateHotKey.Value == false)
+                            return Properties.Resources.Message_ActivationShortcutKeyIsAlreadyInUse;
+
+                        if (IndexOpeningResult.Value == IndexOpeningResults.InOpening)
+                            return Properties.Resources.Message_InOpening;
+
+                        return string.Empty;
+                    })
+                    .ToReadOnlyReactiveProperty()
+                    .AddTo(CompositeDisposable);
 
             App.Instance.Config.ObserveProperty(x => x.IconCacheSize)
                 .Subscribe(x => _iconDecoder.IconCacheSize = x)

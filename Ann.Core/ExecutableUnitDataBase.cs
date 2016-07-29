@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -26,11 +25,11 @@ namespace Ann.Core
 
         private bool IsOpend => _executableUnits != null;
 
-        private const Versions CurrentIndexVersion = Versions.V1;
+        private const Versions CurrentIndexVersion = Versions.Version;
 
-        public IEnumerable<ExecutableUnit> Find(string keyword, IEnumerable<string> executableFileExts)
+        public IEnumerable<ExecutableUnit> Find(string input, IEnumerable<string> executableFileExts)
         {
-            if (keyword == null)
+            if (input == null)
             {
                 _prevKeyword = null;
                 _prevResult = null;
@@ -44,17 +43,17 @@ namespace Ann.Core
                 return Enumerable.Empty<ExecutableUnit>();
             }
 
-            keyword = keyword.Trim();
+            input = input.Trim();
 
-            if (keyword == string.Empty)
+            if (input == string.Empty)
             {
                 _prevKeyword = null;
                 _prevResult = null;
                 return Enumerable.Empty<ExecutableUnit>();
             }
-            keyword = keyword.ToLower();
+            input = input.ToLower();
 
-            var targets = _prevKeyword == null || keyword.StartsWith(_prevKeyword) == false
+            var targets = _prevKeyword == null || input.StartsWith(_prevKeyword) == false
                 ? _executableUnits
                 : _prevResult;
 
@@ -63,7 +62,7 @@ namespace Ann.Core
                 var extRanks = new Dictionary<string, int>();
                 executableFileExts.ForEach((e, i) => extRanks["." + e] = i);
 
-                var keywords = keyword.Split(' ');
+                var inputs = input.Split(' ');
 
 #if false
                 _prevResult = targets
@@ -72,6 +71,8 @@ namespace Ann.Core
                     .OrderBy(u => keywords.Sum(k => MakeRank(u, k, extRanks))/keywords.Length)
                     .ToArray();
 #else
+
+#if false
                 _prevResult = targets
                     .AsParallel()
                     .Where(u =>
@@ -84,12 +85,118 @@ namespace Ann.Core
                     })
                     .OrderBy(u => u.Rank)
                     .ToArray();
+#else
+
+#if false
+                var temp = new ExecutableUnit[targets.Length];
+                var count = 0;
+
+                Parallel.ForEach(targets, u =>
+                {
+                    if (keywords.All(u.SearchKey.Contains) == false)
+                        return;
+
+                    var i = Interlocked.Increment(ref count);
+
+                    u.Rank = keywords.Sum(k => MakeRank(u, k, extRanks))/keywords.Length;
+
+                    temp[i - 1] = u;
+                });
+
+                Array.Sort(temp, 0, count);
+                _prevResult = new ExecutableUnit[count];
+                Array.Copy(temp, 0, _prevResult, 0, count);
+#else
+
+                var lockObj = new object();
+
+                var temp = new List<ExecutableUnit> {Capacity = targets.Length};
+
+                Parallel.ForEach(
+                    targets,
+                    () => new List<ExecutableUnit> {Capacity = targets.Length},
+                    (u, loop, local) =>
+                    {
+                        if (inputs.All(u.SearchKey.Contains) == false)
+                            return local;
+
+                        u.Rank = MakeRank(u, inputs, extRanks);
+                        local.Add(u);
+
+                        return local;
+                    },
+                    local =>
+                    {
+                        lock (lockObj)
+                        {
+                            temp.AddRange(local);
+                        }
+                    });
+
+                temp.Sort();
+                _prevResult = temp.ToArray();
+#endif
+
+#endif
+
 #endif
             }
 
-            _prevKeyword = keyword;
+            _prevKeyword = input;
 
             return _prevResult;
+        }
+
+        private static int MakeRank(ExecutableUnit u, string[] inputs, Dictionary<string, int> extRanks)
+        {
+            var rank = 0;
+
+            foreach (var i in inputs)
+            {
+                var r = MakeRank(u, i, extRanks);
+                if (r == int.MaxValue)
+                    return int.MaxValue;
+
+                rank += r;
+            }
+
+            return rank / inputs.Length;
+        }
+
+        private static int MakeRank(ExecutableUnit u, string input, Dictionary<string, int> extRanks)
+        {
+            // ReSharper disable once PossibleNullReferenceException
+            var ext = System.IO.Path.GetExtension(u.Path).ToLower();
+
+            Debug.Assert(extRanks.ContainsKey(ext));
+            var extRank = extRanks[ext];
+
+            var b = 0;
+
+            var rankFileName = MakeRankSub(++b, u.LowerFileName, u.LowerFileNameParts, input);
+            if (rankFileName != int.MaxValue)
+                return (rankFileName*extRanks.Count + extRank)*200 + u.LowerFileName.Length;
+
+            var rankName = MakeRankSub(++b, u.LowerName, u.LowerNameParts, input);
+            if (rankName != int.MaxValue)
+                return (rankName*extRanks.Count + extRank)*200 + u.LowerName.Length;
+
+            var rankDir = MakeRankSub(++b, u.LowerDirectory, u.LowerDirectoryParts, input);
+            if (rankDir != int.MaxValue)
+                return (rankDir*extRanks.Count + extRank)*200 + u.LowerDirectory.Length;
+
+            return int.MaxValue;
+        }
+
+        private static int MakeRankSub(int rankBase, string target, string[] targetParts, string input)
+        {
+            if (target == input)
+                return (rankBase + 0)*2;
+
+            if (targetParts.Any(p => p.StartsWith(input)))
+                return (rankBase + 1)*2;
+
+            return int.MaxValue;
         }
 
         public async Task<IndexOpeningResults> UpdateIndexAsync(IEnumerable<string> targetFolders,
@@ -118,13 +225,9 @@ namespace Ann.Core
                     for (var i = 0; i != _executableUnits.Length; ++ i)
                     {
                         euOffsets[i] =
-                            IndexFile.ExecutableUnit.CreateExecutableUnit(fbb,
-                                fbb.CreateString(_executableUnits[i].Path),
-                                fbb.CreateString(_executableUnits[i].Name),
-                                fbb.CreateString(_executableUnits[i].LowerName),
-                                fbb.CreateString(_executableUnits[i].LowerDirectory),
-                                fbb.CreateString(_executableUnits[i].LowerFileName),
-                                fbb.CreateString(_executableUnits[i].SearchKey));
+                            IndexFile.ExecutableUnit.CreateExecutableUnit(
+                                fbb,
+                                fbb.CreateString(_executableUnits[i].Path));
                     }
 
                     var rowsOffset = IndexFile.File.CreateRowsVector(fbb, euOffsets);
@@ -146,92 +249,50 @@ namespace Ann.Core
             return IndexOpeningResults.Ok;
         }
 
-        public IndexOpeningResults OpenIndex()
+        public async Task<IndexOpeningResults> OpenIndexAsync()
         {
-            _executableUnits = null;
-
-            if (File.Exists(_indexFile) == false)
-                return IndexOpeningResults.NotFound;
-
-            try
+            return await Task.Run(() =>
             {
-                var data = new ByteBuffer(File.ReadAllBytes(_indexFile));
+                if (File.Exists(_indexFile) == false)
+                    return IndexOpeningResults.NotFound;
 
-                using (new TimeMeasure("Index Deserializing"))
+                try
                 {
-                    var root = IndexFile.File.GetRootAsFile(data);
-
-                    if (root.Version != CurrentIndexVersion)
-                        return IndexOpeningResults.OldIndex;
-
-                    _executableUnits = new ExecutableUnit[root.RowsLength];
-
-                    var temp = new IndexFile.ExecutableUnit();
-
-                    for (var i = 0; i != root.RowsLength; ++i)
+                    using (new TimeMeasure("Index Deserializing"))
                     {
-                        root.GetRows(temp, i);
+                        var data = new ByteBuffer(File.ReadAllBytes(_indexFile));
+                        var root = IndexFile.File.GetRootAsFile(data);
 
-                        _executableUnits[i] = new ExecutableUnit
-                        {
-                            Path = temp.Path,
-                            Name = temp.Name,
-                            LowerName = temp.LowerName,
-                            LowerDirectory = temp.LowerDirectory,
-                            LowerFileName = temp.LowerFileName,
-                            SearchKey = temp.SearchKey
-                        };
+                        if (root.Version != CurrentIndexVersion)
+                            return IndexOpeningResults.OldIndex;
+
+                        var tempExecutableUnits = new ExecutableUnit[root.RowsLength];
+
+                        Parallel.For(
+                            0,
+                            root.RowsLength,
+                            () => new IndexFile.ExecutableUnit(),
+                            (i, loop, rowTemp) =>
+                            {
+                                root.GetRows(rowTemp, i);
+                                tempExecutableUnits[i] = new ExecutableUnit(rowTemp.Path);
+                                return rowTemp;
+                            },
+                            rowTemp => { });
+
+                        _executableUnits = tempExecutableUnits;
                     }
+
+                    return IndexOpeningResults.Ok;
                 }
-
-                return IndexOpeningResults.Ok;
-            }
-            catch
-            {
-                return IndexOpeningResults.CanNotOpen;
-            }
+                catch
+                {
+                    _executableUnits = null;
+                    return IndexOpeningResults.CanNotOpen;
+                }
+            });
         }
-
-        // ReSharper disable PossibleNullReferenceException
-        private static int MakeRank(ExecutableUnit u, string name, Dictionary<string, int> extRanks)
-        {
-            Func<int, string, int> makeRankSub = (rankBase, target) =>
-            {
-                if (target == name)
-                    return (rankBase + 0)*2;
-
-                var parts = target.Split(new[] {' ', '_', '-', '/', '\\'}, StringSplitOptions.RemoveEmptyEntries);
-
-                if (parts.Any(p => p.StartsWith(name)))
-                    return (rankBase + 1)*2;
-
-                return int.MaxValue;
-            };
-
-            var ext = System.IO.Path.GetExtension(u.Path).ToLower();
-
-            Debug.Assert(extRanks.ContainsKey(ext));
-            var extRank = extRanks[ext];
-
-            var b = 0;
-
-            var rankFileName = makeRankSub(++b, u.LowerFileName);
-            if (rankFileName != int.MaxValue)
-                return (rankFileName * extRanks.Count + extRank) * 200 + u.LowerFileName.Length;
- 
-            var rankName = makeRankSub(++b, u.LowerName);
-            if (rankName != int.MaxValue)
-                return (rankName * extRanks.Count + extRank) * 200 + u.LowerName.Length;
-
-            var rankDir = makeRankSub(++b, u.LowerDirectory);
-            if (rankDir != int.MaxValue)
-                return (rankDir * extRanks.Count + extRank)  * 200 + u.LowerDirectory.Length;
-
-            return int.MaxValue;
-        }
-        // ReSharper restore PossibleNullReferenceException
-
-#region Crawler
+        #region Crawler
 
         private static async Task<ExecutableUnit[]> CrawlAsync(
             IEnumerable<string> targetFolders,
@@ -248,27 +309,7 @@ namespace Ann.Core
                         .SelectMany(targetFolder =>
                             EnumerateAllFiles(targetFolder)
                                 .Where(f => executableExts.Contains(System.IO.Path.GetExtension(f)?.ToLower()))
-                                .Select(f =>
-                                {
-                                    var fvi = FileVersionInfo.GetVersionInfo(f);
-
-                                    var name = string.IsNullOrWhiteSpace(fvi.FileDescription)
-                                        ? System.IO.Path.GetFileNameWithoutExtension(f)
-                                        : fvi.FileDescription;
-
-                                    var eu = new ExecutableUnit
-                                    {
-                                        Path = f,
-                                        Name = name,
-                                        LowerName = name.ToLower(),
-                                        LowerDirectory = (System.IO.Path.GetDirectoryName(f) ?? string.Empty).ToLower(),
-                                        LowerFileName = System.IO.Path.GetFileNameWithoutExtension(f).ToLower()
-                                    };
-
-                                    eu.SearchKey = $"{eu.LowerName}*{eu.LowerDirectory}*{eu.LowerFileName}";
-
-                                    return eu;
-                                })
+                                .Select(f => new ExecutableUnit(f))
                         ).ToArray();
                 }
                 catch
@@ -293,6 +334,6 @@ namespace Ann.Core
             }
         }
 
-#endregion
+        #endregion
     }
 }

@@ -51,6 +51,7 @@ namespace Ann.Core
 
     public enum IndexOpeningResults
     {
+        InOpening,
         Ok,
         NotFound,
         OldIndex,

@@ -196,6 +196,15 @@ namespace Ann.Properties {
         }
         
         /// <summary>
+        ///   Index Initializing... に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Message_InOpening {
+            get {
+                return ResourceManager.GetString("Message_InOpening", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Open Source Libraries に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string OpenSourceLibraries {

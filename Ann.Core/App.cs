@@ -41,7 +41,6 @@ namespace Ann.Core
 
         public static void Initialize()
         {
-            Instance.OpenIndex();
         }
 
         public static void Destory()
@@ -70,9 +69,10 @@ namespace Ann.Core
             return true;
         }
 
-        public void OpenIndex()
+        public async Task OpenIndexAsync()
         {
-            IndexOpeningResult = _dataBase.OpenIndex();
+            IndexOpeningResult = IndexOpeningResults.InOpening;
+            IndexOpeningResult = await _dataBase.OpenIndexAsync();
         }
 
         public async Task UpdateIndexAsync()

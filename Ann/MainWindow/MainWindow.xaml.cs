@@ -44,6 +44,11 @@ namespace Ann.MainWindow
             };
         }
 
+        private async void Window_ContentRendered(object sender, EventArgs e)
+        {
+            await App.Instance.OpenIndexAsync();
+        }
+
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DragMove();
