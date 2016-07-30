@@ -17,7 +17,6 @@
         Background="#9000"
         BorderBrush="#C000"
         BorderThickness="1"
-        ContentRendered="Window_ContentRendered"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
         IsVisibleChanged="Window_IsVisibleChanged"
         Left="{Binding Left.Value,
@@ -50,6 +49,12 @@
 
         <behavior:WindowDisposeDataContextOnClosedBehavior />
     </i:Interaction.Behaviors>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="ContentRendered">
+            <interactivity:EventToReactiveCommand Command="{Binding InitializeCommand, Mode=OneTime}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
     <StackPanel Margin="16">
         <DockPanel LastChildFill="True">

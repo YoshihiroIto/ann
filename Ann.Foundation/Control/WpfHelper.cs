@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -9,6 +10,11 @@ namespace Ann.Foundation.Control
         public static bool IsDesignMode { get; }
             = (bool) DependencyPropertyDescriptor.FromProperty(
                 DesignerProperties.IsInDesignModeProperty, typeof(FrameworkElement)).Metadata.DefaultValue;
+
+        public static async Task DoEventsAsync()
+        {
+            await Task.Run(() => DoEvents());
+        }
 
         public static void DoEvents()
         {

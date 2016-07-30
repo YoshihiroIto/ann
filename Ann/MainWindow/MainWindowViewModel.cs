@@ -24,6 +24,8 @@ namespace Ann.MainWindow
         public ReadOnlyReactiveProperty<bool> InProgress { get; }
         public ReactiveCommand IndexUpdateCommand { get; }
 
+        public ReactiveCommand InitializeCommand { get; }
+
         public ReadOnlyReactiveProperty<ObservableCollection<ExecutableUnitViewModel>> Candidates { get; }
         public ReactiveProperty<ExecutableUnitViewModel> SelectedCandidate { get; }
         public ReactiveCommand<object> SelectedCandidateMoveCommand { get; }
@@ -71,6 +73,9 @@ namespace Ann.MainWindow
 
             Left = Config.ToReactivePropertyAsSynchronized(x => x.Left).AddTo(CompositeDisposable);
             Top = Config.ToReactivePropertyAsSynchronized(x => x.Top).AddTo(CompositeDisposable);
+
+            InitializeCommand = new ReactiveCommand().AddTo(CompositeDisposable);
+            InitializeCommand.Subscribe(async _ => await App.Instance.OpenIndexAsync()).AddTo(CompositeDisposable);
 
             Observable
                 .Merge(Left)
@@ -178,8 +183,6 @@ namespace Ann.MainWindow
             AppExitCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             AppExitCommand.Subscribe(_ => MessageBroker.Default.Publish(new WindowActionMessage {Action = WindowAction.Close}))
                 .AddTo(CompositeDisposable);
-
-            Visibility.Subscribe(_ => Input.Value = string.Empty).AddTo(CompositeDisposable);
 
             SettingShowCommand = new AsyncReactiveCommand().AddTo(CompositeDisposable);
             SettingShowCommand.Subscribe(async _ =>
