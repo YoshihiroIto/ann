@@ -1,16 +1,16 @@
 ﻿using System;
+using System.Reactive.Disposables;
 using System.Threading;
-using Livet;
 
 namespace Ann.Foundation.Mvvm
 {
     public class DisposableNotificationObject : NotificationObject, IDisposable
     {
-        private LivetCompositeDisposable _compositeDisposable;
+        private CompositeDisposable _compositeDisposable;
 
-        public LivetCompositeDisposable CompositeDisposable
+        public CompositeDisposable CompositeDisposable
         {
-            get { return LazyInitializer.EnsureInitialized(ref _compositeDisposable, () => new LivetCompositeDisposable()); }
+            get { return LazyInitializer.EnsureInitialized(ref _compositeDisposable, () => new CompositeDisposable()); }
         }
 
         private readonly bool _disableDisposableChecker;

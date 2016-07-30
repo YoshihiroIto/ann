@@ -45,7 +45,7 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                 model.TargetFolder.ToReactivePropertyAsSynchronized(x => x.IsIncludeProgramFilesX86Folder)
                     .AddTo(CompositeDisposable);
 
-            Folders = model.TargetFolder.Folders.ToReadOnlyReactiveCollection(p => new PathViewModel(p, Messenger, true))
+            Folders = model.TargetFolder.Folders.ToReadOnlyReactiveCollection(p => new PathViewModel(p, true))
                 .AddTo(CompositeDisposable);
 
             FolderAddCommand = new ReactiveCommand().AddTo(CompositeDisposable);

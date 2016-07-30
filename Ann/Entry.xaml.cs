@@ -23,6 +23,7 @@ namespace Ann
                 e.InitializeComponent();
                 e.Run();
 
+                ViewManager.Destory();
                 App.Destory();
             }
             DisposableChecker.End();
@@ -32,10 +33,10 @@ namespace Ann
         {
             base.OnStartup(e);
 
-            Livet.DispatcherHelper.UIDispatcher = Dispatcher;
-            Reactive.Bindings.UIDispatcherScheduler.Initialize();
-
             App.Initialize();
+            ViewManager.Initialize(Dispatcher);
+
+            Reactive.Bindings.UIDispatcherScheduler.Initialize();
         }
     }
 }

@@ -3,38 +3,37 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:about="clr-namespace:Ann.SettingWindow.SettingPage.About"
         xmlns:app="clr-namespace:Ann"
-        xmlns:behaviors="http://schemas.livet-mvvm.net/2011/wpf"
+        xmlns:behavior="clr-namespace:Ann.Foundation.Control.Behavior;assembly=Ann.Foundation"
         xmlns:control="clr-namespace:Ann.Foundation.Control;assembly=Ann.Foundation"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:general="clr-namespace:Ann.SettingWindow.SettingPage.General"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:interactivity="clr-namespace:Reactive.Bindings.Interactivity;assembly=ReactiveProperty.NET46"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:priorityFiles="clr-namespace:Ann.SettingWindow.SettingPage.PriorityFiles"
         xmlns:shortcuts="clr-namespace:Ann.SettingWindow.SettingPage.Shortcuts"
         xmlns:targetFolders="clr-namespace:Ann.SettingWindow.SettingPage.TargetFolders"
-        Title="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Setting, Mode=OneWay}"
+        Title="{Binding Source={x:Static app:CultureService.Instance},
+                        Path=Resources.Setting,
+                        Mode=OneWay}"
         Width="700"
         Height="500"
         MinWidth="400"
         MinHeight="300"
         d:DataContext="{d:DesignData SettingViewModel}"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
-        ResizeMode="CanResizeWithGrip"
+        ResizeMode="CanResize"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
+    <i:Interaction.Behaviors>
+        <behavior:WindowDisposeDataContextOnClosedBehavior />
+    </i:Interaction.Behaviors>
+
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="ContentRendered">
-            <behaviors:LivetCallMethodAction MethodTarget="{Binding}" MethodName="Initialize"/>
+            <interactivity:EventToReactiveCommand Command="{Binding InitializeCommand, Mode=OneTime}" />
         </i:EventTrigger>
-
-        <i:EventTrigger EventName="Closed">
-            <behaviors:DataContextDisposeAction />
-        </i:EventTrigger>
-
-        <behaviors:InteractionMessageTrigger MessageKey="WindowAction" Messenger="{Binding Messenger, Mode=OneTime}">
-            <behaviors:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
-        </behaviors:InteractionMessageTrigger>
     </i:Interaction.Triggers>
 
     <Window.InputBindings>
@@ -197,11 +196,15 @@
                                         </materialDesign:TransitionerSlide>
                                     </materialDesign:Transitioner>
 
-                                    <Separator Grid.Row="1" Style="{StaticResource MaterialDesignSeparator}" Margin="0,16,0,0"  SnapsToDevicePixels="True" Height="1" />
+                                    <Separator Grid.Row="1"
+                                               Height="1"
+                                               Margin="0,16,0,0"
+                                               SnapsToDevicePixels="True"
+                                               Style="{StaticResource MaterialDesignSeparator}" />
 
                                     <materialDesign:Transitioner Grid.Row="2" SelectedIndex="0">
                                         <materialDesign:TransitionerSlide OpeningEffect="{materialDesign:TransitionEffect SlideInFromLeft, Duration=0:0:0.25}">
-                                            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" >
+                                            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                                                 <ContentPresenter Margin="0,8,8,8" />
                                             </ScrollViewer>
                                         </materialDesign:TransitionerSlide>
@@ -245,3 +248,4 @@
         </ContentControl>
     </DockPanel>
 </Window>
+

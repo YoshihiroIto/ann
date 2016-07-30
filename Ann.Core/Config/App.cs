@@ -1,4 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Linq;
 using System.Windows.Input;
 using Ann.Foundation.Mvvm;
 
@@ -56,11 +58,27 @@ namespace Ann.Core.Config
 
         #region Culture
 
-        private string _Culture = "en";
+        private string _Culture;
 
         public string Culture
         {
-            get { return _Culture; }
+            get
+            {
+                if (_Culture != null)
+                    return _Culture;
+
+                var name = CultureInfo.CurrentUICulture.Name;
+                var isoName = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+
+                if (Constants.SupportedCultures.Any(c => c.CultureName == name))
+                    _Culture = name;
+                else if (Constants.SupportedCultures.Any(c => c.CultureName == isoName))
+                    _Culture = isoName;
+                else
+                    _Culture = "en";
+
+                return _Culture;
+            }
             set { SetProperty(ref _Culture, value); }
         }
 

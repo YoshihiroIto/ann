@@ -22,7 +22,7 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
 
             Files = model.PriorityFiles.ToReadOnlyReactiveCollection(p =>
             {
-                var pvm = new PathViewModel(p, Messenger, false,
+                var pvm = new PathViewModel(p, false,
                     () => new[]
                     {
                         new CommonFileDialogFilter(Properties.Resources.ExecutableFile,

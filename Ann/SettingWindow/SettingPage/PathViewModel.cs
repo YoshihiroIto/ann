@@ -4,10 +4,10 @@ using System.Diagnostics;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
 using Ann.Foundation.Mvvm.Message;
-using Livet.Messaging;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using Reactive.Bindings.Notifiers;
 
 namespace Ann.SettingWindow.SettingPage
 {
@@ -17,9 +17,8 @@ namespace Ann.SettingWindow.SettingPage
 
         public ReactiveCommand FolderSelectDialogOpenCommand { get; }
         
-        public PathViewModel(Path model, InteractionMessenger messenger, bool isFolder, Func<IEnumerable<CommonFileDialogFilter>> makeFilters = null)
+        public PathViewModel(Path model, bool isFolder, Func<IEnumerable<CommonFileDialogFilter>> makeFilters = null)
         {
-            Debug.Assert(messenger != null);
             Debug.Assert(model != null);
             
             Path = model.ToReactivePropertyAsSynchronized(x => x.Value).AddTo(CompositeDisposable);
@@ -27,15 +26,16 @@ namespace Ann.SettingWindow.SettingPage
             FolderSelectDialogOpenCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             FolderSelectDialogOpenCommand.Subscribe(_ =>
             {
-                var res = messenger.GetResponse(
-                    new FileOrFolderSelectMessage("FileOrFolderSelect")
-                    {
-                        IsFolderPicker = isFolder,
-                        Filters = makeFilters?.Invoke()
-                    });
+                var message = new FileOrFolderSelectMessage
+                {
+                    IsFolderPicker = isFolder,
+                    Filters = makeFilters?.Invoke()
+                };
 
-                if (res?.Response != null)
-                    Path.Value = res.Response;
+                MessageBroker.Default.Publish(message);
+
+                if (message.Response != null)
+                    Path.Value = message.Response;
             }).AddTo(CompositeDisposable);
         }
     }

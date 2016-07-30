@@ -76,7 +76,7 @@ namespace Ann.Core
                         if (inputs.All(u.SearchKey.Contains) == false)
                             return local;
 
-                        u.Rank = MakeRank(u, inputs, extRanks);
+                        u.SetRank(MakeRank(u, inputs, extRanks));
                         local.Add(u);
 
                         return local;
@@ -178,6 +178,7 @@ namespace Ann.Core
                         euOffsets[i] =
                             IndexFile.ExecutableUnit.CreateExecutableUnit(
                                 fbb,
+                                i,
                                 fbb.CreateString(_executableUnits[i].Path));
                     }
 
@@ -226,7 +227,7 @@ namespace Ann.Core
                             (i, loop, rowTemp) =>
                             {
                                 root.GetRows(rowTemp, i);
-                                tempExecutableUnits[i] = new ExecutableUnit(rowTemp.Path);
+                                tempExecutableUnits[i] = new ExecutableUnit(i, root.RowsLength, rowTemp.Path);
                                 return rowTemp;
                             },
                             rowTemp => { });
@@ -256,13 +257,17 @@ namespace Ann.Core
                 {
                     var executableExts = new HashSet<string>(executableFileExts.Select(e => "." + e.ToLower()));
 
-                    return targetFolders
+                    var results = targetFolders
                         .AsParallel()
                         .SelectMany(targetFolder =>
                             EnumerateAllFiles(targetFolder)
                                 .Where(f => executableExts.Contains(System.IO.Path.GetExtension(f)?.ToLower()))
                                 .Select(f => new ExecutableUnit(f))
                         ).ToArray();
+
+                    results.ForEach((r, i) => r.SetId(i, results.Length));
+
+                    return results;
                 }
                 catch
                 {

@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using Ann.Core.Properties;
 using Ann.Foundation;
 using YamlDotNet.Serialization;
@@ -45,6 +48,41 @@ namespace Ann.Core
                 {
                     return null;
                 }
+            }
+        }
+
+        public static readonly CultureSummry[] SupportedCultures;
+
+        static Constants()
+        {
+            var dir = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) ?? string.Empty;
+            var resFiles = Directory.EnumerateFiles(dir, "Ann.resources.dll", SearchOption.AllDirectories);
+
+            SupportedCultures = resFiles.Select(f =>
+            {
+                var name = System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(f));
+                if (name == null)
+                    return null;
+
+                return new CultureSummry
+                {
+                    Caption = CultureInfo.GetCultureInfo(name).NativeName,
+                    CultureName = name
+                };
+            })
+            .Where(x => x != null)
+            .ToArray();
+
+            if (SupportedCultures.IsEmpty())
+            {
+                SupportedCultures = new[]
+                {
+                    new CultureSummry
+                    {
+                        Caption = "Default",
+                        CultureName = string.Empty
+                    }
+                };
             }
         }
     }

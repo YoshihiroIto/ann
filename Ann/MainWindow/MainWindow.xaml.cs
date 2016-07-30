@@ -38,15 +38,13 @@ namespace Ann.MainWindow
 
             Application.Current.Deactivated += (_, __) =>
             {
+                if (WindowsHelper.IsOnTrayMouseCursor)
+                    return;
+
                 var windows = Application.Current.Windows.OfType<Window>().ToArray();
                 if (windows.Length == 1 && Equals(windows[0], this))
                     Visibility = Visibility.Hidden;
             };
-        }
-
-        private async void Window_ContentRendered(object sender, EventArgs e)
-        {
-            await App.Instance.OpenIndexAsync();
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -89,7 +87,17 @@ namespace Ann.MainWindow
 
         private async void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            InputTextBox.Text = string.Empty;
+
+            await WpfHelper.DoEventsAsync();
             await FocusInputTextBlockIfVisibled();
+        }
+
+        private void PopupBox_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            var item = (sender as FrameworkElement)?.DataContext as ExecutableUnitViewModel;
+
+            _DataContext.SelectedCandidate.Value = item;
         }
 
         private async Task FocusInputTextBlockIfVisibled()
@@ -106,7 +114,7 @@ namespace Ann.MainWindow
             SetupHotKey();
 
             _DataContext.CompositeDisposable.Add(() => _activateHotKey?.Dispose());
-            
+
             Observable.FromEventPattern(
                 h => App.Instance.ShortcutKeyChanged += h,
                 h => App.Instance.ShortcutKeyChanged -= h)
@@ -117,7 +125,7 @@ namespace Ann.MainWindow
         private void InitializeShortcutKey()
         {
             SetupShortcutKey();
-            
+
             Observable.FromEventPattern(
                 h => App.Instance.ShortcutKeyChanged += h,
                 h => App.Instance.ShortcutKeyChanged -= h)

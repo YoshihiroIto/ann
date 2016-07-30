@@ -3,18 +3,16 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Ann.Core;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm;
+using Ann.Foundation.Mvvm.Message;
 using Ann.SettingWindow;
-using Livet;
-using Livet.Messaging;
-using Livet.Messaging.Windows;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using Reactive.Bindings.Notifiers;
 
 namespace Ann.MainWindow
 {
@@ -25,14 +23,14 @@ namespace Ann.MainWindow
         public ReadOnlyReactiveProperty<bool> InProgress { get; }
         public ReactiveCommand IndexUpdateCommand { get; }
 
+        public ReactiveCommand InitializeCommand { get; }
+
         public ReadOnlyReactiveProperty<ObservableCollection<ExecutableUnitViewModel>> Candidates { get; }
         public ReactiveProperty<ExecutableUnitViewModel> SelectedCandidate { get; }
         public ReactiveCommand<object> SelectedCandidateMoveCommand { get; }
 
         public ReactiveCommand<string> RunCommand { get; }
         public ReactiveCommand ContainingFolderOpenCommand { get; }
-
-        public ReactiveProperty<Visibility> Visibility { get; }
 
         public ReactiveCommand AppHideCommand { get; }
         public ReactiveCommand AppExitCommand { get; }
@@ -58,10 +56,9 @@ namespace Ann.MainWindow
         public MainWindowViewModel()
         {
             LoadConfig();
-            
+
             Input = new ReactiveProperty<string>().AddTo(CompositeDisposable);
             InProgressMessage = new ReactiveProperty<string>(string.Empty).AddTo(CompositeDisposable);
-            Visibility = new ReactiveProperty<Visibility>(System.Windows.Visibility.Visible).AddTo(CompositeDisposable);
 
             CompositeDisposable.Add(DisposeCandidates);
 
@@ -72,6 +69,9 @@ namespace Ann.MainWindow
 
             Left = Config.ToReactivePropertyAsSynchronized(x => x.Left).AddTo(CompositeDisposable);
             Top = Config.ToReactivePropertyAsSynchronized(x => x.Top).AddTo(CompositeDisposable);
+
+            InitializeCommand = new ReactiveCommand().AddTo(CompositeDisposable);
+            InitializeCommand.Subscribe(async _ => await App.Instance.OpenIndexAsync()).AddTo(CompositeDisposable);
 
             Observable
                 .Merge(Left)
@@ -158,9 +158,10 @@ namespace Ann.MainWindow
                     Input.Value = string.Empty;
                 })
                 .Delay(TimeSpan.FromMilliseconds(20))
+                .ObserveOnUIDispatcher()
                 .Subscribe(async p =>
                 {
-                    Visibility.Value = System.Windows.Visibility.Hidden;
+                    MessageBroker.Default.Publish(new WindowActionMessage(WindowAction.Hidden));
                     await ProcessHelper.Run(path, string.Empty, p == "admin");
                 }).AddTo(CompositeDisposable);
 
@@ -173,14 +174,14 @@ namespace Ann.MainWindow
                 .AddTo(CompositeDisposable);
 
             AppHideCommand = new ReactiveCommand().AddTo(CompositeDisposable);
-            AppHideCommand.Subscribe(_ => Visibility.Value = System.Windows.Visibility.Hidden)
+            AppHideCommand
+                .Subscribe(_ => MessageBroker.Default.Publish(new WindowActionMessage(WindowAction.Hidden)))
                 .AddTo(CompositeDisposable);
 
             AppExitCommand = new ReactiveCommand().AddTo(CompositeDisposable);
-            AppExitCommand.Subscribe(_ => Messenger.Raise(new WindowActionMessage(WindowAction.Close, "WindowAction")))
+            AppExitCommand
+                .Subscribe(_ => MessageBroker.Default.Publish(new WindowActionMessage(WindowAction.Close)))
                 .AddTo(CompositeDisposable);
-
-            Visibility.Subscribe(_ => Input.Value = string.Empty).AddTo(CompositeDisposable);
 
             SettingShowCommand = new AsyncReactiveCommand().AddTo(CompositeDisposable);
             SettingShowCommand.Subscribe(async _ =>
@@ -191,9 +192,9 @@ namespace Ann.MainWindow
                 App.Instance.InvokeShortcutKeyChanged();
                 App.Instance.Config.ShortcutKeys.Activate.Key = key;
 
-                await Messenger.RaiseAsync(new TransitionMessage(new SettingViewModel(App.Instance.Config), "ShowSetting"));
+                await AsyncMessageBroker.Default.PublishAsync(new SettingViewModel(App.Instance.Config));
 
-                Visibility.Value = System.Windows.Visibility.Visible;
+                MessageBroker.Default.Publish(new WindowActionMessage(WindowAction.Visible));
 
                 App.Instance.SaveConfig();
                 App.Instance.InvokeShortcutKeyChanged();
@@ -210,7 +211,7 @@ namespace Ann.MainWindow
 
             IsEnableActivateHotKey = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
 
-            Message = 
+            Message =
                 Observable
                     .Merge(IndexOpeningResult.ToUnit())
                     .Merge(IsEnableActivateHotKey.ToUnit())
