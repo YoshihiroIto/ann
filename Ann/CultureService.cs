@@ -13,7 +13,6 @@ namespace Ann
     public class CultureService : DisposableModelBase
     {
         public static CultureService Instance { get; } = new CultureService();
-        public static readonly CultureSummry[] SupportedCultures;
 
         public Resources Resources { get; } = new Resources();
 
@@ -46,44 +45,5 @@ namespace Ann
 
             App.Instance.CompositeDisposable.Add(this);
         }
-
-        static CultureService()
-        {
-            var dir = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) ?? string.Empty;
-            var resFiles = Directory.EnumerateFiles(dir, "Ann.resources.dll", SearchOption.AllDirectories);
-
-            SupportedCultures = resFiles.Select(f =>
-            {
-                var name = System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(f));
-                if (name == null)
-                    return null;
-
-                return new CultureSummry
-                {
-                    Caption = CultureInfo.GetCultureInfo(name).NativeName,
-                    CultureName = name
-                };
-            })
-            .Where(x => x != null)
-            .ToArray();
-
-            if (SupportedCultures.IsEmpty())
-            {
-                SupportedCultures = new[]
-                {
-                    new CultureSummry
-                    {
-                        Caption = "Default",
-                        CultureName = string.Empty
-                    }
-                };
-            }
-        }
-    }
-
-    public class CultureSummry
-    {
-        public string Caption { get; set; }
-        public string CultureName { get; set; }
     }
 }

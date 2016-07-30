@@ -17,7 +17,20 @@ namespace Ann.Core
         public readonly string[] LowerFileNameParts;
 
         //
-        public int Rank;
+        private int _id;
+        private int _maxId;
+        private int _rank;
+
+        public void SetRank(int r)
+        {
+            _rank = r*_maxId + _id;
+        }
+
+        public void SetId(int id, int maxId)
+        {
+            _id = id;
+            _maxId = maxId;
+        }
 
         public ExecutableUnit(string path)
         {
@@ -39,8 +52,14 @@ namespace Ann.Core
             LowerFileNameParts = LowerFileName.Split(Separator, StringSplitOptions.RemoveEmptyEntries);
         }
 
+        public ExecutableUnit(int id, int maxId, string path)
+            : this(path)
+        {
+            SetId(id, maxId);
+        }
+
         private static readonly char[] Separator = {' ', '_', '-', '/', '\\'};
 
-        int IComparable<ExecutableUnit>.CompareTo(ExecutableUnit other) => Rank - other.Rank;
+        int IComparable<ExecutableUnit>.CompareTo(ExecutableUnit other) => _rank - other._rank;
     }
 }

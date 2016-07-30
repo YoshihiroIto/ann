@@ -6,7 +6,7 @@ namespace IndexFile
 public enum Versions : int
 {
  Version0 = 0,
- Version = 2,
+ Version = 3,
 };
 
 

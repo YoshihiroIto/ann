@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Linq;
+using Ann.Core;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -24,7 +25,7 @@ namespace Ann.SettingWindow.SettingPage.General
             SelectedCulture =
                 model.ToReactivePropertyAsSynchronized(
                     x => x.Culture,
-                    convert: x => CultureService.SupportedCultures.FirstOrDefault(y => y.CultureName == x) ?? CultureService.SupportedCultures[0],
+                    convert: x => Constants.SupportedCultures.FirstOrDefault(y => y.CultureName == x) ?? Constants.SupportedCultures[0],
                     convertBack: x => x.CultureName
                     ).AddTo(CompositeDisposable);
         }

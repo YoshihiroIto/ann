@@ -111,6 +111,7 @@
     <Compile Include="Config\App.cs" />
     <Compile Include="Config\MainWindow.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="CultureSummry.cs" />
     <Compile Include="ExecutableUnit.cs" />
     <Compile Include="ExecutableUnitDataBase.cs" />
     <Compile Include="IndexFile\ExecutableUnit.cs" />
