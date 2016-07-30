@@ -39,7 +39,17 @@ namespace Ann.MainWindow
 
         public bool IsPriorityFile
         {
-            get { return App.Instance.IsPriorityFile(Path); }
+            get
+            {
+                if (_isSubscribedPriorityFilesChanged == false)
+                {
+                    SubscribPriorityFilesChanged();
+                    _isSubscribedPriorityFilesChanged = true;
+                }
+
+                return App.Instance.IsPriorityFile(Path);
+            }
+
             set
             {
                 if (value)
@@ -55,7 +65,18 @@ namespace Ann.MainWindow
             }
         }
 
-        public ReactiveCommand IsPriorityFileFlipCommand { get; }
+        private ReactiveCommand _IsPriorityFileFlipCommand;
+
+        public ReactiveCommand IsPriorityFileFlipCommand
+        {
+            get
+            {
+                if (_IsPriorityFileFlipCommand == null)
+                    SetupCommand();
+
+                return _IsPriorityFileFlipCommand;
+            }
+        }
 
         private readonly MainWindowViewModel _parent;
 
@@ -68,6 +89,12 @@ namespace Ann.MainWindow
             Name = string.IsNullOrWhiteSpace(model.Name) == false ? model.Name : System.IO.Path.GetFileName(model.Path);
             Path = model.Path;
 
+        }
+
+        private bool _isSubscribedPriorityFilesChanged;
+
+        private void SubscribPriorityFilesChanged()
+        {
             Observable.FromEventPattern(
                 h => App.Instance.PriorityFilesChanged += h,
                 h => App.Instance.PriorityFilesChanged -= h)
@@ -75,9 +102,12 @@ namespace Ann.MainWindow
                     // ReSharper disable once ExplicitCallerInfoArgument
                     RaisePropertyChanged(nameof(IsPriorityFile))
                 ).AddTo(CompositeDisposable);
+        }
 
-            IsPriorityFileFlipCommand = new ReactiveCommand().AddTo(CompositeDisposable);
-            IsPriorityFileFlipCommand
+        private void SetupCommand()
+        {
+            _IsPriorityFileFlipCommand = new ReactiveCommand().AddTo(CompositeDisposable);
+            _IsPriorityFileFlipCommand
                 .Subscribe(_ => IsPriorityFile = !IsPriorityFile)
                 .AddTo(CompositeDisposable);
         }
