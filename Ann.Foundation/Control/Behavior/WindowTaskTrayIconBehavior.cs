@@ -7,7 +7,7 @@ using System.Windows.Interactivity;
 using System.Windows.Interop;
 using System.Windows.Media;
 
-namespace Ann.Foundation.Control
+namespace Ann.Foundation.Control.Behavior
 {
     public sealed class WindowTaskTrayIconBehavior : Behavior<Window>
     {

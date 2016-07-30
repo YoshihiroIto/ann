@@ -9,12 +9,11 @@ using System.Windows.Media;
 using Ann.Core;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm;
+using Ann.Foundation.Mvvm.Message;
 using Ann.SettingWindow;
-using Livet;
-using Livet.Messaging;
-using Livet.Messaging.Windows;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using Reactive.Bindings.Notifiers;
 
 namespace Ann.MainWindow
 {
@@ -177,7 +176,7 @@ namespace Ann.MainWindow
                 .AddTo(CompositeDisposable);
 
             AppExitCommand = new ReactiveCommand().AddTo(CompositeDisposable);
-            AppExitCommand.Subscribe(_ => Messenger.Raise(new WindowActionMessage(WindowAction.Close, "WindowAction")))
+            AppExitCommand.Subscribe(_ => MessageBroker.Default.Publish(new WindowActionMessage {Action = WindowAction.Close}))
                 .AddTo(CompositeDisposable);
 
             Visibility.Subscribe(_ => Input.Value = string.Empty).AddTo(CompositeDisposable);
@@ -191,7 +190,7 @@ namespace Ann.MainWindow
                 App.Instance.InvokeShortcutKeyChanged();
                 App.Instance.Config.ShortcutKeys.Activate.Key = key;
 
-                await Messenger.RaiseAsync(new TransitionMessage(new SettingViewModel(App.Instance.Config), "ShowSetting"));
+                await AsyncMessageBroker.Default.PublishAsync(new SettingViewModel(App.Instance.Config));
 
                 Visibility.Value = System.Windows.Visibility.Visible;
 

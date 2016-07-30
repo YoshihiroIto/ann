@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
 using Ann.Properties;

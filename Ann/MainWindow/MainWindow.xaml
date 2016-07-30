@@ -2,8 +2,6 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:app="clr-namespace:Ann"
-        xmlns:behaviors="http://schemas.livet-mvvm.net/2011/wpf"
-        xmlns:control="clr-namespace:Ann.Foundation.Control;assembly=Ann.Foundation"
         xmlns:core="clr-namespace:Ann.Core;assembly=Ann.Core"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
@@ -11,7 +9,7 @@
         xmlns:mainWindow="clr-namespace:Ann.MainWindow"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:settingWindow="clr-namespace:Ann.SettingWindow"
+        xmlns:behavior="clr-namespace:Ann.Foundation.Control.Behavior;assembly=Ann.Foundation"
         Width="600"
         d:DataContext="{d:DesignData mainWindow:MainWindowViewModel}"
         Activated="Window_Activated"
@@ -39,33 +37,19 @@
         WindowStyle="None"
         mc:Ignorable="d">
     <i:Interaction.Behaviors>
-        <control:WindowTaskTrayIconBehavior IconSource="/app.ico" ToolTipText="Ann">
-            <control:WindowTaskTrayIconBehavior.ContextMenu>
+        <behavior:WindowTaskTrayIconBehavior IconSource="/app.ico" ToolTipText="Ann">
+            <behavior:WindowTaskTrayIconBehavior.ContextMenu>
                 <ContextMenu>
                     <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_UpdateIndex, Mode=OneWay}" />
                     <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Setting, Mode=OneWay}" />
                     <Separator Margin="-100,8,-100,8" />
                     <MenuItem Command="{Binding AppExitCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Exit, Mode=OneWay}" />
                 </ContextMenu>
-            </control:WindowTaskTrayIconBehavior.ContextMenu>
-        </control:WindowTaskTrayIconBehavior>
+            </behavior:WindowTaskTrayIconBehavior.ContextMenu>
+        </behavior:WindowTaskTrayIconBehavior>
+
+        <behavior:WindowDisposeDataContextOnClosedBehavior />
     </i:Interaction.Behaviors>
-
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Closed">
-            <behaviors:DataContextDisposeAction />
-        </i:EventTrigger>
-
-        <behaviors:InteractionMessageTrigger MessageKey="WindowAction" Messenger="{Binding Messenger, Mode=OneTime}">
-            <behaviors:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
-        </behaviors:InteractionMessageTrigger>
-
-        <behaviors:InteractionMessageTrigger MessageKey="ShowSetting" Messenger="{Binding Messenger, Mode=OneWay}">
-            <behaviors:TransitionInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False"
-                                                          Mode="Modal"
-                                                          WindowType="{x:Type settingWindow:SettingWindow}" />
-        </behaviors:InteractionMessageTrigger>
-    </i:Interaction.Triggers>
 
     <StackPanel Margin="16">
         <DockPanel LastChildFill="True">
