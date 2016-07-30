@@ -40,7 +40,7 @@
                                     <ProgressBar Width="16"
                                                  Height="16"
                                                  Margin="0"
-                                                 Foreground="DimGray"
+                                                 Foreground="DodgerBlue"
                                                  IsIndeterminate="True"
                                                  Padding="0"
                                                  Style="{StaticResource MaterialDesignCircularProgressBar}"
