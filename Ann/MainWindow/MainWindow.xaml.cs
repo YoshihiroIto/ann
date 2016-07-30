@@ -93,6 +93,13 @@ namespace Ann.MainWindow
             await FocusInputTextBlockIfVisibled();
         }
 
+        private void PopupBox_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            var item = (sender as FrameworkElement)?.DataContext as ExecutableUnitViewModel;
+
+            _DataContext.SelectedCandidate.Value = item;
+        }
+
         private async Task FocusInputTextBlockIfVisibled()
         {
             if (Visibility != Visibility.Visible)
