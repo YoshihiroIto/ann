@@ -38,6 +38,9 @@ namespace Ann.MainWindow
 
             Application.Current.Deactivated += (_, __) =>
             {
+                if (WindowsHelper.IsOnTrayMouseCursor)
+                    return;
+
                 var windows = Application.Current.Windows.OfType<Window>().ToArray();
                 if (windows.Length == 1 && Equals(windows[0], this))
                     Visibility = Visibility.Hidden;
@@ -106,7 +109,7 @@ namespace Ann.MainWindow
             SetupHotKey();
 
             _DataContext.CompositeDisposable.Add(() => _activateHotKey?.Dispose());
-            
+
             Observable.FromEventPattern(
                 h => App.Instance.ShortcutKeyChanged += h,
                 h => App.Instance.ShortcutKeyChanged -= h)
@@ -117,7 +120,7 @@ namespace Ann.MainWindow
         private void InitializeShortcutKey()
         {
             SetupShortcutKey();
-            
+
             Observable.FromEventPattern(
                 h => App.Instance.ShortcutKeyChanged += h,
                 h => App.Instance.ShortcutKeyChanged -= h)
