@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Windows;
@@ -37,6 +38,22 @@ namespace Ann.Core
         {
             if (File.Exists(path) == false)
                 return null;
+
+            var ext = System.IO.Path.GetExtension(path)?.ToLower();
+
+            if (ext == null)
+                return null;
+
+            if (_IconShareFileExt.Contains(ext))
+            {
+                ImageSource icon;
+                if (_ShareIconCache.TryGetValue(ext, out icon))
+                    return icon;
+
+                icon = DecodeIcon(path);
+                _ShareIconCache.Add(ext, icon);
+                return icon;
+            }
 
             return _IconCache == null
                 ? DecodeIcon(path)
@@ -97,5 +114,11 @@ namespace Ann.Core
         }
 
         private LruCache<string, ImageSource> _IconCache;
+        private readonly Dictionary<string, ImageSource> _ShareIconCache = new Dictionary<string, ImageSource>();
+
+        private readonly HashSet<string> _IconShareFileExt = new HashSet<string>
+        {
+            ".bat", ".cmd", ".com", ".vbs", ".vbe", ".js", ".jse", ".wsf", ".wsh"
+        };
     }
 }
