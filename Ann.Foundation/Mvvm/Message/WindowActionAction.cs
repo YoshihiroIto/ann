@@ -37,6 +37,18 @@ namespace Ann.Foundation.Mvvm.Message
                     window.Activate();
                     break;
 
+                case WindowAction.Visible:
+                    window.Visibility = Visibility.Visible;
+                    break;
+
+                case WindowAction.Hidden:
+                    window.Visibility = Visibility.Hidden;
+                    break;
+
+                case WindowAction.Collapsed:
+                    window.Visibility = Visibility.Collapsed;
+                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }

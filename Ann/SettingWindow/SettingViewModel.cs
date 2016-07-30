@@ -34,7 +34,7 @@ namespace Ann.SettingWindow
 
             CloseCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             CloseCommand
-                .Subscribe(_ => MessageBroker.Default.Publish(new WindowActionMessage {Action = WindowAction.Close}))
+                .Subscribe(_ => MessageBroker.Default.Publish(new WindowActionMessage(WindowAction.Close)))
                 .AddTo(CompositeDisposable);
 
             Pages = new ViewModelBase[]
@@ -43,7 +43,7 @@ namespace Ann.SettingWindow
                 new ShortcutsViewModel(model),
                 new TargetFoldersViewModel(model),
                 new PriorityFilesViewModel(model),
-                _about = new AboutViewModel() 
+                _about = new AboutViewModel()
             };
             SelectedPage = new ReactiveProperty<ViewModelBase>(Pages[0]).AddTo(CompositeDisposable);
         }

@@ -13,13 +13,13 @@ namespace Ann
     {
         public static ViewManager Instance { get; } = new ViewManager();
 
-        private Dispatcher _uIDispatcher;
+        public Dispatcher UiDispatcher { get; private set; }
 
         public static void Initialize(Dispatcher uiDispatcher)
         {
             Debug.Assert(uiDispatcher != null);
 
-            Instance._uIDispatcher = uiDispatcher;
+            Instance.UiDispatcher = uiDispatcher;
 
             Instance.SubscribeMessages();
         }
@@ -35,15 +35,17 @@ namespace Ann
 
         private void SubscribeMessages()
         {
-            MessageBroker.Default.Subscribe<WindowActionMessage>(WindowActionAction.InvokeAction)
+            MessageBroker.Default
+                .Subscribe<WindowActionMessage>(WindowActionAction.InvokeAction)
                 .AddTo(CompositeDisposable);
 
-            MessageBroker.Default.Subscribe<FileOrFolderSelectMessage>(FileOrFolderSelectAction.InvokeAction)
+            MessageBroker.Default
+                .Subscribe<FileOrFolderSelectMessage>(FileOrFolderSelectAction.InvokeAction)
                 .AddTo(CompositeDisposable);
 
             AsyncMessageBroker.Default
                 .Subscribe<SettingViewModel>(
-                    vm => Task.Run(() => _uIDispatcher.Invoke(() => new SettingWindow.SettingWindow {DataContext = vm}.ShowDialog()))
+                    vm => Task.Run(() => UiDispatcher.Invoke(() => new SettingWindow.SettingWindow {DataContext = vm}.ShowDialog()))
                 ).AddTo(CompositeDisposable);
         }
     }

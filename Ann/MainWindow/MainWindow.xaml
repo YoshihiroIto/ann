@@ -31,8 +31,6 @@
         TextOptions.TextRenderingMode="Auto"
         Top="{Binding Top.Value,
                       Mode=TwoWay}"
-        Visibility="{Binding Visibility.Value,
-                             Mode=TwoWay}"
         WindowStyle="None"
         mc:Ignorable="d">
     <i:Interaction.Behaviors>

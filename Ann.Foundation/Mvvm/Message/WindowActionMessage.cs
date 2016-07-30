@@ -7,10 +7,19 @@
         Minimize,
         Normal,
         Active,
+        //
+        Visible,
+        Hidden,
+        Collapsed
     }
 
     public class WindowActionMessage
     {
-        public WindowAction Action { get; set; }
+        public WindowAction Action { get; }
+
+        public WindowActionMessage(WindowAction a)
+        {
+            Action = a;
+        }
     }
 }
