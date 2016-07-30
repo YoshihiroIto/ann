@@ -20,7 +20,7 @@
         MinHeight="300"
         d:DataContext="{d:DesignData SettingViewModel}"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
-        ResizeMode="CanResizeWithGrip"
+        ResizeMode="CanResize"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
     <i:Interaction.Triggers>
