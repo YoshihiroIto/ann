@@ -64,7 +64,7 @@ namespace Ann.SettingWindow.SettingPage.About
             CheckForUpdateCommand.Subscribe(async _ =>
             {
                 UpdateInfo.Value = string.Empty;
-                UpdateInfo.Value = await VersionUpdater.Instance.CheckForUpdate();
+                UpdateInfo.Value = (await VersionUpdater.Instance.CheckForUpdate()).ToString();
             }).AddTo(CompositeDisposable);
         }
 

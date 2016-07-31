@@ -65,12 +65,12 @@ namespace Ann.Core
                 await mgr.UpdateApp(p => UpdateProgress = p);
         }
 
-        public async Task<string> CheckForUpdate()
+        public async Task<bool> CheckForUpdate()
         {
             CheckForUpdateProgress = 0;
 
             if (IsEnableSilentUpdate == false)
-                return string.Empty;
+                return false;
 
             using (var mgr = await UpdateManager.GitHubUpdateManager(
                 "https://github.com/YoshihiroIto/Ann",
@@ -78,7 +78,7 @@ namespace Ann.Core
             {
                 var r = await mgr.CheckForUpdate(progress: p => CheckForUpdateProgress = p);
 
-                return $"{r.CurrentlyInstalledVersion}, {r.FutureReleaseEntry}";
+                return r.CurrentlyInstalledVersion.SHA1 != r.FutureReleaseEntry.SHA1;
             }
         }
 
