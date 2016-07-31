@@ -12,7 +12,9 @@ namespace Ann.Foundation.Mvvm.Message
         //
         Visible,
         Hidden,
-        Collapsed
+        Collapsed,
+        //
+        VisibleActive
     }
 
     public class WindowActionMessage

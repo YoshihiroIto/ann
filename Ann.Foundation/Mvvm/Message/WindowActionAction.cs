@@ -40,6 +40,7 @@ namespace Ann.Foundation.Mvvm.Message
 
                 case WindowAction.Active:
                     window.Activate();
+                    window.Focus();
                     break;
 
                 case WindowAction.Visible:
@@ -52,6 +53,12 @@ namespace Ann.Foundation.Mvvm.Message
 
                 case WindowAction.Collapsed:
                     window.Visibility = Visibility.Collapsed;
+                    break;
+
+                case WindowAction.VisibleActive:
+                    window.Visibility = Visibility.Visible;
+                    window.Activate();
+                    window.Focus();
                     break;
 
                 default:

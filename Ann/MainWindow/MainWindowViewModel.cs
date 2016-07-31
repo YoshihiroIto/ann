@@ -32,14 +32,13 @@ namespace Ann.MainWindow
         public ReactiveCommand<string> RunCommand { get; }
         public ReactiveCommand ContainingFolderOpenCommand { get; }
 
+        public ReactiveCommand AppShowCommand { get; }
         public ReactiveCommand AppHideCommand { get; }
         public ReactiveCommand AppExitCommand { get; }
 
         public ReactiveProperty<double> Left { get; }
         public ReactiveProperty<double> Top { get; }
         public ReactiveProperty<int> MaxCandidatesLinesCount { get; }
-
-        private readonly IconDecoder _iconDecoder = new IconDecoder();
 
         public ImageSource GetIcon(string path) => _iconDecoder.GetIcon(path);
         public ReadOnlyReactiveProperty<double> CandidatesListMaxHeight { get; }
@@ -52,9 +51,11 @@ namespace Ann.MainWindow
         public ReactiveProperty<bool> IsEnableActivateHotKey { get; }
         public ReadOnlyReactiveProperty<string> Message { get; }
 
+        public WindowMessageBroker Messenger { get; }
+
         public Core.Config.MainWindow Config { get; private set; }
 
-        public WindowMessageBroker Messenger { get; }
+        private readonly IconDecoder _iconDecoder = new IconDecoder();
 
         public MainWindowViewModel()
         {
@@ -191,13 +192,18 @@ namespace Ann.MainWindow
                 await AsyncMessageBroker.Default.PublishAsync(new SettingViewModel(App.Instance.Config));
                 IsShowingSettingShow.Value = false;
 
-                Messenger.Publish(new WindowActionMessage(WindowAction.Visible));
+                Messenger.Publish(new WindowActionMessage(WindowAction.VisibleActive));
 
                 App.Instance.SaveConfig();
                 App.Instance.InvokeShortcutKeyChanged();
             }).AddTo(CompositeDisposable);
 
             IsShowingSettingShow = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
+
+            AppShowCommand = IsShowingSettingShow.Inverse().ToReactiveCommand().AddTo(CompositeDisposable);
+            AppShowCommand
+                .Subscribe(_ => Messenger.Publish(new WindowActionMessage(WindowAction.VisibleActive)))
+                .AddTo(CompositeDisposable);
 
             AppHideCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             AppHideCommand

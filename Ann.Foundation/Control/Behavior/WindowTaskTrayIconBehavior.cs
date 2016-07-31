@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Interactivity;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -11,76 +12,6 @@ namespace Ann.Foundation.Control.Behavior
 {
     public sealed class WindowTaskTrayIconBehavior : Behavior<Window>
     {
-        private NotifyIcon _notifyIcon = new NotifyIcon
-        {
-            Visible = false
-        };
-
-        protected override void OnAttached()
-        {
-            base.OnAttached();
-
-            _notifyIcon.MouseClick += (s, e) =>
-            {
-                if (e.Button == MouseButtons.Left)
-                    ShowAssociatedObject();
-
-                else if (e.Button == MouseButtons.Right)
-                    ShowContextMenu();
-            };
-
-            _notifyIcon.Visible = true;
-
-            AssociatedObject.Closed += AssociatedObject_Closed;
-            System.Windows.Application.Current.Deactivated += Application_Deactivated;
-        }
-
-        protected override void OnDetaching()
-        {
-            System.Windows.Application.Current.Deactivated -= Application_Deactivated;
-            AssociatedObject.Closed -= AssociatedObject_Closed;
-
-            base.OnDetaching();
-        }
-
-        private void ShowAssociatedObject()
-        {
-            AssociatedObject.Visibility = Visibility.Visible;
-
-            AssociatedObject.Activate();
-            AssociatedObject.Focus();
-        }
-
-        private void ShowContextMenu()
-        {
-            if (ContextMenu == null)
-                return;
-
-            ContextMenu.DataContext = AssociatedObject.DataContext;
-            ContextMenu.IsOpen = true;
-
-            var hwndSource = (HwndSource) PresentationSource.FromVisual(ContextMenu);
-            if (hwndSource != null)
-                SetForegroundWindow(hwndSource.Handle);
-        }
-
-        [DllImport("user32.dll")]
-        private static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        private void AssociatedObject_Closed(object sender, EventArgs e)
-        {
-            _notifyIcon?.Dispose();
-            _notifyIcon = null;
-        }
-
-        private void Application_Deactivated(object sender, EventArgs e)
-        {
-            if (ContextMenu == null)
-                return;
-
-            ContextMenu.IsOpen = false;
-        }
-
         #region ToolTipText
 
         public string ToolTipText
@@ -172,5 +103,91 @@ namespace Ann.Foundation.Control.Behavior
                 );
 
         #endregion
+
+        #region LeftClickedCommand
+
+        public ICommand LeftClickedCommand
+        {
+            get { return (ICommand)GetValue(LeftClickedCommandProperty); }
+            set { SetValue(LeftClickedCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty LeftClickedCommandProperty =
+            DependencyProperty.Register(
+                nameof (LeftClickedCommand),
+                typeof (ICommand),
+                typeof (WindowTaskTrayIconBehavior),
+                new FrameworkPropertyMetadata
+                {
+                    DefaultValue            = default(ICommand),
+                    BindsTwoWayByDefault    = true
+                }
+            );
+
+        #endregion
+
+        private NotifyIcon _notifyIcon = new NotifyIcon
+        {
+            Visible = false
+        };
+
+        protected override void OnAttached()
+        {
+            base.OnAttached();
+
+            _notifyIcon.MouseClick += (s, e) =>
+            {
+                if (e.Button == MouseButtons.Left)
+                    if (LeftClickedCommand != null)
+                        if (LeftClickedCommand.CanExecute(null))
+                            LeftClickedCommand.Execute(null);
+
+                if (e.Button == MouseButtons.Right)
+                    ShowContextMenu();
+            };
+
+            _notifyIcon.Visible = true;
+
+            AssociatedObject.Closed += AssociatedObject_Closed;
+            System.Windows.Application.Current.Deactivated += Application_Deactivated;
+        }
+
+        protected override void OnDetaching()
+        {
+            System.Windows.Application.Current.Deactivated -= Application_Deactivated;
+            AssociatedObject.Closed -= AssociatedObject_Closed;
+
+            base.OnDetaching();
+        }
+
+        private void ShowContextMenu()
+        {
+            if (ContextMenu == null)
+                return;
+
+            ContextMenu.DataContext = AssociatedObject.DataContext;
+            ContextMenu.IsOpen = true;
+
+            var hwndSource = (HwndSource) PresentationSource.FromVisual(ContextMenu);
+            if (hwndSource != null)
+                SetForegroundWindow(hwndSource.Handle);
+        }
+
+        [DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        private void AssociatedObject_Closed(object sender, EventArgs e)
+        {
+            _notifyIcon?.Dispose();
+            _notifyIcon = null;
+        }
+
+        private void Application_Deactivated(object sender, EventArgs e)
+        {
+            if (ContextMenu == null)
+                return;
+
+            ContextMenu.IsOpen = false;
+        }
     }
 }

@@ -34,7 +34,10 @@
         WindowStyle="None"
         mc:Ignorable="d">
     <i:Interaction.Behaviors>
-        <behavior:WindowTaskTrayIconBehavior IconSource="/app.ico" ToolTipText="Ann">
+        <behavior:WindowTaskTrayIconBehavior IconSource="/app.ico"
+                                             LeftClickedCommand="{Binding AppShowCommand,
+                                                                          Mode=OneTime}"
+                                             ToolTipText="Ann">
             <behavior:WindowTaskTrayIconBehavior.ContextMenu>
                 <ContextMenu>
                     <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_UpdateIndex, Mode=OneWay}" />
