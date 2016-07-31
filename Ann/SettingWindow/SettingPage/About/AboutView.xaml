@@ -115,20 +115,17 @@
         <Button.Style>
             <Style BasedOn="{StaticResource FlatButtonStyle}" TargetType="{x:Type Button}">
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding VersionCheckingState, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Checking}">
+                    <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Checking}">
                         <Setter Property="Visibility" Value="Collapsed" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding VersionCheckingState, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Latest}">
+                    <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Latest}">
                         <Setter Property="Visibility" Value="Collapsed" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding VersionCheckingState, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Old}">
+                    <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Old}">
                         <Setter Property="Visibility" Value="Visible" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding VersionCheckingState, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Unknown}">
+                    <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Unknown}">
                         <Setter Property="Visibility" Value="Collapsed" />
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding VersionCheckingState, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Old}">
-                        <Setter Property="Visibility" Value="Visible" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
