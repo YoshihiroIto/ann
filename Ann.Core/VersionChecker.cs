@@ -19,7 +19,7 @@ namespace Ann.Core
 
         #endregion
 
-        public async Task Check()
+        public async Task CheckAsync()
         {
             VersionCheckingState = VersionCheckingStates.Checking;
 

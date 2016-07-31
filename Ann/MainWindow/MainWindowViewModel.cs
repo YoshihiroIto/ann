@@ -168,7 +168,7 @@ namespace Ann.MainWindow
                 .Subscribe(async p =>
                 {
                     Messenger.Publish(new WindowActionMessage(WindowAction.Hidden));
-                    await ProcessHelper.Run(path, string.Empty, p == "admin");
+                    await ProcessHelper.RunAsync(path, string.Empty, p == "admin");
                 }).AddTo(CompositeDisposable);
 
             ContainingFolderOpenCommand = SelectedCandidate
@@ -176,7 +176,7 @@ namespace Ann.MainWindow
                 .ToReactiveCommand().AddTo(CompositeDisposable);
             ContainingFolderOpenCommand
                 .Subscribe(
-                    async _ => await ProcessHelper.Run("EXPLORER", $"/select,\"{SelectedCandidate.Value.Path}\"", false))
+                    async _ => await ProcessHelper.RunAsync("EXPLORER", $"/select,\"{SelectedCandidate.Value.Path}\"", false))
                 .AddTo(CompositeDisposable);
 
             SettingShowCommand = new AsyncReactiveCommand().AddTo(CompositeDisposable);

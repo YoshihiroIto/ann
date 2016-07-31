@@ -80,12 +80,12 @@ namespace Ann.MainWindow
 
         private async void Window_Activated(object sender, EventArgs e)
         {
-            await FocusInputTextBlockIfVisibled();
+            await FocusInputTextBlockIfVisibledAsync();
         }
 
         private async void PopupBox_Closed(object sender, RoutedEventArgs e)
         {
-            await FocusInputTextBlockIfVisibled();
+            await FocusInputTextBlockIfVisibledAsync();
         }
 
         private async void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -93,7 +93,7 @@ namespace Ann.MainWindow
             InputTextBox.Text = string.Empty;
 
             await WpfHelper.DoEventsAsync();
-            await FocusInputTextBlockIfVisibled();
+            await FocusInputTextBlockIfVisibledAsync();
         }
 
         private void PopupBox_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -103,7 +103,7 @@ namespace Ann.MainWindow
             _DataContext.SelectedCandidate.Value = item;
         }
 
-        private async Task FocusInputTextBlockIfVisibled()
+        private async Task FocusInputTextBlockIfVisibledAsync()
         {
             if (Visibility != Visibility.Visible)
                 return;

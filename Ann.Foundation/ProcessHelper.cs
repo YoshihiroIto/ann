@@ -5,7 +5,7 @@ namespace Ann.Foundation
 {
     public static class ProcessHelper
     {
-        public static async Task Run(string cmd, string args, bool isRunAsAdmin)
+        public static async Task RunAsync(string cmd, string args, bool isRunAsAdmin)
         {
             await Task.Run(() =>
             {

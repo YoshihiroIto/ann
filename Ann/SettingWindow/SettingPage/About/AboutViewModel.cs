@@ -24,11 +24,11 @@ namespace Ann.SettingWindow.SettingPage.About
         {
 
             OpenUrlCommand = new ReactiveCommand<string>().AddTo(CompositeDisposable);
-            OpenUrlCommand.Subscribe(async o => await ProcessHelper.Run(o, string.Empty, false))
+            OpenUrlCommand.Subscribe(async o => await ProcessHelper.RunAsync(o, string.Empty, false))
                 .AddTo(CompositeDisposable);
 
             OpenSourceOpenCommand = new ReactiveCommand<OpenSource>().AddTo(CompositeDisposable);
-            OpenSourceOpenCommand.Subscribe(async o => await ProcessHelper.Run(o.Url, string.Empty, false))
+            OpenSourceOpenCommand.Subscribe(async o => await ProcessHelper.RunAsync(o.Url, string.Empty, false))
                 .AddTo(CompositeDisposable);
 
             VersionCheckingState = _VersionChecker.ObserveProperty(x => x.VersionCheckingState)
@@ -36,9 +36,9 @@ namespace Ann.SettingWindow.SettingPage.About
                 .AddTo(CompositeDisposable);
         }
 
-        public async Task CheckVersion()
+        public async Task CheckVersionAsync()
         {
-            await _VersionChecker.Check();
+            await _VersionChecker.CheckAsync();
         }
     }
 }
