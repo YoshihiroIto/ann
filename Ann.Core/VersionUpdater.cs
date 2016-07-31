@@ -59,7 +59,9 @@ namespace Ann.Core
             if (IsEnableSilentUpdate)
                 return;
 
-            using (var mgr = await UpdateManager.GitHubUpdateManager("https://github.com/YoshihiroIto/Ann"))
+            using (var mgr = await UpdateManager.GitHubUpdateManager(
+                "https://github.com/YoshihiroIto/Ann",
+                accessToken:App.Instance.Config.GitHubPersonalAccessToken))
                 await mgr.UpdateApp(p => UpdateProgress = p);
         }
 
@@ -70,7 +72,9 @@ namespace Ann.Core
             if (IsEnableSilentUpdate)
                 return string.Empty;
 
-            using (var mgr = await UpdateManager.GitHubUpdateManager("https://github.com/YoshihiroIto/Ann"))
+            using (var mgr = await UpdateManager.GitHubUpdateManager(
+                "https://github.com/YoshihiroIto/Ann",
+                accessToken:App.Instance.Config.GitHubPersonalAccessToken))
             {
                 var r = await mgr.CheckForUpdate(progress: p => CheckForUpdateProgress = p);
 

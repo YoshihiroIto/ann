@@ -133,6 +133,18 @@ namespace Ann.Core.Config
         }
 
         #endregion
+
+        #region GitHubPersonalAccessToken
+
+        private string _GitHubPersonalAccessToken = string.Empty;
+
+        public string GitHubPersonalAccessToken
+        {
+            get { return _GitHubPersonalAccessToken; }
+            set { SetProperty(ref _GitHubPersonalAccessToken, value); }
+        }
+
+        #endregion
     }
 
     public class TargetFolder : ModelBase
