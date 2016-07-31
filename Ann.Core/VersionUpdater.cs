@@ -15,6 +15,8 @@ namespace Ann.Core
         public bool IsEnableSilentUpdate { get; }
         public bool IsRestartRequested { get; private set; }
 
+        private readonly Task<UpdateManager> _UpdateManager;
+
         public static void Initialize()
         {
         }
@@ -120,8 +122,6 @@ namespace Ann.Core
                 IsAvailableUpdate = updateInfo.CurrentlyInstalledVersion.SHA1 != updateInfo.FutureReleaseEntry.SHA1;
             }
         }
-
-        private readonly Task<UpdateManager> _UpdateManager;
 
         private VersionUpdater()
         {
