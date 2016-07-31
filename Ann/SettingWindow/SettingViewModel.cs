@@ -30,7 +30,7 @@ namespace Ann.SettingWindow
             CompositeDisposable.Add(() => Pages.ForEach(p => p.Dispose()));
 
             InitializeCommand = new ReactiveCommand().AddTo(CompositeDisposable);
-            InitializeCommand.Subscribe(async _ => await _about.CheckVersion()).AddTo(CompositeDisposable);
+            InitializeCommand.Subscribe(async _ => await _about.CheckVersionAsync()).AddTo(CompositeDisposable);
 
             CloseCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             CloseCommand

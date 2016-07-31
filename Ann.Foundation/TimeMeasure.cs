@@ -19,7 +19,7 @@ namespace Ann.Foundation
         public void Dispose()
         {
             _stopwatch.Stop();
-            Debug.WriteLine($"{_title} : {_stopwatch.ElapsedMilliseconds}ms : {_stopwatch.ElapsedTicks}");
+            Debug.WriteLine($"■{_title} : {_stopwatch.ElapsedMilliseconds}ms : {_stopwatch.ElapsedTicks}");
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Windows.Input;
 using Ann.Core;
 using Ann.Foundation;
 using Ann.Foundation.Control;
+using Ann.Foundation.Mvvm.Message;
 using Reactive.Bindings.Extensions;
 
 namespace Ann.MainWindow
@@ -22,6 +23,8 @@ namespace Ann.MainWindow
         public MainWindow()
         {
             DataContext = _DataContext;
+
+            SetupMessenger();
 
             if (double.IsNaN(_DataContext.Config.Left))
                 WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -77,12 +80,12 @@ namespace Ann.MainWindow
 
         private async void Window_Activated(object sender, EventArgs e)
         {
-            await FocusInputTextBlockIfVisibled();
+            await FocusInputTextBlockIfVisibledAsync();
         }
 
         private async void PopupBox_Closed(object sender, RoutedEventArgs e)
         {
-            await FocusInputTextBlockIfVisibled();
+            await FocusInputTextBlockIfVisibledAsync();
         }
 
         private async void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -90,7 +93,7 @@ namespace Ann.MainWindow
             InputTextBox.Text = string.Empty;
 
             await WpfHelper.DoEventsAsync();
-            await FocusInputTextBlockIfVisibled();
+            await FocusInputTextBlockIfVisibledAsync();
         }
 
         private void PopupBox_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -100,7 +103,7 @@ namespace Ann.MainWindow
             _DataContext.SelectedCandidate.Value = item;
         }
 
-        private async Task FocusInputTextBlockIfVisibled()
+        private async Task FocusInputTextBlockIfVisibledAsync()
         {
             if (Visibility != Visibility.Visible)
                 return;
@@ -177,7 +180,7 @@ namespace Ann.MainWindow
 
             // 標準
             InputBindings.Add(new KeyBinding {Key = Key.Enter, Command = _DataContext.RunCommand});
-            InputBindings.Add(new KeyBinding {Key = Key.Escape, Command = _DataContext.AppHideCommand});
+            InputBindings.Add(new KeyBinding {Key = Key.Escape, Command = _DataContext.HideCommand});
 
             // コンフィグから指定されたもの
             InputBindings.AddRange(App.Instance.Config.ShortcutKeys.Hide
@@ -186,8 +189,17 @@ namespace Ann.MainWindow
                     {
                         Key = k.Key,
                         Modifiers = k.Modifiers,
-                        Command = _DataContext.AppHideCommand
+                        Command = _DataContext.HideCommand
                     }).ToArray());
+        }
+
+        private void SetupMessenger()
+        {
+            _DataContext.Messenger.Window = this;
+
+            _DataContext.Messenger
+                .Subscribe<WindowActionMessage>(WindowActionAction.InvokeAction)
+                .AddTo(_DataContext.CompositeDisposable);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 
@@ -12,8 +13,12 @@ namespace Ann.Foundation.Mvvm.Message
                 .OfType<Window>()
                 .FirstOrDefault(w => w.IsActive);
 
-            if (window == null)
-                return;
+            InvokeAction(window, message);
+        }
+
+        public static void InvokeAction(Window window, WindowActionMessage message)
+        {
+            Debug.Assert(window != null);
 
             switch (message.Action)
             {
@@ -35,6 +40,7 @@ namespace Ann.Foundation.Mvvm.Message
 
                 case WindowAction.Active:
                     window.Activate();
+                    window.Focus();
                     break;
 
                 case WindowAction.Visible:
@@ -47,6 +53,12 @@ namespace Ann.Foundation.Mvvm.Message
 
                 case WindowAction.Collapsed:
                     window.Visibility = Visibility.Collapsed;
+                    break;
+
+                case WindowAction.VisibleActive:
+                    window.Visibility = Visibility.Visible;
+                    window.Activate();
+                    window.Focus();
                     break;
 
                 default:
