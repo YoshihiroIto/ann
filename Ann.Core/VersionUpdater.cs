@@ -78,7 +78,7 @@ namespace Ann.Core
             IsRestartRequested = true;
         }
 
-        public async Task UpdateApp()
+        private async Task UpdateApp()
         {
             UpdateProgress = 0;
 
