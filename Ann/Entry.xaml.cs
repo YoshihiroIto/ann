@@ -18,6 +18,7 @@ namespace Ann
             ProfileOptimization.SetProfileRoot(ConfigHelper.ConfigDirPath);
             ProfileOptimization.StartProfile("Startup.Profile");
 
+            VersionUpdater.Initialize();
             DisposableChecker.Start();
             {
                 Task.Run(async () => await VersionUpdater.Instance.UpdateApp());
@@ -30,6 +31,7 @@ namespace Ann
                 App.Destory();
             }
             DisposableChecker.End();
+            VersionUpdater.Destory();
         }
 
         protected override void OnStartup(StartupEventArgs e)

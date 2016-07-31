@@ -26,7 +26,7 @@ namespace Ann
 
         public static void Destory()
         {
-            Instance.Dispose();
+            Instance?.Dispose();
         }
 
         private ViewManager()

@@ -21,6 +21,8 @@ namespace Ann.Foundation.Mvvm.Message
     {
         public WindowAction Action { get; }
 
+        public bool IsOk { get; set; }
+
         public WindowActionMessage(WindowAction a)
         {
             Action = a;

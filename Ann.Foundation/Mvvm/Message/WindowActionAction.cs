@@ -18,7 +18,13 @@ namespace Ann.Foundation.Mvvm.Message
 
         public static void InvokeAction(Window window, WindowActionMessage message)
         {
-            Debug.Assert(window != null);
+            message.IsOk = true;
+
+            if (window == null)
+            {
+                message.IsOk = false;
+                return;
+            }
 
             switch (message.Action)
             {
@@ -62,6 +68,7 @@ namespace Ann.Foundation.Mvvm.Message
                     break;
 
                 default:
+                    message.IsOk = false;
                     throw new ArgumentOutOfRangeException();
             }
         }

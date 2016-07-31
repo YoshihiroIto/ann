@@ -3,8 +3,10 @@ using System.Threading.Tasks;
 using Ann.Core;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm;
+using Ann.Foundation.Mvvm.Message;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using Reactive.Bindings.Notifiers;
 
 namespace Ann.SettingWindow.SettingPage.About
 {
@@ -42,7 +44,11 @@ namespace Ann.SettingWindow.SettingPage.About
                 .AddTo(CompositeDisposable);
 
             RestartCommand = new ReactiveCommand().AddTo(CompositeDisposable);
-            RestartCommand.Subscribe(_ => VersionUpdater.Instance.Restart()).AddTo(CompositeDisposable);
+            RestartCommand.Subscribe(_ =>
+            {
+                VersionUpdater.Instance.RequestRestart();
+                MessageBroker.Default.Publish(new WindowActionMessage(WindowAction.Close));
+            }).AddTo(CompositeDisposable);
         }
 
         public async Task CheckVersionAsync()

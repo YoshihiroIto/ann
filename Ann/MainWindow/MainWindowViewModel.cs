@@ -181,10 +181,16 @@ namespace Ann.MainWindow
                 {
                     using (new AnonymousDisposable(() =>
                     {
-                        IsShowingSettingShow.Value = false;
-
-                        Messenger.Publish(new WindowActionMessage(WindowAction.VisibleActive));
                         App.Instance.SaveConfig();
+
+                        if (VersionUpdater.Instance.IsRestartRequested)
+                        {
+                            ExitCommand.Execute(null);
+                            return;
+                        }
+
+                        IsShowingSettingShow.Value = false;
+                        Messenger.Publish(new WindowActionMessage(WindowAction.VisibleActive));
                         App.Instance.InvokeShortcutKeyChanged();
                     }))
                     {
