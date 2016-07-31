@@ -61,7 +61,8 @@ namespace Ann.Core
 
         #endregion
 
-        #region CheckForUpdateProgress
+#if false
+#region CheckForUpdateProgress
 
         private int _CheckForUpdateProgress;
 
@@ -71,7 +72,8 @@ namespace Ann.Core
             set { SetProperty(ref _CheckForUpdateProgress, value); }
         }
 
-        #endregion
+#endregion
+#endif
 
         #region IsAvailableUpdate
 
@@ -104,6 +106,7 @@ namespace Ann.Core
             }
         }
 
+#if false
         private async Task CheckForUpdate()
         {
             CheckForUpdateProgress = 0;
@@ -122,6 +125,7 @@ namespace Ann.Core
                 IsAvailableUpdate = updateInfo.CurrentlyInstalledVersion.SHA1 != updateInfo.FutureReleaseEntry.SHA1;
             }
         }
+#endif
 
         private VersionUpdater()
         {
@@ -139,8 +143,8 @@ namespace Ann.Core
                         accessToken: App.Instance.Config.GitHubPersonalAccessToken);
 
                 this.ObserveProperty(x => x.IsAvailableUpdate)
-                .Subscribe(i => VersionCheckingState = i ? VersionCheckingStates.Old : VersionCheckingStates.Latest)
-                .AddTo(CompositeDisposable);
+                    .Subscribe(i => VersionCheckingState = i ? VersionCheckingStates.Old : VersionCheckingStates.Latest)
+                    .AddTo(CompositeDisposable);
             }
         }
 
@@ -159,7 +163,11 @@ namespace Ann.Core
 
             try
             {
+#if false
                 await CheckForUpdate();
+#else
+                await UpdateApp();
+#endif
 
                 VersionCheckingState = IsAvailableUpdate ? VersionCheckingStates.Old : VersionCheckingStates.Latest;
             }
