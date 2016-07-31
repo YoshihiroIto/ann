@@ -153,6 +153,8 @@ namespace Ann.Core
             try
             {
                 await CheckForUpdate();
+
+                VersionCheckingState = IsAvailableUpdate ? VersionCheckingStates.Old : VersionCheckingStates.Latest;
             }
             catch
             {
