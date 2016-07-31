@@ -13,8 +13,6 @@ namespace Ann.Core
         public bool IsEnableSilentUpdate { get; }
         public bool IsRestartRequested { get; private set; }
 
-        private readonly Task<UpdateManager> _UpdateManager;
-
         public static void Initialize()
         {
         }
@@ -22,8 +20,6 @@ namespace Ann.Core
         public static void Destory()
         {
             var isRestart = Instance.IsEnableSilentUpdate && Instance.IsRestartRequested;
-
-            Instance?._UpdateManager?.Result.Dispose();
 
             if (isRestart)
                 UpdateManager.RestartApp();
@@ -77,9 +73,13 @@ namespace Ann.Core
             if (IsEnableSilentUpdate == false)
                 return;
 
-            var mgr = await _UpdateManager;
-            await mgr.UpdateApp(p => UpdateProgress = p);
-            UpdateProgress = 100;
+            using (var mgr = await UpdateManager.GitHubUpdateManager(
+                "https://github.com/YoshihiroIto/Ann",
+                accessToken: App.Instance.Config.GitHubPersonalAccessToken))
+            {
+                await mgr.UpdateApp(p => UpdateProgress = p);
+                UpdateProgress = 100;
+            }
         }
 
         private async Task<bool> CheckForUpdate()
@@ -89,10 +89,14 @@ namespace Ann.Core
             if (IsEnableSilentUpdate == false)
                 return false;
 
-            var mgr = await _UpdateManager;
+            using (var mgr = await UpdateManager.GitHubUpdateManager(
+                "https://github.com/YoshihiroIto/Ann",
+                accessToken: App.Instance.Config.GitHubPersonalAccessToken))
             {
                 var updateInfo = await mgr.CheckForUpdate(progress: p => CheckForUpdateProgress = p);
                 CheckForUpdateProgress = 100;
+                // ReSharper disable once ExplicitCallerInfoArgument
+                RaisePropertyChanged(nameof(VersionCheckingState));
                 return updateInfo.CurrentlyInstalledVersion.SHA1 != updateInfo.FutureReleaseEntry.SHA1;
             }
         }
@@ -105,14 +109,6 @@ namespace Ann.Core
                 var updaterExe = System.IO.Path.Combine(parentDir, "Update.exe");
 
                 IsEnableSilentUpdate = File.Exists(updaterExe);
-            }
-
-            if (IsEnableSilentUpdate)
-            {
-                _UpdateManager =
-                    UpdateManager.GitHubUpdateManager(
-                        "https://github.com/YoshihiroIto/Ann",
-                        accessToken: App.Instance.Config.GitHubPersonalAccessToken);
             }
         }
 
