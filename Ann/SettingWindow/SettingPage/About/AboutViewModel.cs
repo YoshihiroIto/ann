@@ -59,8 +59,8 @@ namespace Ann.SettingWindow.SettingPage.About
         {
             await _VersionChecker.CheckAsync();
 
-            if (_VersionChecker.VersionCheckingState == VersionCheckingStates.Old)
-                await _VersionChecker.DownloadReleases();
+            //if (_VersionChecker.VersionCheckingState == VersionCheckingStates.Old)
+            //    await _VersionChecker.DownloadReleases();
         }
     }
 }
