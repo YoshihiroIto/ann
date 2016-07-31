@@ -9,52 +9,6 @@
         <description>$description$</description>
     </metadata>
     <files>
-        <file src="bin\Release\en\Ann.resources.dll" target="lib\net461\en\Ann.resources.dll" />
-        <file src="bin\Release\ja\Ann.resources.dll" target="lib\net461\ja\Ann.resources.dll" />
-        <file src="bin\Release\Ann.Core.dll" target="lib\net461\Ann.Core.dll" />
-        <file src="bin\Release\Ann.exe" target="lib\net461\Ann.exe" />
-        <file src="bin\Release\Ann.exe.config" target="lib\net461\Ann.exe.config" />
-        <file src="bin\Release\Ann.Foundation.dll" target="lib\net461\Ann.Foundation.dll" />
-        <file src="bin\Release\DeltaCompressionDotNet.dll" target="lib\net461\DeltaCompressionDotNet.dll" />
-        <file src="bin\Release\DeltaCompressionDotNet.MsDelta.dll" target="lib\net461\DeltaCompressionDotNet.MsDelta.dll" />
-        <file src="bin\Release\DeltaCompressionDotNet.PatchApi.dll" target="lib\net461\DeltaCompressionDotNet.PatchApi.dll" />
-        <file src="bin\Release\ICSharpCode.SharpZipLib.dll" target="lib\net461\ICSharpCode.SharpZipLib.dll" />
-        <file src="bin\Release\ICSharpCode.SharpZipLib.xml" target="lib\net461\ICSharpCode.SharpZipLib.xml" />
-        <file src="bin\Release\Livet.dll" target="lib\net461\Livet.dll" />
-        <file src="bin\Release\Livet.xml" target="lib\net461\Livet.xml" />
-        <file src="bin\Release\MaterialDesignColors.dll" target="lib\net461\MaterialDesignColors.dll" />
-        <file src="bin\Release\MaterialDesignThemes.Wpf.dll" target="lib\net461\MaterialDesignThemes.Wpf.dll" />
-        <file src="bin\Release\MaterialDesignThemes.Wpf.xml" target="lib\net461\MaterialDesignThemes.Wpf.xml" />
-        <file src="bin\Release\Microsoft.Expression.Interactions.dll" target="lib\net461\Microsoft.Expression.Interactions.dll" />
-        <file src="bin\Release\Microsoft.WindowsAPICodePack.dll" target="lib\net461\Microsoft.WindowsAPICodePack.dll" />
-        <file src="bin\Release\Microsoft.WindowsAPICodePack.Shell.dll" target="lib\net461\Microsoft.WindowsAPICodePack.Shell.dll" />
-        <file src="bin\Release\Microsoft.WindowsAPICodePack.Shell.xml" target="lib\net461\Microsoft.WindowsAPICodePack.Shell.xml" />
-        <file src="bin\Release\Microsoft.WindowsAPICodePack.xml" target="lib\net461\Microsoft.WindowsAPICodePack.xml" />
-        <file src="bin\Release\Mono.Cecil.dll" target="lib\net461\Mono.Cecil.dll" />
-        <file src="bin\Release\Mono.Cecil.Mdb.dll" target="lib\net461\Mono.Cecil.Mdb.dll" />
-        <file src="bin\Release\Mono.Cecil.Pdb.dll" target="lib\net461\Mono.Cecil.Pdb.dll" />
-        <file src="bin\Release\Mono.Cecil.Rocks.dll" target="lib\net461\Mono.Cecil.Rocks.dll" />
-        <file src="bin\Release\NuGet.Squirrel.dll" target="lib\net461\NuGet.Squirrel.dll" />
-        <file src="bin\Release\ReactiveProperty.DataAnnotations.dll" target="lib\net461\ReactiveProperty.DataAnnotations.dll" />
-        <file src="bin\Release\ReactiveProperty.DataAnnotations.xml" target="lib\net461\ReactiveProperty.DataAnnotations.xml" />
-        <file src="bin\Release\ReactiveProperty.dll" target="lib\net461\ReactiveProperty.dll" />
-        <file src="bin\Release\ReactiveProperty.NET46.dll" target="lib\net461\ReactiveProperty.NET46.dll" />
-        <file src="bin\Release\ReactiveProperty.NET46.xml" target="lib\net461\ReactiveProperty.NET46.xml" />
-        <file src="bin\Release\ReactiveProperty.xml" target="lib\net461\ReactiveProperty.xml" />
-        <file src="bin\Release\Splat.dll" target="lib\net461\Splat.dll" />
-        <file src="bin\Release\Squirrel.dll" target="lib\net461\Squirrel.dll" />
-        <file src="bin\Release\System.Interactive.dll" target="lib\net461\System.Interactive.dll" />
-        <file src="bin\Release\System.Interactive.xml" target="lib\net461\System.Interactive.xml" />
-        <file src="bin\Release\System.Reactive.Core.dll" target="lib\net461\System.Reactive.Core.dll" />
-        <file src="bin\Release\System.Reactive.Core.xml" target="lib\net461\System.Reactive.Core.xml" />
-        <file src="bin\Release\System.Reactive.Interfaces.dll" target="lib\net461\System.Reactive.Interfaces.dll" />
-        <file src="bin\Release\System.Reactive.Interfaces.xml" target="lib\net461\System.Reactive.Interfaces.xml" />
-        <file src="bin\Release\System.Reactive.Linq.dll" target="lib\net461\System.Reactive.Linq.dll" />
-        <file src="bin\Release\System.Reactive.Linq.xml" target="lib\net461\System.Reactive.Linq.xml" />
-        <file src="bin\Release\System.Reactive.PlatformServices.dll" target="lib\net461\System.Reactive.PlatformServices.dll" />
-        <file src="bin\Release\System.Reactive.PlatformServices.xml" target="lib\net461\System.Reactive.PlatformServices.xml" />
-        <file src="bin\Release\System.Windows.Interactivity.dll" target="lib\net461\System.Windows.Interactivity.dll" />
-        <file src="bin\Release\YamlDotNet.dll" target="lib\net461\YamlDotNet.dll" />
-        <file src="bin\Release\YamlDotNet.xml" target="lib\net461\YamlDotNet.xml" />
+        <file src="bin\Release\**\*.dll" target="lib\net461"/>
     </files>
 </package>
