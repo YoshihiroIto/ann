@@ -131,9 +131,7 @@ namespace Ann.Core
                     return;
                 }
 
-                var i = await CheckForUpdate();
-
-                if (i == false)
+                if (await CheckForUpdate() == false)
                 {
                     VersionCheckingState = VersionCheckingStates.Latest;
                 }

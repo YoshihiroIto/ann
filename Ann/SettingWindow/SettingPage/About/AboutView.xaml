@@ -111,8 +111,29 @@
                               Mode=OneTime}"
             Content="{Binding Source={x:Static app:CultureService.Instance},
                               Path=Resources.Restart,
-                              Mode=OneWay}"
-            Style="{StaticResource FlatButtonStyle}" />
+                              Mode=OneWay}">
+        <Button.Style>
+            <Style BasedOn="{StaticResource FlatButtonStyle}" TargetType="{x:Type Button}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding VersionCheckingState, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Checking}">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding VersionCheckingState, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Latest}">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding VersionCheckingState, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Old}">
+                        <Setter Property="Visibility" Value="Visible" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding VersionCheckingState, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Unknown}">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding VersionCheckingState, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Old}">
+                        <Setter Property="Visibility" Value="Visible" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Button.Style>
+    </Button>
 
     <StackPanel Margin="0,32,0,0"
                 HorizontalAlignment="Left"
