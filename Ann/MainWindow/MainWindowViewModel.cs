@@ -46,6 +46,7 @@ namespace Ann.MainWindow
         public ReactiveProperty<double> CandidateItemHeight { get; }
 
         public AsyncReactiveCommand SettingShowCommand { get; }
+        public ReactiveProperty<bool> IsShowingSettingShow { get; }
 
         public ReadOnlyReactiveProperty<IndexOpeningResults> IndexOpeningResult { get; }
         public ReactiveProperty<bool> IsEnableActivateHotKey { get; }
@@ -177,16 +178,6 @@ namespace Ann.MainWindow
                     async _ => await ProcessHelper.Run("EXPLORER", $"/select,\"{SelectedCandidate.Value.Path}\"", false))
                 .AddTo(CompositeDisposable);
 
-            AppHideCommand = new ReactiveCommand().AddTo(CompositeDisposable);
-            AppHideCommand
-                .Subscribe(_ => Messenger.Publish(new WindowActionMessage(WindowAction.Hidden)))
-                .AddTo(CompositeDisposable);
-
-            AppExitCommand = new ReactiveCommand().AddTo(CompositeDisposable);
-            AppExitCommand
-                .Subscribe(_ => Messenger.Publish(new WindowActionMessage(WindowAction.Close)))
-                .AddTo(CompositeDisposable);
-
             SettingShowCommand = new AsyncReactiveCommand().AddTo(CompositeDisposable);
             SettingShowCommand.Subscribe(async _ =>
             {
@@ -196,13 +187,27 @@ namespace Ann.MainWindow
                 App.Instance.InvokeShortcutKeyChanged();
                 App.Instance.Config.ShortcutKeys.Activate.Key = key;
 
+                IsShowingSettingShow.Value = true;
                 await AsyncMessageBroker.Default.PublishAsync(new SettingViewModel(App.Instance.Config));
+                IsShowingSettingShow.Value = false;
 
                 Messenger.Publish(new WindowActionMessage(WindowAction.Visible));
 
                 App.Instance.SaveConfig();
                 App.Instance.InvokeShortcutKeyChanged();
             }).AddTo(CompositeDisposable);
+
+            IsShowingSettingShow = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
+
+            AppHideCommand = new ReactiveCommand().AddTo(CompositeDisposable);
+            AppHideCommand
+                .Subscribe(_ => Messenger.Publish(new WindowActionMessage(WindowAction.Hidden)))
+                .AddTo(CompositeDisposable);
+
+            AppExitCommand = IsShowingSettingShow.Inverse().ToReactiveCommand().AddTo(CompositeDisposable);
+            AppExitCommand
+                .Subscribe(_ => Messenger.Publish(new WindowActionMessage(WindowAction.Close)))
+                .AddTo(CompositeDisposable);
 
             IndexOpeningResult = App.Instance.ObserveProperty(x => x.IndexOpeningResult)
                 .ToReadOnlyReactiveProperty()
