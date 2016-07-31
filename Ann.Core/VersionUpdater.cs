@@ -23,7 +23,7 @@ namespace Ann.Core
         {
             var isRestart = Instance.IsEnableSilentUpdate && Instance.IsRestartRequested;
 
-            Instance._UpdateManager.Result.Dispose();
+            Instance?._UpdateManager?.Result.Dispose();
 
             if (isRestart)
                 UpdateManager.RestartApp();
@@ -126,10 +126,13 @@ namespace Ann.Core
                 IsEnableSilentUpdate = File.Exists(updaterExe);
             }
 
-            _UpdateManager =
-                UpdateManager.GitHubUpdateManager(
-                    "https://github.com/YoshihiroIto/Ann",
-                    accessToken: App.Instance.Config.GitHubPersonalAccessToken);
+            if (IsEnableSilentUpdate)
+            {
+                _UpdateManager =
+                    UpdateManager.GitHubUpdateManager(
+                        "https://github.com/YoshihiroIto/Ann",
+                        accessToken: App.Instance.Config.GitHubPersonalAccessToken);
+            }
         }
     }
 }
