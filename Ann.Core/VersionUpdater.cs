@@ -13,13 +13,19 @@ namespace Ann.Core
         public bool IsEnableSilentUpdate { get; }
         public bool IsRestartRequested { get; private set; }
 
+        private readonly Task<UpdateManager> _UpdateManager;
+
         public static void Initialize()
         {
         }
 
         public static void Destory()
         {
-            if (Instance.IsEnableSilentUpdate && Instance.IsRestartRequested)
+            var isRestart = Instance.IsEnableSilentUpdate && Instance.IsRestartRequested;
+
+            Instance._UpdateManager.Result.Dispose();
+
+            if (isRestart)
                 UpdateManager.RestartApp();
         }
 
@@ -71,10 +77,9 @@ namespace Ann.Core
             if (IsEnableSilentUpdate == false)
                 return;
 
-            using (var mgr = await UpdateManager.GitHubUpdateManager(
-                "https://github.com/YoshihiroIto/Ann",
-                accessToken: App.Instance.Config.GitHubPersonalAccessToken))
-                await mgr.UpdateApp(p => UpdateProgress = p);
+            var mgr = await _UpdateManager;
+            await mgr.UpdateApp(p => UpdateProgress = p);
+            UpdateProgress = 100;
         }
 
         public async Task<bool> CheckForUpdate()
@@ -84,13 +89,11 @@ namespace Ann.Core
             if (IsEnableSilentUpdate == false)
                 return false;
 
-            using (var mgr = await UpdateManager.GitHubUpdateManager(
-                "https://github.com/YoshihiroIto/Ann",
-                accessToken: App.Instance.Config.GitHubPersonalAccessToken))
+            var mgr = await _UpdateManager;
             {
-                var r = await mgr.CheckForUpdate(progress: p => CheckForUpdateProgress = p);
-
-                return r.CurrentlyInstalledVersion.SHA1 != r.FutureReleaseEntry.SHA1;
+                var updateInfo = await mgr.CheckForUpdate(progress: p => CheckForUpdateProgress = p);
+                CheckForUpdateProgress = 100;
+                return updateInfo.CurrentlyInstalledVersion.SHA1 != updateInfo.FutureReleaseEntry.SHA1;
             }
         }
 
@@ -101,25 +104,32 @@ namespace Ann.Core
             if (IsEnableSilentUpdate == false)
                 return;
 
-            using (var mgr = await UpdateManager.GitHubUpdateManager(
-                "https://github.com/YoshihiroIto/Ann",
-                accessToken: App.Instance.Config.GitHubPersonalAccessToken))
+            var mgr = await _UpdateManager;
             {
                 var updateInfo = await mgr.CheckForUpdate(progress: p => DownloadReleasesProgress = p);
 
                 await mgr.DownloadReleases(
                     updateInfo.ReleasesToApply,
                     p => DownloadReleasesProgress = p);
+
+                DownloadReleasesProgress = 100;
             }
         }
 
         private VersionUpdater()
         {
-            var dir = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            var parentDir = System.IO.Path.GetDirectoryName(dir) ?? string.Empty;
-            var updaterExe = System.IO.Path.Combine(parentDir, "Update.exe");
+            {
+                var dir = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+                var parentDir = System.IO.Path.GetDirectoryName(dir) ?? string.Empty;
+                var updaterExe = System.IO.Path.Combine(parentDir, "Update.exe");
 
-            IsEnableSilentUpdate = File.Exists(updaterExe);
+                IsEnableSilentUpdate = File.Exists(updaterExe);
+            }
+
+            _UpdateManager =
+                UpdateManager.GitHubUpdateManager(
+                    "https://github.com/YoshihiroIto/Ann",
+                    accessToken: App.Instance.Config.GitHubPersonalAccessToken);
         }
     }
 }
