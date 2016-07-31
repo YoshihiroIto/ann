@@ -61,20 +61,6 @@ namespace Ann.Core
 
         #endregion
 
-#if false
-#region CheckForUpdateProgress
-
-        private int _CheckForUpdateProgress;
-
-        public int CheckForUpdateProgress
-        {
-            get { return _CheckForUpdateProgress; }
-            set { SetProperty(ref _CheckForUpdateProgress, value); }
-        }
-
-#endregion
-#endif
-
         #region IsAvailableUpdate
 
         private bool _IsAvailableUpdate;
@@ -105,27 +91,6 @@ namespace Ann.Core
                 UpdateProgress = 100;
             }
         }
-
-#if false
-        private async Task CheckForUpdate()
-        {
-            CheckForUpdateProgress = 0;
-
-            if (IsEnableSilentUpdate == false)
-            {
-                IsAvailableUpdate = false;
-                return;
-            }
-
-            var mgr = await _UpdateManager;
-            {
-                var updateInfo = await mgr.CheckForUpdate(progress: p => CheckForUpdateProgress = p);
-                CheckForUpdateProgress = 100;
-
-                IsAvailableUpdate = updateInfo.CurrentlyInstalledVersion.SHA1 != updateInfo.FutureReleaseEntry.SHA1;
-            }
-        }
-#endif
 
         private VersionUpdater()
         {
@@ -163,11 +128,7 @@ namespace Ann.Core
 
             try
             {
-#if false
-                await CheckForUpdate();
-#else
                 await UpdateApp();
-#endif
 
                 VersionCheckingState = IsAvailableUpdate ? VersionCheckingStates.Old : VersionCheckingStates.Latest;
             }
