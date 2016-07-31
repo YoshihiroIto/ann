@@ -30,8 +30,8 @@ namespace Ann.Core
                 }
 
                 VersionCheckingState = await VersionUpdater.Instance.CheckForUpdate()
-                    ? VersionCheckingStates.Latest
-                    : VersionCheckingStates.Old;
+                    ? VersionCheckingStates.Old
+                    : VersionCheckingStates.Latest;
             }
             catch
             {
