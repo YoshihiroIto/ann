@@ -38,5 +38,11 @@ namespace Ann.Core
                 VersionCheckingState = VersionCheckingStates.Unknown;
             }
         }
+
+        public async Task DownloadReleases()
+        {
+            await VersionUpdater.Instance.DownloadReleases();
+            await CheckAsync();
+        }
     }
 }

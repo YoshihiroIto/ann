@@ -11,7 +11,7 @@ namespace Ann.Core
         public static VersionUpdater Instance { get; } = new VersionUpdater();
 
         public bool IsEnableSilentUpdate { get; }
-        public bool IsRestartRequested { get; private set;}
+        public bool IsRestartRequested { get; private set; }
 
         public static void Initialize()
         {
@@ -47,6 +47,18 @@ namespace Ann.Core
 
         #endregion
 
+        #region DownloadReleasesProgress
+
+        private int _DownloadReleasesProgress;
+
+        public int DownloadReleasesProgress
+        {
+            get { return _DownloadReleasesProgress; }
+            set { SetProperty(ref _DownloadReleasesProgress, value); }
+        }
+
+        #endregion
+
         public void RequestRestart()
         {
             IsRestartRequested = true;
@@ -61,7 +73,7 @@ namespace Ann.Core
 
             using (var mgr = await UpdateManager.GitHubUpdateManager(
                 "https://github.com/YoshihiroIto/Ann",
-                accessToken:App.Instance.Config.GitHubPersonalAccessToken))
+                accessToken: App.Instance.Config.GitHubPersonalAccessToken))
                 await mgr.UpdateApp(p => UpdateProgress = p);
         }
 
@@ -74,11 +86,30 @@ namespace Ann.Core
 
             using (var mgr = await UpdateManager.GitHubUpdateManager(
                 "https://github.com/YoshihiroIto/Ann",
-                accessToken:App.Instance.Config.GitHubPersonalAccessToken))
+                accessToken: App.Instance.Config.GitHubPersonalAccessToken))
             {
                 var r = await mgr.CheckForUpdate(progress: p => CheckForUpdateProgress = p);
 
                 return r.CurrentlyInstalledVersion.SHA1 != r.FutureReleaseEntry.SHA1;
+            }
+        }
+
+        public async Task DownloadReleases()
+        {
+            DownloadReleasesProgress = 0;
+
+            if (IsEnableSilentUpdate == false)
+                return;
+
+            using (var mgr = await UpdateManager.GitHubUpdateManager(
+                "https://github.com/YoshihiroIto/Ann",
+                accessToken: App.Instance.Config.GitHubPersonalAccessToken))
+            {
+                var updateInfo = await mgr.CheckForUpdate(progress: p => DownloadReleasesProgress = p);
+
+                await mgr.DownloadReleases(
+                    updateInfo.ReleasesToApply,
+                    p => DownloadReleasesProgress = p);
             }
         }
 
