@@ -1,4 +1,6 @@
-﻿namespace Ann.Foundation.Mvvm.Message
+﻿using System.Windows;
+
+namespace Ann.Foundation.Mvvm.Message
 {
     public enum WindowAction
     {

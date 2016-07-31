@@ -53,9 +53,13 @@ namespace Ann.MainWindow
 
         public Core.Config.MainWindow Config { get; private set; }
 
+        public WindowMessageBroker Messenger { get; }
+
         public MainWindowViewModel()
         {
             LoadConfig();
+
+            Messenger = new WindowMessageBroker().AddTo(CompositeDisposable);
 
             Input = new ReactiveProperty<string>().AddTo(CompositeDisposable);
             InProgressMessage = new ReactiveProperty<string>(string.Empty).AddTo(CompositeDisposable);
@@ -161,7 +165,7 @@ namespace Ann.MainWindow
                 .ObserveOnUIDispatcher()
                 .Subscribe(async p =>
                 {
-                    MessageBroker.Default.Publish(new WindowActionMessage(WindowAction.Hidden));
+                    Messenger.Publish(new WindowActionMessage(WindowAction.Hidden));
                     await ProcessHelper.Run(path, string.Empty, p == "admin");
                 }).AddTo(CompositeDisposable);
 
@@ -175,12 +179,12 @@ namespace Ann.MainWindow
 
             AppHideCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             AppHideCommand
-                .Subscribe(_ => MessageBroker.Default.Publish(new WindowActionMessage(WindowAction.Hidden)))
+                .Subscribe(_ => Messenger.Publish(new WindowActionMessage(WindowAction.Hidden)))
                 .AddTo(CompositeDisposable);
 
             AppExitCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             AppExitCommand
-                .Subscribe(_ => MessageBroker.Default.Publish(new WindowActionMessage(WindowAction.Close)))
+                .Subscribe(_ => Messenger.Publish(new WindowActionMessage(WindowAction.Close)))
                 .AddTo(CompositeDisposable);
 
             SettingShowCommand = new AsyncReactiveCommand().AddTo(CompositeDisposable);
@@ -194,7 +198,7 @@ namespace Ann.MainWindow
 
                 await AsyncMessageBroker.Default.PublishAsync(new SettingViewModel(App.Instance.Config));
 
-                MessageBroker.Default.Publish(new WindowActionMessage(WindowAction.Visible));
+                Messenger.Publish(new WindowActionMessage(WindowAction.Visible));
 
                 App.Instance.SaveConfig();
                 App.Instance.InvokeShortcutKeyChanged();

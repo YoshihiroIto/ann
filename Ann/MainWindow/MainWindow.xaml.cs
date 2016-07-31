@@ -8,6 +8,7 @@ using System.Windows.Input;
 using Ann.Core;
 using Ann.Foundation;
 using Ann.Foundation.Control;
+using Ann.Foundation.Mvvm.Message;
 using Reactive.Bindings.Extensions;
 
 namespace Ann.MainWindow
@@ -22,6 +23,8 @@ namespace Ann.MainWindow
         public MainWindow()
         {
             DataContext = _DataContext;
+
+            SetupMessenger();
 
             if (double.IsNaN(_DataContext.Config.Left))
                 WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -188,6 +191,15 @@ namespace Ann.MainWindow
                         Modifiers = k.Modifiers,
                         Command = _DataContext.AppHideCommand
                     }).ToArray());
+        }
+
+        private void SetupMessenger()
+        {
+            _DataContext.Messenger.Window = this;
+
+            _DataContext.Messenger
+                .Subscribe<WindowActionMessage>(WindowActionAction.InvokeAction)
+                .AddTo(_DataContext.CompositeDisposable);
         }
     }
 }
