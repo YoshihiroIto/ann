@@ -102,18 +102,15 @@
             </TextBlock.Style>
         </TextBlock>
     </StackPanel>
+    <StackPanel Orientation="Horizontal">
+        <TextBlock Text="{Binding UpdateProgress.Value, Mode=OneWay}" />
+        <TextBlock Text="%" />
+    </StackPanel>
 
-    <UniformGrid Margin="0,32,0,0"
-                 HorizontalAlignment="Left"
-                 Columns="3">
-        <Button Margin="0,0,4,0"
-                Command="{Binding OpenUrlCommand,
-                                  Mode=OneTime}"
-                CommandParameter="https://github.com/YoshihiroIto/ann/releases/latest"
-                Style="{StaticResource MaterialDesignRaisedButton}">
-            <TextBlock VerticalAlignment="Center" Text="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Download, Mode=OneWay}" />
-        </Button>
-        <Button Margin="4,0"
+    <StackPanel Margin="0,32,0,0"
+                HorizontalAlignment="Left"
+                Orientation="Horizontal">
+        <Button Margin="0,0,8,0"
                 Command="{Binding OpenUrlCommand,
                                   Mode=OneTime}"
                 CommandParameter="https://github.com/YoshihiroIto/ann"
@@ -123,7 +120,7 @@
                 <TextBlock Margin="4,0,0,0" VerticalAlignment="Center">GitHub</TextBlock>
             </StackPanel>
         </Button>
-        <Button Margin="4,0,0,0"
+        <Button Margin="0,0,8,0"
                 Command="{Binding OpenUrlCommand,
                                   Mode=OneTime}"
                 CommandParameter="https://twitter.com/yoiyoi322"
@@ -133,7 +130,7 @@
                 <TextBlock Margin="4,0,0,0" VerticalAlignment="Center">Twitter</TextBlock>
             </StackPanel>
         </Button>
-    </UniformGrid>
+    </StackPanel>
 
     <TextBlock Margin="0,32,0,8"
                Style="{StaticResource SubheadingTextBlockStyle}"

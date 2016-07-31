@@ -19,6 +19,7 @@ namespace Ann.SettingWindow.SettingPage.About
         private readonly VersionChecker _VersionChecker = new VersionChecker();
 
         public ReadOnlyReactiveProperty<VersionCheckingStates> VersionCheckingState { get; }
+        public ReadOnlyReactiveProperty<int> UpdateProgress { get; }
 
         public AboutViewModel()
         {
@@ -31,6 +32,10 @@ namespace Ann.SettingWindow.SettingPage.About
                 .AddTo(CompositeDisposable);
 
             VersionCheckingState = _VersionChecker.ObserveProperty(x => x.VersionCheckingState)
+                .ToReadOnlyReactiveProperty()
+                .AddTo(CompositeDisposable);
+
+            UpdateProgress = VersionUpdater.Instance.ObserveProperty(x => x.UpdateProgress)
                 .ToReadOnlyReactiveProperty()
                 .AddTo(CompositeDisposable);
         }

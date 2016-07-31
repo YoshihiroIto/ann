@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using Ann.Core;
 using Ann.Foundation;
-using Squirrel;
 
 namespace Ann
 {
@@ -21,13 +20,7 @@ namespace Ann
 
             DisposableChecker.Start();
             {
-                Task.Run(async () =>
-                {
-                    using (var mgr = UpdateManager.GitHubUpdateManager("https://github.com/YoshihiroIto/Ann"))
-                    {
-                        await mgr.Result.UpdateApp();
-                    }
-                });
+                Task.Run(async () => await VersionUpdater.Instance.UpdateApp());
 
                 var e = new Entry();
                 e.InitializeComponent();
