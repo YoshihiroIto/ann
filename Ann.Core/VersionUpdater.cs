@@ -134,5 +134,40 @@ namespace Ann.Core
                         accessToken: App.Instance.Config.GitHubPersonalAccessToken);
             }
         }
+
+
+        #region UpdatingStates
+
+        private VersionCheckingStates _VersionCheckingState = VersionCheckingStates.Wait;
+
+        public VersionCheckingStates VersionCheckingState
+        {
+            get { return _VersionCheckingState; }
+            set { SetProperty(ref _VersionCheckingState, value); }
+        }
+
+        #endregion
+
+        public async Task CheckAsync()
+        {
+            VersionCheckingState = VersionCheckingStates.Checking;
+
+            try
+            {
+                if (IsEnableSilentUpdate == false)
+                {
+                    VersionCheckingState = VersionCheckingStates.Unknown;
+                    return;
+                }
+
+                VersionCheckingState = await CheckForUpdate()
+                    ? VersionCheckingStates.Old
+                    : VersionCheckingStates.Latest;
+            }
+            catch
+            {
+                VersionCheckingState = VersionCheckingStates.Unknown;
+            }
+        }
     }
 }

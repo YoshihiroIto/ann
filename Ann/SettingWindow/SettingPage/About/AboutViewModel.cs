@@ -18,8 +18,6 @@ namespace Ann.SettingWindow.SettingPage.About
         public ReactiveCommand<string> OpenUrlCommand { get; }
         public ReactiveCommand<OpenSource> OpenSourceOpenCommand { get; }
 
-        private readonly VersionChecker _VersionChecker = new VersionChecker();
-
         public ReadOnlyReactiveProperty<VersionCheckingStates> VersionCheckingState { get; }
         public ReadOnlyReactiveProperty<int> UpdateProgress { get; }
 
@@ -35,7 +33,7 @@ namespace Ann.SettingWindow.SettingPage.About
             OpenSourceOpenCommand.Subscribe(async o => await ProcessHelper.RunAsync(o.Url, string.Empty, false))
                 .AddTo(CompositeDisposable);
 
-            VersionCheckingState = _VersionChecker.ObserveProperty(x => x.VersionCheckingState)
+            VersionCheckingState = VersionUpdater.Instance.ObserveProperty(x => x.VersionCheckingState)
                 .ToReadOnlyReactiveProperty()
                 .AddTo(CompositeDisposable);
 
@@ -57,7 +55,7 @@ namespace Ann.SettingWindow.SettingPage.About
 
         public async Task CheckVersionAsync()
         {
-            await _VersionChecker.CheckAsync();
+            await VersionUpdater.Instance.CheckAsync();
 
             //if (_VersionChecker.VersionCheckingState == VersionCheckingStates.Old)
             //    await _VersionChecker.DownloadReleases();

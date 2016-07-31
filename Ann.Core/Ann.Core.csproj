@@ -154,7 +154,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Types.cs" />
-    <Compile Include="VersionChecker.cs" />
     <Compile Include="VersionUpdater.cs" />
   </ItemGroup>
   <ItemGroup>
