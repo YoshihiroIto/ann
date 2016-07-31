@@ -47,18 +47,11 @@ namespace Ann.SettingWindow.SettingPage.About
                 VersionUpdater.Instance.RequestRestart();
                 MessageBroker.Default.Publish(new WindowActionMessage(WindowAction.Close));
             }).AddTo(CompositeDisposable);
-
-            DownloadProgress = VersionUpdater.Instance.ToReactivePropertyAsSynchronized(x => x.DownloadReleasesProgress);
         }
-
-        public ReactiveProperty<int> DownloadProgress { get; }
 
         public async Task CheckVersionAsync()
         {
             await VersionUpdater.Instance.CheckAsync();
-
-            //if (_VersionChecker.VersionCheckingState == VersionCheckingStates.Old)
-            //    await _VersionChecker.DownloadReleases();
         }
     }
 }

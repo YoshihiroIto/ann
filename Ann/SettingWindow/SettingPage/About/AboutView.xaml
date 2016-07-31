@@ -107,10 +107,6 @@
         <TextBlock Text="%" />
     </StackPanel>
     <Button HorizontalAlignment="Left" Content="再起動" Command="{Binding RestartCommand, Mode=OneTime}"></Button>
-    <StackPanel Orientation="Horizontal">
-        <TextBlock Text="{Binding DownloadProgress.Value, Mode=OneWay}" />
-        <TextBlock Text="%" />
-    </StackPanel>
 
     <StackPanel Margin="0,32,0,0"
                 HorizontalAlignment="Left"

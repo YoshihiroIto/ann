@@ -29,6 +29,18 @@ namespace Ann.Core
                 UpdateManager.RestartApp();
         }
 
+        #region UpdatingStates
+
+        private VersionCheckingStates _VersionCheckingState = VersionCheckingStates.Wait;
+
+        public VersionCheckingStates VersionCheckingState
+        {
+            get { return _VersionCheckingState; }
+            set { SetProperty(ref _VersionCheckingState, value); }
+        }
+
+        #endregion
+
         #region UpdateProgress
 
         private int _UpdateProgress;
@@ -53,18 +65,6 @@ namespace Ann.Core
 
         #endregion
 
-        #region DownloadReleasesProgress
-
-        private int _DownloadReleasesProgress;
-
-        public int DownloadReleasesProgress
-        {
-            get { return _DownloadReleasesProgress; }
-            set { SetProperty(ref _DownloadReleasesProgress, value); }
-        }
-
-        #endregion
-
         public void RequestRestart()
         {
             IsRestartRequested = true;
@@ -82,7 +82,7 @@ namespace Ann.Core
             UpdateProgress = 100;
         }
 
-        public async Task<bool> CheckForUpdate()
+        private async Task<bool> CheckForUpdate()
         {
             CheckForUpdateProgress = 0;
 
@@ -94,25 +94,6 @@ namespace Ann.Core
                 var updateInfo = await mgr.CheckForUpdate(progress: p => CheckForUpdateProgress = p);
                 CheckForUpdateProgress = 100;
                 return updateInfo.CurrentlyInstalledVersion.SHA1 != updateInfo.FutureReleaseEntry.SHA1;
-            }
-        }
-
-        public async Task DownloadReleases()
-        {
-            DownloadReleasesProgress = 0;
-
-            if (IsEnableSilentUpdate == false)
-                return;
-
-            var mgr = await _UpdateManager;
-            {
-                var updateInfo = await mgr.CheckForUpdate(progress: p => DownloadReleasesProgress = p);
-
-                await mgr.DownloadReleases(
-                    updateInfo.ReleasesToApply,
-                    p => DownloadReleasesProgress = p);
-
-                DownloadReleasesProgress = 100;
             }
         }
 
@@ -135,21 +116,11 @@ namespace Ann.Core
             }
         }
 
-
-        #region UpdatingStates
-
-        private VersionCheckingStates _VersionCheckingState = VersionCheckingStates.Wait;
-
-        public VersionCheckingStates VersionCheckingState
-        {
-            get { return _VersionCheckingState; }
-            set { SetProperty(ref _VersionCheckingState, value); }
-        }
-
-        #endregion
-
         public async Task CheckAsync()
         {
+            if (VersionCheckingState == VersionCheckingStates.Checking)
+                return;
+
             VersionCheckingState = VersionCheckingStates.Checking;
 
             try
@@ -160,9 +131,19 @@ namespace Ann.Core
                     return;
                 }
 
-                VersionCheckingState = await CheckForUpdate()
-                    ? VersionCheckingStates.Old
-                    : VersionCheckingStates.Latest;
+                var i = await CheckForUpdate();
+
+                if (i == false)
+                {
+                    VersionCheckingState = VersionCheckingStates.Latest;
+                }
+                else
+                {
+                    VersionCheckingState =
+                        UpdateProgress == 100
+                            ? VersionCheckingStates.Latest
+                            : VersionCheckingStates.Old;
+                }
             }
             catch
             {
