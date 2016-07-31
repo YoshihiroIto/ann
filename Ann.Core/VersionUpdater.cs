@@ -23,6 +23,7 @@ namespace Ann.Core
         {
             var isRestart = Instance.IsEnableSilentUpdate && Instance.IsRestartRequested;
 
+            Instance?._UpdateManager?.Dispose();
             Instance.Dispose();
 
             if (isRestart)
@@ -94,9 +95,7 @@ namespace Ann.Core
             if (IsEnableSilentUpdate == false)
                 return;
 
-            using (var mgr = await UpdateManager.GitHubUpdateManager(
-                "https://github.com/YoshihiroIto/Ann",
-                accessToken: App.Instance.Config.GitHubPersonalAccessToken))
+            var mgr = await _UpdateManager;
             {
                 await mgr.UpdateApp(p => UpdateProgress = p);
                 UpdateProgress = 100;
@@ -113,9 +112,7 @@ namespace Ann.Core
                 return;
             }
 
-            using (var mgr = await UpdateManager.GitHubUpdateManager(
-                "https://github.com/YoshihiroIto/Ann",
-                accessToken: App.Instance.Config.GitHubPersonalAccessToken))
+            var mgr = await _UpdateManager;
             {
                 var updateInfo = await mgr.CheckForUpdate(progress: p => CheckForUpdateProgress = p);
                 CheckForUpdateProgress = 100;
@@ -123,6 +120,8 @@ namespace Ann.Core
                 IsAvailableUpdate = updateInfo.CurrentlyInstalledVersion.SHA1 != updateInfo.FutureReleaseEntry.SHA1;
             }
         }
+
+        private readonly Task<UpdateManager> _UpdateManager;
 
         private VersionUpdater()
         {
@@ -132,9 +131,17 @@ namespace Ann.Core
 
             IsEnableSilentUpdate = File.Exists(updaterExe);
 
-            this.ObserveProperty(x => x.IsAvailableUpdate)
+            if (IsEnableSilentUpdate)
+            {
+                _UpdateManager =
+                    UpdateManager.GitHubUpdateManager(
+                        "https://github.com/YoshihiroIto/Ann",
+                        accessToken: App.Instance.Config.GitHubPersonalAccessToken);
+
+                this.ObserveProperty(x => x.IsAvailableUpdate)
                 .Subscribe(i => VersionCheckingState = i ? VersionCheckingStates.Old : VersionCheckingStates.Latest)
                 .AddTo(CompositeDisposable);
+            }
         }
 
         public async Task CheckAsync()
