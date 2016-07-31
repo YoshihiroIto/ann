@@ -27,5 +27,10 @@ namespace Ann.Core
         }
 
         private VersionUpdater() { }
+
+        public void Restart()
+        {
+           UpdateManager.RestartApp();
+        }
     }
 }

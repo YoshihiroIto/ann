@@ -21,6 +21,8 @@ namespace Ann.SettingWindow.SettingPage.About
         public ReadOnlyReactiveProperty<VersionCheckingStates> VersionCheckingState { get; }
         public ReadOnlyReactiveProperty<int> UpdateProgress { get; }
 
+        public  ReactiveCommand RestartCommand { get; }
+
         public AboutViewModel()
         {
             OpenUrlCommand = new ReactiveCommand<string>().AddTo(CompositeDisposable);
@@ -38,6 +40,9 @@ namespace Ann.SettingWindow.SettingPage.About
             UpdateProgress = VersionUpdater.Instance.ObserveProperty(x => x.UpdateProgress)
                 .ToReadOnlyReactiveProperty()
                 .AddTo(CompositeDisposable);
+
+            RestartCommand = new ReactiveCommand().AddTo(CompositeDisposable);
+            RestartCommand.Subscribe(_ => VersionUpdater.Instance.Restart()).AddTo(CompositeDisposable);
         }
 
         public async Task CheckVersionAsync()
