@@ -211,7 +211,7 @@
     <value>新しいバージョンを確認しています。</value>
   </data>
   <data name="VersionChecker_Old" xml:space="preserve">
-    <value>新しいバージョンをダウンロードできます。</value>
+    <value>新しいバージョンが利用可能になりました。次回起動時に自動でバージョンアップします。</value>
   </data>
   <data name="VersionChecker_Latest" xml:space="preserve">
     <value>最新バージョンです。</value>

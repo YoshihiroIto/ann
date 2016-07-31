@@ -22,7 +22,6 @@ namespace Ann.SettingWindow.SettingPage.About
 
         public AboutViewModel()
         {
-
             OpenUrlCommand = new ReactiveCommand<string>().AddTo(CompositeDisposable);
             OpenUrlCommand.Subscribe(async o => await ProcessHelper.RunAsync(o, string.Empty, false))
                 .AddTo(CompositeDisposable);

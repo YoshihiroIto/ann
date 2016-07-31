@@ -367,7 +367,7 @@ namespace Ann.Properties {
         }
         
         /// <summary>
-        ///   New release  is now available に類似しているローカライズされた文字列を検索します。
+        ///   New version is now available. This version up automatically at the next startup. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string VersionChecker_Old {
             get {

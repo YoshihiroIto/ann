@@ -214,7 +214,7 @@
     <value>This latest version</value>
   </data>
   <data name="VersionChecker_Old" xml:space="preserve">
-    <value>New release  is now available</value>
+    <value>New version is now available. This version up automatically at the next startup.</value>
   </data>
   <data name="VersionChecker_Unknown" xml:space="preserve">
     <value>Can not confirm the version</value>
