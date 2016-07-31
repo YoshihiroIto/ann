@@ -2,8 +2,6 @@
 using System.Reflection;
 using System.Threading.Tasks;
 using Ann.Foundation.Mvvm;
-using Ann.Foundation.Mvvm.Message;
-using Reactive.Bindings.Notifiers;
 using Squirrel;
 
 namespace Ann.Core
@@ -50,7 +48,7 @@ namespace Ann.Core
             var parentDir = System.IO.Path.GetDirectoryName(dir) ?? string.Empty;
             var updaterExe = System.IO.Path.Combine(parentDir, "Update.exe");
 
-            _isEnableSquirrel = Directory.Exists(updaterExe);
+            _isEnableSquirrel = File.Exists(updaterExe);
         }
 
         public void RequestRestart()
