@@ -21,8 +21,11 @@
         <TextBlock Text="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Version, Mode=OneWay}" />
         <TextBlock Margin="4,0,0,0" Text="{Binding Version, Mode=OneTime}" />
     </StackPanel>
-    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-        <ContentControl VerticalAlignment="Center" Margin="0,0,4,0">
+    <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
+        <ContentControl Margin="0,0,4,0"
+                        VerticalAlignment="Center"
+                        Focusable="False"
+                        IsTabStop="False">
             <ContentControl.Resources>
                 <Style TargetType="{x:Type materialDesign:PackIcon}">
                     <Setter Property="Width" Value="16" />
@@ -40,11 +43,12 @@
                                     <ProgressBar Width="16"
                                                  Height="16"
                                                  Margin="0"
+                                                 VerticalAlignment="Center"
                                                  Foreground="DodgerBlue"
                                                  IsIndeterminate="True"
                                                  Padding="0"
                                                  Style="{StaticResource MaterialDesignCircularProgressBar}"
-                                                 Value="0" VerticalAlignment="Center" />
+                                                 Value="0" />
                                 </Setter.Value>
                             </Setter>
                         </DataTrigger>
