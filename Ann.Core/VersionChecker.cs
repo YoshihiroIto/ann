@@ -25,29 +25,40 @@ namespace Ann.Core
 
             try
             {
-                var github = new GitHubClient(new ProductHeaderValue("Ann"));
-                var latest = await github.Repository.Release.GetLatest("YoshihiroIto", "Ann");
-
-                var r = new Regex("[0-9]+.[0-9]+.[0-9]+");
-                var m = r.Match(latest.Name);
-
-                if (m.Success == false)
+                if (VersionUpdater.Instance.IsEnableSilentUpdate == false)
                 {
                     VersionCheckingState = VersionCheckingStates.Unknown;
                     return;
                 }
 
-                var originVersion = m.Groups[0].Value + ".0";
-                var thisVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-                VersionCheckingState = originVersion == thisVersion
-                    ? VersionCheckingStates.Latest
-                    : VersionCheckingStates.Old;
             }
             catch
             {
                 VersionCheckingState = VersionCheckingStates.Unknown;
             }
+        }
+
+        private async void CheckByOldMethod()
+        {
+            var github = new GitHubClient(new ProductHeaderValue("Ann"));
+            var latest = await github.Repository.Release.GetLatest("YoshihiroIto", "Ann");
+
+            var r = new Regex("[0-9]+.[0-9]+.[0-9]+");
+            var m = r.Match(latest.Name);
+
+            if (m.Success == false)
+            {
+                VersionCheckingState = VersionCheckingStates.Unknown;
+                return;
+            }
+
+            var originVersion = m.Groups[0].Value + ".0";
+            var thisVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+            VersionCheckingState = originVersion == thisVersion
+                ? VersionCheckingStates.Latest
+                : VersionCheckingStates.Old;
         }
     }
 }

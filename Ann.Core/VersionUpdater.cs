@@ -10,8 +10,7 @@ namespace Ann.Core
     {
         public static VersionUpdater Instance { get; } = new VersionUpdater();
 
-        private readonly bool _isEnableSquirrel;
-
+        public bool IsEnableSilentUpdate { get; }
         public bool IsRestartRequested { get; private set;}
 
         public static void Initialize()
@@ -20,7 +19,7 @@ namespace Ann.Core
 
         public static void Destory()
         {
-            if (Instance._isEnableSquirrel && Instance.IsRestartRequested)
+            if (Instance.IsEnableSilentUpdate && Instance.IsRestartRequested)
                 UpdateManager.RestartApp();
         }
 
@@ -36,10 +35,47 @@ namespace Ann.Core
 
         #endregion
 
+        #region CheckForUpdateProgress
+
+        private int _CheckForUpdateProgress;
+
+        public int CheckForUpdateProgress
+        {
+            get { return _CheckForUpdateProgress; }
+            set { SetProperty(ref _CheckForUpdateProgress, value); }
+        }
+
+        #endregion
+
+        public void RequestRestart()
+        {
+            IsRestartRequested = true;
+        }
+
         public async Task UpdateApp()
         {
+            UpdateProgress = 0;
+
+            if (IsEnableSilentUpdate)
+                return;
+
             using (var mgr = await UpdateManager.GitHubUpdateManager("https://github.com/YoshihiroIto/Ann"))
                 await mgr.UpdateApp(p => UpdateProgress = p);
+        }
+
+        public async Task<string> CheckForUpdate()
+        {
+            CheckForUpdateProgress = 0;
+
+            if (IsEnableSilentUpdate)
+                return string.Empty;
+
+            using (var mgr = await UpdateManager.GitHubUpdateManager("https://github.com/YoshihiroIto/Ann"))
+            {
+                var r = await mgr.CheckForUpdate(progress: p => CheckForUpdateProgress = p);
+
+                return $"{r.CurrentlyInstalledVersion}, {r.FutureReleaseEntry}";
+            }
         }
 
         private VersionUpdater()
@@ -48,12 +84,7 @@ namespace Ann.Core
             var parentDir = System.IO.Path.GetDirectoryName(dir) ?? string.Empty;
             var updaterExe = System.IO.Path.Combine(parentDir, "Update.exe");
 
-            _isEnableSquirrel = File.Exists(updaterExe);
-        }
-
-        public void RequestRestart()
-        {
-            IsRestartRequested = true;
+            IsEnableSilentUpdate = File.Exists(updaterExe);
         }
     }
 }
