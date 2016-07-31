@@ -90,6 +90,7 @@ namespace Ann.Core
             }
         }
 
+
         private VersionUpdater()
         {
             var dir = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
