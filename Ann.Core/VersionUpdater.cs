@@ -15,8 +15,6 @@ namespace Ann.Core
         public bool IsEnableSilentUpdate { get; }
         public bool IsRestartRequested { get; private set; }
 
-        private readonly Task<UpdateManager> _UpdateManager;
-
         public static void Initialize()
         {
         }
@@ -25,7 +23,6 @@ namespace Ann.Core
         {
             var isRestart = Instance.IsEnableSilentUpdate && Instance.IsRestartRequested;
 
-            Instance?._UpdateManager?.Dispose();
             Instance.Dispose();
 
             if (isRestart)
@@ -85,7 +82,8 @@ namespace Ann.Core
             if (IsEnableSilentUpdate == false)
                 return;
 
-            var mgr = await _UpdateManager;
+            using (var mgr = await UpdateManager.GitHubUpdateManager("https://github.com/YoshihiroIto/Ann",
+                    accessToken: App.Instance.Config.GitHubPersonalAccessToken))
             {
                 await mgr.UpdateApp(p => UpdateProgress = p);
                 UpdateProgress = 100;
@@ -102,11 +100,6 @@ namespace Ann.Core
 
             if (IsEnableSilentUpdate)
             {
-                _UpdateManager =
-                    UpdateManager.GitHubUpdateManager(
-                        "https://github.com/YoshihiroIto/Ann",
-                        accessToken: App.Instance.Config.GitHubPersonalAccessToken);
-
                 this.ObserveProperty(x => x.IsAvailableUpdate)
                     .Subscribe(i => VersionCheckingState = i ? VersionCheckingStates.Old : VersionCheckingStates.Latest)
                     .AddTo(CompositeDisposable);
