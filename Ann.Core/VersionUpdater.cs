@@ -1,12 +1,14 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using Ann.Foundation.Mvvm;
+using Reactive.Bindings.Extensions;
 using Squirrel;
 
 namespace Ann.Core
 {
-    public class VersionUpdater : ModelBase
+    public class VersionUpdater : DisposableModelBase
     {
         public static VersionUpdater Instance { get; } = new VersionUpdater();
 
@@ -20,6 +22,8 @@ namespace Ann.Core
         public static void Destory()
         {
             var isRestart = Instance.IsEnableSilentUpdate && Instance.IsRestartRequested;
+
+            Instance.Dispose();
 
             if (isRestart)
                 UpdateManager.RestartApp();
@@ -44,7 +48,12 @@ namespace Ann.Core
         public int UpdateProgress
         {
             get { return _UpdateProgress; }
-            set { SetProperty(ref _UpdateProgress, value); }
+            set
+            {
+                if (SetProperty(ref _UpdateProgress, value))
+                    // ReSharper disable once ExplicitCallerInfoArgument
+                    RaisePropertyChanged(nameof(VersionCheckingState));
+            }
         }
 
         #endregion
@@ -57,6 +66,18 @@ namespace Ann.Core
         {
             get { return _CheckForUpdateProgress; }
             set { SetProperty(ref _CheckForUpdateProgress, value); }
+        }
+
+        #endregion
+
+        #region IsAvailableUpdate
+
+        private bool _IsAvailableUpdate;
+
+        public bool IsAvailableUpdate
+        {
+            get { return _IsAvailableUpdate; }
+            set { SetProperty(ref _IsAvailableUpdate, value); }
         }
 
         #endregion
@@ -82,12 +103,15 @@ namespace Ann.Core
             }
         }
 
-        private async Task<bool> CheckForUpdate()
+        private async Task CheckForUpdate()
         {
             CheckForUpdateProgress = 0;
 
             if (IsEnableSilentUpdate == false)
-                return false;
+            {
+                IsAvailableUpdate = false;
+                return;
+            }
 
             using (var mgr = await UpdateManager.GitHubUpdateManager(
                 "https://github.com/YoshihiroIto/Ann",
@@ -95,21 +119,22 @@ namespace Ann.Core
             {
                 var updateInfo = await mgr.CheckForUpdate(progress: p => CheckForUpdateProgress = p);
                 CheckForUpdateProgress = 100;
-                // ReSharper disable once ExplicitCallerInfoArgument
-                RaisePropertyChanged(nameof(VersionCheckingState));
-                return updateInfo.CurrentlyInstalledVersion.SHA1 != updateInfo.FutureReleaseEntry.SHA1;
+
+                IsAvailableUpdate = updateInfo.CurrentlyInstalledVersion.SHA1 != updateInfo.FutureReleaseEntry.SHA1;
             }
         }
 
         private VersionUpdater()
         {
-            {
-                var dir = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-                var parentDir = System.IO.Path.GetDirectoryName(dir) ?? string.Empty;
-                var updaterExe = System.IO.Path.Combine(parentDir, "Update.exe");
+            var dir = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            var parentDir = System.IO.Path.GetDirectoryName(dir) ?? string.Empty;
+            var updaterExe = System.IO.Path.Combine(parentDir, "Update.exe");
 
-                IsEnableSilentUpdate = File.Exists(updaterExe);
-            }
+            IsEnableSilentUpdate = File.Exists(updaterExe);
+
+            this.ObserveProperty(x => x.IsAvailableUpdate)
+                .Subscribe(i => VersionCheckingState = i ? VersionCheckingStates.Old : VersionCheckingStates.Latest)
+                .AddTo(CompositeDisposable);
         }
 
         public async Task CheckAsync()
@@ -117,27 +142,17 @@ namespace Ann.Core
             if (VersionCheckingState == VersionCheckingStates.Checking)
                 return;
 
+            if (IsEnableSilentUpdate == false)
+            {
+                VersionCheckingState = VersionCheckingStates.Unknown;
+                return;
+            }
+
             VersionCheckingState = VersionCheckingStates.Checking;
 
             try
             {
-                if (IsEnableSilentUpdate == false)
-                {
-                    VersionCheckingState = VersionCheckingStates.Unknown;
-                    return;
-                }
-
-                if (await CheckForUpdate() == false)
-                {
-                    VersionCheckingState = VersionCheckingStates.Latest;
-                }
-                else
-                {
-                    VersionCheckingState =
-                        UpdateProgress == 100
-                            ? VersionCheckingStates.Latest
-                            : VersionCheckingStates.Old;
-                }
+                await CheckForUpdate();
             }
             catch
             {
