@@ -26,10 +26,6 @@
   Auther: Jb Evain
   Summry: Cecil is a library written by Jb Evain to generate and inspect programs and libraries in the ECMA CIL format.
   Url: http://github.com/jbevain/cecil/
-- Name: Octokit
-  Auther: GitHub
-  Summry: An async-based GitHub API client library for .NET
-  Url: https://github.com/octokit/octokit.net
 - Name: ReactiveProperty
   Auther: neuecc xin9le okazuki
   Summry: ReactiveProperty is MVVM and Asynchronous Extensions for Reactive Extensions(Rx-Main). Target is .NET 4, .NET 4.x, WP8, Windows store apps(Win8.1), Windows Phone 8.1, UWP.
