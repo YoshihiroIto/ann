@@ -56,7 +56,7 @@ namespace Ann.Core
         {
             UpdateProgress = 0;
 
-            if (IsEnableSilentUpdate)
+            if (IsEnableSilentUpdate == false)
                 return;
 
             using (var mgr = await UpdateManager.GitHubUpdateManager(
@@ -69,7 +69,7 @@ namespace Ann.Core
         {
             CheckForUpdateProgress = 0;
 
-            if (IsEnableSilentUpdate)
+            if (IsEnableSilentUpdate == false)
                 return string.Empty;
 
             using (var mgr = await UpdateManager.GitHubUpdateManager(
