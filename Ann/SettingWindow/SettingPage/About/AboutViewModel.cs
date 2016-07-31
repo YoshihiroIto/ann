@@ -22,12 +22,8 @@ namespace Ann.SettingWindow.SettingPage.About
 
         public ReadOnlyReactiveProperty<VersionCheckingStates> VersionCheckingState { get; }
         public ReadOnlyReactiveProperty<int> UpdateProgress { get; }
-        public ReadOnlyReactiveProperty<int> CheckForUpdateProgress { get; }
 
         public ReactiveCommand RestartCommand { get; }
-        public AsyncReactiveCommand CheckForUpdateCommand { get; }
-
-        public ReactiveProperty<string> UpdateInfo { get; }
 
         public AboutViewModel()
         {
@@ -47,24 +43,11 @@ namespace Ann.SettingWindow.SettingPage.About
                 .ToReadOnlyReactiveProperty()
                 .AddTo(CompositeDisposable);
 
-            CheckForUpdateProgress = VersionUpdater.Instance.ObserveProperty(x => x.CheckForUpdateProgress)
-                .ToReadOnlyReactiveProperty()
-                .AddTo(CompositeDisposable);
-
             RestartCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             RestartCommand.Subscribe(_ =>
             {
                 VersionUpdater.Instance.RequestRestart();
                 MessageBroker.Default.Publish(new WindowActionMessage(WindowAction.Close));
-            }).AddTo(CompositeDisposable);
-
-            UpdateInfo = new ReactiveProperty<string>(string.Empty).AddTo(CompositeDisposable);
-
-            CheckForUpdateCommand = new AsyncReactiveCommand().AddTo(CompositeDisposable);
-            CheckForUpdateCommand.Subscribe(async _ =>
-            {
-                UpdateInfo.Value = string.Empty;
-                UpdateInfo.Value = (await VersionUpdater.Instance.CheckForUpdate()).ToString();
             }).AddTo(CompositeDisposable);
         }
 

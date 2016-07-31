@@ -106,13 +106,7 @@
         <TextBlock Text="{Binding UpdateProgress.Value, Mode=OneWay}" />
         <TextBlock Text="%" />
     </StackPanel>
-    <StackPanel Orientation="Horizontal">
-        <TextBlock Text="{Binding CheckForUpdateProgress.Value, Mode=OneWay}" />
-        <TextBlock Text="%" />
-    </StackPanel>
     <Button HorizontalAlignment="Left" Content="再起動" Command="{Binding RestartCommand, Mode=OneTime}"></Button>
-    <Button HorizontalAlignment="Left" Content="Check For Update" Command="{Binding CheckForUpdateCommand, Mode=OneTime}"></Button>
-    <TextBlock Text="{Binding UpdateInfo.Value, Mode=OneWay}" />
 
     <StackPanel Margin="0,32,0,0"
                 HorizontalAlignment="Left"
