@@ -214,6 +214,15 @@ namespace Ann.Properties {
         }
         
         /// <summary>
+        ///   Restart に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Restart {
+            get {
+                return ResourceManager.GetString("Restart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Setting に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string Setting {

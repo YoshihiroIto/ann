@@ -225,4 +225,7 @@
   <data name="Message_InOpening" xml:space="preserve">
     <value>インデックス初期化中...</value>
   </data>
+  <data name="Restart" xml:space="preserve">
+    <value>再起動</value>
+  </data>
 </root>
