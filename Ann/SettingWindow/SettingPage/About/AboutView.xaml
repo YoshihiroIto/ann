@@ -141,7 +141,11 @@
                               Path=Resources.OpenSourceLibraries,
                               Mode=OneWay}" />
 
-    <ItemsControl ItemsSource="{x:Static core:Constants.OpenSources}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+    <ItemsControl FocusVisualStyle="{x:Null}"
+                  Focusable="False"
+                  IsTabStop="False"
+                  ItemsSource="{x:Static core:Constants.OpenSources}"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
         <ItemsControl.ItemTemplate>
             <DataTemplate DataType="{x:Type foundation:OpenSource}">
                 <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
