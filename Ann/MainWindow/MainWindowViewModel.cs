@@ -32,9 +32,9 @@ namespace Ann.MainWindow
         public ReactiveCommand<string> RunCommand { get; }
         public ReactiveCommand ContainingFolderOpenCommand { get; }
 
-        public ReactiveCommand AppShowCommand { get; }
-        public ReactiveCommand AppHideCommand { get; }
-        public ReactiveCommand AppExitCommand { get; }
+        public ReactiveCommand ShowCommand { get; }
+        public ReactiveCommand HideCommand { get; }
+        public ReactiveCommand ExitCommand { get; }
 
         public ReactiveProperty<double> Left { get; }
         public ReactiveProperty<double> Top { get; }
@@ -200,18 +200,18 @@ namespace Ann.MainWindow
 
             IsShowingSettingShow = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
 
-            AppShowCommand = IsShowingSettingShow.Inverse().ToReactiveCommand().AddTo(CompositeDisposable);
-            AppShowCommand
+            ShowCommand = IsShowingSettingShow.Inverse().ToReactiveCommand().AddTo(CompositeDisposable);
+            ShowCommand
                 .Subscribe(_ => Messenger.Publish(new WindowActionMessage(WindowAction.VisibleActive)))
                 .AddTo(CompositeDisposable);
 
-            AppHideCommand = new ReactiveCommand().AddTo(CompositeDisposable);
-            AppHideCommand
+            HideCommand = new ReactiveCommand().AddTo(CompositeDisposable);
+            HideCommand
                 .Subscribe(_ => Messenger.Publish(new WindowActionMessage(WindowAction.Hidden)))
                 .AddTo(CompositeDisposable);
 
-            AppExitCommand = IsShowingSettingShow.Inverse().ToReactiveCommand().AddTo(CompositeDisposable);
-            AppExitCommand
+            ExitCommand = IsShowingSettingShow.Inverse().ToReactiveCommand().AddTo(CompositeDisposable);
+            ExitCommand
                 .Subscribe(_ => Messenger.Publish(new WindowActionMessage(WindowAction.Close)))
                 .AddTo(CompositeDisposable);
 

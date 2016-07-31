@@ -180,7 +180,7 @@ namespace Ann.MainWindow
 
             // 標準
             InputBindings.Add(new KeyBinding {Key = Key.Enter, Command = _DataContext.RunCommand});
-            InputBindings.Add(new KeyBinding {Key = Key.Escape, Command = _DataContext.AppHideCommand});
+            InputBindings.Add(new KeyBinding {Key = Key.Escape, Command = _DataContext.HideCommand});
 
             // コンフィグから指定されたもの
             InputBindings.AddRange(App.Instance.Config.ShortcutKeys.Hide
@@ -189,7 +189,7 @@ namespace Ann.MainWindow
                     {
                         Key = k.Key,
                         Modifiers = k.Modifiers,
-                        Command = _DataContext.AppHideCommand
+                        Command = _DataContext.HideCommand
                     }).ToArray());
         }
 
