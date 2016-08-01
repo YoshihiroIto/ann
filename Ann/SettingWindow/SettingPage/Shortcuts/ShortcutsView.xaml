@@ -13,13 +13,13 @@
             mc:Ignorable="d">
     <TextBlock Margin="0,0,0,8"
                Style="{StaticResource SubheadingTextBlockStyle}"
-               Text="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Setting_Activate, Mode=OneWay}" />
+               Text="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Settings_Activate, Mode=OneWay}" />
 
     <control:ShortcutKeyInputBox Key="{Binding Key.Value}"
                                  Width="240"
                                  Margin="16,0,0,0"
                                  HorizontalAlignment="Left"
-                                 materialDesign:HintAssist.Hint="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Setting_KeyStroke, Mode=OneWay}"
+                                 materialDesign:HintAssist.Hint="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Settings_KeyStroke, Mode=OneWay}"
                                  DataContext="{Binding Activate}"
                                  IsAlt="{Binding IsAlt.Value}"
                                  IsControl="{Binding IsControl.Value}"
@@ -28,7 +28,7 @@
 
     <TextBlock Margin="0,32,0,8"
                Style="{StaticResource SubheadingTextBlockStyle}"
-               Text="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Setting_Hide, Mode=OneWay}" />
+               Text="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Settings_Hide, Mode=OneWay}" />
 
     <shortcuts:ShortcutkeyListBox Width="240"
                                   Margin="16,0,0,8"

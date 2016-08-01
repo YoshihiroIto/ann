@@ -27,7 +27,7 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
                     {
                         new CommonFileDialogFilter(Properties.Resources.ExecutableFile,
                             string.Join(", ", model.ExecutableFileExts.Select(e => "*." + e))),
-                        new CommonFileDialogFilter(Properties.Resources.AllFile, "*.*")
+                        new CommonFileDialogFilter(Properties.Resources.AllFiles, "*.*")
                     });
 
                 pvm.Path.Subscribe(_ =>

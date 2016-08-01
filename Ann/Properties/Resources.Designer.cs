@@ -63,9 +63,9 @@ namespace Ann.Properties {
         /// <summary>
         ///   All files に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string AllFile {
+        public static string AllFiles {
             get {
-                return ResourceManager.GetString("AllFile", resourceCulture);
+                return ResourceManager.GetString("AllFiles", resourceCulture);
             }
         }
         
@@ -133,11 +133,11 @@ namespace Ann.Properties {
         }
         
         /// <summary>
-        ///   Setting... に類似しているローカライズされた文字列を検索します。
+        ///   Settings... に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string MenuItem_Setting {
+        public static string MenuItem_Settings {
             get {
-                return ResourceManager.GetString("MenuItem_Setting", resourceCulture);
+                return ResourceManager.GetString("MenuItem_Settings", resourceCulture);
             }
         }
         
@@ -223,128 +223,128 @@ namespace Ann.Properties {
         }
         
         /// <summary>
-        ///   Setting に類似しているローカライズされた文字列を検索します。
+        ///   Settings に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string Setting {
+        public static string Settings {
             get {
-                return ResourceManager.GetString("Setting", resourceCulture);
+                return ResourceManager.GetString("Settings", resourceCulture);
             }
         }
         
         /// <summary>
         ///   About に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string Setting_About {
+        public static string Settings_About {
             get {
-                return ResourceManager.GetString("Setting_About", resourceCulture);
+                return ResourceManager.GetString("Settings_About", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Activate に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string Setting_Activate {
+        public static string Settings_Activate {
             get {
-                return ResourceManager.GetString("Setting_Activate", resourceCulture);
+                return ResourceManager.GetString("Settings_Activate", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Add executable file に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string Setting_AddExecutableFile {
+        public static string Settings_AddExecutableFile {
             get {
-                return ResourceManager.GetString("Setting_AddExecutableFile", resourceCulture);
+                return ResourceManager.GetString("Settings_AddExecutableFile", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Add folder に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string Setting_AddFolder {
+        public static string Settings_AddFolder {
             get {
-                return ResourceManager.GetString("Setting_AddFolder", resourceCulture);
+                return ResourceManager.GetString("Settings_AddFolder", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Add key に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string Setting_AddKey {
+        public static string Settings_AddKey {
             get {
-                return ResourceManager.GetString("Setting_AddKey", resourceCulture);
+                return ResourceManager.GetString("Settings_AddKey", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Frequently used folders に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string Setting_FrequentlyUsedFolders {
+        public static string Settings_FrequentlyUsedFolders {
             get {
-                return ResourceManager.GetString("Setting_FrequentlyUsedFolders", resourceCulture);
+                return ResourceManager.GetString("Settings_FrequentlyUsedFolders", resourceCulture);
             }
         }
         
         /// <summary>
         ///   General に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string Setting_General {
+        public static string Settings_General {
             get {
-                return ResourceManager.GetString("Setting_General", resourceCulture);
+                return ResourceManager.GetString("Settings_General", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Hide に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string Setting_Hide {
+        public static string Settings_Hide {
             get {
-                return ResourceManager.GetString("Setting_Hide", resourceCulture);
+                return ResourceManager.GetString("Settings_Hide", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Key Stroke に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string Setting_KeyStroke {
+        public static string Settings_KeyStroke {
             get {
-                return ResourceManager.GetString("Setting_KeyStroke", resourceCulture);
+                return ResourceManager.GetString("Settings_KeyStroke", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Priority Files に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string Setting_PriorityFiles {
+        public static string Settings_PriorityFiles {
             get {
-                return ResourceManager.GetString("Setting_PriorityFiles", resourceCulture);
+                return ResourceManager.GetString("Settings_PriorityFiles", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Shortcuts に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string Setting_Shortcuts {
+        public static string Settings_Shortcuts {
             get {
-                return ResourceManager.GetString("Setting_Shortcuts", resourceCulture);
+                return ResourceManager.GetString("Settings_Shortcuts", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Target Folders に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string Setting_TargetFolders {
+        public static string Settings_TargetFolders {
             get {
-                return ResourceManager.GetString("Setting_TargetFolders", resourceCulture);
+                return ResourceManager.GetString("Settings_TargetFolders", resourceCulture);
             }
         }
         
         /// <summary>
         ///   User Folders に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string Setting_UserFolders {
+        public static string Settings_UserFolders {
             get {
-                return ResourceManager.GetString("Setting_UserFolders", resourceCulture);
+                return ResourceManager.GetString("Settings_UserFolders", resourceCulture);
             }
         }
         
@@ -394,7 +394,7 @@ namespace Ann.Properties {
         }
         
         /// <summary>
-        ///   Cannot confirm the version. に類似しているローカライズされた文字列を検索します。
+        ///   Cannot confirm the version update. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string VersionChecker_Unknown {
             get {

@@ -15,7 +15,7 @@
         xmlns:shortcuts="clr-namespace:Ann.SettingWindow.SettingPage.Shortcuts"
         xmlns:targetFolders="clr-namespace:Ann.SettingWindow.SettingPage.TargetFolders"
         Title="{Binding Source={x:Static app:CultureService.Instance},
-                        Path=Resources.Setting,
+                        Path=Resources.Settings,
                         Mode=OneWay}"
         Width="800"
         Height="500"
@@ -57,19 +57,19 @@
                 <Style x:Key="PageCaptionTextBlockStyle" TargetType="{x:Type TextBlock}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type about:AboutViewModel}">
-                            <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Setting_About, Mode=OneWay}" />
+                            <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Settings_About, Mode=OneWay}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type general:GeneralViewModel}">
-                            <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Setting_General, Mode=OneWay}" />
+                            <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Settings_General, Mode=OneWay}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type priorityFiles:PriorityFilesViewModel}">
-                            <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Setting_PriorityFiles, Mode=OneWay}" />
+                            <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Settings_PriorityFiles, Mode=OneWay}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type shortcuts:ShortcutsViewModel}">
-                            <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Setting_Shortcuts, Mode=OneWay}" />
+                            <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Settings_Shortcuts, Mode=OneWay}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type targetFolders:TargetFoldersViewModel}">
-                            <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Setting_TargetFolders, Mode=OneWay}" />
+                            <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Settings_TargetFolders, Mode=OneWay}" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
