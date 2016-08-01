@@ -53,6 +53,30 @@
                             </Setter>
                         </DataTrigger>
 
+                        <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Downloading}">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <ProgressBar Width="16"
+                                                 Height="16"
+                                                 Margin="0"
+                                                 VerticalAlignment="Center"
+                                                 Foreground="DodgerBlue"
+                                                 IsIndeterminate="True"
+                                                 Padding="0"
+                                                 Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                                 Value="0" />
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Downloaded}">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <materialDesign:PackIcon Foreground="Orange" Kind="NewBox" />
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+
                         <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Latest}">
                             <Setter Property="Content">
                                 <Setter.Value>
