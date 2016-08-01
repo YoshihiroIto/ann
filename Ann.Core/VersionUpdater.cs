@@ -113,8 +113,8 @@ namespace Ann.Core
                     accessToken: App.Instance.Config.GitHubPersonalAccessToken))
             {
                 var updateInfo = await mgr.CheckForUpdate(progress: p => CheckForUpdateProgress = p);
-
                 IsAvailableUpdate = updateInfo.CurrentlyInstalledVersion.SHA1 != updateInfo.FutureReleaseEntry.SHA1;
+                CheckForUpdateProgress = 100;
             }
         }
 
@@ -152,7 +152,6 @@ namespace Ann.Core
                 await CheckForUpdate();
 
                 await UpdateApp();
-
 
                 VersionCheckingState = IsAvailableUpdate ? VersionCheckingStates.Old : VersionCheckingStates.Latest;
             }
