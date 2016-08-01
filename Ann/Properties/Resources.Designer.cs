@@ -367,6 +367,24 @@ namespace Ann.Properties {
         }
         
         /// <summary>
+        ///   Downloaded に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string VersionChecker_Downloaded {
+            get {
+                return ResourceManager.GetString("VersionChecker_Downloaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Downloading に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string VersionChecker_Downloading {
+            get {
+                return ResourceManager.GetString("VersionChecker_Downloading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   This latest version に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string VersionChecker_Latest {

@@ -81,10 +81,10 @@
                             <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.VersionChecker_Checking, Mode=OneWay}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Downloading}">
-                            <Setter Property="Text" Value="ダウンロード中" />
+                            <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.VersionChecker_Downloading, Mode=OneWay}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Downloaded}">
-                            <Setter Property="Text" Value="ダウンロード完了" />
+                            <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.VersionChecker_Downloaded, Mode=OneWay}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Latest}">
                             <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.VersionChecker_Latest, Mode=OneWay}" />

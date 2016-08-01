@@ -228,4 +228,10 @@
   <data name="Restart" xml:space="preserve">
     <value>Restart</value>
   </data>
+  <data name="VersionChecker_Downloading" xml:space="preserve">
+    <value>Downloading</value>
+  </data>
+  <data name="VersionChecker_Downloaded" xml:space="preserve">
+    <value>Downloaded</value>
+  </data>
 </root>

@@ -228,4 +228,10 @@
   <data name="Restart" xml:space="preserve">
     <value>再起動</value>
   </data>
+  <data name="VersionChecker_Downloading" xml:space="preserve">
+    <value>ダウンロード中</value>
+  </data>
+  <data name="VersionChecker_Downloaded" xml:space="preserve">
+    <value>ダウンロード終了</value>
+  </data>
 </root>
