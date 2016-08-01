@@ -229,9 +229,9 @@
     <value>再起動</value>
   </data>
   <data name="VersionChecker_Downloading" xml:space="preserve">
-    <value>ダウンロード中</value>
+    <value>ダウンロード中です。</value>
   </data>
   <data name="VersionChecker_Downloaded" xml:space="preserve">
-    <value>ダウンロード終了</value>
+    <value>ダウンロード完了しました。</value>
   </data>
 </root>
