@@ -86,31 +86,16 @@ namespace Ann.Core
             }
         }
 
-        #region CheckForUpdateProgress
-
-        private int _CheckForUpdateProgress;
-
-        public int CheckForUpdateProgress
-        {
-            get { return _CheckForUpdateProgress; }
-            set { SetProperty(ref _CheckForUpdateProgress, value); }
-        }
-
-        #endregion
-
         private async Task CheckForUpdate()
         {
-            CheckForUpdateProgress = 0;
-
             if (IsEnableSilentUpdate == false)
                 return;
 
             using (var mgr = await UpdateManager.GitHubUpdateManager("https://github.com/YoshihiroIto/Ann",
                 accessToken: App.Instance.Config.GitHubPersonalAccessToken))
             {
-                var updateInfo = await mgr.CheckForUpdate(progress: p => CheckForUpdateProgress = p);
+                var updateInfo = await mgr.CheckForUpdate();
                 IsAvailableUpdate = updateInfo.CurrentlyInstalledVersion.SHA1 != updateInfo.FutureReleaseEntry.SHA1;
-                CheckForUpdateProgress = 100;
             }
         }
 
