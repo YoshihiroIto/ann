@@ -123,46 +123,46 @@
   <data name="MenuItem_Exit" xml:space="preserve">
     <value>Exit</value>
   </data>
-  <data name="MenuItem_Setting" xml:space="preserve">
-    <value>Setting...</value>
+  <data name="MenuItem_Settings" xml:space="preserve">
+    <value>Settings...</value>
   </data>
   <data name="MenuItem_UpdateIndex" xml:space="preserve">
     <value>Update Index</value>
   </data>
-  <data name="Setting_About" xml:space="preserve">
+  <data name="Settings_About" xml:space="preserve">
     <value>About</value>
   </data>
-  <data name="Setting_General" xml:space="preserve">
+  <data name="Settings_General" xml:space="preserve">
     <value>General</value>
   </data>
-  <data name="Setting_PriorityFiles" xml:space="preserve">
+  <data name="Settings_PriorityFiles" xml:space="preserve">
     <value>Priority Files</value>
   </data>
-  <data name="Setting_Shortcuts" xml:space="preserve">
+  <data name="Settings_Shortcuts" xml:space="preserve">
     <value>Shortcuts</value>
   </data>
-  <data name="Setting_TargetFolders" xml:space="preserve">
+  <data name="Settings_TargetFolders" xml:space="preserve">
     <value>Target Folders</value>
   </data>
-  <data name="Setting_Activate" xml:space="preserve">
+  <data name="Settings_Activate" xml:space="preserve">
     <value>Activate</value>
   </data>
-  <data name="Setting_Hide" xml:space="preserve">
+  <data name="Settings_Hide" xml:space="preserve">
     <value>Hide</value>
   </data>
-  <data name="Setting_AddKey" xml:space="preserve">
+  <data name="Settings_AddKey" xml:space="preserve">
     <value>Add key</value>
   </data>
-  <data name="Setting_KeyStroke" xml:space="preserve">
+  <data name="Settings_KeyStroke" xml:space="preserve">
     <value>Key Stroke</value>
   </data>
-  <data name="Setting_FrequentlyUsedFolders" xml:space="preserve">
+  <data name="Settings_FrequentlyUsedFolders" xml:space="preserve">
     <value>Frequently used folders</value>
   </data>
-  <data name="Setting_UserFolders" xml:space="preserve">
+  <data name="Settings_UserFolders" xml:space="preserve">
     <value>User Folders</value>
   </data>
-  <data name="Setting_AddFolder" xml:space="preserve">
+  <data name="Settings_AddFolder" xml:space="preserve">
     <value>Add folder</value>
   </data>
   <data name="Folder" xml:space="preserve">
@@ -171,13 +171,13 @@
   <data name="File" xml:space="preserve">
     <value>File</value>
   </data>
-  <data name="Setting_AddExecutableFile" xml:space="preserve">
+  <data name="Settings_AddExecutableFile" xml:space="preserve">
     <value>Add executable file</value>
   </data>
   <data name="ExecutableFile" xml:space="preserve">
     <value>Executable file</value>
   </data>
-  <data name="AllFile" xml:space="preserve">
+  <data name="AllFiles" xml:space="preserve">
     <value>All files</value>
   </data>
   <data name="Version" xml:space="preserve">
@@ -189,8 +189,8 @@
   <data name="OpenSourceLibraries" xml:space="preserve">
     <value>Open Source Libraries</value>
   </data>
-  <data name="Setting" xml:space="preserve">
-    <value>Setting</value>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
   </data>
   <data name="Message_IndexIsOld" xml:space="preserve">
     <value>Index is old. Update the index.</value>
@@ -214,7 +214,7 @@
     <value>This latest version.</value>
   </data>
   <data name="VersionChecker_Unknown" xml:space="preserve">
-    <value>Cannot confirm the version.</value>
+    <value>Cannot confirm the version update.</value>
   </data>
   <data name="Download" xml:space="preserve">
     <value>Download</value>

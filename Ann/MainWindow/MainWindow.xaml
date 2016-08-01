@@ -41,7 +41,7 @@
             <behavior:WindowTaskTrayIconBehavior.ContextMenu>
                 <ContextMenu>
                     <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_UpdateIndex, Mode=OneWay}" />
-                    <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Setting, Mode=OneWay}" />
+                    <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Settings, Mode=OneWay}" />
                     <Separator Margin="-100,8,-100,8" />
                     <MenuItem Command="{Binding ExitCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Exit, Mode=OneWay}" />
                 </ContextMenu>
@@ -66,7 +66,7 @@
                                      PlacementMode="BottomAndAlignRightEdges">
                 <StackPanel>
                     <Button Command="{Binding IndexUpdateCommand, Mode=OneTime}" Content="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_UpdateIndex, Mode=OneWay}" />
-                    <Button Command="{Binding SettingShowCommand, Mode=OneTime}" Content="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Setting, Mode=OneWay}" />
+                    <Button Command="{Binding SettingShowCommand, Mode=OneTime}" Content="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Settings, Mode=OneWay}" />
                     <Separator />
                     <Button Command="{Binding ExitCommand, Mode=OneTime}" Content="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Exit, Mode=OneWay}" />
                 </StackPanel>

@@ -123,46 +123,46 @@
   <data name="MenuItem_Exit" xml:space="preserve">
     <value>終了</value>
   </data>
-  <data name="MenuItem_Setting" xml:space="preserve">
+  <data name="MenuItem_Settings" xml:space="preserve">
     <value>設定...</value>
   </data>
   <data name="MenuItem_UpdateIndex" xml:space="preserve">
     <value>インデックスの更新</value>
   </data>
-  <data name="Setting_About" xml:space="preserve">
+  <data name="Settings_About" xml:space="preserve">
     <value>概要</value>
   </data>
-  <data name="Setting_General" xml:space="preserve">
+  <data name="Settings_General" xml:space="preserve">
     <value>全般</value>
   </data>
-  <data name="Setting_PriorityFiles" xml:space="preserve">
+  <data name="Settings_PriorityFiles" xml:space="preserve">
     <value>優先ファイル</value>
   </data>
-  <data name="Setting_Shortcuts" xml:space="preserve">
+  <data name="Settings_Shortcuts" xml:space="preserve">
     <value>ショートカット</value>
   </data>
-  <data name="Setting_TargetFolders" xml:space="preserve">
+  <data name="Settings_TargetFolders" xml:space="preserve">
     <value>対象フォルダー</value>
   </data>
-  <data name="Setting_Activate" xml:space="preserve">
+  <data name="Settings_Activate" xml:space="preserve">
     <value>アクティブ化</value>
   </data>
-  <data name="Setting_Hide" xml:space="preserve">
+  <data name="Settings_Hide" xml:space="preserve">
     <value>非表示</value>
   </data>
-  <data name="Setting_AddKey" xml:space="preserve">
+  <data name="Settings_AddKey" xml:space="preserve">
     <value>キー追加</value>
   </data>
-  <data name="Setting_KeyStroke" xml:space="preserve">
+  <data name="Settings_KeyStroke" xml:space="preserve">
     <value>キーストローク</value>
   </data>
-  <data name="Setting_FrequentlyUsedFolders" xml:space="preserve">
+  <data name="Settings_FrequentlyUsedFolders" xml:space="preserve">
     <value>よく使われるフォルダー</value>
   </data>
-  <data name="Setting_UserFolders" xml:space="preserve">
+  <data name="Settings_UserFolders" xml:space="preserve">
     <value>フォルダー</value>
   </data>
-  <data name="Setting_AddFolder" xml:space="preserve">
+  <data name="Settings_AddFolder" xml:space="preserve">
     <value>フォルダー追加</value>
   </data>
   <data name="Folder" xml:space="preserve">
@@ -171,13 +171,13 @@
   <data name="File" xml:space="preserve">
     <value>ファイル</value>
   </data>
-  <data name="Setting_AddExecutableFile" xml:space="preserve">
+  <data name="Settings_AddExecutableFile" xml:space="preserve">
     <value>実行可能ファイル追加</value>
   </data>
   <data name="ExecutableFile" xml:space="preserve">
     <value>実行可能ファイル</value>
   </data>
-  <data name="AllFile" xml:space="preserve">
+  <data name="AllFiles" xml:space="preserve">
     <value>すべてのファイル</value>
   </data>
   <data name="Version" xml:space="preserve">
@@ -189,7 +189,7 @@
   <data name="OpenSourceLibraries" xml:space="preserve">
     <value>オープンソースライブラリ</value>
   </data>
-  <data name="Setting" xml:space="preserve">
+  <data name="Settings" xml:space="preserve">
     <value>設定</value>
   </data>
   <data name="Message_IndexIsOld" xml:space="preserve">
@@ -214,7 +214,7 @@
     <value>最新バージョンです。</value>
   </data>
   <data name="VersionChecker_Unknown" xml:space="preserve">
-    <value>バージョン確認ができません。</value>
+    <value>バージョン更新の確認ができません。</value>
   </data>
   <data name="Download" xml:space="preserve">
     <value>ダウンロード</value>
