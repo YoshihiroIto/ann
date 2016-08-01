@@ -96,10 +96,23 @@
                 </Style>
             </TextBlock.Style>
         </TextBlock>
-    </StackPanel>
-    <StackPanel Orientation="Horizontal">
-        <TextBlock Text="{Binding UpdateProgress.Value, Mode=OneWay}" />
-        <TextBlock Text="%" />
+
+        <StackPanel Orientation="Horizontal">
+            <StackPanel.Style>
+                <Style TargetType="{x:Type StackPanel}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Downloading}">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Style>
+
+            <TextBlock Text="(" />
+            <TextBlock Text="{Binding UpdateProgress.Value, Mode=OneWay}" />
+            <TextBlock Text="%)" />
+        </StackPanel>
     </StackPanel>
     <Button HorizontalAlignment="Left"
             Command="{Binding RestartCommand,
