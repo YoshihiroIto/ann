@@ -219,6 +219,7 @@ namespace Ann.Core
                             return IndexOpeningResults.OldIndex;
 
                         var tempExecutableUnits = new ExecutableUnit[root.RowsLength];
+                        var isContainsInvalid = false;
 
                         Parallel.For(
                             0,
@@ -227,12 +228,25 @@ namespace Ann.Core
                             (i, loop, rowTemp) =>
                             {
                                 root.GetRows(rowTemp, i);
-                                tempExecutableUnits[i] = new ExecutableUnit(i, root.RowsLength, rowTemp.Path);
+
+                                try
+                                {
+                                    tempExecutableUnits[i] = new ExecutableUnit(i, root.RowsLength, rowTemp.Path);
+                                }
+                                catch
+                                {
+                                    tempExecutableUnits[i] = null;
+                                    isContainsInvalid = true;
+                                }
+
                                 return rowTemp;
                             },
                             rowTemp => { });
 
-                        _executableUnits = tempExecutableUnits;
+                        _executableUnits =
+                            isContainsInvalid
+                                ? tempExecutableUnits.Where(t => t != null).ToArray()
+                                : tempExecutableUnits;
                     }
 
                     return IndexOpeningResults.Ok;
