@@ -48,12 +48,7 @@ namespace Ann.Core
         public int UpdateProgress
         {
             get { return _UpdateProgress; }
-            set
-            {
-                if (SetProperty(ref _UpdateProgress, value))
-                    // ReSharper disable once ExplicitCallerInfoArgument
-                    RaisePropertyChanged(nameof(VersionCheckingState));
-            }
+            set { SetProperty(ref _UpdateProgress, value); }
         }
 
         #endregion
@@ -128,7 +123,7 @@ namespace Ann.Core
 
             if (IsEnableSilentUpdate)
             {
-                this.ObserveProperty(x => x.CheckForUpdateProgress)
+                this.ObserveProperty(x => x.UpdateProgress)
                     .Subscribe(p =>
                     {
                         if (p == 100)
@@ -154,9 +149,9 @@ namespace Ann.Core
             try
             {
                 await CheckForUpdate();
-                await UpdateApp();
-
                 VersionCheckingState = IsAvailableUpdate ? VersionCheckingStates.Downloading : VersionCheckingStates.Latest;
+
+                await UpdateApp();
             }
             catch
             {
