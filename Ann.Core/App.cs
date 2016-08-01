@@ -16,6 +16,7 @@ namespace Ann.Core
         public static App Instance { get; } = new App();
 
         public Config.App Config { get; private set; }
+        public Config.MostRecentUsedList MruList { get; private set; }
 
         public event EventHandler PriorityFilesChanged;
         public event EventHandler ShortcutKeyChanged;
@@ -96,16 +97,55 @@ namespace Ann.Core
 
             IndexOpeningResult = await _dataBase.UpdateIndexAsync(
                 targetFolders
-                .Select(f => Environment.ExpandEnvironmentVariables(f.Value))
-                .Distinct()
-                .Where(Directory.Exists),
+                    .Select(f => Environment.ExpandEnvironmentVariables(f.Value))
+                    .Distinct()
+                    .Where(Directory.Exists),
                 Config.ExecutableFileExts);
         }
 
         public IEnumerable<ExecutableUnit> FindExecutableUnit(string name) =>
             _dataBase
                 .Find(name, Config.ExecutableFileExts)
-                .OrderByDescending(u => IsPriorityFile(u.Path));
+                .OrderBy(u => MakeOrder(u.Path));
+
+        private const int MaxMruCount = 50;
+        private readonly Dictionary<string, int> _mruOrders = new Dictionary<string, int>();
+
+        private int MakeOrder(string path)
+        {
+            if (IsPriorityFile(path))
+                return 0;
+
+            int order;
+            if (_mruOrders.TryGetValue(path, out order))
+                return 1 + order;
+
+            return 1 + MaxMruCount;
+        }
+
+        public void RefreshPriorityFiles()
+        {
+            _priorityFiles = new HashSet<string>(Config.PriorityFiles.Select(p => p.Value));
+        }
+
+        public async Task RunAsync(string appPath, bool isRunAsAdmin)
+        {
+            await ProcessHelper.RunAsync(appPath, string.Empty, isRunAsAdmin);
+
+            await Task.Run(() =>
+            {
+                MruList.AppPath.Remove(appPath);
+                MruList.AppPath.Insert(0, appPath);
+
+                while (MruList.AppPath.Count > MaxMruCount)
+                    MruList.AppPath.RemoveAt(MruList.AppPath.Count - 1);
+                
+                SaveMru();
+
+                _mruOrders.Clear();
+                MruList.AppPath.ForEach((path, index) => _mruOrders[path] = index);
+            });
+        }
 
         private App()
         {
@@ -114,46 +154,54 @@ namespace Ann.Core
             LoadConfig();
         }
 
-        public void RefreshPriorityFiles()
-        {
-            _priorityFiles = new HashSet<string>(Config.PriorityFiles.Select(p => p.Value));
-        }
-
         #region config
 
         private void LoadConfig()
         {
             Debug.Assert(Config == null);
+            Debug.Assert(MruList == null);
 
-            Config = ConfigHelper.ReadConfig<Config.App>(ConfigHelper.Category.App);
+            {
+                Config = ConfigHelper.ReadConfig<Config.App>(ConfigHelper.Category.App);
 
-            if (Config.PriorityFiles == null)
-                Config.PriorityFiles = new ObservableCollection<Path>();
+                if (Config.PriorityFiles == null)
+                    Config.PriorityFiles = new ObservableCollection<Path>();
 
-            RefreshPriorityFiles();
+                RefreshPriorityFiles();
 
-            Config.PriorityFiles.ObserveAddChanged()
-                .Subscribe(p =>
-                {
-                    _priorityFiles.Add(p.Value);
-                    SaveConfig();
-                    InvokePriorityFilesChanged();
-                })
-                .AddTo(CompositeDisposable);
+                Config.PriorityFiles.ObserveAddChanged()
+                    .Subscribe(p =>
+                    {
+                        _priorityFiles.Add(p.Value);
+                        SaveConfig();
+                        InvokePriorityFilesChanged();
+                    })
+                    .AddTo(CompositeDisposable);
 
-            Config.PriorityFiles.ObserveRemoveChanged()
-                .Subscribe(p =>
-                {
-                    _priorityFiles.Remove(p.Value);
-                    SaveConfig();
-                    InvokePriorityFilesChanged();
-                })
-                .AddTo(CompositeDisposable);
+                Config.PriorityFiles.ObserveRemoveChanged()
+                    .Subscribe(p =>
+                    {
+                        _priorityFiles.Remove(p.Value);
+                        SaveConfig();
+                        InvokePriorityFilesChanged();
+                    })
+                    .AddTo(CompositeDisposable);
+            }
+
+            {
+                MruList = ConfigHelper.ReadConfig<Config.MostRecentUsedList>(ConfigHelper.Category.MostRecentUsedList);
+                MruList.AppPath.ForEach((p, index) => _mruOrders[p] = index);
+            }
         }
 
         public void SaveConfig()
         {
             ConfigHelper.WriteConfig(ConfigHelper.Category.App, Config);
+        }
+
+        public void SaveMru()
+        {
+            ConfigHelper.WriteConfig(ConfigHelper.Category.MostRecentUsedList, MruList);
         }
 
         #endregion
