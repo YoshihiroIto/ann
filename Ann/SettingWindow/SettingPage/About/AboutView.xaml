@@ -73,7 +73,7 @@
             </ContentControl.Style>
         </ContentControl>
 
-        <TextBlock>
+        <TextBlock VerticalAlignment="Center">
             <TextBlock.Style>
                 <Style TargetType="{x:Type TextBlock}">
                     <Style.Triggers>
