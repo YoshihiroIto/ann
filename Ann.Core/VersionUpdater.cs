@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings.Extensions;
 using Squirrel;
@@ -78,7 +79,7 @@ namespace Ann.Core
                 return;
 
             using (var mgr = await UpdateManager.GitHubUpdateManager("https://github.com/YoshihiroIto/Ann",
-                    accessToken: App.Instance.Config.GitHubPersonalAccessToken))
+                accessToken: App.Instance.Config.GitHubPersonalAccessToken))
             {
                 await mgr.UpdateApp(p => UpdateProgress = p);
                 UpdateProgress = 100;
@@ -105,7 +106,7 @@ namespace Ann.Core
                 return;
 
             using (var mgr = await UpdateManager.GitHubUpdateManager("https://github.com/YoshihiroIto/Ann",
-                    accessToken: App.Instance.Config.GitHubPersonalAccessToken))
+                accessToken: App.Instance.Config.GitHubPersonalAccessToken))
             {
                 var updateInfo = await mgr.CheckForUpdate(progress: p => CheckForUpdateProgress = p);
                 IsAvailableUpdate = updateInfo.CurrentlyInstalledVersion.SHA1 != updateInfo.FutureReleaseEntry.SHA1;
@@ -133,35 +134,44 @@ namespace Ann.Core
             }
         }
 
+        private bool _isChecking;
+
         public async Task CheckAsync()
         {
-            if (VersionCheckingState == VersionCheckingStates.Checking)
+            if (_isChecking)
                 return;
 
-            if (IsEnableSilentUpdate == false)
+            using (new AnonymousDisposable(() => _isChecking = false))
             {
-                VersionCheckingState = VersionCheckingStates.Unknown;
-                return;
-            }
+                _isChecking = true;
 
-            if (IsAvailableUpdate && UpdateProgress == 100)
-            {
-                VersionCheckingState = VersionCheckingStates.Downloaded;
-                return;
-            }
+                if (IsEnableSilentUpdate == false)
+                {
+                    VersionCheckingState = VersionCheckingStates.Unknown;
+                    return;
+                }
 
-            VersionCheckingState = VersionCheckingStates.Checking;
+                if (IsAvailableUpdate && UpdateProgress == 100)
+                {
+                    VersionCheckingState = VersionCheckingStates.Downloaded;
+                    return;
+                }
 
-            try
-            {
-                await CheckForUpdate();
-                VersionCheckingState = IsAvailableUpdate ? VersionCheckingStates.Downloading : VersionCheckingStates.Latest;
+                VersionCheckingState = VersionCheckingStates.Checking;
 
-                await UpdateApp();
-            }
-            catch
-            {
-                VersionCheckingState = VersionCheckingStates.Unknown;
+                try
+                {
+                    await CheckForUpdate();
+                    VersionCheckingState = IsAvailableUpdate
+                        ? VersionCheckingStates.Downloading
+                        : VersionCheckingStates.Latest;
+
+                    await UpdateApp();
+                }
+                catch
+                {
+                    VersionCheckingState = VersionCheckingStates.Unknown;
+                }
             }
         }
     }
