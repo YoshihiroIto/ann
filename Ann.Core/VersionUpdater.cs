@@ -144,6 +144,12 @@ namespace Ann.Core
                 return;
             }
 
+            if (IsAvailableUpdate && UpdateProgress == 100)
+            {
+                VersionCheckingState = VersionCheckingStates.Downloaded;
+                return;
+            }
+
             VersionCheckingState = VersionCheckingStates.Checking;
 
             try
