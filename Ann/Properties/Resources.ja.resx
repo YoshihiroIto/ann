@@ -210,9 +210,6 @@
   <data name="VersionChecker_Checking" xml:space="preserve">
     <value>新しいバージョンを確認しています。</value>
   </data>
-  <data name="VersionChecker_Old" xml:space="preserve">
-    <value>新しいバージョンが利用可能になりました。次回起動時に自動でバージョンアップします。</value>
-  </data>
   <data name="VersionChecker_Latest" xml:space="preserve">
     <value>最新バージョンです。</value>
   </data>
@@ -229,7 +226,7 @@
     <value>再起動</value>
   </data>
   <data name="VersionChecker_Downloading" xml:space="preserve">
-    <value>ダウンロード中です。</value>
+    <value>ダウンロード中です...</value>
   </data>
   <data name="VersionChecker_Downloaded" xml:space="preserve">
     <value>ダウンロード完了しました。</value>

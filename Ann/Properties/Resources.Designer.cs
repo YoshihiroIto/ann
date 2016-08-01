@@ -61,7 +61,7 @@ namespace Ann.Properties {
         }
         
         /// <summary>
-        ///   All file に類似しているローカライズされた文字列を検索します。
+        ///   All files に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string AllFile {
             get {
@@ -151,7 +151,7 @@ namespace Ann.Properties {
         }
         
         /// <summary>
-        ///   Activation ShortcutKey is already in use. に類似しているローカライズされた文字列を検索します。
+        ///   Activation Shortcut key is already in use. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string Message_ActivationShortcutKeyIsAlreadyInUse {
             get {
@@ -160,7 +160,7 @@ namespace Ann.Properties {
         }
         
         /// <summary>
-        ///   Index is not opened. に類似しているローカライズされた文字列を検索します。
+        ///   Cannot open the index. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string Message_IndexIsNotOpened {
             get {
@@ -169,7 +169,7 @@ namespace Ann.Properties {
         }
         
         /// <summary>
-        ///   Index is old. Please update index. に類似しているローカライズされた文字列を検索します。
+        ///   Index is old. Update the index. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string Message_IndexIsOld {
             get {
@@ -178,7 +178,7 @@ namespace Ann.Properties {
         }
         
         /// <summary>
-        ///   Index not found. Please update index. に類似しているローカライズされた文字列を検索します。
+        ///   Index not found. Update the index. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string Message_IndexNotFound {
             get {
@@ -358,7 +358,7 @@ namespace Ann.Properties {
         }
         
         /// <summary>
-        ///   Check For Updates に類似しているローカライズされた文字列を検索します。
+        ///   Checking for updates. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string VersionChecker_Checking {
             get {
@@ -367,7 +367,7 @@ namespace Ann.Properties {
         }
         
         /// <summary>
-        ///   Downloaded に類似しているローカライズされた文字列を検索します。
+        ///   Download was completed. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string VersionChecker_Downloaded {
             get {
@@ -376,7 +376,7 @@ namespace Ann.Properties {
         }
         
         /// <summary>
-        ///   Downloading に類似しているローカライズされた文字列を検索します。
+        ///   Now downloading files... に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string VersionChecker_Downloading {
             get {
@@ -385,7 +385,7 @@ namespace Ann.Properties {
         }
         
         /// <summary>
-        ///   This latest version に類似しているローカライズされた文字列を検索します。
+        ///   This latest version. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string VersionChecker_Latest {
             get {
@@ -394,16 +394,7 @@ namespace Ann.Properties {
         }
         
         /// <summary>
-        ///   New version is now available. This version up automatically at the next startup. に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        public static string VersionChecker_Old {
-            get {
-                return ResourceManager.GetString("VersionChecker_Old", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Can not confirm the version に類似しているローカライズされた文字列を検索します。
+        ///   Cannot confirm the version. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string VersionChecker_Unknown {
             get {
