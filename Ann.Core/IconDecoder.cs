@@ -36,6 +36,10 @@ namespace Ann.Core
 
         public ImageSource GetIcon(string path)
         {
+            var i = _IconCache.Get(path);
+            if (i != null)
+                return i;
+
             if (File.Exists(path) == false)
                 return null;
 
