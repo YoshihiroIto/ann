@@ -4,8 +4,9 @@
     {
         Wait,
         Checking,
+        Downloading,
+        Downloaded,
         Latest,
-        Old,
         Unknown
     }
 }

@@ -61,14 +61,6 @@
                             </Setter>
                         </DataTrigger>
 
-                        <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Old}">
-                            <Setter Property="Content">
-                                <Setter.Value>
-                                    <materialDesign:PackIcon Foreground="Orange" Kind="NewBox" />
-                                </Setter.Value>
-                            </Setter>
-                        </DataTrigger>
-
                         <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Unknown}">
                             <Setter Property="Content">
                                 <Setter.Value>
@@ -88,11 +80,14 @@
                         <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Checking}">
                             <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.VersionChecker_Checking, Mode=OneWay}" />
                         </DataTrigger>
+                        <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Downloading}">
+                            <Setter Property="Text" Value="ダウンロード中" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Downloaded}">
+                            <Setter Property="Text" Value="ダウンロード完了" />
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Latest}">
                             <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.VersionChecker_Latest, Mode=OneWay}" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Old}">
-                            <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.VersionChecker_Old, Mode=OneWay}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Unknown}">
                             <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.VersionChecker_Unknown, Mode=OneWay}" />
@@ -118,11 +113,14 @@
                     <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Checking}">
                         <Setter Property="Visibility" Value="Hidden" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Latest}">
+                    <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Downloading}">
                         <Setter Property="Visibility" Value="Hidden" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Old}">
+                    <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Downloaded}">
                         <Setter Property="Visibility" Value="Visible" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Latest}">
+                        <Setter Property="Visibility" Value="Hidden" />
                     </DataTrigger>
                     <DataTrigger Binding="{Binding VersionCheckingState.Value, Mode=OneWay}" Value="{x:Static core:VersionCheckingStates.Unknown}">
                         <Setter Property="Visibility" Value="Hidden" />

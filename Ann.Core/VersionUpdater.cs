@@ -128,9 +128,13 @@ namespace Ann.Core
 
             if (IsEnableSilentUpdate)
             {
-                this.ObserveProperty(x => x.IsAvailableUpdate)
-                    .Subscribe(i => VersionCheckingState = i ? VersionCheckingStates.Old : VersionCheckingStates.Latest)
-                    .AddTo(CompositeDisposable);
+                this.ObserveProperty(x => x.CheckForUpdateProgress)
+                    .Subscribe(p =>
+                    {
+                        if (p == 100)
+                            if (IsAvailableUpdate)
+                                VersionCheckingState = VersionCheckingStates.Downloaded;
+                    }).AddTo(CompositeDisposable);
             }
         }
 
@@ -150,10 +154,9 @@ namespace Ann.Core
             try
             {
                 await CheckForUpdate();
-
                 await UpdateApp();
 
-                VersionCheckingState = IsAvailableUpdate ? VersionCheckingStates.Old : VersionCheckingStates.Latest;
+                VersionCheckingState = IsAvailableUpdate ? VersionCheckingStates.Downloading : VersionCheckingStates.Latest;
             }
             catch
             {
