@@ -178,7 +178,7 @@
     <value>Executable file</value>
   </data>
   <data name="AllFile" xml:space="preserve">
-    <value>All file</value>
+    <value>All files</value>
   </data>
   <data name="Version" xml:space="preserve">
     <value>Version</value>
@@ -193,31 +193,28 @@
     <value>Setting</value>
   </data>
   <data name="Message_IndexIsOld" xml:space="preserve">
-    <value>Index is old. Please update index.</value>
+    <value>Index is old. Update the index.</value>
   </data>
   <data name="Message_IndexIsNotOpened" xml:space="preserve">
-    <value>Index is not opened.</value>
+    <value>Cannot open the index.</value>
   </data>
   <data name="Message_IndexNotFound" xml:space="preserve">
-    <value>Index not found. Please update index.</value>
+    <value>Index not found. Update the index.</value>
   </data>
   <data name="Message_IndexUpdating" xml:space="preserve">
     <value>Index Updating...</value>
   </data>
   <data name="Message_ActivationShortcutKeyIsAlreadyInUse" xml:space="preserve">
-    <value>Activation ShortcutKey is already in use.</value>
+    <value>Activation Shortcut key is already in use.</value>
   </data>
   <data name="VersionChecker_Checking" xml:space="preserve">
-    <value>Check For Updates</value>
+    <value>Checking for updates.</value>
   </data>
   <data name="VersionChecker_Latest" xml:space="preserve">
-    <value>This latest version</value>
-  </data>
-  <data name="VersionChecker_Old" xml:space="preserve">
-    <value>New version is now available. This version up automatically at the next startup.</value>
+    <value>This latest version.</value>
   </data>
   <data name="VersionChecker_Unknown" xml:space="preserve">
-    <value>Can not confirm the version</value>
+    <value>Cannot confirm the version.</value>
   </data>
   <data name="Download" xml:space="preserve">
     <value>Download</value>
@@ -229,9 +226,9 @@
     <value>Restart</value>
   </data>
   <data name="VersionChecker_Downloading" xml:space="preserve">
-    <value>Downloading</value>
+    <value>Now downloading files...</value>
   </data>
   <data name="VersionChecker_Downloaded" xml:space="preserve">
-    <value>Downloaded</value>
+    <value>Download was completed.</value>
   </data>
 </root>
