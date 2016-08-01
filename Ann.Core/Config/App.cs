@@ -84,8 +84,6 @@ namespace Ann.Core.Config
 
         #endregion
 
-        #region ExecutableFileExts
-
         #region IconCacheSize
 
         private int _IconCacheSize = 256;
@@ -109,6 +107,8 @@ namespace Ann.Core.Config
         }
 
         #endregion
+
+        #region ExecutableFileExts
 
         private ObservableCollection<string> _ExecutableFileExts = new ObservableCollection<string>
         {

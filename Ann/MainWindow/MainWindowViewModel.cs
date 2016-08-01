@@ -166,7 +166,7 @@ namespace Ann.MainWindow
                     .Subscribe(async p =>
                     {
                         Messenger.Publish(new WindowActionMessage(WindowAction.Hidden));
-                        await ProcessHelper.RunAsync(path, string.Empty, p == "admin");
+                        await App.Instance.RunAsync(path, p == "admin");
                     }).AddTo(CompositeDisposable);
 
                 ContainingFolderOpenCommand = SelectedCandidate

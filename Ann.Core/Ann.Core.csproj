@@ -137,6 +137,7 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="Config\App.cs" />
+    <Compile Include="Config\MostRecentUsedList.cs" />
     <Compile Include="Config\MainWindow.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="CultureSummry.cs" />

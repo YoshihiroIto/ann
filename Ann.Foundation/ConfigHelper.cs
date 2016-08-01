@@ -11,7 +11,8 @@ namespace Ann.Foundation
         public enum Category
         {
             App,
-            MainWindow
+            MainWindow,
+            MostRecentUsedList
         }
 
         public static T ReadConfig<T>(Category category) where T:new()
@@ -62,7 +63,8 @@ namespace Ann.Foundation
         private static readonly IReadOnlyDictionary<Category, string> FilePaths = new Dictionary<Category, string>
         {
             {Category.App, Path.Combine(ConfigDirPath, ProductName + ".App.yaml")},
-            {Category.MainWindow, Path.Combine(ConfigDirPath, ProductName + ".MainWindow.yaml")}
+            {Category.MainWindow, Path.Combine(ConfigDirPath, ProductName + ".MainWindow.yaml")},
+            {Category.MostRecentUsedList, Path.Combine(ConfigDirPath, ProductName + ".MostRecentUsedList.yaml")}
         };
     }
 }
