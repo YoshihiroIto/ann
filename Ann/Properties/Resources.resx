@@ -211,7 +211,7 @@
     <value>Checking for updates.</value>
   </data>
   <data name="VersionChecker_Latest" xml:space="preserve">
-    <value>This latest version.</value>
+    <value>Ann is up to date.</value>
   </data>
   <data name="VersionChecker_Unknown" xml:space="preserve">
     <value>Cannot confirm the version update.</value>

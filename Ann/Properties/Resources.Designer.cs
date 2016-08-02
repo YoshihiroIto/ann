@@ -385,7 +385,7 @@ namespace Ann.Properties {
         }
         
         /// <summary>
-        ///   This latest version. に類似しているローカライズされた文字列を検索します。
+        ///   Ann is up to date. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string VersionChecker_Latest {
             get {
