@@ -56,7 +56,7 @@ namespace Ann.MainWindow
 
         public Core.Config.MainWindow Config { get; private set; }
 
-        public string Caption { get; } = $"{ConfigHelper.ProductName} {ConfigHelper.Version}";
+        public string Caption { get; } = $"{AssemblyConstants.ProductName} {AssemblyConstants.Version}";
 
         private readonly IconDecoder _iconDecoder = new IconDecoder();
 

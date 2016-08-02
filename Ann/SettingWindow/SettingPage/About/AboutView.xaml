@@ -19,7 +19,7 @@
 
     <StackPanel Margin="0,32,0,0" Orientation="Horizontal">
         <TextBlock Text="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Version, Mode=OneWay}" />
-        <TextBlock Margin="4,0,0,0" Text="{Binding Version, Mode=OneTime}" />
+        <TextBlock Margin="4,0,0,0" Text="{x:Static foundation:AssemblyConstants.Version}" />
     </StackPanel>
     <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
         <ContentControl Margin="0,0,4,0"
