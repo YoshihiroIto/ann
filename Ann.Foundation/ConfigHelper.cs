@@ -41,15 +41,18 @@ namespace Ann.Foundation
             }
         }
 
-        private static string CompanyName =>
+        public static string CompanyName =>
             ((AssemblyCompanyAttribute) Attribute.GetCustomAttribute(
                 Assembly.GetEntryAssembly(), typeof(AssemblyCompanyAttribute), false))
                 .Company;
 
-        private static string ProductName =>
+        public static string ProductName =>
             ((AssemblyProductAttribute) Attribute.GetCustomAttribute(
                 Assembly.GetEntryAssembly(), typeof(AssemblyProductAttribute), false))
                 .Product;
+
+        public static string Version =>
+            Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
         public static string ConfigDirPath
         {
