@@ -8,6 +8,10 @@ namespace Ann.Foundation
     {
         private readonly Action _dispose;
         private int _isDisposed;
+
+        public AnonymousDisposable() : this(() => { })
+        {
+        }
  
         public AnonymousDisposable(Action dispose)
         {
