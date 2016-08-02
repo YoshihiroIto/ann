@@ -3,6 +3,7 @@ using System.Diagnostics;
 
 namespace Ann.Core
 {
+    [DebuggerDisplay("Id:{_id}, MaxId:{_maxId}, Rank:{_rank}, Path:{Path}")]
     public class ExecutableUnit : IComparable<ExecutableUnit>
     {
         public readonly string Path;
@@ -23,7 +24,10 @@ namespace Ann.Core
 
         public void SetRank(int r)
         {
-            _rank = r*_maxId + _id;
+            if (r == int.MaxValue)
+                _rank = int.MaxValue;
+            else
+                _rank = r*_maxId + _id;
         }
 
         public void SetId(int id, int maxId)
