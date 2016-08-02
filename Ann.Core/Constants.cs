@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Reflection;
 using Ann.Core.Properties;
 using Ann.Foundation;
 using YamlDotNet.Serialization;
+using System.Text;
 
 namespace Ann.Core
 {
@@ -41,9 +43,16 @@ namespace Ann.Core
 
                 try
                 {
-                    var yaml = System.Text.Encoding.UTF8.GetString(Resources.OpenSourceList);
-                    using (var reader = new StringReader(yaml))
-                        _OpenSources = new Deserializer().Deserialize<OpenSource[]>(reader);
+                    var list = new List<OpenSource>();
+                    {
+                        using (var reader = new StringReader(Encoding.UTF8.GetString(Resources.OpenSourceList)))
+                            list.AddRange(new Deserializer().Deserialize<OpenSource[]>(reader));
+
+                        using (var reader = new StringReader(Encoding.UTF8.GetString(Resources.OpenSourceListNonNuget)))
+                            list.AddRange(new Deserializer().Deserialize<OpenSource[]>(reader));
+                    }
+
+                    _OpenSources = list.OrderBy(x => x.Name).ToArray();
 
                     return _OpenSources;
                 }
@@ -73,8 +82,8 @@ namespace Ann.Core
                     CultureName = name
                 };
             })
-            .Where(x => x != null)
-            .ToArray();
+                .Where(x => x != null)
+                .ToArray();
 
             if (SupportedCultures.IsEmpty())
             {

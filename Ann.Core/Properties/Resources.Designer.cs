@@ -69,5 +69,15 @@ namespace Ann.Core.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   型 System.Byte[] のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static byte[] OpenSourceListNonNuget {
+            get {
+                object obj = ResourceManager.GetObject("OpenSourceListNonNuget", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

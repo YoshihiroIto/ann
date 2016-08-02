@@ -160,6 +160,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="IndexFile.fbs" />
+    <None Include="OpenSourceListNonNuget.yaml" />
     <None Include="OpenSourceList.yaml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
@@ -179,6 +180,13 @@
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>if $(ConfigurationName) == Release (
+
+$(SolutionDir)Externals\Ann.GenOpenSourceList\Ann.GenOpenSourceList.exe $(SolutionDir) $(SolutionDir)Ann.Core\OpenSourceList.yaml
+
+)</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
