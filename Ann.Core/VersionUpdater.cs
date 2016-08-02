@@ -54,21 +54,52 @@ namespace Ann.Core
 
         #endregion
 
-        #region IsAvailableUpdate
-
-        private bool _IsAvailableUpdate;
-
-        public bool IsAvailableUpdate
-        {
-            get { return _IsAvailableUpdate; }
-            set { SetProperty(ref _IsAvailableUpdate, value); }
-        }
-
-        #endregion
-
         public void RequestRestart()
         {
             IsRestartRequested = true;
+        }
+
+        private bool _isAvailableUpdate;
+        private bool _isChecking;
+
+        public async Task CheckAsync()
+        {
+            if (_isChecking)
+                return;
+
+            using (new AnonymousDisposable(() => _isChecking = false))
+            {
+                _isChecking = true;
+
+                if (IsEnableSilentUpdate == false)
+                {
+                    VersionCheckingState = VersionCheckingStates.Unknown;
+                    return;
+                }
+
+                if (_isAvailableUpdate && UpdateProgress == 100)
+                {
+                    VersionCheckingState = VersionCheckingStates.Downloaded;
+                    return;
+                }
+
+                VersionCheckingState = VersionCheckingStates.Checking;
+
+                try
+                {
+                    await CheckForUpdate();
+
+                    VersionCheckingState = _isAvailableUpdate
+                        ? VersionCheckingStates.Downloading
+                        : VersionCheckingStates.Latest;
+
+                    await UpdateApp();
+                }
+                catch
+                {
+                    VersionCheckingState = VersionCheckingStates.Unknown;
+                }
+            }
         }
 
         private async Task UpdateApp()
@@ -95,7 +126,7 @@ namespace Ann.Core
                 accessToken: App.Instance.Config.GitHubPersonalAccessToken))
             {
                 var updateInfo = await mgr.CheckForUpdate();
-                IsAvailableUpdate = updateInfo.CurrentlyInstalledVersion.SHA1 != updateInfo.FutureReleaseEntry.SHA1;
+                _isAvailableUpdate = updateInfo.CurrentlyInstalledVersion.SHA1 != updateInfo.FutureReleaseEntry.SHA1;
             }
         }
 
@@ -113,50 +144,9 @@ namespace Ann.Core
                     .Subscribe(p =>
                     {
                         if (p == 100)
-                            if (IsAvailableUpdate)
+                            if (_isAvailableUpdate)
                                 VersionCheckingState = VersionCheckingStates.Downloaded;
                     }).AddTo(CompositeDisposable);
-            }
-        }
-
-        private bool _isChecking;
-
-        public async Task CheckAsync()
-        {
-            if (_isChecking)
-                return;
-
-            using (new AnonymousDisposable(() => _isChecking = false))
-            {
-                _isChecking = true;
-
-                if (IsEnableSilentUpdate == false)
-                {
-                    VersionCheckingState = VersionCheckingStates.Unknown;
-                    return;
-                }
-
-                if (IsAvailableUpdate && UpdateProgress == 100)
-                {
-                    VersionCheckingState = VersionCheckingStates.Downloaded;
-                    return;
-                }
-
-                VersionCheckingState = VersionCheckingStates.Checking;
-
-                try
-                {
-                    await CheckForUpdate();
-                    VersionCheckingState = IsAvailableUpdate
-                        ? VersionCheckingStates.Downloading
-                        : VersionCheckingStates.Latest;
-
-                    await UpdateApp();
-                }
-                catch
-                {
-                    VersionCheckingState = VersionCheckingStates.Unknown;
-                }
             }
         }
     }
