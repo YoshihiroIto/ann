@@ -214,7 +214,7 @@
     <value>最新バージョンです。</value>
   </data>
   <data name="VersionChecker_Unknown" xml:space="preserve">
-    <value>バージョン更新の確認ができません。</value>
+    <value>バージョン更新の確認ができません。インターネット接続を確認してください。</value>
   </data>
   <data name="Download" xml:space="preserve">
     <value>ダウンロード</value>
@@ -229,6 +229,6 @@
     <value>ダウンロード中です...</value>
   </data>
   <data name="VersionChecker_Downloaded" xml:space="preserve">
-    <value>ダウンロード完了しました。</value>
+    <value>ダウンロード完了しました。再起動時にバージョンアップします。</value>
   </data>
 </root>
