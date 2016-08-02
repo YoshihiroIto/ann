@@ -229,13 +229,18 @@ namespace Ann.Core
                             {
                                 root.GetRows(rowTemp, i);
 
+                                if (File.Exists(rowTemp.Path) == false)
+                                {
+                                    isContainsInvalid = true;
+                                    return rowTemp;
+                                }
+
                                 try
                                 {
                                     tempExecutableUnits[i] = new ExecutableUnit(i, root.RowsLength, rowTemp.Path);
                                 }
                                 catch
                                 {
-                                    tempExecutableUnits[i] = null;
                                     isContainsInvalid = true;
                                 }
 
@@ -259,7 +264,7 @@ namespace Ann.Core
             });
         }
 
-        #region Crawler
+#region Crawler
 
         private static async Task<ExecutableUnit[]> CrawlAsync(
             IEnumerable<string> targetFolders,
@@ -305,6 +310,6 @@ namespace Ann.Core
             }
         }
 
-        #endregion
+#endregion
     }
 }

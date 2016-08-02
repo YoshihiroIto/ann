@@ -12,14 +12,22 @@ namespace Ann.GenOpenSourceList
 {
     class Program
     {
-        static void Main()
+        static int Main(string[] args)
         {
+            if (args.Length != 2)
+                return 1;
+
+            var solutionDirPath = args[0];
+            var outputFilePath = args[1];
+
             var packagesConfigPaths = Directory.EnumerateFiles(
-                @"..\..\..\",
+                solutionDirPath,
                 "packages.config", SearchOption.AllDirectories);
 
             var yaml = Generate(packagesConfigPaths);
-            File.WriteAllText(@"..\..\..\Ann.Core\OpenSourceList.yaml", yaml);
+            File.WriteAllText(outputFilePath, yaml);
+
+            return 0;
         }
 
         private static string Generate(IEnumerable<string> packagesConfigPaths)
@@ -34,25 +42,6 @@ namespace Ann.GenOpenSourceList
 
                 var genPackageTasks = packageNames.Select(GeneratePackageAsync);
                 var openSources = Task.WhenAll(genPackageTasks).Result.ToList();
-
-                // nuget以外
-                openSources.Add(
-                    new OpenSource
-                    {
-                        Name = "FlatBuffers",
-                        Auther = "Google",
-                        Summry = "Memory Efficient Serialization Library",
-                        Url = "https://github.com/google/flatbuffers"
-                    });
-
-                openSources.Add(
-                    new OpenSource
-                    {
-                        Name = "LRU Cache",
-                        Auther = "Yoshihiro Ito",
-                        Summry = "Simple Implementation C# LRU Cache",
-                        Url = "https://github.com/YoshihiroIto/Jewelry"
-                    });
 
                 using (var writer = new StringWriter())
                 {

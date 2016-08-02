@@ -2,18 +2,10 @@
   Auther: ta.speot.is
   Summry: A managed wrapper around Microsoft's delta compression application programming interfaces.
   Url: 
-- Name: FlatBuffers
-  Auther: Google
-  Summry: Memory Efficient Serialization Library
-  Url: https://github.com/google/flatbuffers
 - Name: Json.NET
   Auther: James Newton-King
   Summry: Json.NET is a popular high-performance JSON framework for .NET
   Url: http://www.newtonsoft.com/json
-- Name: LRU Cache
-  Auther: Yoshihiro Ito
-  Summry: Simple Implementation C# LRU Cache
-  Url: https://github.com/YoshihiroIto/Jewelry
 - Name: Material Design Colors XAML Resources
   Auther: James Willock
   Summry: ResourceDictionary instances containing standard Google Material Design swatches, for inclusion in a XAML application.
