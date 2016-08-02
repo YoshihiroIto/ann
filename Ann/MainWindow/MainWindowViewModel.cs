@@ -102,15 +102,8 @@ namespace Ann.MainWindow
                     .AddTo(CompositeDisposable);
 
                 IndexUpdateCommand
-                    .Subscribe(async _ =>
-                    {
-                        using (new AnonymousDisposable(() => InProgressMessage.Value = string.Empty))
-                        {
-                            InProgressMessage.Value = Properties.Resources.Message_IndexUpdating;
-                            await App.Instance.UpdateIndexAsync();
-                            Input.ForceNotify();
-                        }
-                    }).AddTo(CompositeDisposable);
+                    .Subscribe(async _ => await UpdateIndexAsync())
+                    .AddTo(CompositeDisposable);
 
                 Candidates =
                     Observable
@@ -255,23 +248,34 @@ namespace Ann.MainWindow
 
         private async Task InitializeAwait()
         {
-            await Task.Run(() =>
-            {
-                Observable
-                    .Merge(Left)
-                    .Merge(Top)
-                    .Throttle(TimeSpan.FromSeconds(2))
-                    .Subscribe(_ => SaveConfig())
-                    .AddTo(CompositeDisposable);
+            Observable
+                .Merge(Left)
+                .Merge(Top)
+                .Throttle(TimeSpan.FromSeconds(2))
+                .Subscribe(_ => SaveConfig())
+                .AddTo(CompositeDisposable);
 
-                App.Instance.Config.ObserveProperty(x => x.IconCacheSize)
-                    .Subscribe(x => _iconDecoder.IconCacheSize = x)
-                    .AddTo(CompositeDisposable);
+            App.Instance.Config.ObserveProperty(x => x.IconCacheSize)
+                .Subscribe(x => _iconDecoder.IconCacheSize = x)
+                .AddTo(CompositeDisposable);
 
-                CompositeDisposable.Add(DisposeCandidates);
-            });
+            CompositeDisposable.Add(DisposeCandidates);
 
             await App.Instance.OpenIndexAsync();
+
+            if ((IndexOpeningResult.Value == IndexOpeningResults.NotFound) ||
+                (IndexOpeningResult.Value == IndexOpeningResults.OldIndex))
+                await UpdateIndexAsync();
+        }
+
+        private async Task UpdateIndexAsync()
+        {
+            using (new AnonymousDisposable(() => InProgressMessage.Value = string.Empty))
+            {
+                InProgressMessage.Value = Properties.Resources.Message_IndexUpdating;
+                await App.Instance.UpdateIndexAsync();
+                Input.ForceNotify();
+            }
         }
 
         private void DisposeCandidates()
