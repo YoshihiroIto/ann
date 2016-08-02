@@ -173,7 +173,7 @@
         <Button Margin="0,0,8,0"
                 Command="{Binding OpenUrlCommand,
                                   Mode=OneTime}"
-                CommandParameter="https://github.com/YoshihiroIto/ann"
+                CommandParameter="{x:Static core:Constants.AnnGitHubUrl}"
                 Style="{StaticResource MaterialDesignRaisedButton}">
             <StackPanel Orientation="Horizontal">
                 <materialDesign:PackIcon VerticalAlignment="Center" Kind="GithubCircle" />
@@ -183,7 +183,7 @@
         <Button Margin="0,0,8,0"
                 Command="{Binding OpenUrlCommand,
                                   Mode=OneTime}"
-                CommandParameter="https://twitter.com/yoiyoi322"
+                CommandParameter="{x:Static core:Constants.AnnTwitterUrl}"
                 Style="{StaticResource MaterialDesignRaisedButton}">
             <StackPanel Orientation="Horizontal">
                 <materialDesign:PackIcon VerticalAlignment="Center" Kind="Twitter" />

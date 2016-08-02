@@ -13,6 +13,9 @@ namespace Ann.Core
     {
         public const double IconSize = 48;
 
+        public static string AnnGitHubUrl = "https://github.com/YoshihiroIto/Ann";
+        public static string AnnTwitterUrl = "https://twitter.com/yoiyoi322";
+
         public static string SystemFolder => Environment.GetFolderPath(Environment.SpecialFolder.System);
         public static string SystemX86Folder => Environment.GetFolderPath(Environment.SpecialFolder.SystemX86);
         public static string ProgramsFolder => Environment.GetFolderPath(Environment.SpecialFolder.Programs);
