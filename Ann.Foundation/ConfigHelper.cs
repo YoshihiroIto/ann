@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using YamlDotNet.Serialization;
 
 namespace Ann.Foundation
@@ -41,33 +40,20 @@ namespace Ann.Foundation
             }
         }
 
-        public static string CompanyName =>
-            ((AssemblyCompanyAttribute) Attribute.GetCustomAttribute(
-                Assembly.GetEntryAssembly(), typeof(AssemblyCompanyAttribute), false))
-                .Company;
-
-        public static string ProductName =>
-            ((AssemblyProductAttribute) Attribute.GetCustomAttribute(
-                Assembly.GetEntryAssembly(), typeof(AssemblyProductAttribute), false))
-                .Product;
-
-        public static string Version =>
-            Assembly.GetExecutingAssembly().GetName().Version.ToString();
-
         public static string ConfigDirPath
         {
             get
             {
                 var dir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                return Path.Combine(dir, CompanyName, ProductName);
+                return Path.Combine(dir, AssemblyConstants.CompanyName, AssemblyConstants.ProductName);
             }
         }
 
         private static readonly IReadOnlyDictionary<Category, string> FilePaths = new Dictionary<Category, string>
         {
-            {Category.App, Path.Combine(ConfigDirPath, ProductName + ".App.yaml")},
-            {Category.MainWindow, Path.Combine(ConfigDirPath, ProductName + ".MainWindow.yaml")},
-            {Category.MostRecentUsedList, Path.Combine(ConfigDirPath, ProductName + ".MostRecentUsedList.yaml")}
+            {Category.App, Path.Combine(ConfigDirPath, AssemblyConstants.ProductName + ".App.yaml")},
+            {Category.MainWindow, Path.Combine(ConfigDirPath, AssemblyConstants.ProductName + ".MainWindow.yaml")},
+            {Category.MostRecentUsedList, Path.Combine(ConfigDirPath, AssemblyConstants.ProductName + ".MostRecentUsedList.yaml")}
         };
     }
 }

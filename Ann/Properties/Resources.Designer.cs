@@ -367,7 +367,7 @@ namespace Ann.Properties {
         }
         
         /// <summary>
-        ///   Download was completed. に類似しているローカライズされた文字列を検索します。
+        ///   Download was completed. Version up at after restart. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string VersionChecker_Downloaded {
             get {
@@ -394,7 +394,7 @@ namespace Ann.Properties {
         }
         
         /// <summary>
-        ///   Cannot confirm the version update. に類似しているローカライズされた文字列を検索します。
+        ///   Cannot confirm the version update. Check Internet connection. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string VersionChecker_Unknown {
             get {

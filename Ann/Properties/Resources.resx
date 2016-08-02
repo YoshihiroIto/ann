@@ -214,7 +214,7 @@
     <value>Ann is up to date.</value>
   </data>
   <data name="VersionChecker_Unknown" xml:space="preserve">
-    <value>Cannot confirm the version update.</value>
+    <value>Cannot confirm the version update. Check Internet connection.</value>
   </data>
   <data name="Download" xml:space="preserve">
     <value>Download</value>
@@ -229,6 +229,6 @@
     <value>Now downloading files...</value>
   </data>
   <data name="VersionChecker_Downloaded" xml:space="preserve">
-    <value>Download was completed.</value>
+    <value>Download was completed. Version up at after restart.</value>
   </data>
 </root>

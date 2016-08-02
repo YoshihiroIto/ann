@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnonymousDisposable.cs" />
+    <Compile Include="AssemblyConstants.cs" />
     <Compile Include="CompositDisposableExtension.cs" />
     <Compile Include="ConfigHelper.cs" />
     <Compile Include="Control\Behavior\WindowDisposeDataContextOnClosedBehavior.cs" />

@@ -12,8 +12,6 @@ namespace Ann.SettingWindow.SettingPage.About
 {
     public class AboutViewModel : ViewModelBase
     {
-        public string Version { get; } = ConfigHelper.Version;
-
         public ReactiveCommand<string> OpenUrlCommand { get; }
         public ReactiveCommand<OpenSource> OpenSourceOpenCommand { get; }
 
