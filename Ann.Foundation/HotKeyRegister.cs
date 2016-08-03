@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 
-namespace Ann.Foundation.Control
+namespace Ann.Foundation
 {
     public class HotKeyRegister : IDisposable
     {

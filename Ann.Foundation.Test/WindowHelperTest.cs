@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Ann.Foundation.Test.Control
+namespace Ann.Foundation.Test
 {
     [TestClass]
     public class WindowHelperTest
