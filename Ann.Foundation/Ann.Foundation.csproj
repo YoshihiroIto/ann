@@ -101,6 +101,7 @@
     <Compile Include="Control\WindowHelper.cs" />
     <Compile Include="Control\WpfHelper.cs" />
     <Compile Include="DisposableChecker.cs" />
+    <Compile Include="Exceptions\MultipleDisposingException.cs" />
     <Compile Include="FlatBuffers\ByteBuffer.cs" />
     <Compile Include="FlatBuffers\FlatBufferBuilder.cs" />
     <Compile Include="FlatBuffers\FlatBufferConstants.cs" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using Ann.Foundation.Exceptions;
 
 namespace Ann.Foundation
 {
@@ -23,7 +24,7 @@ namespace Ann.Foundation
         public void Dispose()
         {
             if (Interlocked.Exchange(ref _isDisposed, 1) != 0)
-                return;
+                throw new MultipleDisposingException();
 
             _dispose();
             GC.SuppressFinalize(this);

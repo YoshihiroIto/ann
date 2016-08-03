@@ -24,6 +24,7 @@ namespace Ann.Foundation.Test
         }
 
         [TestMethod]
+        [ExpectedException(typeof(Exceptions.MultipleDisposingException))]
         public void MultipleDisposing()
         {
             var n = 0;
@@ -33,7 +34,6 @@ namespace Ann.Foundation.Test
             d.Dispose();
             Assert.AreEqual(n, 1);
             d.Dispose();
-            Assert.AreEqual(n, 1);
         }
 
         [TestMethod]
