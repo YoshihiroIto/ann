@@ -307,12 +307,12 @@ namespace Ann.MainWindow
         {
             Debug.Assert(Config == null);
 
-            Config = ConfigHelper.ReadConfig<Core.Config.MainWindow>(ConfigHelper.Category.MainWindow);
+            Config = ConfigHelper.ReadConfig<Core.Config.MainWindow>(ConfigHelper.Category.MainWindow, Constants.ConfigDirPath);
         }
 
         private void SaveConfig()
         {
-            ConfigHelper.WriteConfig(ConfigHelper.Category.MainWindow, Config);
+            ConfigHelper.WriteConfig(ConfigHelper.Category.MainWindow, Constants.ConfigDirPath, Config);
         }
 
         private static async Task OpenByExplorer(string path)

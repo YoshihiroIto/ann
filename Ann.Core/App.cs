@@ -26,7 +26,7 @@ namespace Ann.Core
 
         private HashSet<string> _priorityFiles = new HashSet<string>();
         private readonly ExecutableUnitDataBase _dataBase;
-        private static string IndexFilePath => System.IO.Path.Combine(ConfigHelper.ConfigDirPath, "index.dat");
+        private static string IndexFilePath => System.IO.Path.Combine(Constants.ConfigDirPath, "index.dat");
 
         #region IndexOpeningResult
 
@@ -162,7 +162,7 @@ namespace Ann.Core
             Debug.Assert(MruList == null);
 
             {
-                Config = ConfigHelper.ReadConfig<Config.App>(ConfigHelper.Category.App);
+                Config = ConfigHelper.ReadConfig<Config.App>(ConfigHelper.Category.App, Constants.ConfigDirPath);
 
                 if (Config.PriorityFiles == null)
                     Config.PriorityFiles = new ObservableCollection<Path>();
@@ -189,19 +189,19 @@ namespace Ann.Core
             }
 
             {
-                MruList = ConfigHelper.ReadConfig<Config.MostRecentUsedList>(ConfigHelper.Category.MostRecentUsedList);
+                MruList = ConfigHelper.ReadConfig<Config.MostRecentUsedList>(ConfigHelper.Category.MostRecentUsedList, Constants.ConfigDirPath);
                 MruList.AppPath.ForEach((p, index) => _mruOrders[p] = index);
             }
         }
 
         public void SaveConfig()
         {
-            ConfigHelper.WriteConfig(ConfigHelper.Category.App, Config);
+            ConfigHelper.WriteConfig(ConfigHelper.Category.App, Constants.ConfigDirPath, Config);
         }
 
         public void SaveMru()
         {
-            ConfigHelper.WriteConfig(ConfigHelper.Category.MostRecentUsedList, MruList);
+            ConfigHelper.WriteConfig(ConfigHelper.Category.MostRecentUsedList, Constants.ConfigDirPath, MruList);
         }
 
         #endregion

@@ -33,7 +33,6 @@ namespace Ann.Core
                 : Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
 
         private static OpenSource[] _OpenSources;
-
         public static OpenSource[] OpenSources
         {
             get
@@ -64,6 +63,15 @@ namespace Ann.Core
         }
 
         public static readonly CultureSummry[] SupportedCultures;
+
+        public static string ConfigDirPath
+        {
+            get
+            {
+                var dir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                return System.IO.Path.Combine(dir, AssemblyConstants.CompanyName, AssemblyConstants.ProductName);
+            }
+        }
 
         static Constants()
         {

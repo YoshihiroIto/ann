@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using YamlDotNet.Serialization;
 
@@ -14,14 +13,16 @@ namespace Ann.Foundation
             MostRecentUsedList
         }
 
-        public static T ReadConfig<T>(Category category) where T:new()
+        public static T ReadConfig<T>(Category category, string dirPath) where T : new()
         {
-            if (File.Exists(FilePaths[category]) == false)
+            var filePath = MakeFilePath(category, dirPath);
+
+            if (File.Exists(filePath) == false)
                 return new T();
 
             try
             {
-                using (var reader = new StringReader(File.ReadAllText(FilePaths[category])))
+                using (var reader = new StringReader(File.ReadAllText(filePath)))
                     return new Deserializer().Deserialize<T>(reader);
             }
             catch
@@ -30,30 +31,29 @@ namespace Ann.Foundation
             }
         }
 
-        public static void WriteConfig<T>(Category category, T config)
+        public static void WriteConfig<T>(Category category, string dirPath, T config)
         {
             using (var writer = new StringWriter())
             {
                 new Serializer(SerializationOptions.EmitDefaults).Serialize(writer, config);
-                Directory.CreateDirectory(ConfigDirPath);
-                File.WriteAllText(FilePaths[category], writer.ToString());
+                
+                var filePath = MakeFilePath(category, dirPath);
+
+                // ReSharper disable once AssignNullToNotNullAttribute
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                File.WriteAllText(filePath, writer.ToString());
             }
         }
 
-        public static string ConfigDirPath
-        {
-            get
+        private static string MakeFilePath(Category category, string dirPath) =>
+            Path.Combine(dirPath, AssemblyConstants.ProductName + FileExts[category]);
+
+        private static readonly IReadOnlyDictionary<Category, string> FileExts =
+            new Dictionary<Category, string>
             {
-                var dir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                return Path.Combine(dir, AssemblyConstants.CompanyName, AssemblyConstants.ProductName);
-            }
-        }
-
-        private static readonly IReadOnlyDictionary<Category, string> FilePaths = new Dictionary<Category, string>
-        {
-            {Category.App, Path.Combine(ConfigDirPath, AssemblyConstants.ProductName + ".App.yaml")},
-            {Category.MainWindow, Path.Combine(ConfigDirPath, AssemblyConstants.ProductName + ".MainWindow.yaml")},
-            {Category.MostRecentUsedList, Path.Combine(ConfigDirPath, AssemblyConstants.ProductName + ".MostRecentUsedList.yaml")}
-        };
+                {Category.App, ".App.yaml"},
+                {Category.MainWindow, ".MainWindow.yaml"},
+                {Category.MostRecentUsedList, ".MostRecentUsedList.yaml"}
+            };
     }
 }
