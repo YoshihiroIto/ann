@@ -74,6 +74,7 @@
     <Compile Include="CompositDisposableExtensionTest.cs" />
     <Compile Include="ProcessHelperTest.cs" />
     <Compile Include="Control\WindowHelperTest.cs" />
+    <Compile Include="DisposableCheckerTest.cs" />
     <Compile Include="TimeMeasureTest.cs" />
     <Compile Include="AnonymousDisposableTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

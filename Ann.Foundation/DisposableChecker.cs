@@ -33,7 +33,7 @@ namespace Ann.Foundation
 
             if (Disposables.ContainsKey(disposable))
             {
-                _showError?.Invoke("Found multiple addition." + disposable.GetType());
+                _showError?.Invoke("Found multiple addition.    -- " + disposable.GetType());
             }
 
             Disposables[disposable] = 0;
@@ -46,7 +46,7 @@ namespace Ann.Foundation
 
             if (Disposables.ContainsKey(disposable) == false)
             {
-                _showError?.Invoke("Found multiple diposing." + disposable.GetType());
+                _showError?.Invoke("Found multiple removing.    -- " + disposable.GetType());
             }
 
             int dummy;
