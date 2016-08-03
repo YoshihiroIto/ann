@@ -8,6 +8,7 @@ namespace Ann.Foundation.Test
         [TestMethod]
         public void Simple()
         {
+            // 例外にならない
             using (new TimeMeasure())
             {
             }
@@ -16,6 +17,7 @@ namespace Ann.Foundation.Test
         [TestMethod]
         public void Title()
         {
+            // 例外にならない
             using (new TimeMeasure("TimeMeasureTest"))
             {
             }
