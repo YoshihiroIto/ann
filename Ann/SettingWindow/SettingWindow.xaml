@@ -4,7 +4,6 @@
         xmlns:about="clr-namespace:Ann.SettingWindow.SettingPage.About"
         xmlns:app="clr-namespace:Ann"
         xmlns:behavior="clr-namespace:Ann.Foundation.Control.Behavior;assembly=Ann.Foundation"
-        xmlns:control="clr-namespace:Ann.Foundation.Control;assembly=Ann.Foundation"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:general="clr-namespace:Ann.SettingWindow.SettingPage.General"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
@@ -14,6 +13,8 @@
         xmlns:priorityFiles="clr-namespace:Ann.SettingWindow.SettingPage.PriorityFiles"
         xmlns:shortcuts="clr-namespace:Ann.SettingWindow.SettingPage.Shortcuts"
         xmlns:targetFolders="clr-namespace:Ann.SettingWindow.SettingPage.TargetFolders"
+        xmlns:valueConverter="clr-namespace:Ann.Foundation.Control.ValueConverter;assembly=Ann.Foundation"
+        xmlns:extension="clr-namespace:Ann.Foundation.Control.Extension;assembly=Ann.Foundation"
         Title="{Binding Source={x:Static app:CultureService.Instance},
                         Path=Resources.Settings,
                         Mode=OneWay}"
@@ -48,7 +49,7 @@
                     <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Red.xaml" />
                 </ResourceDictionary.MergedDictionaries>
 
-                <control:TypeofConverter x:Key="Typeof" />
+                <valueConverter:TypeofConverter x:Key="Typeof" />
 
                 <Style BasedOn="{StaticResource MaterialDesignCheckBox}" TargetType="{x:Type CheckBox}" />
                 <Style BasedOn="{StaticResource MaterialDesignComboBox}" TargetType="{x:Type ComboBox}" />
@@ -193,7 +194,7 @@
 
                                     <materialDesign:Transitioner Grid.Row="0" SelectedIndex="0">
                                         <materialDesign:TransitionerSlide OpeningEffect="{materialDesign:TransitionEffect SlideInFromLeft, Duration=0:0:0.20}">
-                                            <TextBlock Style="{control:MultiStyle PageCaptionTextBlockStyle MaterialDesignHeadlineTextBlock}" />
+                                            <TextBlock Style="{extension:MultiStyle PageCaptionTextBlockStyle MaterialDesignHeadlineTextBlock}" />
                                         </materialDesign:TransitionerSlide>
                                     </materialDesign:Transitioner>
 

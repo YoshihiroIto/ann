@@ -95,9 +95,9 @@
     <Compile Include="Control\WindowsHelper.cs" />
     <Compile Include="Control\Behavior\WindowTaskTrayIconBehavior.cs" />
     <Compile Include="Control\HotKeyRegister.cs" />
-    <Compile Include="Control\MultiStyleExtension.cs" />
+    <Compile Include="Control\Extension\MultiStyleExtension.cs" />
     <Compile Include="Control\ShortcutKeyInputBox.cs" />
-    <Compile Include="Control\TypeofConverter.cs" />
+    <Compile Include="Control\ValueConverter\TypeofConverter.cs" />
     <Compile Include="Control\WindowHelper.cs" />
     <Compile Include="Control\WpfHelper.cs" />
     <Compile Include="DisposableChecker.cs" />
