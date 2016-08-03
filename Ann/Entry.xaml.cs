@@ -18,7 +18,7 @@ namespace Ann
             ProfileOptimization.SetProfileRoot(ConfigHelper.ConfigDirPath);
             ProfileOptimization.StartProfile("Startup.Profile");
 
-            DisposableChecker.Start();
+            DisposableChecker.Start(m => MessageBox.Show(m));
             VersionUpdater.Initialize();
             {
                 Task.Run(async () => await VersionUpdater.Instance.CheckAsync());

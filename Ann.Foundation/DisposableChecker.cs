@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
-using System.Windows;
 
 namespace Ann.Foundation
 {
@@ -10,9 +9,12 @@ namespace Ann.Foundation
     {
         private static readonly ConcurrentDictionary<IDisposable, int> Disposables = new ConcurrentDictionary<IDisposable, int>();
 
+        private static Action<string> _showError;
+
         [Conditional("DEBUG")]
-        public static void Start()
+        public static void Start(Action<string> showError)
         {
+            _showError = showError;
         }
 
         [Conditional("DEBUG")]
@@ -20,7 +22,7 @@ namespace Ann.Foundation
         {
             if (Disposables.Any())
             {
-                MessageBox.Show("Found undispose object.");
+                _showError?.Invoke("Found undispose object.");
             }
         }
 
@@ -31,7 +33,7 @@ namespace Ann.Foundation
 
             if (Disposables.ContainsKey(disposable))
             {
-                MessageBox.Show("Found multiple addition." + disposable.GetType());
+                _showError?.Invoke("Found multiple addition." + disposable.GetType());
             }
 
             Disposables[disposable] = 0;
@@ -44,7 +46,7 @@ namespace Ann.Foundation
 
             if (Disposables.ContainsKey(disposable) == false)
             {
-                MessageBox.Show("Found multiple diposing." + disposable.GetType());
+                _showError?.Invoke("Found multiple diposing." + disposable.GetType());
             }
 
             int dummy;
