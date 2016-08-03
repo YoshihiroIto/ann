@@ -1,4 +1,6 @@
-﻿using System;
+﻿
+using System;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
     
 namespace Ann.Foundation.Test
@@ -12,7 +14,8 @@ namespace Ann.Foundation.Test
             {
             }
         }
-        
+
+#if DEBUG
         [TestMethod]
         public void Simple()
         {
@@ -93,5 +96,30 @@ namespace Ann.Foundation.Test
 
             DisposableChecker.End();
         }
+#else
+        [TestMethod]
+        public void Simple()
+        {
+            var message = "ABC";
+
+            DisposableChecker.Start(m => message = m);
+
+            var d = new Disposable();
+            DisposableChecker.Add(d);
+            DisposableChecker.Remove(d);
+            d.Dispose();
+
+            DisposableChecker.End();
+
+            Assert.AreEqual(message, "ABC");
+        }
+
+        [TestMethod]
+        public void NullStart()
+        {
+            DisposableChecker.Start(null);
+            DisposableChecker.End();
+        }
+#endif
     }
 }
