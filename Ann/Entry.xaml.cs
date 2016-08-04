@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Runtime;
 using System.Threading.Tasks;
 using System.Windows;
@@ -15,10 +16,12 @@ namespace Ann
         [STAThread]
         public static void Main(string[] args)
         {
-            ProfileOptimization.SetProfileRoot(ConfigHelper.ConfigDirPath);
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Directory.CreateDirectory(Constants.ConfigDirPath);
+            ProfileOptimization.SetProfileRoot(Constants.ConfigDirPath);
             ProfileOptimization.StartProfile("Startup.Profile");
 
-            DisposableChecker.Start();
+            DisposableChecker.Start(m => MessageBox.Show(m));
             VersionUpdater.Initialize();
             {
                 Task.Run(async () => await VersionUpdater.Instance.CheckAsync());

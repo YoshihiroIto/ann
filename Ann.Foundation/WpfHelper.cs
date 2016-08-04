@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
-namespace Ann.Foundation.Control
+namespace Ann.Foundation
 {
     public static class WpfHelper
     {

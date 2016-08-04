@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Ann.Foundation.Control
+namespace Ann.Foundation.Control.ValueConverter
 {
     public class TypeofConverter : IValueConverter
     {

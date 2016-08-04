@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -144,14 +145,14 @@ namespace Ann.Core
             if (target == input)
                 return (rankBase + 0)*2;
 
-            if (targetParts.Any(p => p.StartsWith(input)))
-                return (rankBase + 1)*2;
+            if (targetParts != null)
+                if (targetParts.Any(p => p.StartsWith(input)))
+                    return (rankBase + 1) * 2;
 
             return int.MaxValue;
         }
 
-        public async Task<IndexOpeningResults> UpdateIndexAsync(IEnumerable<string> targetFolders,
-            IEnumerable<string> executableFileExts)
+        public async Task<IndexOpeningResults> UpdateIndexAsync(string[] targetFolders, IEnumerable<string> executableFileExts)
         {
             using (new TimeMeasure("Index Crawlering"))
                 _executableUnits = await CrawlAsync(targetFolders, executableFileExts);
@@ -201,7 +202,7 @@ namespace Ann.Core
             return IndexOpeningResults.Ok;
         }
 
-        public async Task<IndexOpeningResults> OpenIndexAsync()
+        public async Task<IndexOpeningResults> OpenIndexAsync(string[] targetFolders)
         {
             return await Task.Run(() =>
             {
@@ -220,6 +221,7 @@ namespace Ann.Core
 
                         var tempExecutableUnits = new ExecutableUnit[root.RowsLength];
                         var isContainsInvalid = false;
+                        var stringPool = new ConcurrentDictionary<string, string>();
 
                         Parallel.For(
                             0,
@@ -237,7 +239,7 @@ namespace Ann.Core
 
                                 try
                                 {
-                                    tempExecutableUnits[i] = new ExecutableUnit(i, root.RowsLength, rowTemp.Path);
+                                    tempExecutableUnits[i] = new ExecutableUnit(i, root.RowsLength, rowTemp.Path, stringPool, targetFolders);
                                 }
                                 catch
                                 {
@@ -267,7 +269,7 @@ namespace Ann.Core
 #region Crawler
 
         private static async Task<ExecutableUnit[]> CrawlAsync(
-            IEnumerable<string> targetFolders,
+            string[] targetFolders,
             IEnumerable<string> executableFileExts)
         {
             return await Task.Run(() =>
@@ -276,12 +278,14 @@ namespace Ann.Core
                 {
                     var executableExts = new HashSet<string>(executableFileExts.Select(e => "." + e.ToLower()));
 
+                    var stringPool = new ConcurrentDictionary<string, string>();
+
                     var results = targetFolders
                         .AsParallel()
                         .SelectMany(targetFolder =>
                             EnumerateAllFiles(targetFolder)
                                 .Where(f => executableExts.Contains(System.IO.Path.GetExtension(f)?.ToLower()))
-                                .Select(f => new ExecutableUnit(f))
+                                .Select(f => new ExecutableUnit(f, stringPool, targetFolders))
                         ).ToArray();
 
                     results.ForEach((r, i) => r.SetId(i, results.Length));

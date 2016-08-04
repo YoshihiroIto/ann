@@ -26,7 +26,7 @@ namespace Ann.Core
 
         private HashSet<string> _priorityFiles = new HashSet<string>();
         private readonly ExecutableUnitDataBase _dataBase;
-        private static string IndexFilePath => System.IO.Path.Combine(ConfigHelper.ConfigDirPath, "index.dat");
+        private static string IndexFilePath => System.IO.Path.Combine(Constants.ConfigDirPath, "index.dat");
 
         #region IndexOpeningResult
 
@@ -70,37 +70,54 @@ namespace Ann.Core
             return true;
         }
 
+        private string[] TagetFolders
+        {
+            get
+            {
+                var folders = new List<string>();
+                {
+                    if (Config.TargetFolder.IsIncludeSystemFolder)
+                        folders.Add(Constants.SystemFolder);
+
+                    if (Config.TargetFolder.IsIncludeSystemX86Folder)
+                        folders.Add(Constants.SystemX86Folder);
+
+                    if (Config.TargetFolder.IsIncludeProgramsFolder)
+                        folders.Add(Constants.ProgramsFolder);
+
+                    if (Config.TargetFolder.IsIncludeProgramFilesFolder)
+                        folders.Add(Constants.ProgramFilesFolder);
+
+                    if (Config.TargetFolder.IsIncludeProgramFilesX86Folder)
+                        folders.Add(Constants.ProgramFilesX86Folder);
+                }
+
+                return Config.TargetFolder.Folders.Select(x => x.Value)
+                    .Concat(folders)
+                    .Select(Environment.ExpandEnvironmentVariables)
+                    .Distinct()
+                    .Where(Directory.Exists)
+                    .Select(f =>
+                    {
+                        f = f.Replace('/', '\\');
+                        f = f.TrimEnd('\\') + '\\';
+                        f = f.ToLower();
+                        return f;
+                    })
+                    .OrderByDescending(f => f.Length)
+                    .ToArray();
+            }
+        }
+
         public async Task OpenIndexAsync()
         {
             IndexOpeningResult = IndexOpeningResults.InOpening;
-            IndexOpeningResult = await _dataBase.OpenIndexAsync();
+            IndexOpeningResult = await _dataBase.OpenIndexAsync(TagetFolders);
         }
 
         public async Task UpdateIndexAsync()
         {
-            var targetFolders = Config.TargetFolder.Folders.ToList();
-
-            if (Config.TargetFolder.IsIncludeSystemFolder)
-                targetFolders.Add(new Path(Constants.SystemFolder));
-
-            if (Config.TargetFolder.IsIncludeSystemX86Folder)
-                targetFolders.Add(new Path(Constants.SystemX86Folder));
-
-            if (Config.TargetFolder.IsIncludeProgramsFolder)
-                targetFolders.Add(new Path(Constants.ProgramsFolder));
-
-            if (Config.TargetFolder.IsIncludeProgramFilesFolder)
-                targetFolders.Add(new Path(Constants.ProgramFilesFolder));
-
-            if (Config.TargetFolder.IsIncludeProgramFilesX86Folder)
-                targetFolders.Add(new Path(Constants.ProgramFilesX86Folder));
-
-            IndexOpeningResult = await _dataBase.UpdateIndexAsync(
-                targetFolders
-                    .Select(f => Environment.ExpandEnvironmentVariables(f.Value))
-                    .Distinct()
-                    .Where(Directory.Exists),
-                Config.ExecutableFileExts);
+            IndexOpeningResult = await _dataBase.UpdateIndexAsync(TagetFolders, Config.ExecutableFileExts);
         }
 
         public IEnumerable<ExecutableUnit> FindExecutableUnit(string name) =>
@@ -139,7 +156,7 @@ namespace Ann.Core
 
                 while (MruList.AppPath.Count > MaxMruCount)
                     MruList.AppPath.RemoveAt(MruList.AppPath.Count - 1);
-                
+
                 SaveMru();
 
                 _mruOrders.Clear();
@@ -162,7 +179,7 @@ namespace Ann.Core
             Debug.Assert(MruList == null);
 
             {
-                Config = ConfigHelper.ReadConfig<Config.App>(ConfigHelper.Category.App);
+                Config = ConfigHelper.ReadConfig<Config.App>(ConfigHelper.Category.App, Constants.ConfigDirPath);
 
                 if (Config.PriorityFiles == null)
                     Config.PriorityFiles = new ObservableCollection<Path>();
@@ -189,19 +206,20 @@ namespace Ann.Core
             }
 
             {
-                MruList = ConfigHelper.ReadConfig<Config.MostRecentUsedList>(ConfigHelper.Category.MostRecentUsedList);
+                MruList = ConfigHelper.ReadConfig<Config.MostRecentUsedList>(ConfigHelper.Category.MostRecentUsedList,
+                    Constants.ConfigDirPath);
                 MruList.AppPath.ForEach((p, index) => _mruOrders[p] = index);
             }
         }
 
         public void SaveConfig()
         {
-            ConfigHelper.WriteConfig(ConfigHelper.Category.App, Config);
+            ConfigHelper.WriteConfig(ConfigHelper.Category.App, Constants.ConfigDirPath, Config);
         }
 
         public void SaveMru()
         {
-            ConfigHelper.WriteConfig(ConfigHelper.Category.MostRecentUsedList, MruList);
+            ConfigHelper.WriteConfig(ConfigHelper.Category.MostRecentUsedList, Constants.ConfigDirPath, MruList);
         }
 
         #endregion

@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ann.Foundation", "Ann.Found
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ann.GenOpenSourceList", "Ann.GenOpenSourceList\Ann.GenOpenSourceList.csproj", "{F7D78A68-0008-4D49-B30C-0170249FC155}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ann.Foundation.Test", "Ann.Foundation.Test\Ann.Foundation.Test.csproj", "{F97027ED-E232-4921-85C4-8211B412D08D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{F7D78A68-0008-4D49-B30C-0170249FC155}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7D78A68-0008-4D49-B30C-0170249FC155}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7D78A68-0008-4D49-B30C-0170249FC155}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F97027ED-E232-4921-85C4-8211B412D08D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F97027ED-E232-4921-85C4-8211B412D08D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F97027ED-E232-4921-85C4-8211B412D08D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F97027ED-E232-4921-85C4-8211B412D08D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Markup;
 
-namespace Ann.Foundation.Control
+namespace Ann.Foundation.Control.Extension
 {
     // http://stackoverflow.com/questions/8731547/markup-extension-staticresourceextension-requires-ixamlschemacontextprovider
 

@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace Ann.Foundation.Control
+namespace Ann.Foundation
 {
     public static class WindowsHelper
     {
