@@ -7,7 +7,7 @@ namespace Ann.Foundation
     {
         public static void Add(this CompositeDisposable c, Action action)
         {
-            c.Add(new AnonymousDisposable(action));
+            c.Add(Disposable.Create(action));
         }
     }
 }
