@@ -1,6 +1,4 @@
-﻿
-using System;
-using System.Diagnostics;
+﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
     
 namespace Ann.Foundation.Test
@@ -15,7 +13,6 @@ namespace Ann.Foundation.Test
             }
         }
 
-#if DEBUG
         [TestMethod]
         public void Simple()
         {
@@ -40,6 +37,7 @@ namespace Ann.Foundation.Test
             DisposableChecker.End();
         }
 
+#if DEBUG
         [TestMethod]
         public void Undispose()
         {
@@ -94,30 +92,6 @@ namespace Ann.Foundation.Test
 
             Assert.IsTrue(message.Contains("Found multiple removing."));
 
-            DisposableChecker.End();
-        }
-#else
-        [TestMethod]
-        public void Simple()
-        {
-            var message = "ABC";
-
-            DisposableChecker.Start(m => message = m);
-
-            var d = new Disposable();
-            DisposableChecker.Add(d);
-            DisposableChecker.Remove(d);
-            d.Dispose();
-
-            DisposableChecker.End();
-
-            Assert.AreEqual(message, "ABC");
-        }
-
-        [TestMethod]
-        public void NullStart()
-        {
-            DisposableChecker.Start(null);
             DisposableChecker.End();
         }
 #endif
