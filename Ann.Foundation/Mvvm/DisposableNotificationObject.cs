@@ -31,9 +31,7 @@ namespace Ann.Foundation.Mvvm
                 return;
 
             if (disposing)
-            {
                 _compositeDisposable?.Dispose();
-            }
 
             _disposed = true;
         }

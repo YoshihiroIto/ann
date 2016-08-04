@@ -34,6 +34,7 @@ namespace Ann.Foundation.Test.Mvvm
             }
         }
 
+#if DEBUG
         [Theory]
         [InlineData(true, false)]
         [InlineData(false, true)]
@@ -69,5 +70,6 @@ namespace Ann.Foundation.Test.Mvvm
 
             Assert.Equal(expected, message.Contains("Found"));
         }
+#endif
     }
 }
