@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -144,8 +145,9 @@ namespace Ann.Core
             if (target == input)
                 return (rankBase + 0)*2;
 
-            if (targetParts.Any(p => p.StartsWith(input)))
-                return (rankBase + 1)*2;
+            if (targetParts != null)
+                if (targetParts.Any(p => p.StartsWith(input)))
+                    return (rankBase + 1) * 2;
 
             return int.MaxValue;
         }
@@ -220,6 +222,7 @@ namespace Ann.Core
 
                         var tempExecutableUnits = new ExecutableUnit[root.RowsLength];
                         var isContainsInvalid = false;
+                        var stringPool = new ConcurrentDictionary<string, string>();
 
                         Parallel.For(
                             0,
@@ -237,7 +240,7 @@ namespace Ann.Core
 
                                 try
                                 {
-                                    tempExecutableUnits[i] = new ExecutableUnit(i, root.RowsLength, rowTemp.Path);
+                                    tempExecutableUnits[i] = new ExecutableUnit(i, root.RowsLength, rowTemp.Path, stringPool);
                                 }
                                 catch
                                 {
@@ -276,12 +279,14 @@ namespace Ann.Core
                 {
                     var executableExts = new HashSet<string>(executableFileExts.Select(e => "." + e.ToLower()));
 
+                    var stringPool = new ConcurrentDictionary<string, string>();
+
                     var results = targetFolders
                         .AsParallel()
                         .SelectMany(targetFolder =>
                             EnumerateAllFiles(targetFolder)
                                 .Where(f => executableExts.Contains(System.IO.Path.GetExtension(f)?.ToLower()))
-                                .Select(f => new ExecutableUnit(f))
+                                .Select(f => new ExecutableUnit(f, stringPool))
                         ).ToArray();
 
                     results.ForEach((r, i) => r.SetId(i, results.Length));
