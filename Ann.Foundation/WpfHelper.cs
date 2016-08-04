@@ -16,7 +16,7 @@ namespace Ann.Foundation
             await Task.Run(() => DoEvents());
         }
 
-        public static void DoEvents()
+        private static void DoEvents()
         {
             var frame = new DispatcherFrame();
 

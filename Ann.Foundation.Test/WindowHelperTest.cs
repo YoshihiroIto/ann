@@ -6,7 +6,7 @@ namespace Ann.Foundation.Test
     public class WindowHelperTest
     {
         [StaFact]
-        public void Simple()
+        public void EnableBlur()
         {
             // 例外にならない
             var w = new Window();
