@@ -1,16 +1,17 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
+using Ann.Foundation;
 
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
-[assembly: AssemblyTitle("Ann")]
+[assembly: AssemblyTitle(AssemblyConstants.Product)]
 [assembly: AssemblyDescription("Simple implementation commandline launcher")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Jewelry Development")]
-[assembly: AssemblyProduct("Ann")]
-[assembly: AssemblyCopyright("Copyright © 2016 Jewelry Development All Rights Reserved.")]
+[assembly: AssemblyCompany(AssemblyConstants.Company)]
+[assembly: AssemblyProduct(AssemblyConstants.Product)]
+[assembly: AssemblyCopyright(AssemblyConstants.Copyright)]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

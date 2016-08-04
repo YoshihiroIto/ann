@@ -69,7 +69,7 @@ namespace Ann.Core
             get
             {
                 var dir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                return System.IO.Path.Combine(dir, AssemblyConstants.CompanyName, AssemblyConstants.ProductName);
+                return System.IO.Path.Combine(dir, AssemblyConstants.Company, AssemblyConstants.Product);
             }
         }
 
