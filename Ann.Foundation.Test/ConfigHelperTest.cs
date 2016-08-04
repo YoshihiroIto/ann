@@ -1,10 +1,10 @@
 ﻿using Xunit;
 
-namespace Ann.Core.Test
+namespace Ann.Foundation.Test
 {
-    public class CrawlerTest
+    public class ConfigHelperTest
     {
-    [Fact]
+        [Fact]
         public void Simple()
         {
         }

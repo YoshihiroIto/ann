@@ -1,12 +1,11 @@
 ﻿using System.Windows;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace Ann.Foundation.Test
 {
-    [TestClass]
     public class WindowHelperTest
     {
-        [TestMethod]
+        [StaFact]
         public void Simple()
         {
             // 例外にならない

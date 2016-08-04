@@ -1,11 +1,10 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Xunit;
 
 namespace Ann.Foundation.Test
 {
-    [TestClass]
     public class TimeMeasureTest
     {
-        [TestMethod]
+        [Fact]
         public void Simple()
         {
             // 例外にならない
@@ -14,7 +13,7 @@ namespace Ann.Foundation.Test
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void Title()
         {
             // 例外にならない

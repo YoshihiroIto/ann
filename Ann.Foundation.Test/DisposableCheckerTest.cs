@@ -1,9 +1,8 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-    
+using Xunit;
+
 namespace Ann.Foundation.Test
 {
-    [TestClass]
     public class DisposableCheckerTest
     {
         private class Disposable : IDisposable
@@ -13,7 +12,7 @@ namespace Ann.Foundation.Test
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple()
         {
             var message = "ABC";
@@ -27,10 +26,10 @@ namespace Ann.Foundation.Test
 
             DisposableChecker.End();
 
-            Assert.AreEqual(message, "ABC");
+            Assert.Equal(message, "ABC");
         }
 
-        [TestMethod]
+        [Fact]
         public void NullStart()
         {
             DisposableChecker.Start(null);
@@ -38,7 +37,7 @@ namespace Ann.Foundation.Test
         }
 
 #if DEBUG
-        [TestMethod]
+        [Fact]
         public void Undispose()
         {
             var message = "ABC";
@@ -51,10 +50,10 @@ namespace Ann.Foundation.Test
 
             DisposableChecker.End();
 
-            Assert.IsTrue(message.Contains("Found undispose object."));
+            Assert.True(message.Contains("Found undispose object."));
         }
 
-        [TestMethod]
+        [Fact]
         public void MultipleAddition()
         {
             var message = "ABC";
@@ -65,15 +64,15 @@ namespace Ann.Foundation.Test
             DisposableChecker.Add(d);
             d.Dispose();
 
-            Assert.AreEqual(message, "ABC");
+            Assert.Equal(message, "ABC");
             DisposableChecker.Add(d);
 
-            Assert.IsTrue(message.Contains("Found multiple addition."));
+            Assert.True(message.Contains("Found multiple addition."));
 
             DisposableChecker.End();
         }
 
-        [TestMethod]
+        [Fact]
         public void MultipleRemoving()
         {
             var message = "ABC";
@@ -84,13 +83,13 @@ namespace Ann.Foundation.Test
             DisposableChecker.Add(d);
             d.Dispose();
 
-            Assert.AreEqual(message, "ABC");
+            Assert.Equal(message, "ABC");
             DisposableChecker.Remove(d);
 
-            Assert.AreEqual(message, "ABC");
+            Assert.Equal(message, "ABC");
             DisposableChecker.Remove(d);
 
-            Assert.IsTrue(message.Contains("Found multiple removing."));
+            Assert.True(message.Contains("Found multiple removing."));
 
             DisposableChecker.End();
         }
