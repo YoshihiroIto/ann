@@ -77,7 +77,6 @@
     <Compile Include="WindowHelperTest.cs" />
     <Compile Include="DisposableCheckerTest.cs" />
     <Compile Include="TimeMeasureTest.cs" />
-    <Compile Include="AnonymousDisposableTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -174,7 +175,7 @@ namespace Ann.MainWindow
                 SettingShowCommand = new AsyncReactiveCommand().AddTo(CompositeDisposable);
                 SettingShowCommand.Subscribe(async _ =>
                 {
-                    using (new AnonymousDisposable(() =>
+                    using (Disposable.Create(() =>
                     {
                         App.Instance.SaveConfig();
 
@@ -270,7 +271,7 @@ namespace Ann.MainWindow
 
         private async Task UpdateIndexAsync()
         {
-            using (new AnonymousDisposable(() => InProgressMessage.Value = string.Empty))
+            using (Disposable.Create(() => InProgressMessage.Value = string.Empty))
             {
                 InProgressMessage.Value = Properties.Resources.Message_IndexUpdating;
                 await App.Instance.UpdateIndexAsync();

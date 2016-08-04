@@ -87,7 +87,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnonymousDisposable.cs" />
     <Compile Include="AssemblyConstants.cs" />
     <Compile Include="CompositDisposableExtension.cs" />
     <Compile Include="ConfigHelper.cs" />
@@ -101,7 +100,6 @@
     <Compile Include="WindowHelper.cs" />
     <Compile Include="WpfHelper.cs" />
     <Compile Include="DisposableChecker.cs" />
-    <Compile Include="Exceptions\MultipleDisposingException.cs" />
     <Compile Include="FlatBuffers\ByteBuffer.cs" />
     <Compile Include="FlatBuffers\FlatBufferBuilder.cs" />
     <Compile Include="FlatBuffers\FlatBufferConstants.cs" />

@@ -2,10 +2,10 @@
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings.Extensions;
 using Squirrel;
+using System.Reactive.Disposables;
 
 namespace Ann.Core
 {
@@ -67,7 +67,7 @@ namespace Ann.Core
             if (_isChecking)
                 return;
 
-            using (new AnonymousDisposable(() => _isChecking = false))
+            using (Disposable.Create(() => _isChecking = false))
             {
                 _isChecking = true;
 
