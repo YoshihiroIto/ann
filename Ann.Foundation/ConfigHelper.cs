@@ -14,15 +14,23 @@ namespace Ann.Foundation
 
         public static T ReadConfig<T>(Category category, string dirPath) where T : new()
         {
-            var filePath = MakeFilePath(category, dirPath);
-
-            if (File.Exists(filePath) == false)
-                return new T();
-
             try
             {
+                var filePath = MakeFilePath(category, dirPath);
+
+                if (File.Exists(filePath) == false)
+                    return new T();
+
                 using (var reader = new StringReader(File.ReadAllText(filePath)))
-                    return new Deserializer().Deserialize<T>(reader);
+                {
+                    var config = new Deserializer().Deserialize<T>(reader);
+
+                    // ReSharper disable once ConvertIfStatementToNullCoalescingExpression
+                    if (config == null)
+                        config = new T();
+
+                    return config;
+                }
             }
             catch
             {
