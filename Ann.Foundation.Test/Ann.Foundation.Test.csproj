@@ -92,6 +92,8 @@
   <ItemGroup>
     <Compile Include="ConfigHelperTest.cs" />
     <Compile Include="CompositDisposableExtensionTest.cs" />
+    <Compile Include="Mvvm\ViewModelBaseTest.cs" />
+    <Compile Include="Mvvm\DisposableNotificationObjectTest.cs" />
     <Compile Include="Mvvm\NotificationObjectTest.cs" />
     <Compile Include="ProcessHelperTest.cs" />
     <Compile Include="WindowsHelperTest.cs" />

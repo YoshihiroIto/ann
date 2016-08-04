@@ -24,6 +24,8 @@ namespace Ann.Foundation
             {
                 _showError?.Invoke("Found undispose object.");
             }
+
+            Disposables.Clear();
         }
 
         [Conditional("DEBUG")]
