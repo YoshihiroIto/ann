@@ -91,6 +91,7 @@
     <Compile Include="CompositDisposableExtension.cs" />
     <Compile Include="ConfigHelper.cs" />
     <Compile Include="Control\Behavior\WindowDisposeDataContextOnClosedBehavior.cs" />
+    <Compile Include="DisposableFileSystem.cs" />
     <Compile Include="WindowsHelper.cs" />
     <Compile Include="Control\Behavior\WindowTaskTrayIconBehavior.cs" />
     <Compile Include="HotKeyRegister.cs" />

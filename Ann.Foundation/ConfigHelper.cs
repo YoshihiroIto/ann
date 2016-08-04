@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using YamlDotNet.Serialization;
 
 namespace Ann.Foundation
@@ -46,14 +45,6 @@ namespace Ann.Foundation
         }
 
         private static string MakeFilePath(Category category, string dirPath) =>
-            Path.Combine(dirPath, AssemblyConstants.ProductName + FileExts[category]);
-
-        private static readonly IReadOnlyDictionary<Category, string> FileExts =
-            new Dictionary<Category, string>
-            {
-                {Category.App, ".App.yaml"},
-                {Category.MainWindow, ".MainWindow.yaml"},
-                {Category.MostRecentUsedList, ".MostRecentUsedList.yaml"}
-            };
+            Path.Combine(dirPath, AssemblyConstants.Product + $".{category}.yaml" );
     }
 }
