@@ -152,8 +152,7 @@ namespace Ann.Core
             return int.MaxValue;
         }
 
-        public async Task<IndexOpeningResults> UpdateIndexAsync(IEnumerable<string> targetFolders,
-            IEnumerable<string> executableFileExts)
+        public async Task<IndexOpeningResults> UpdateIndexAsync(string[] targetFolders, IEnumerable<string> executableFileExts)
         {
             using (new TimeMeasure("Index Crawlering"))
                 _executableUnits = await CrawlAsync(targetFolders, executableFileExts);
@@ -203,7 +202,7 @@ namespace Ann.Core
             return IndexOpeningResults.Ok;
         }
 
-        public async Task<IndexOpeningResults> OpenIndexAsync()
+        public async Task<IndexOpeningResults> OpenIndexAsync(string[] targetFolders)
         {
             return await Task.Run(() =>
             {
@@ -240,7 +239,7 @@ namespace Ann.Core
 
                                 try
                                 {
-                                    tempExecutableUnits[i] = new ExecutableUnit(i, root.RowsLength, rowTemp.Path, stringPool);
+                                    tempExecutableUnits[i] = new ExecutableUnit(i, root.RowsLength, rowTemp.Path, stringPool, targetFolders);
                                 }
                                 catch
                                 {
@@ -270,7 +269,7 @@ namespace Ann.Core
 #region Crawler
 
         private static async Task<ExecutableUnit[]> CrawlAsync(
-            IEnumerable<string> targetFolders,
+            string[] targetFolders,
             IEnumerable<string> executableFileExts)
         {
             return await Task.Run(() =>
@@ -286,7 +285,7 @@ namespace Ann.Core
                         .SelectMany(targetFolder =>
                             EnumerateAllFiles(targetFolder)
                                 .Where(f => executableExts.Contains(System.IO.Path.GetExtension(f)?.ToLower()))
-                                .Select(f => new ExecutableUnit(f, stringPool))
+                                .Select(f => new ExecutableUnit(f, stringPool, targetFolders))
                         ).ToArray();
 
                     results.ForEach((r, i) => r.SetId(i, results.Length));

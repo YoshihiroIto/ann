@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -38,7 +39,10 @@ namespace Ann.Core
             _maxId = maxId;
         }
 
-        public ExecutableUnit(string path, ConcurrentDictionary<string, string> stringPool)
+        public ExecutableUnit(
+            string path,
+            ConcurrentDictionary<string, string> stringPool,
+            string[] targetFolders)
         {
             var fvi = FileVersionInfo.GetVersionInfo(path);
 
@@ -50,7 +54,10 @@ namespace Ann.Core
             Name = stringPool.GetOrAdd(name, name);
             LowerName = stringPool.GetOrAdd(name.ToLower(), s => s);
 
-            LowerDirectory = stringPool.GetOrAdd((System.IO.Path.GetDirectoryName(path) ?? string.Empty).ToLower(), s => s);
+            var dir = System.IO.Path.GetDirectoryName(path) ?? string.Empty;
+            dir = ShrinkDir(dir, targetFolders);
+
+            LowerDirectory = stringPool.GetOrAdd(dir, s => s);
             LowerFileName = stringPool.GetOrAdd(System.IO.Path.GetFileNameWithoutExtension(path).ToLower(), s => s);
             SearchKey = stringPool.GetOrAdd($"{LowerName}*{LowerDirectory}*{LowerFileName}", s => s);
 
@@ -58,8 +65,7 @@ namespace Ann.Core
                 .Select(s => stringPool.GetOrAdd(s, s))
                 .ToArray();
 
-            LowerDirectoryParts = LowerDirectory.Split(Separator, StringSplitOptions.RemoveEmptyEntries)
-                .Where(s => (s.Length == 2 && s[1] ==':') == false)
+            LowerDirectoryParts = LowerDirectory.Split(new [] { '\\'}, StringSplitOptions.RemoveEmptyEntries)
                 .Select(s => stringPool.GetOrAdd(s, s))
                 .ToArray();
 
@@ -77,10 +83,24 @@ namespace Ann.Core
                 LowerFileNameParts = null;
         }
 
-        public ExecutableUnit(int id, int maxId, string path, ConcurrentDictionary<string, string> stringPool)
-            : this(path, stringPool)
+        public ExecutableUnit(
+            int id, int maxId, string path,
+            ConcurrentDictionary<string, string> stringPool,
+            string[] targetFolders)
+            : this(path, stringPool, targetFolders)
         {
             SetId(id, maxId);
+        }
+
+        private static string ShrinkDir(string srcDir, IEnumerable<string> targetFolders)
+        {
+            var srcLower = srcDir.ToLower();
+
+            foreach (var f in targetFolders)
+                if (srcLower.StartsWith(f))
+                    return srcLower.Substring(f.Length);
+
+            return srcDir;
         }
 
         private static readonly char[] Separator = {' ', '_', '-', '/', '\\'};
