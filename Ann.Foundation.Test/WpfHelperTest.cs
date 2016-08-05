@@ -10,7 +10,7 @@ namespace Ann.Foundation.Test
             Assert.False(WpfHelper.IsDesignMode);
         }
 
-        [WpfFact]
+        [Fact]
         public void DoEventsAsync()
         {
             // 例外にならない
