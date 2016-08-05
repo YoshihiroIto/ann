@@ -1,4 +1,5 @@
 ﻿using System;
+using Ann.Foundation.Exception;
 using Ann.Foundation.Mvvm;
 using Xunit;
 
@@ -35,6 +36,30 @@ namespace Ann.Foundation.Test
         {
             DisposableChecker.Start(null);
             DisposableChecker.End();
+        }
+
+        [Fact]
+        public void NestingStart()
+        {
+            DisposableChecker.Start(null);
+
+            Assert.Throws<NestingException>(() =>
+            {
+                DisposableChecker.Start(null);
+            });
+
+            DisposableChecker.Clean();
+        }
+
+        [Fact]
+        public void NestingEnd()
+        {
+            Assert.Throws<NestingException>(() =>
+            {
+                DisposableChecker.End();
+            });
+
+            DisposableChecker.Clean();
         }
 
 #if DEBUG

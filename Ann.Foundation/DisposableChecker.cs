@@ -2,6 +2,8 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using Ann.Foundation.Exception;
 
 namespace Ann.Foundation
 {
@@ -11,9 +13,16 @@ namespace Ann.Foundation
 
         private static Action<string> _showError;
 
+        private static int _single;
+
         [Conditional("DEBUG")]
         public static void Start(Action<string> showError)
         {
+            var old = Interlocked.Exchange(ref _single, 1);
+            if (old != 0)
+                throw new NestingException();
+
+            Disposables.Clear();
             _showError = showError;
         }
 
@@ -25,6 +34,18 @@ namespace Ann.Foundation
                 _showError?.Invoke("Found undispose object.");
             }
 
+            Disposables.Clear();
+
+            var old = Interlocked.Exchange(ref _single, 0);
+            if (old != 1)
+                throw new NestingException();
+        }
+
+        [Conditional("DEBUG")]
+        public static void Clean()
+        {
+            _showError = null;
+            _single = 0;
             Disposables.Clear();
         }
 
