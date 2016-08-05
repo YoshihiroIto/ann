@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 
 namespace Ann.GenOpenSourceList
 {
@@ -12,9 +13,14 @@ namespace Ann.GenOpenSourceList
             var solutionDirPath = args[0];
             var outputFilePath = args[1];
 
-            var packagesConfigPaths = Directory.EnumerateFiles(
+            var allPackagesConfigPaths = Directory.EnumerateFiles(
                 solutionDirPath,
                 "packages.config", SearchOption.AllDirectories);
+
+            // packagesフォルダーは無視する
+            var packagesConfigPaths =
+                allPackagesConfigPaths
+                    .Where(p => p.StartsWith(Path.Combine(solutionDirPath, "packages")) == false);
 
             var yaml = new Generator().Generate(packagesConfigPaths);
             File.WriteAllText(outputFilePath, yaml);
