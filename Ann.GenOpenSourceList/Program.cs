@@ -20,7 +20,8 @@ namespace Ann.GenOpenSourceList
             // packagesフォルダーは無視する
             var packagesConfigPaths =
                 allPackagesConfigPaths
-                    .Where(p => p.StartsWith(Path.Combine(solutionDirPath, "packages")) == false);
+                    .Where(p =>
+                        p.StartsWith(Path.Combine(solutionDirPath, "packages") + @"\") == false);
 
             var yaml = new Generator().Generate(packagesConfigPaths);
             File.WriteAllText(outputFilePath, yaml);
