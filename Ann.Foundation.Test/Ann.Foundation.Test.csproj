@@ -114,6 +114,7 @@
   <ItemGroup>
     <Compile Include="ConfigHelperTest.cs" />
     <Compile Include="CompositDisposableExtensionTest.cs" />
+    <Compile Include="Control\ValueConverter\TypeofConverterTest.cs" />
     <Compile Include="Mvvm\Message\FileOrFolderSelectMessageTest.cs" />
     <Compile Include="Mvvm\Message\WindowActionActionTest.cs" />
     <Compile Include="Mvvm\Message\WindowActionMessageTest.cs" />
