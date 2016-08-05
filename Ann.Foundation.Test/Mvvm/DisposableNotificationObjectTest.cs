@@ -19,7 +19,7 @@ namespace Ann.Foundation.Test.Mvvm
         }
 
         [Fact]
-        public void Simple()
+        public void Basic()
         {
             using (new Model())
             {

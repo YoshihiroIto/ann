@@ -19,7 +19,7 @@ namespace Ann.Foundation.Test
 
         [Theory]
         [MemberData(nameof(Source))]
-        public void Simple(ConfigHelper.Category category)
+        public void Basic(ConfigHelper.Category category)
         {
             var src = new Data {Param0 = 123, Param1 = 456, Param2 = category.ToString()};
 

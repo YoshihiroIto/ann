@@ -14,7 +14,7 @@ namespace Ann.Foundation.Test.Mvvm.Message
         }
 
         [WpfFact]
-        public void Simple()
+        public void Basic()
         {
             var c = 0;
 

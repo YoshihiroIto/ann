@@ -7,7 +7,7 @@ namespace Ann.Foundation.Test.Mvvm.Message
     public class FileOrFolderSelectMessageTest
     {
         [Fact]
-        public void Simple()
+        public void Basic()
         {
             var filters = new[]
                 {

@@ -20,7 +20,7 @@ namespace Ann.Foundation.Test
         }
 
         [Fact]
-        public void Simple()
+        public void Basic()
         {
             var message = "ABC";
 

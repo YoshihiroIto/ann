@@ -5,7 +5,7 @@ namespace Ann.Foundation.Test
     public class OpenSourceTest
     {
         [Fact]
-        public void Simple()
+        public void Basic()
         {
             var o = new OpenSource
             {

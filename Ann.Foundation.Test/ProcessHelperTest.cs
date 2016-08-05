@@ -7,7 +7,7 @@ namespace Ann.Foundation.Test
         private static string app = @"..\..\..\Ann.GenOpenSourceList\Ann.GenOpenSourceList.exe";
 
         [Fact]
-        public void Simple()
+        public void Basic()
         {
             ProcessHelper.RunAsync(app, "", false).Wait();
         }

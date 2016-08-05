@@ -5,7 +5,7 @@ namespace Ann.Foundation.Test
     public class TimeMeasureTest
     {
         [Fact]
-        public void Simple()
+        public void Basic()
         {
             // 例外にならない
             using (new TimeMeasure())

@@ -7,18 +7,10 @@ namespace Ann.Foundation.Test.Mvvm
     {
         public class ViewModel : ViewModelBase
         {
-            public ViewModel()
-            {
-            }
-
-            public ViewModel(bool disableDisposableChecker = false)
-                : base(disableDisposableChecker)
-            {
-            }
         }
 
         [Fact]
-        public void Simple()
+        public void Basic()
         {
             using (new ViewModel())
             {

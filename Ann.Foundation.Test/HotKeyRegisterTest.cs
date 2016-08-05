@@ -7,7 +7,7 @@ namespace Ann.Foundation.Test
     public class HotKeyRegisterTest
     {
         [WpfFact]
-        public void Simple()
+        public void Basic()
         {
             var w = new Window();
 
