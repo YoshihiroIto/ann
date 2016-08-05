@@ -70,7 +70,7 @@ namespace Ann.Core
             return true;
         }
 
-        private string[] TagetFolders
+        private IEnumerable<string> TagetFolders
         {
             get
             {
@@ -93,19 +93,7 @@ namespace Ann.Core
                 }
 
                 return Config.TargetFolder.Folders.Select(x => x.Value)
-                    .Concat(folders)
-                    .Select(Environment.ExpandEnvironmentVariables)
-                    .Distinct()
-                    .Where(Directory.Exists)
-                    .Select(f =>
-                    {
-                        f = f.Replace('/', '\\');
-                        f = f.TrimEnd('\\') + '\\';
-                        f = f.ToLower();
-                        return f;
-                    })
-                    .OrderByDescending(f => f.Length)
-                    .ToArray();
+                    .Concat(folders);
             }
         }
 
