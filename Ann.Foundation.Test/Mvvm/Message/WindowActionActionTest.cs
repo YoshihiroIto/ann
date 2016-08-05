@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Threading;
 using Ann.Foundation.Mvvm.Message;
 using Xunit;
 
@@ -10,71 +11,50 @@ namespace Ann.Foundation.Test.Mvvm.Message
         [WpfFact]
         public void NotFoundTopWindow()
         {
-            try
-            {
-                var m = new WindowActionMessage(WindowAction.Close);
-                WindowActionAction.InvokeAction(m);
+            var m = new WindowActionMessage(WindowAction.Close);
+            WindowActionAction.InvokeAction(m);
 
-                Assert.False(m.IsOk);
-            }
-            catch (System.Runtime.InteropServices.InvalidComObjectException)
-            {
-                // ignored for appveyor
-            }
+            Assert.False(m.IsOk);
         }
 
         [WpfFact]
         public void CloseAction()
         {
-            try
-            {
-                var c = 0;
+            var c = 0;
 
-                var w = new Window();
-                w.Show();
-                w.Closed += (_, __) => c++;
+            var w = new Window();
+            w.Show();
+            w.Closed += (_, __) => c++;
 
-                var m = new WindowActionMessage(WindowAction.Close);
-                WindowActionAction.InvokeAction(w, m);
+            var m = new WindowActionMessage(WindowAction.Close);
+            WindowActionAction.InvokeAction(w, m);
 
-                Assert.True(m.IsOk);
-                Assert.Equal(c, 1);
+            Assert.True(m.IsOk);
+            Assert.Equal(c, 1);
 
-                GC.Collect();
-            }
-            catch (System.Runtime.InteropServices.InvalidComObjectException)
-            {
-                // ignored for appveyor
-            }
+            Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
 
-#if false
         [WpfFact]
         public void UnkownAction()
         {
-            try
-            {
-                var c = 0;
+            var c = 0;
 
-                var w = new Window();
-                w.Show();
-                w.Closed += (_, __) => c++;
+            var w = new Window();
+            w.Show();
+            w.Closed += (_, __) => c++;
 
-                var m = new WindowActionMessage((WindowAction) (-1));
+            var m = new WindowActionMessage((WindowAction) (-1));
 
-                Assert.Throws<ArgumentOutOfRangeException>(
-                    () => WindowActionAction.InvokeAction(w, m));
+            Assert.Throws<ArgumentOutOfRangeException>(
+                () => WindowActionAction.InvokeAction(w, m));
 
-                Assert.False(m.IsOk);
-                Assert.Equal(c, 0);
+            Assert.False(m.IsOk);
+            Assert.Equal(c, 0);
 
-                w.Close();
-            }
-            catch (System.Runtime.InteropServices.InvalidComObjectException)
-            {
-                // ignored for appveyor
-            }
+            w.Close();
+
+            Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
-#endif
     }
 }
