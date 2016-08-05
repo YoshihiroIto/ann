@@ -22,6 +22,7 @@ namespace Ann.Foundation.Test.Mvvm.Message
                 // ignored for appveyor
             }
         }
+#if false
 
         [WpfFact]
         public void CloseAction()
@@ -72,5 +73,6 @@ namespace Ann.Foundation.Test.Mvvm.Message
                 // ignored for appveyor
             }
         }
+#endif
     }
 }
