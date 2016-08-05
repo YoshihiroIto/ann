@@ -30,13 +30,14 @@ namespace Ann.GenOpenSourceList.Test
             using (var reader = new StringReader(d))
             {
                 var list = new Deserializer().Deserialize<OpenSource[]>(reader);
-                Assert.Equal(list.Length, 1);
+                Assert.Equal(1, list.Length);
 
-                Assert.Equal(list[0].Name, "ReactiveProperty");
-                Assert.Equal(list[0].Auther, "neuecc xin9le okazuki");
-                Assert.Equal(list[0].Summry,
-                    "ReactiveProperty is MVVM and Asynchronous Extensions for Reactive Extensions(Rx-Main). Target is .NET 4, .NET 4.x, WP8, Windows store apps(Win8.1), Windows Phone 8.1, UWP.");
-                Assert.Equal(list[0].Url, "https://github.com/runceel/ReactiveProperty");
+                Assert.Equal("ReactiveProperty", list[0].Name);
+                Assert.Equal("neuecc xin9le okazuki", list[0].Auther);
+                Assert.Equal(
+                    "ReactiveProperty is MVVM and Asynchronous Extensions for Reactive Extensions(Rx-Main). Target is .NET 4, .NET 4.x, WP8, Windows store apps(Win8.1), Windows Phone 8.1, UWP.",
+                    list[0].Summry);
+                Assert.Equal("https://github.com/runceel/ReactiveProperty",list[0].Url);
             }
         }
 
@@ -64,13 +65,14 @@ namespace Ann.GenOpenSourceList.Test
             using (var reader = new StringReader(File.ReadAllText(Path.Combine(_context.RootPath, "output.yaml"))))
             {
                 var list = new Deserializer().Deserialize<OpenSource[]>(reader);
-                Assert.Equal(list.Length, 1);
+                Assert.Equal(1, list.Length);
 
-                Assert.Equal(list[0].Name, "ReactiveProperty");
-                Assert.Equal(list[0].Auther, "neuecc xin9le okazuki");
-                Assert.Equal(list[0].Summry,
-                    "ReactiveProperty is MVVM and Asynchronous Extensions for Reactive Extensions(Rx-Main). Target is .NET 4, .NET 4.x, WP8, Windows store apps(Win8.1), Windows Phone 8.1, UWP.");
-                Assert.Equal(list[0].Url, "https://github.com/runceel/ReactiveProperty");
+                Assert.Equal("ReactiveProperty", list[0].Name);
+                Assert.Equal("neuecc xin9le okazuki", list[0].Auther);
+                Assert.Equal(
+                    "ReactiveProperty is MVVM and Asynchronous Extensions for Reactive Extensions(Rx-Main). Target is .NET 4, .NET 4.x, WP8, Windows store apps(Win8.1), Windows Phone 8.1, UWP.",
+                    list[0].Summry);
+                Assert.Equal("https://github.com/runceel/ReactiveProperty",list[0].Url);
             }
         }
     }

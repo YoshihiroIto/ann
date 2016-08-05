@@ -10,18 +10,18 @@ namespace Ann.Foundation.Test
         {
             var i = 100;
 
-            Assert.Equal(i, 100);
+            Assert.Equal(100, i);
 
             using (var cd = new CompositeDisposable())
             {
-                Assert.Equal(i, 100);
+                Assert.Equal(100, i);
 
                 cd.Add(() => i ++);
 
-                Assert.Equal(i, 100);
+                Assert.Equal(100, i);
             }
 
-            Assert.Equal(i, 101);
+            Assert.Equal(101, i);
         }
     }
 }

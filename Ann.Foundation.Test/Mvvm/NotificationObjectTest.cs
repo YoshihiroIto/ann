@@ -46,19 +46,19 @@ namespace Ann.Foundation.Test.Mvvm
         {
             var c = 0;
 
-            Assert.Equal(c, 0);
+            Assert.Equal(0, c);
 
             var model = new Model();
 
             model.PropertyChanged += (s, e) => c ++;
 
             model.DataSetProperty = 123;
-            Assert.Equal(c, 1);
-            Assert.Equal(model.DataSetProperty, 123);
+            Assert.Equal(1, c);
+            Assert.Equal(123, model.DataSetProperty);
 
             model.DataSetProperty = 456;
-            Assert.Equal(c, 2);
-            Assert.Equal(model.DataSetProperty, 456);
+            Assert.Equal(2, c);
+            Assert.Equal(456, model.DataSetProperty);
         }
 
         [Fact]
@@ -66,19 +66,19 @@ namespace Ann.Foundation.Test.Mvvm
         {
             var c = 0;
 
-            Assert.Equal(c, 0);
+            Assert.Equal(0, c);
 
             var model = new Model();
 
             model.PropertyChanged += (s, e) => c ++;
 
             model.DataRaisePropertyChanged = 123;
-            Assert.Equal(c, 1);
-            Assert.Equal(model.DataRaisePropertyChanged, 123);
+            Assert.Equal(1, c);
+            Assert.Equal(123, model.DataRaisePropertyChanged);
 
             model.DataRaisePropertyChanged = 456;
-            Assert.Equal(c, 2);
-            Assert.Equal(model.DataRaisePropertyChanged, 456);
+            Assert.Equal(2, c);
+            Assert.Equal(456, model.DataRaisePropertyChanged);
         }
 
         [Fact]
@@ -86,17 +86,17 @@ namespace Ann.Foundation.Test.Mvvm
         {
             var c = 0;
 
-            Assert.Equal(c, 0);
+            Assert.Equal(0, c);
 
             var model = new Model();
 
             model.PropertyChanged += (s, e) => c ++;
 
             model.DataSetProperty = 123;
-            Assert.Equal(c, 1);
+            Assert.Equal(1, c);
 
             model.DataSetProperty = 123;
-            Assert.Equal(c, 1);
+            Assert.Equal(1, c);
         }
 
         [Fact]
@@ -104,17 +104,17 @@ namespace Ann.Foundation.Test.Mvvm
         {
             var c = 0;
 
-            Assert.Equal(c, 0);
+            Assert.Equal(0, c);
 
             var model = new Model();
 
             model.PropertyChanged += (s, e) => c ++;
 
             model.DataRaisePropertyChanged = 123;
-            Assert.Equal(c, 1);
+            Assert.Equal(1, c);
 
             model.DataRaisePropertyChanged = 123;
-            Assert.Equal(c, 1);
+            Assert.Equal(1, c);
         }
 
         [Fact]
@@ -122,7 +122,7 @@ namespace Ann.Foundation.Test.Mvvm
         {
             var c = 0;
 
-            Assert.Equal(c, 0);
+            Assert.Equal(0, c);
 
             var model = new Model();
 
@@ -130,8 +130,8 @@ namespace Ann.Foundation.Test.Mvvm
 
             model.NonNotif = 123;
 
-            Assert.Equal(c, 0);
-            Assert.Equal(model.NonNotif, 123);
+            Assert.Equal(0, c);
+            Assert.Equal(123, model.NonNotif);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Ann.Foundation.Test.Control.ValueConverter
 
             var t = c.Convert("abc", null, null, null);
 
-            Assert.Equal(t, typeof(string));
+            Assert.Equal(typeof(string), t);
         }
 
         [Fact]

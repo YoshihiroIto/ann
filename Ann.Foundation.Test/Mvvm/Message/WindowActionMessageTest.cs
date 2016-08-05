@@ -10,7 +10,7 @@ namespace Ann.Foundation.Test.Mvvm.Message
         {
             var m = new WindowActionMessage(WindowAction.Active);
 
-            Assert.Equal(m.Action, WindowAction.Active);
+            Assert.Equal(WindowAction.Active, m.Action);
 
             Assert.False(m.IsOk);
             m.IsOk = true;

@@ -33,7 +33,7 @@ namespace Ann.Foundation.Test
 
             DisposableChecker.End();
 
-            Assert.Equal(message, "ABC");
+            Assert.Equal("ABC", message);
         }
 
         [Fact]
@@ -95,7 +95,7 @@ namespace Ann.Foundation.Test
             DisposableChecker.Add(d);
             d.Dispose();
 
-            Assert.Equal(message, "ABC");
+            Assert.Equal("ABC", message);
             DisposableChecker.Add(d);
 
             Assert.True(message.Contains("Found multiple addition."));
@@ -114,10 +114,10 @@ namespace Ann.Foundation.Test
             DisposableChecker.Add(d);
             d.Dispose();
 
-            Assert.Equal(message, "ABC");
+            Assert.Equal("ABC", message);
             DisposableChecker.Remove(d);
 
-            Assert.Equal(message, "ABC");
+            Assert.Equal("ABC", message);
             DisposableChecker.Remove(d);
 
             Assert.True(message.Contains("Found multiple removing."));

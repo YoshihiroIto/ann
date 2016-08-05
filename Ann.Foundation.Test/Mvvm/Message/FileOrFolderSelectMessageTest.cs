@@ -26,9 +26,9 @@ namespace Ann.Foundation.Test.Mvvm.Message
             };
 
             Assert.True(m.IsFolderPicker);
-            Assert.Equal(m.InitialDirectory, "AAA");
+            Assert.Equal("AAA", m.InitialDirectory);
             Assert.Same(m.Filters, filters);
-            Assert.Equal(m.Response, "BBB");
+            Assert.Equal("BBB", m.Response);
         }
     }
 }

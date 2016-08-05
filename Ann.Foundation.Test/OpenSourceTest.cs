@@ -15,10 +15,10 @@ namespace Ann.Foundation.Test
                 Url = "D"
             };
 
-            Assert.Equal(o.Auther, "A");
-            Assert.Equal(o.Name, "B");
-            Assert.Equal(o.Summry, "C");
-            Assert.Equal(o.Url, "D");
+            Assert.Equal("A", o.Auther);
+            Assert.Equal("B", o.Name);
+            Assert.Equal("C", o.Summry);
+            Assert.Equal("D", o.Url);
         }
     }
 }

@@ -36,7 +36,7 @@ namespace Ann.Foundation.Test.Mvvm.Message
             WindowActionAction.InvokeAction(w, m);
 
             Assert.True(m.IsOk);
-            Assert.Equal(c, 1);
+            Assert.Equal(1, c);
         }
 
         [WpfFact]
@@ -49,7 +49,7 @@ namespace Ann.Foundation.Test.Mvvm.Message
             WindowActionAction.InvokeAction(w, m);
 
             Assert.True(m.IsOk);
-            Assert.Equal(w.WindowState, WindowState.Maximized);
+            Assert.Equal(WindowState.Maximized, w.WindowState);
 
             w.Close();
         }
@@ -64,7 +64,7 @@ namespace Ann.Foundation.Test.Mvvm.Message
             WindowActionAction.InvokeAction(w, m);
 
             Assert.True(m.IsOk);
-            Assert.Equal(w.WindowState, WindowState.Minimized);
+            Assert.Equal(WindowState.Minimized,w.WindowState);
 
             w.Close();
         }
@@ -79,7 +79,7 @@ namespace Ann.Foundation.Test.Mvvm.Message
             WindowActionAction.InvokeAction(w, m);
 
             Assert.True(m.IsOk);
-            Assert.Equal(w.WindowState, WindowState.Normal);
+            Assert.Equal(WindowState.Normal, w.WindowState);
 
             w.Close();
         }
@@ -109,7 +109,7 @@ namespace Ann.Foundation.Test.Mvvm.Message
             WindowActionAction.InvokeAction(w, m);
 
             Assert.True(m.IsOk);
-            Assert.Equal(w.Visibility, Visibility.Visible);
+            Assert.Equal(Visibility.Visible, w.Visibility);
 
             w.Close();
         }
@@ -124,7 +124,7 @@ namespace Ann.Foundation.Test.Mvvm.Message
             WindowActionAction.InvokeAction(w, m);
 
             Assert.True(m.IsOk);
-            Assert.Equal(w.Visibility, Visibility.Hidden);
+            Assert.Equal(Visibility.Hidden, w.Visibility);
 
             w.Close();
         }
@@ -139,7 +139,7 @@ namespace Ann.Foundation.Test.Mvvm.Message
             WindowActionAction.InvokeAction(w, m);
 
             Assert.True(m.IsOk);
-            Assert.Equal(w.Visibility, Visibility.Collapsed);
+            Assert.Equal(Visibility.Collapsed, w.Visibility);
 
             w.Close();
         }
@@ -154,7 +154,7 @@ namespace Ann.Foundation.Test.Mvvm.Message
             WindowActionAction.InvokeAction(w, m);
 
             Assert.True(m.IsOk);
-            Assert.Equal(w.Visibility, Visibility.Visible);
+            Assert.Equal(Visibility.Visible, w.Visibility);
             Assert.True(w.IsActive);
 
             w.Close();
@@ -176,7 +176,7 @@ namespace Ann.Foundation.Test.Mvvm.Message
                 () => WindowActionAction.InvokeAction(w, m));
 
             Assert.False(m.IsOk);
-            Assert.Equal(c, 0);
+            Assert.Equal(0, c);
 
             w.Close();
         }

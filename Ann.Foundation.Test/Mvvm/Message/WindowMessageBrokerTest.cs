@@ -32,7 +32,7 @@ namespace Ann.Foundation.Test.Mvvm.Message
 
                 mb.Publish(mes);
 
-                Assert.Equal(c, 123);
+                Assert.Equal(123, c);
                 Assert.Same(mes.Window, w);
             }
         }

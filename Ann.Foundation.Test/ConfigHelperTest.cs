@@ -41,9 +41,9 @@ namespace Ann.Foundation.Test
         {
             var dst = ConfigHelper.ReadConfig<Data>(category, _context.RootPath);
 
-            Assert.Equal(dst.Param0, 999);
-            Assert.Equal(dst.Param1, 888);
-            Assert.Equal(dst.Param2, "XYZ");
+            Assert.Equal(999, dst.Param0);
+            Assert.Equal(888, dst.Param1);
+            Assert.Equal("XYZ", dst.Param2);
         }
 
         [Theory]
@@ -55,9 +55,9 @@ namespace Ann.Foundation.Test
 
             var dst = ConfigHelper.ReadConfig<Data>(category, _context.RootPath);
 
-            Assert.Equal(dst.Param0, 999);
-            Assert.Equal(dst.Param1, 888);
-            Assert.Equal(dst.Param2, "XYZ");
+            Assert.Equal(999, dst.Param0);
+            Assert.Equal(888, dst.Param1);
+            Assert.Equal("XYZ", dst.Param2);
         }
 
         [Theory]
@@ -69,9 +69,9 @@ namespace Ann.Foundation.Test
 
             var dst = ConfigHelper.ReadConfig<Data>(category, _context.RootPath);
 
-            Assert.Equal(dst.Param0, 999);
-            Assert.Equal(dst.Param1, 888);
-            Assert.Equal(dst.Param2, "XYZ");
+            Assert.Equal(999, dst.Param0);
+            Assert.Equal(888, dst.Param1);
+            Assert.Equal("XYZ", dst.Param2);
         }
 
         public static object[][] Source
