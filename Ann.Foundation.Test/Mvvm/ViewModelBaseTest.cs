@@ -33,43 +33,5 @@ namespace Ann.Foundation.Test.Mvvm
                 viewModel.CompositeDisposable.Add(new ViewModel());
             }
         }
-
-#if DEBUG
-        [Theory]
-        [InlineData(true, false)]
-        [InlineData(false, true)]
-        public void UndisposingCheck(bool expected, bool disableDisposableChecker)
-        {
-            var message = string.Empty;
-
-            DisposableChecker.Start(m => message = m);
-
-            // ReSharper disable once UnusedVariable
-            var viewModel = new ViewModel(disableDisposableChecker);
-
-            DisposableChecker.End();
-
-            Assert.Equal(expected, message.Contains("Found"));
-        }
-
-        [Theory]
-        [InlineData(true, false)]
-        [InlineData(false, true)]
-        public void MultipleDisposingCheck(bool expected, bool disableDisposableChecker)
-        {
-            var message = string.Empty;
-
-            DisposableChecker.Start(m => message = m);
-
-            var viewModel = new ViewModel(disableDisposableChecker);
-
-            viewModel.Dispose();
-            viewModel.Dispose();
-
-            DisposableChecker.End();
-
-            Assert.Equal(expected, message.Contains("Found"));
-        }
-#endif
     }
 }

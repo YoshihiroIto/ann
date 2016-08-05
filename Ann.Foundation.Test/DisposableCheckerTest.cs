@@ -142,6 +142,54 @@ namespace Ann.Foundation.Test
 
             Assert.Equal(expected, message.Contains("Found"));
         }
+
+        public class ViewModel : ViewModelBase
+        {
+            public ViewModel()
+            {
+            }
+
+            public ViewModel(bool disableDisposableChecker = false)
+                : base(disableDisposableChecker)
+            {
+            }
+        }
+
+        [Theory]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        public void ViewModelBaseUndisposingCheck(bool expected, bool disableDisposableChecker)
+        {
+            var message = string.Empty;
+
+            DisposableChecker.Start(m => message = m);
+
+            // ReSharper disable once UnusedVariable
+            var viewModel = new ViewModel(disableDisposableChecker);
+
+            DisposableChecker.End();
+
+            Assert.Equal(expected, message.Contains("Found"));
+        }
+
+        [Theory]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        public void ViewModelBaseMultipleDisposingCheck(bool expected, bool disableDisposableChecker)
+        {
+            var message = string.Empty;
+
+            DisposableChecker.Start(m => message = m);
+
+            var viewModel = new ViewModel(disableDisposableChecker);
+
+            viewModel.Dispose();
+            viewModel.Dispose();
+
+            DisposableChecker.End();
+
+            Assert.Equal(expected, message.Contains("Found"));
+        }
 #endif
     }
 }
