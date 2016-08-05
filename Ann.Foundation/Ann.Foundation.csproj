@@ -94,6 +94,7 @@
     <Compile Include="DirectoryHelper.cs" />
     <Compile Include="DisposableFileSystem.cs" />
     <Compile Include="Exception\NestingException.cs" />
+    <Compile Include="TestHelper.cs" />
     <Compile Include="WindowsHelper.cs" />
     <Compile Include="Control\Behavior\WindowTaskTrayIconBehavior.cs" />
     <Compile Include="HotKeyRegister.cs" />

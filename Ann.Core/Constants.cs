@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -33,6 +34,7 @@ namespace Ann.Core
                 : Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
 
         private static OpenSource[] _OpenSources;
+
         public static OpenSource[] OpenSources
         {
             get
@@ -40,25 +42,18 @@ namespace Ann.Core
                 if (_OpenSources != null)
                     return _OpenSources;
 
-                try
+                var list = new List<OpenSource>();
                 {
-                    var list = new List<OpenSource>();
-                    {
-                        using (var reader = new StringReader(Encoding.UTF8.GetString(Resources.OpenSourceList)))
-                            list.AddRange(new Deserializer().Deserialize<OpenSource[]>(reader));
+                    using (var reader = new StringReader(Encoding.UTF8.GetString(Resources.OpenSourceList)))
+                        list.AddRange(new Deserializer().Deserialize<OpenSource[]>(reader));
 
-                        using (var reader = new StringReader(Encoding.UTF8.GetString(Resources.OpenSourceListNonNuget)))
-                            list.AddRange(new Deserializer().Deserialize<OpenSource[]>(reader));
-                    }
-
-                    _OpenSources = list.OrderBy(x => x.Name).ToArray();
-
-                    return _OpenSources;
+                    using (var reader = new StringReader(Encoding.UTF8.GetString(Resources.OpenSourceListNonNuget)))
+                        list.AddRange(new Deserializer().Deserialize<OpenSource[]>(reader));
                 }
-                catch
-                {
-                    return null;
-                }
+
+                _OpenSources = list.OrderBy(x => x.Name).ToArray();
+
+                return _OpenSources;
             }
         }
 
@@ -81,8 +76,7 @@ namespace Ann.Core
             SupportedCultures = resFiles.Select(f =>
             {
                 var name = System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(f));
-                if (name == null)
-                    return null;
+                Debug.Assert(name != null);
 
                 return new CultureSummry
                 {
@@ -92,18 +86,6 @@ namespace Ann.Core
             })
                 .Where(x => x != null)
                 .ToArray();
-
-            if (SupportedCultures.IsEmpty())
-            {
-                SupportedCultures = new[]
-                {
-                    new CultureSummry
-                    {
-                        Caption = "Default",
-                        CultureName = string.Empty
-                    }
-                };
-            }
         }
     }
 
