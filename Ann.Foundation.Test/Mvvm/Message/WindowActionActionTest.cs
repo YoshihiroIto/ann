@@ -7,7 +7,6 @@ namespace Ann.Foundation.Test.Mvvm.Message
 {
     public class WindowActionActionTest
     {
-#if false
         [WpfFact]
         public void NotFoundTopWindow()
         {
@@ -52,6 +51,5 @@ namespace Ann.Foundation.Test.Mvvm.Message
 
             w.Close();
         }
-#endif
     }
 }
