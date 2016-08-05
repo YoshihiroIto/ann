@@ -1,4 +1,5 @@
 ﻿using System;
+using Ann.Foundation.Mvvm;
 using Xunit;
 
 namespace Ann.Foundation.Test
@@ -92,6 +93,54 @@ namespace Ann.Foundation.Test
             Assert.True(message.Contains("Found multiple removing."));
 
             DisposableChecker.End();
+        }
+
+        public class Model : DisposableNotificationObject
+        {
+            public Model()
+            {
+            }
+
+            public Model(bool disableDisposableChecker = false)
+                : base(disableDisposableChecker)
+            {
+            }
+        }
+
+        [Theory]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        public void DisposableNotificationObjectUndisposingCheck(bool expected, bool disableDisposableChecker)
+        {
+            var message = string.Empty;
+
+            DisposableChecker.Start(m => message = m);
+
+            // ReSharper disable once UnusedVariable
+            var model = new Model(disableDisposableChecker);
+
+            DisposableChecker.End();
+
+            Assert.Equal(expected, message.Contains("Found"));
+        }
+
+        [Theory]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        public void DisposableNotificationObjectMultipleDisposingCheck(bool expected, bool disableDisposableChecker)
+        {
+            var message = string.Empty;
+
+            DisposableChecker.Start(m => message = m);
+
+            var model = new Model(disableDisposableChecker);
+
+            model.Dispose();
+            model.Dispose();
+
+            DisposableChecker.End();
+
+            Assert.Equal(expected, message.Contains("Found"));
         }
 #endif
     }
