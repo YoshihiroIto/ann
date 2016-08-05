@@ -6,8 +6,14 @@ using Xunit;
 
 namespace Ann.Foundation.Test.Mvvm.Message
 {
-    public class WindowActionActionTest
+    public class WindowActionActionTest : IDisposable
     {
+        public void Dispose()
+        {
+            // for appveyor 
+            Dispatcher.CurrentDispatcher.InvokeShutdown();
+        }
+
         [WpfFact]
         public void NotFoundTopWindow()
         {
@@ -31,8 +37,6 @@ namespace Ann.Foundation.Test.Mvvm.Message
 
             Assert.True(m.IsOk);
             Assert.Equal(c, 1);
-
-            Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
 
         [WpfFact]
@@ -53,8 +57,6 @@ namespace Ann.Foundation.Test.Mvvm.Message
             Assert.Equal(c, 0);
 
             w.Close();
-
-            Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
     }
 }
