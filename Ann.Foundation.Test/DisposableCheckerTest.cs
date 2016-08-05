@@ -43,6 +43,7 @@ namespace Ann.Foundation.Test
             DisposableChecker.End();
         }
 
+#if DEBUG
         [Fact]
         public void NestingStart()
         {
@@ -67,7 +68,6 @@ namespace Ann.Foundation.Test
             DisposableChecker.Clean();
         }
 
-#if DEBUG
         [Fact]
         public void Undispose()
         {
