@@ -5,8 +5,13 @@ using Xunit;
 
 namespace Ann.Foundation.Test
 {
-    public class DisposableCheckerTest
+    public class DisposableCheckerTest : IDisposable
     {
+        public void Dispose()
+        {
+            DisposableChecker.Clean();
+        }
+
         private class Disposable : IDisposable
         {
             public void Dispose()
