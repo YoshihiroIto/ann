@@ -4,13 +4,13 @@ namespace Ann.Foundation.Test
 {
     public class WpfHelperTest
     {
-        [StaFact]
+        [WpfFact]
         public void IsDesignMode()
         {
             Assert.False(WpfHelper.IsDesignMode);
         }
 
-        [StaFact]
+        [WpfFact]
         public void DoEventsAsync()
         {
             // 例外にならない

@@ -5,7 +5,7 @@ namespace Ann.Foundation.Test
 {
     public class WindowHelperTest
     {
-        [StaFact]
+        [WpfFact]
         public void EnableBlur()
         {
             // 例外にならない

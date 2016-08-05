@@ -6,7 +6,7 @@ namespace Ann.Foundation.Test
 {
     public class HotKeyRegisterTest
     {
-        [StaFact]
+        [WpfFact]
         public void Simple()
         {
             var w = new Window();
@@ -24,7 +24,7 @@ namespace Ann.Foundation.Test
             }
         }
 
-        [StaFact]
+        [WpfFact]
         public void AlreadyRegister()
         {
             var w = new Window();
@@ -36,7 +36,7 @@ namespace Ann.Foundation.Test
             }
         }
 
-        [StaFact]
+        [WpfFact]
         public void AlreadyUsed()
         {
             var w = new Window();

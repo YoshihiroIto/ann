@@ -13,7 +13,7 @@ namespace Ann.Foundation.Test.Mvvm.Message
             public Window Window { get; set; }
         }
 
-        [StaFact]
+        [WpfFact]
         public void Simple()
         {
             var c = 0;

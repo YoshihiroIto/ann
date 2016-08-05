@@ -7,7 +7,7 @@ namespace Ann.Foundation.Test.Mvvm.Message
 {
     public class WindowActionActionTest
     {
-        [StaFact]
+        [WpfFact]
         public void NotFoundTopWindow()
         {
             var m = new WindowActionMessage(WindowAction.Close);
@@ -16,7 +16,7 @@ namespace Ann.Foundation.Test.Mvvm.Message
             Assert.False(m.IsOk);
         }
 
-        [StaFact]
+        [WpfFact]
         public void CloseAction()
         {
             var c = 0;
@@ -32,7 +32,7 @@ namespace Ann.Foundation.Test.Mvvm.Message
             Assert.Equal(c, 1);
         }
 
-        [StaFact]
+        [WpfFact]
         public void UnkownAction()
         {
             var c = 0;

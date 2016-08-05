@@ -4,7 +4,7 @@ namespace Ann.Foundation.Test
 {
     public class WindowsHelperTest
     {
-        [StaFact]
+        [WpfFact]
         public void IsOnTrayMouseCursor()
         {
             Assert.False(WindowsHelper.IsOnTrayMouseCursor);
