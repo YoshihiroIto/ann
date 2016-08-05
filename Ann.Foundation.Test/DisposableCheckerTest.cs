@@ -127,10 +127,6 @@ namespace Ann.Foundation.Test
 
         public class Model : DisposableNotificationObject
         {
-            public Model()
-            {
-            }
-
             public Model(bool disableDisposableChecker = false)
                 : base(disableDisposableChecker)
             {
@@ -175,10 +171,6 @@ namespace Ann.Foundation.Test
 
         public class ViewModel : ViewModelBase
         {
-            public ViewModel()
-            {
-            }
-
             public ViewModel(bool disableDisposableChecker = false)
                 : base(disableDisposableChecker)
             {
