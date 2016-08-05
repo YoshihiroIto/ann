@@ -65,7 +65,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="CrawlerTest.cs" />
+    <Compile Include="ExecutableUnitDataBaseBasicTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

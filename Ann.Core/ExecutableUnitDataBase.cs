@@ -291,8 +291,6 @@ namespace Ann.Core
                 .ToArray();
         }
 
-        #region Crawler
-
         private static async Task<ExecutableUnit[]> CrawlAsync(
             string[] targetFolders,
             IEnumerable<string> executableFileExts)
@@ -310,7 +308,7 @@ namespace Ann.Core
                     var results = targetFoldersArray
                         .AsParallel()
                         .SelectMany(targetFolder =>
-                            EnumerateAllFiles(targetFolder)
+                            DirectoryHelper.EnumerateAllFiles(targetFolder)
                                 .Where(f => executableExts.Contains(System.IO.Path.GetExtension(f)?.ToLower()))
                                 .Select(f => new ExecutableUnit(f, stringPool, targetFoldersArray))
                         ).ToArray();
@@ -325,22 +323,5 @@ namespace Ann.Core
                 }
             });
         }
-
-        private static IEnumerable<string> EnumerateAllFiles(string path)
-        {
-            try
-            {
-                var dirFiles = Directory.EnumerateDirectories(path)
-                    .SelectMany(EnumerateAllFiles);
-
-                return dirFiles.Concat(Directory.EnumerateFiles(path));
-            }
-            catch
-            {
-                return Enumerable.Empty<string>();
-            }
-        }
-
-        #endregion
     }
 }

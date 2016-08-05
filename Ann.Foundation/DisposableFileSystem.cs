@@ -1,4 +1,5 @@
 ﻿// https://github.com/aspnet/FileSystem/blob/dev/test/Microsoft.Extensions.FileSystemGlobbing.Tests/FunctionalTests.cs
+// を元にしました。
 using System;
 using System.IO;
 
@@ -20,6 +21,17 @@ namespace Ann.Foundation
         public DisposableFileSystem CreateFolder(string path)
         {
             Directory.CreateDirectory(Path.Combine(RootPath, path));
+            return this;
+        }
+
+        public DisposableFileSystem CreateFolders(params string[] paths)
+        {
+            foreach (var path in paths)
+            {
+                var fullPath = Path.Combine(RootPath, path);
+                Directory.CreateDirectory(fullPath);
+            }
+
             return this;
         }
 

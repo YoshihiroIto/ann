@@ -126,6 +126,7 @@
     <Compile Include="WindowsHelperTest.cs" />
     <Compile Include="HotKeyRegisterTest.cs" />
     <Compile Include="OpenSourceTest.cs" />
+    <Compile Include="DirectoryHelperTest.cs" />
     <Compile Include="WpfHelperTest.cs" />
     <Compile Include="WindowHelperTest.cs" />
     <Compile Include="DisposableCheckerTest.cs" />

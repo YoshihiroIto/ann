@@ -91,6 +91,7 @@
     <Compile Include="CompositDisposableExtension.cs" />
     <Compile Include="ConfigHelper.cs" />
     <Compile Include="Control\Behavior\WindowDisposeDataContextOnClosedBehavior.cs" />
+    <Compile Include="DirectoryHelper.cs" />
     <Compile Include="DisposableFileSystem.cs" />
     <Compile Include="Exception\NestingException.cs" />
     <Compile Include="WindowsHelper.cs" />
