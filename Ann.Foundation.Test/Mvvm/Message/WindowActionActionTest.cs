@@ -31,7 +31,7 @@ namespace Ann.Foundation.Test.Mvvm.Message
                 var c = 0;
 
                 var w = new Window();
-                //w.Show();
+                w.Show();
                 w.Closed += (_, __) => c++;
 
                 var m = new WindowActionMessage(WindowAction.Close);
@@ -39,6 +39,8 @@ namespace Ann.Foundation.Test.Mvvm.Message
 
                 Assert.True(m.IsOk);
                 Assert.Equal(c, 1);
+
+                GC.Collect();
             }
             catch (System.Runtime.InteropServices.InvalidComObjectException)
             {
