@@ -8,7 +8,7 @@ namespace Ann.Foundation.Mvvm.Message
     {
         public static void InvokeAction(WindowActionMessage message)
         {
-            var window = Application.Current.Windows
+            var window = Application.Current?.Windows
                 .OfType<Window>()
                 .FirstOrDefault(w => w.IsActive);
 
