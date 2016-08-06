@@ -6,7 +6,6 @@ using Ann.Foundation.Mvvm;
 using Reactive.Bindings.Extensions;
 using Squirrel;
 using System.Reactive.Disposables;
-using Ann.Foundation;
 
 namespace Ann.Core
 {
@@ -139,7 +138,7 @@ namespace Ann.Core
             using (var mgr = await UpdateManager.GitHubUpdateManager(Constants.AnnGitHubUrl,
                 accessToken: App.Instance.Config.GitHubPersonalAccessToken))
             {
-                mgr.CreateShortcutsForExecutable(AssemblyConstants.Product, ShortcutLocation.Startup, false);
+                mgr.CreateShortcutsForExecutable("Ann.exe", ShortcutLocation.Startup, false);
             }
         }
 
