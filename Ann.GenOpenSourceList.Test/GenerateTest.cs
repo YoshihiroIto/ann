@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using Ann.Foundation;
 using Xunit;
 using YamlDotNet.Serialization;
@@ -73,6 +74,30 @@ namespace Ann.GenOpenSourceList.Test
                     "ReactiveProperty is MVVM and Asynchronous Extensions for Reactive Extensions(Rx-Main). Target is .NET 4, .NET 4.x, WP8, Windows store apps(Win8.1), Windows Phone 8.1, UWP.",
                     list[0].Summry);
                 Assert.Equal("https://github.com/runceel/ReactiveProperty",list[0].Url);
+            }
+        }
+
+        [Fact]
+        public void AnnAll()
+        {
+            var cd = Directory.GetCurrentDirectory();
+            var solutionDirPath = Path.Combine(cd, @"..\..\..\Ann");
+
+            var packagesConfigPaths = GenOpenSourceList.Program.MakePackegesFilePath(solutionDirPath);
+
+            var yaml = new Generator().Generate(packagesConfigPaths);
+
+            using (var reader = new StringReader(yaml))
+            {
+                var list = new Deserializer().Deserialize<OpenSource[]>(reader);
+
+                var rp = list.Single(s => s.Name == "ReactiveProperty");
+
+                Assert.Equal("neuecc xin9le okazuki", rp.Auther);
+                Assert.Equal(
+                    "ReactiveProperty is MVVM and Asynchronous Extensions for Reactive Extensions(Rx-Main). Target is .NET 4, .NET 4.x, WP8, Windows store apps(Win8.1), Windows Phone 8.1, UWP.",
+                    rp.Summry);
+                Assert.Equal("https://github.com/runceel/ReactiveProperty", rp.Url);
             }
         }
     }

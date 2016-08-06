@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Ann.GenOpenSourceList
@@ -13,6 +14,16 @@ namespace Ann.GenOpenSourceList
             var solutionDirPath = args[0];
             var outputFilePath = args[1];
 
+            var packagesConfigPaths = MakePackegesFilePath(solutionDirPath);
+
+            var yaml = new Generator().Generate(packagesConfigPaths);
+            File.WriteAllText(outputFilePath, yaml);
+
+            return 0;
+        }
+
+        public static IEnumerable<string> MakePackegesFilePath(string solutionDirPath)
+        {
             var allPackagesConfigPaths = Directory.EnumerateFiles(
                 solutionDirPath,
                 "packages.config", SearchOption.AllDirectories);
@@ -23,10 +34,7 @@ namespace Ann.GenOpenSourceList
                     .Where(p =>
                         p.StartsWith(Path.Combine(solutionDirPath, "packages") + @"\") == false);
 
-            var yaml = new Generator().Generate(packagesConfigPaths);
-            File.WriteAllText(outputFilePath, yaml);
-
-            return 0;
+            return packagesConfigPaths;
         }
     }
 }
