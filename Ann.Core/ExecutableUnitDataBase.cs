@@ -128,25 +128,26 @@ namespace Ann.Core
             Debug.Assert(extRanks.ContainsKey(ext));
             var extRank = extRanks[ext];
 
-            const int maxPath = 256;
+            const int maxPathLength = 256;
+            var pathLength = Math.Min(u.Path.Length, maxPathLength);
 
             {
                 var rank = MakeRankSub(u.LowerFileName, u.LowerFileNameParts, input);
                 if (rank != int.MaxValue)
-                    return ((rank + 3*0)* extRanks.Count + extRank)*maxPath + u.Path.Length;
+                    return ((rank + 3*0)* extRanks.Count + extRank)*maxPathLength + pathLength;
             }
 
             {
                 var rank = MakeRankSub(u.LowerName, u.LowerNameParts, input);
                 if (rank != int.MaxValue)
-                    return ((rank + 3*1) * extRanks.Count + extRank)*maxPath + u.Path.Length;
+                    return ((rank + 3*1) * extRanks.Count + extRank)*maxPathLength + pathLength;
             }
 
             {
                 // ReSharper disable once RedundantAssignment
                 var rank = MakeRankSub(u.LowerDirectory, u.LowerDirectoryParts, input);
                 if (rank != int.MaxValue)
-                    return ((rank + 3*2)* extRanks.Count + extRank)*maxPath + u.Path.Length;
+                    return ((rank + 3*2)* extRanks.Count + extRank)*maxPathLength + pathLength;
             }
 
             return int.MaxValue;
