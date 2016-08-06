@@ -62,10 +62,12 @@ namespace Ann.Core
                 ? _executableUnits
                 : _prevResult;
 
+            var executableFileExtsArray = NormalizeExecutableFileExts(executableFileExts);
+
             using (new TimeMeasure("Filtering"))
             {
                 var extRanks = new Dictionary<string, int>();
-                executableFileExts.ForEach((e, i) => extRanks["." + e] = i);
+                executableFileExtsArray.ForEach((e, i) => extRanks[e] = i);
 
                 var inputs = input.Split(' ');
                 var temp = new List<ExecutableUnit> {Capacity = targets.Length};
@@ -126,31 +128,42 @@ namespace Ann.Core
             Debug.Assert(extRanks.ContainsKey(ext));
             var extRank = extRanks[ext];
 
-            var b = 0;
+            {
+                var rank = MakeRankSub(u.LowerFileName, u.LowerFileNameParts, input);
+                if (rank != int.MaxValue)
+                    return (rank * extRanks.Count + extRank)*200 + u.LowerFileName.Length;
+            }
 
-            var rankFileName = MakeRankSub(++b, u.LowerFileName, u.LowerFileNameParts, input);
-            if (rankFileName != int.MaxValue)
-                return (rankFileName*extRanks.Count + extRank)*200 + u.LowerFileName.Length;
+            {
+                var rank = MakeRankSub(u.LowerName, u.LowerNameParts, input);
+                if (rank != int.MaxValue)
+                    return (rank * extRanks.Count + extRank)*200 + u.LowerName.Length;
+            }
 
-            var rankName = MakeRankSub(++b, u.LowerName, u.LowerNameParts, input);
-            if (rankName != int.MaxValue)
-                return (rankName*extRanks.Count + extRank)*200 + u.LowerName.Length;
-
-            var rankDir = MakeRankSub(++b, u.LowerDirectory, u.LowerDirectoryParts, input);
-            if (rankDir != int.MaxValue)
-                return (rankDir*extRanks.Count + extRank)*200 + u.LowerDirectory.Length;
+            {
+                // ReSharper disable once RedundantAssignment
+                var rank = MakeRankSub(u.LowerDirectory, u.LowerDirectoryParts, input);
+                if (rank != int.MaxValue)
+                    return (rank * extRanks.Count + extRank)*200 + u.LowerDirectory.Length;
+            }
 
             return int.MaxValue;
         }
 
-        private static int MakeRankSub(int rankBase, string target, string[] targetParts, string input)
+        private static int MakeRankSub(string target, string[] targetParts, string input)
         {
             if (target == input)
-                return (rankBase + 0)*2;
+                return 0;
+
+            if (target.StartsWith(input))
+                return 1;
 
             if (targetParts != null)
                 if (targetParts.Any(p => p.StartsWith(input)))
-                    return (rankBase + 1)*2;
+                    return 2;
+
+            if (target.Contains(input))
+                return 3;
 
             return int.MaxValue;
         }
@@ -159,9 +172,10 @@ namespace Ann.Core
             IEnumerable<string> executableFileExts)
         {
             var targetFoldersArray = NormalizeTargetFolders(targetFolders);
+            var executableFileExtsArray = NormalizeExecutableFileExts(executableFileExts);
 
             using (new TimeMeasure("Index Crawlering"))
-                _executableUnits = await CrawlAsync(targetFoldersArray, executableFileExts);
+                _executableUnits = await CrawlAsync(targetFoldersArray, executableFileExtsArray);
 
             if (_executableUnits == null)
                 return IndexOpeningResults.CanNotOpen;
@@ -275,34 +289,17 @@ namespace Ann.Core
             });
         }
 
-        private static string[] NormalizeTargetFolders(IEnumerable<string> targetFolders)
-        {
-            return targetFolders.Select(Environment.ExpandEnvironmentVariables)
-                .Distinct()
-                .Where(Directory.Exists)
-                .Select(f =>
-                {
-                    f = f.Replace('/', '\\');
-                    f = f.TrimEnd('\\') + '\\';
-                    f = f.ToLower();
-                    return f;
-                })
-                .OrderByDescending(f => f.Length)
-                .ToArray();
-        }
-
         private static async Task<ExecutableUnit[]> CrawlAsync(
             string[] targetFolders,
             IEnumerable<string> executableFileExts)
         {
             var targetFoldersArray = NormalizeTargetFolders(targetFolders);
+            var executableExts = new HashSet<string>(executableFileExts);
 
             return await Task.Run(() =>
             {
                 try
                 {
-                    var executableExts = new HashSet<string>(executableFileExts.Select(e => e[0] == '.' ? e.ToLower() : "." + e.ToLower()));
-
                     var stringPool = new ConcurrentDictionary<string, string>();
 
                     var results = targetFoldersArray
@@ -322,6 +319,29 @@ namespace Ann.Core
                     return null;
                 }
             });
+        }
+
+        private static string[] NormalizeTargetFolders(IEnumerable<string> targetFolders)
+        {
+            return targetFolders.Select(Environment.ExpandEnvironmentVariables)
+                .Distinct()
+                .Where(Directory.Exists)
+                .Select(f =>
+                {
+                    f = f.Replace('/', '\\');
+                    f = f.TrimEnd('\\') + '\\';
+                    f = f.ToLower();
+                    return f;
+                })
+                .OrderByDescending(f => f.Length)
+                .ToArray();
+        }
+
+        private static string[] NormalizeExecutableFileExts(IEnumerable<string> executableFileExts)
+        {
+            return executableFileExts
+                .Select(e => e[0] == '.' ? e.ToLower() : "." + e.ToLower())
+                .ToArray();
         }
     }
 }
