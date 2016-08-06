@@ -1,13 +1,12 @@
 ﻿using System.Windows;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace Ann.Foundation.Test
 {
-    [TestClass]
     public class WindowHelperTest
     {
-        [TestMethod]
-        public void Simple()
+        [WpfFact]
+        public void EnableBlur()
         {
             // 例外にならない
             var w = new Window();

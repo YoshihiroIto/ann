@@ -42,6 +42,108 @@
   Auther: Aybe
   Summry: Windows® API Code Pack for Microsoft® .NET Framework provides a source code library that can be used to access some features of Windows 7 and Windows Vista from managed code.
   Url: https://github.com/aybe/Windows-API-Code-Pack-1.1
+- Name: xUnit.net
+  Auther: James Newkirk, Brad Wilson
+  Summry: >-
+    xUnit.net is a developer testing framework, built to support Test Driven Development, with a design goal of extreme simplicity and alignment with framework features.
+
+
+    Installing this package installs xunit.core and xunit.assert.
+  Url: https://github.com/xunit/xunit
+- Name: xUnit.net [Abstractions]
+  Auther: James Newkirk,  Brad Wilson
+  Summry: >-
+    Common abstractions used to exchange information between xUnit.net and version-independent runners (xunit.abstractions.dll).
+          Supported platforms: Desktop .NET 3.5+, Modern Windows 8+, Windows Phone 8+ (Silverlight), Windows Phone 8.1+ (Universal), Portable Libraries (supporting Profile259).
+  Url: https://github.com/xunit/xunit
+- Name: xUnit.net [Assertion Library]
+  Auther: James Newkirk, Brad Wilson
+  Summry: >-
+    Includes the assertion library from xUnit.net (xunit.assert.dll).
+
+
+    Supported platforms:
+
+    - Desktop .NET 4.5+
+
+    - .NET Core (Universal Windows Apps 10+, DNX Core 5+)
+
+    - Windows 8
+
+    - Windows Phone 8 (Silverlight)
+
+    - Universal (Windows Phone 8.1+, Windows 8.1+)
+
+    - Xamarin (MonoTouch, MonoAndroid, Xamarin iOS Universal)
+
+    - Portable Libraries (supporting Profile259)
+  Url: https://github.com/xunit/xunit
+- Name: xUnit.net [Core Unit Testing Framework]
+  Auther: James Newkirk, Brad Wilson
+  Summry: >-
+    Includes the libraries for writing unit tests with xUnit.net.
+
+
+    Supported platforms:
+
+    - Desktop .NET 4.5+
+
+    - .NET Core (Universal Windows Apps 10+, DNX Core 5+)
+
+    - Windows 8
+
+    - Windows Phone 8 (Silverlight)
+
+    - Universal (Windows Phone 8.1+, Windows 8.1+)
+
+    - Xamarin (MonoTouch, MonoAndroid, Xamarin iOS Universal)
+
+    - Portable Libraries (supporting Profile259)
+  Url: https://github.com/xunit/xunit
+- Name: 'xUnit.net [Extensibility: Core]'
+  Auther: James Newkirk, Brad Wilson
+  Summry: >-
+    Includes xunit.core.dll for extensibility purposes.
+
+
+    Supported platforms:
+
+    - Desktop .NET 4.5+
+
+    - .NET Core (Universal Windows Apps 10+, DNX Core 5+)
+
+    - Windows 8
+
+    - Windows Phone 8 (Silverlight)
+
+    - Universal (Windows Phone 8.1+, Windows 8.1+)
+
+    - Xamarin (MonoTouch, MonoAndroid, Xamarin iOS Universal)
+
+    - Portable Libraries (supporting Profile259)
+  Url: https://github.com/xunit/xunit
+- Name: 'xUnit.net [Extensibility: Execution]'
+  Auther: James Newkirk, Brad Wilson
+  Summry: >-
+    Includes xunit.execution.*.dll for extensibility purposes.
+
+
+    Supported platforms:
+
+    - Desktop .NET 4.5+
+
+    - .NET Core (Universal Windows Apps 10+, DNX Core 5+)
+
+    - Windows 8
+
+    - Windows Phone 8 (Silverlight)
+
+    - Universal (Windows Phone 8.1+, Windows 8.1+)
+
+    - Xamarin (MonoTouch, MonoAndroid, Xamarin iOS Universal)
+
+    - Portable Libraries (supporting Profile259)
+  Url: https://github.com/xunit/xunit
 - Name: YamlDotNet
   Auther: Antoine Aubry
   Summry: This package contains the YAML parser and serializer.

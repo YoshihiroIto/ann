@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -27,6 +28,8 @@ namespace Ann.Core
         private bool IsOpend => _executableUnits != null;
 
         private const Versions CurrentIndexVersion = Versions.Version;
+
+        public int ExecutableUnitCount => IsOpend ? _executableUnits.Length : 0;
 
         public IEnumerable<ExecutableUnit> Find(string input, IEnumerable<string> executableFileExts)
         {
@@ -147,15 +150,18 @@ namespace Ann.Core
 
             if (targetParts != null)
                 if (targetParts.Any(p => p.StartsWith(input)))
-                    return (rankBase + 1) * 2;
+                    return (rankBase + 1)*2;
 
             return int.MaxValue;
         }
 
-        public async Task<IndexOpeningResults> UpdateIndexAsync(string[] targetFolders, IEnumerable<string> executableFileExts)
+        public async Task<IndexOpeningResults> UpdateIndexAsync(IEnumerable<string> targetFolders,
+            IEnumerable<string> executableFileExts)
         {
+            var targetFoldersArray = NormalizeTargetFolders(targetFolders);
+
             using (new TimeMeasure("Index Crawlering"))
-                _executableUnits = await CrawlAsync(targetFolders, executableFileExts);
+                _executableUnits = await CrawlAsync(targetFoldersArray, executableFileExts);
 
             if (_executableUnits == null)
                 return IndexOpeningResults.CanNotOpen;
@@ -202,8 +208,10 @@ namespace Ann.Core
             return IndexOpeningResults.Ok;
         }
 
-        public async Task<IndexOpeningResults> OpenIndexAsync(string[] targetFolders)
+        public async Task<IndexOpeningResults> OpenIndexAsync(IEnumerable<string> targetFolders)
         {
+            var targetFoldersArray = NormalizeTargetFolders(targetFolders);
+
             return await Task.Run(() =>
             {
                 if (File.Exists(_indexFile) == false)
@@ -239,7 +247,8 @@ namespace Ann.Core
 
                                 try
                                 {
-                                    tempExecutableUnits[i] = new ExecutableUnit(i, root.RowsLength, rowTemp.Path, stringPool, targetFolders);
+                                    tempExecutableUnits[i] = new ExecutableUnit(i, root.RowsLength, rowTemp.Path,
+                                        stringPool, targetFoldersArray);
                                 }
                                 catch
                                 {
@@ -266,26 +275,42 @@ namespace Ann.Core
             });
         }
 
-#region Crawler
+        private static string[] NormalizeTargetFolders(IEnumerable<string> targetFolders)
+        {
+            return targetFolders.Select(Environment.ExpandEnvironmentVariables)
+                .Distinct()
+                .Where(Directory.Exists)
+                .Select(f =>
+                {
+                    f = f.Replace('/', '\\');
+                    f = f.TrimEnd('\\') + '\\';
+                    f = f.ToLower();
+                    return f;
+                })
+                .OrderByDescending(f => f.Length)
+                .ToArray();
+        }
 
         private static async Task<ExecutableUnit[]> CrawlAsync(
             string[] targetFolders,
             IEnumerable<string> executableFileExts)
         {
+            var targetFoldersArray = NormalizeTargetFolders(targetFolders);
+
             return await Task.Run(() =>
             {
                 try
                 {
-                    var executableExts = new HashSet<string>(executableFileExts.Select(e => "." + e.ToLower()));
+                    var executableExts = new HashSet<string>(executableFileExts.Select(e => e[0] == '.' ? e.ToLower() : "." + e.ToLower()));
 
                     var stringPool = new ConcurrentDictionary<string, string>();
 
-                    var results = targetFolders
+                    var results = targetFoldersArray
                         .AsParallel()
                         .SelectMany(targetFolder =>
-                            EnumerateAllFiles(targetFolder)
+                            DirectoryHelper.EnumerateAllFiles(targetFolder)
                                 .Where(f => executableExts.Contains(System.IO.Path.GetExtension(f)?.ToLower()))
-                                .Select(f => new ExecutableUnit(f, stringPool, targetFolders))
+                                .Select(f => new ExecutableUnit(f, stringPool, targetFoldersArray))
                         ).ToArray();
 
                     results.ForEach((r, i) => r.SetId(i, results.Length));
@@ -298,22 +323,5 @@ namespace Ann.Core
                 }
             });
         }
-
-        private static IEnumerable<string> EnumerateAllFiles(string path)
-        {
-            try
-            {
-                var dirFiles = Directory.EnumerateDirectories(path)
-                    .SelectMany(EnumerateAllFiles);
-
-                return dirFiles.Concat(Directory.EnumerateFiles(path));
-            }
-            catch
-            {
-                return Enumerable.Empty<string>();
-            }
-        }
-
-#endregion
     }
 }

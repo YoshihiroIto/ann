@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Ann.Foundation;
 
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Ann.Foundation.Test")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Jewelry Development")]
+[assembly: AssemblyCompany(AssemblyConstants.Company)]
 [assembly: AssemblyProduct("Ann.Foundation.Test")]
-[assembly: AssemblyCopyright("Copyright © 2016 Jewelry Development All Rights Reserved.")]
+[assembly: AssemblyCopyright(AssemblyConstants.Copyright)]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

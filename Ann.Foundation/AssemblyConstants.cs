@@ -1,21 +1,13 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace Ann.Foundation
 {
     public class AssemblyConstants
     {
-        public static string CompanyName =>
-            ((AssemblyCompanyAttribute) Attribute.GetCustomAttribute(
-                Assembly.GetEntryAssembly(), typeof(AssemblyCompanyAttribute), false))
-                .Company;
+        public const string Company = "Jewelry Development";
+        public const string Product = "Ann";
+        public const string Copyright = "Copyright © 2016 Jewelry Development All Rights Reserved.";
 
-        public static string ProductName =>
-            ((AssemblyProductAttribute) Attribute.GetCustomAttribute(
-                Assembly.GetEntryAssembly(), typeof(AssemblyProductAttribute), false))
-                .Product;
-
-        public static string Version =>
-            Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        public static string Version => Assembly.GetExecutingAssembly().GetName().Version.ToString();
     }
 }

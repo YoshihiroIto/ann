@@ -1,25 +1,24 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Xunit;
 
 namespace Ann.Foundation.Test
 {
-    [TestClass]
     public class ProcessHelperTest
     {
         private static string app = @"..\..\..\Ann.GenOpenSourceList\Ann.GenOpenSourceList.exe";
 
-        [TestMethod]
-        public void Simple()
+        [Fact]
+        public void Basic()
         {
             ProcessHelper.RunAsync(app, "", false).Wait();
         }
 
-        [TestMethod]
+        [Fact]
         public void IgnoreError()
         {
             ProcessHelper.RunAsync("XXXXX", "", false).Wait();
         }
 
-        [TestMethod]
+        [Fact]
         public void RunAsAdmin()
         {
             ProcessHelper.RunAsync(app, "", true).Wait();

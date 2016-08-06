@@ -1,11 +1,17 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-    
+using Ann.Foundation.Exception;
+using Ann.Foundation.Mvvm;
+using Xunit;
+
 namespace Ann.Foundation.Test
 {
-    [TestClass]
-    public class DisposableCheckerTest
+    public class DisposableCheckerTest : IDisposable
     {
+        public void Dispose()
+        {
+            DisposableChecker.Clean();
+        }
+
         private class Disposable : IDisposable
         {
             public void Dispose()
@@ -13,8 +19,8 @@ namespace Ann.Foundation.Test
             }
         }
 
-        [TestMethod]
-        public void Simple()
+        [Fact]
+        public void Basic()
         {
             var message = "ABC";
 
@@ -27,10 +33,10 @@ namespace Ann.Foundation.Test
 
             DisposableChecker.End();
 
-            Assert.AreEqual(message, "ABC");
+            Assert.Equal("ABC", message);
         }
 
-        [TestMethod]
+        [Fact]
         public void NullStart()
         {
             DisposableChecker.Start(null);
@@ -38,7 +44,31 @@ namespace Ann.Foundation.Test
         }
 
 #if DEBUG
-        [TestMethod]
+        [Fact]
+        public void NestingStart()
+        {
+            DisposableChecker.Start(null);
+
+            Assert.Throws<NestingException>(() =>
+            {
+                DisposableChecker.Start(null);
+            });
+
+            DisposableChecker.Clean();
+        }
+
+        [Fact]
+        public void NestingEnd()
+        {
+            Assert.Throws<NestingException>(() =>
+            {
+                DisposableChecker.End();
+            });
+
+            DisposableChecker.Clean();
+        }
+
+        [Fact]
         public void Undispose()
         {
             var message = "ABC";
@@ -51,10 +81,10 @@ namespace Ann.Foundation.Test
 
             DisposableChecker.End();
 
-            Assert.IsTrue(message.Contains("Found undispose object."));
+            Assert.True(message.Contains("Found undispose object."));
         }
 
-        [TestMethod]
+        [Fact]
         public void MultipleAddition()
         {
             var message = "ABC";
@@ -65,15 +95,15 @@ namespace Ann.Foundation.Test
             DisposableChecker.Add(d);
             d.Dispose();
 
-            Assert.AreEqual(message, "ABC");
+            Assert.Equal("ABC", message);
             DisposableChecker.Add(d);
 
-            Assert.IsTrue(message.Contains("Found multiple addition."));
+            Assert.True(message.Contains("Found multiple addition."));
 
             DisposableChecker.End();
         }
 
-        [TestMethod]
+        [Fact]
         public void MultipleRemoving()
         {
             var message = "ABC";
@@ -84,15 +114,103 @@ namespace Ann.Foundation.Test
             DisposableChecker.Add(d);
             d.Dispose();
 
-            Assert.AreEqual(message, "ABC");
+            Assert.Equal("ABC", message);
             DisposableChecker.Remove(d);
 
-            Assert.AreEqual(message, "ABC");
+            Assert.Equal("ABC", message);
             DisposableChecker.Remove(d);
 
-            Assert.IsTrue(message.Contains("Found multiple removing."));
+            Assert.True(message.Contains("Found multiple removing."));
 
             DisposableChecker.End();
+        }
+
+        public class Model : DisposableNotificationObject
+        {
+            public Model(bool disableDisposableChecker = false)
+                : base(disableDisposableChecker)
+            {
+            }
+        }
+
+        [Theory]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        public void DisposableNotificationObjectUndisposingCheck(bool expected, bool disableDisposableChecker)
+        {
+            var message = string.Empty;
+
+            DisposableChecker.Start(m => message = m);
+
+            // ReSharper disable once UnusedVariable
+            var model = new Model(disableDisposableChecker);
+
+            DisposableChecker.End();
+
+            Assert.Equal(expected, message.Contains("Found"));
+        }
+
+        [Theory]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        public void DisposableNotificationObjectMultipleDisposingCheck(bool expected, bool disableDisposableChecker)
+        {
+            var message = string.Empty;
+
+            DisposableChecker.Start(m => message = m);
+
+            var model = new Model(disableDisposableChecker);
+
+            model.Dispose();
+            model.Dispose();
+
+            DisposableChecker.End();
+
+            Assert.Equal(expected, message.Contains("Found"));
+        }
+
+        public class ViewModel : ViewModelBase
+        {
+            public ViewModel(bool disableDisposableChecker = false)
+                : base(disableDisposableChecker)
+            {
+            }
+        }
+
+        [Theory]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        public void ViewModelBaseUndisposingCheck(bool expected, bool disableDisposableChecker)
+        {
+            var message = string.Empty;
+
+            DisposableChecker.Start(m => message = m);
+
+            // ReSharper disable once UnusedVariable
+            var viewModel = new ViewModel(disableDisposableChecker);
+
+            DisposableChecker.End();
+
+            Assert.Equal(expected, message.Contains("Found"));
+        }
+
+        [Theory]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        public void ViewModelBaseMultipleDisposingCheck(bool expected, bool disableDisposableChecker)
+        {
+            var message = string.Empty;
+
+            DisposableChecker.Start(m => message = m);
+
+            var viewModel = new ViewModel(disableDisposableChecker);
+
+            viewModel.Dispose();
+            viewModel.Dispose();
+
+            DisposableChecker.End();
+
+            Assert.Equal(expected, message.Contains("Found"));
         }
 #endif
     }

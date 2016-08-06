@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using YamlDotNet.Serialization;
 
 namespace Ann.Foundation
@@ -15,15 +14,23 @@ namespace Ann.Foundation
 
         public static T ReadConfig<T>(Category category, string dirPath) where T : new()
         {
-            var filePath = MakeFilePath(category, dirPath);
-
-            if (File.Exists(filePath) == false)
-                return new T();
-
             try
             {
+                var filePath = MakeFilePath(category, dirPath);
+
+                if (File.Exists(filePath) == false)
+                    return new T();
+
                 using (var reader = new StringReader(File.ReadAllText(filePath)))
-                    return new Deserializer().Deserialize<T>(reader);
+                {
+                    var config = new Deserializer().Deserialize<T>(reader);
+
+                    // ReSharper disable once ConvertIfStatementToNullCoalescingExpression
+                    if (config == null)
+                        config = new T();
+
+                    return config;
+                }
             }
             catch
             {
@@ -46,14 +53,6 @@ namespace Ann.Foundation
         }
 
         private static string MakeFilePath(Category category, string dirPath) =>
-            Path.Combine(dirPath, AssemblyConstants.ProductName + FileExts[category]);
-
-        private static readonly IReadOnlyDictionary<Category, string> FileExts =
-            new Dictionary<Category, string>
-            {
-                {Category.App, ".App.yaml"},
-                {Category.MainWindow, ".MainWindow.yaml"},
-                {Category.MostRecentUsedList, ".MostRecentUsedList.yaml"}
-            };
+            Path.Combine(dirPath, AssemblyConstants.Product + $".{category}.yaml" );
     }
 }

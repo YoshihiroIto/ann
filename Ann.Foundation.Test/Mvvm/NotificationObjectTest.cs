@@ -1,9 +1,8 @@
 ﻿using Ann.Foundation.Mvvm;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace Ann.Foundation.Test.Mvvm
 {
-    [TestClass]
     public class NotificationObjectTest
     {
         public class Model : NotificationObject
@@ -42,84 +41,88 @@ namespace Ann.Foundation.Test.Mvvm
             public int NonNotif { get; set; }
         }
 
-        [TestMethod]
+        [Fact]
         public void SetProperty()
         {
             var c = 0;
 
-            Assert.AreEqual(c, 0);
+            Assert.Equal(0, c);
 
             var model = new Model();
 
             model.PropertyChanged += (s, e) => c ++;
 
             model.DataSetProperty = 123;
-            Assert.AreEqual(c, 1);
+            Assert.Equal(1, c);
+            Assert.Equal(123, model.DataSetProperty);
 
             model.DataSetProperty = 456;
-            Assert.AreEqual(c, 2);
+            Assert.Equal(2, c);
+            Assert.Equal(456, model.DataSetProperty);
         }
 
-        [TestMethod]
+        [Fact]
         public void RaisePropertyChanged()
         {
             var c = 0;
 
-            Assert.AreEqual(c, 0);
+            Assert.Equal(0, c);
 
             var model = new Model();
 
             model.PropertyChanged += (s, e) => c ++;
 
             model.DataRaisePropertyChanged = 123;
-            Assert.AreEqual(c, 1);
+            Assert.Equal(1, c);
+            Assert.Equal(123, model.DataRaisePropertyChanged);
 
             model.DataRaisePropertyChanged = 456;
-            Assert.AreEqual(c, 2);
+            Assert.Equal(2, c);
+            Assert.Equal(456, model.DataRaisePropertyChanged);
         }
 
-        [TestMethod]
+        [Fact]
         public void SetPropertySameValue()
         {
             var c = 0;
 
-            Assert.AreEqual(c, 0);
+            Assert.Equal(0, c);
 
             var model = new Model();
 
             model.PropertyChanged += (s, e) => c ++;
 
             model.DataSetProperty = 123;
-            Assert.AreEqual(c, 1);
+            Assert.Equal(1, c);
 
             model.DataSetProperty = 123;
-            Assert.AreEqual(c, 1);
+            Assert.Equal(1, c);
         }
 
-        [TestMethod]
+        [Fact]
         public void RaisePropertyChangedSameValue()
         {
             var c = 0;
 
-            Assert.AreEqual(c, 0);
+            Assert.Equal(0, c);
 
             var model = new Model();
 
             model.PropertyChanged += (s, e) => c ++;
 
             model.DataRaisePropertyChanged = 123;
-            Assert.AreEqual(c, 1);
+            Assert.Equal(1, c);
 
             model.DataRaisePropertyChanged = 123;
-            Assert.AreEqual(c, 1);
+            Assert.Equal(1, c);
         }
 
-        [TestMethod]
+        [Fact]
         public void NonNotif()
         {
             var c = 0;
 
-            Assert.AreEqual(c, 0);
+            Assert.Equal(0, c);
 
             var model = new Model();
 
@@ -127,7 +130,8 @@ namespace Ann.Foundation.Test.Mvvm
 
             model.NonNotif = 123;
 
-            Assert.AreEqual(c, 0);
+            Assert.Equal(0, c);
+            Assert.Equal(123, model.NonNotif);
         }
     }
 }

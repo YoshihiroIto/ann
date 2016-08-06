@@ -23,6 +23,7 @@ namespace Ann.Core
         }
 
         public Path(string p)
+            : this()
         {
             Value = p;
         }
