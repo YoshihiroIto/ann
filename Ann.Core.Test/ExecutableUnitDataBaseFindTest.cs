@@ -98,6 +98,11 @@ namespace Ann.Core.Test
             new[] {@"target1\123abc456.exe"},
             new[] {@"target1\123abc456.exe", @"target1\abcd.exe", "target1/abc.exe"},
             "456 123")]
+        // 見つからない
+        [InlineData(
+            new string[0],
+            new[] {@"target1\123abc456.exe", @"target1\abcd.exe", "target1/abc.exe"},
+            "XXX")]
         public void InputRank(string[] expected, string[] targetFiles, string input)
         {
             _context = new DisposableFileSystem();
