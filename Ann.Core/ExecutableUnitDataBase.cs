@@ -199,7 +199,6 @@ namespace Ann.Core
                         euOffsets[i] =
                             IndexFile.ExecutableUnit.CreateExecutableUnit(
                                 fbb,
-                                i,
                                 fbb.CreateString(_executableUnits[i].Path));
                     }
 

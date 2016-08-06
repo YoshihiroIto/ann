@@ -3,12 +3,11 @@ namespace IndexFile;
 enum Versions : int
 {
     Version0 = 0,
-    Version = 4,
+    Version = 5,
 }
 
 table ExecutableUnit
 {
-    Id   :int;
     Path :string;
 }
 
