@@ -15,6 +15,7 @@ namespace Ann.Core
 
         public bool IsEnableSilentUpdate { get; }
         public bool IsRestartRequested { get; private set; }
+        public bool IsAvailableUpdate { get; private set; }
 
         public static void Initialize()
         {
@@ -59,7 +60,6 @@ namespace Ann.Core
             IsRestartRequested = true;
         }
 
-        private bool _isAvailableUpdate;
         private bool _isChecking;
 
         public async Task CheckAsync()
@@ -77,7 +77,7 @@ namespace Ann.Core
                     return;
                 }
 
-                if (_isAvailableUpdate && UpdateProgress == 100)
+                if (IsAvailableUpdate && UpdateProgress == 100)
                 {
                     VersionCheckingState = VersionCheckingStates.Downloaded;
                     return;
@@ -89,7 +89,7 @@ namespace Ann.Core
                 {
                     await CheckForUpdate();
 
-                    VersionCheckingState = _isAvailableUpdate
+                    VersionCheckingState = IsAvailableUpdate
                         ? VersionCheckingStates.Downloading
                         : VersionCheckingStates.Latest;
 
@@ -126,7 +126,7 @@ namespace Ann.Core
                 accessToken: App.Instance.Config.GitHubPersonalAccessToken))
             {
                 var updateInfo = await mgr.CheckForUpdate();
-                _isAvailableUpdate = updateInfo.CurrentlyInstalledVersion.SHA1 != updateInfo.FutureReleaseEntry.SHA1;
+                IsAvailableUpdate = updateInfo.CurrentlyInstalledVersion.SHA1 != updateInfo.FutureReleaseEntry.SHA1;
             }
         }
 
@@ -144,7 +144,7 @@ namespace Ann.Core
                     .Subscribe(p =>
                     {
                         if (p == 100)
-                            if (_isAvailableUpdate)
+                            if (IsAvailableUpdate)
                                 VersionCheckingState = VersionCheckingStates.Downloaded;
                     }).AddTo(CompositeDisposable);
             }
