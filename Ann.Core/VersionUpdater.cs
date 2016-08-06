@@ -6,6 +6,7 @@ using Ann.Foundation.Mvvm;
 using Reactive.Bindings.Extensions;
 using Squirrel;
 using System.Reactive.Disposables;
+using Ann.Foundation;
 
 namespace Ann.Core
 {
@@ -130,6 +131,18 @@ namespace Ann.Core
             }
         }
 
+        private async Task CreateStartupShortcut()
+        {
+            if (IsEnableSilentUpdate == false)
+                return;
+
+            using (var mgr = await UpdateManager.GitHubUpdateManager(Constants.AnnGitHubUrl,
+                accessToken: App.Instance.Config.GitHubPersonalAccessToken))
+            {
+                mgr.CreateShortcutsForExecutable(AssemblyConstants.Product, ShortcutLocation.Startup, false);
+            }
+        }
+
         private VersionUpdater()
         {
             var dir = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
@@ -147,6 +160,8 @@ namespace Ann.Core
                             if (IsAvailableUpdate)
                                 VersionCheckingState = VersionCheckingStates.Downloaded;
                     }).AddTo(CompositeDisposable);
+
+                Task.Run(async () => await CreateStartupShortcut());
             }
         }
     }
