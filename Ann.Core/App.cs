@@ -181,22 +181,26 @@ namespace Ann.Core
         private void SetupAutoUpdater()
         {
             Observable.Timer(TimeSpan.FromSeconds(3), TimeSpan.FromHours(12))
+                .ObserveOnUIDispatcher()
                 .Subscribe(async _ =>
                 {
                     await VersionUpdater.Instance.CheckAsync();
 
                     while (VersionUpdater.Instance.IsAvailableUpdate)
                     {
+                        await Task.Delay(TimeSpan.FromSeconds(1));
+
                         if (VersionUpdater.Instance.UpdateProgress == 100)
                             if (IsEnableAutoUpdater)
+                            {
+                                VersionUpdater.Instance.RequestRestart();
                                 Application.Current.MainWindow.Close();
-
-                        await Task.Delay(TimeSpan.FromSeconds(1));
+                            }
                     }
                 }).AddTo(CompositeDisposable);
         }
 
-        #region config
+#region config
 
         private void LoadConfig()
         {
@@ -244,6 +248,6 @@ namespace Ann.Core
             ConfigHelper.WriteConfig(ConfigHelper.Category.MostRecentUsedList, Constants.ConfigDirPath, MruList);
         }
 
-        #endregion
+#endregion
     }
 }
