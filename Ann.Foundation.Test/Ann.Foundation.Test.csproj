@@ -112,6 +112,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="AssemblyConstantsTest.cs" />
     <Compile Include="ConfigHelperTest.cs" />
     <Compile Include="CompositDisposableExtensionTest.cs" />
     <Compile Include="Control\ValueConverter\TypeofConverterTest.cs" />

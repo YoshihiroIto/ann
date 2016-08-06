@@ -8,14 +8,6 @@ namespace Ann.Foundation.Test.Mvvm
     {
         public class Model : DisposableNotificationObject
         {
-            public Model()
-            {
-            }
-
-            public Model(bool disableDisposableChecker = false)
-                : base(disableDisposableChecker)
-            {
-            }
         }
 
         [Fact]

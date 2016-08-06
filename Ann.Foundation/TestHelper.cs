@@ -8,6 +8,9 @@ namespace Ann.Foundation
     {
         public static void SetEntryAssembly()
         {
+            if (Assembly.GetEntryAssembly() != null)
+                return;
+
             // http://dejanstojanovic.net/aspnet/2015/january/set-entry-assembly-in-unit-testing-methods/
 
             var cd = Directory.GetCurrentDirectory();
