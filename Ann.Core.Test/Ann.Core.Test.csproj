@@ -71,6 +71,8 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Config\MostRecentUsedListTest.cs" />
+    <Compile Include="Config\MainWindowTest.cs" />
     <Compile Include="Config\AppTest.cs" />
     <Compile Include="ConstantsTest.cs" />
     <Compile Include="PathTest.cs" />
