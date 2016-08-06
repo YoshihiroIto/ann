@@ -43,7 +43,7 @@ namespace Ann.Foundation
             using (var writer = new StringWriter())
             {
                 new Serializer(SerializationOptions.EmitDefaults).Serialize(writer, config);
-                
+
                 var filePath = MakeFilePath(category, dirPath);
 
                 // ReSharper disable once AssignNullToNotNullAttribute
@@ -52,7 +52,9 @@ namespace Ann.Foundation
             }
         }
 
-        private static string MakeFilePath(Category category, string dirPath) =>
-            Path.Combine(dirPath, AssemblyConstants.Product + $".{category}.yaml" );
+        public static string MakeFilePath(Category category, string dirPath) =>
+            Path.Combine(
+                dirPath,
+                $"{(TestHelper.IsTestMode ? "test." : string.Empty)}{AssemblyConstants.Product}.{category}.yaml");
     }
 }

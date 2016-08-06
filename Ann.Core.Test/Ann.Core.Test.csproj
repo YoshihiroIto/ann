@@ -101,6 +101,7 @@
       <DependentUpon>ExecutableUnitDataBaseTest.cs</DependentUpon>
     </Compile>
     <Compile Include="ExecutableUnitDataBaseTest.cs" />
+    <Compile Include="AppTest.cs" />
     <Compile Include="IconDecoderTest.cs" />
     <Compile Include="PathTest.cs" />
     <Compile Include="CultureSummryTest.cs" />

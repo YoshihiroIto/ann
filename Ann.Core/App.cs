@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Ann.Foundation;
+using Ann.Foundation.Exception;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings.Extensions;
 
@@ -13,7 +12,7 @@ namespace Ann.Core
 {
     public class App : DisposableModelBase
     {
-        public static App Instance { get; } = new App();
+        public static App Instance { get; private set; }
 
         public Config.App Config { get; private set; }
         public Config.MostRecentUsedList MruList { get; private set; }
@@ -40,20 +39,34 @@ namespace Ann.Core
 
         #endregion
 
+        public static void Clean()
+        {
+            Instance?.Dispose();
+            Instance = null;
+        }
+
         public static void Initialize()
         {
+            if (Instance != null)
+                throw new NestingException();
+
+            Instance = new App();
         }
 
         public static void Destory()
         {
+            if (Instance == null)
+                throw new NestingException();
+
             Instance.Dispose();
+            Instance = null;
         }
 
-        public bool IsPriorityFile(string path) => _priorityFiles.Contains(path);
+        public bool IsPriorityFile(string path) => _priorityFiles.Contains(path.ToLower());
 
         public bool AddPriorityFile(string path)
         {
-            if (_priorityFiles.Contains(path))
+            if (_priorityFiles.Contains(path.ToLower()))
                 return false;
 
             Config.PriorityFiles.Add(new Path(path));
@@ -62,7 +75,7 @@ namespace Ann.Core
 
         public bool RemovePriorityFile(string path)
         {
-            if (_priorityFiles.Contains(path) == false)
+            if (_priorityFiles.Contains(path.ToLower()) == false)
                 return false;
 
             var found = Config.PriorityFiles.First(p => p.Value == path);
@@ -130,7 +143,7 @@ namespace Ann.Core
 
         public void RefreshPriorityFiles()
         {
-            _priorityFiles = new HashSet<string>(Config.PriorityFiles.Select(p => p.Value));
+            _priorityFiles = new HashSet<string>(Config.PriorityFiles.Select(p => p.Value.ToLower()));
         }
 
         public async Task RunAsync(string appPath, bool isRunAsAdmin)
@@ -169,15 +182,12 @@ namespace Ann.Core
             {
                 Config = ConfigHelper.ReadConfig<Config.App>(ConfigHelper.Category.App, Constants.ConfigDirPath);
 
-                if (Config.PriorityFiles == null)
-                    Config.PriorityFiles = new ObservableCollection<Path>();
-
                 RefreshPriorityFiles();
 
                 Config.PriorityFiles.ObserveAddChanged()
                     .Subscribe(p =>
                     {
-                        _priorityFiles.Add(p.Value);
+                        _priorityFiles.Add(p.Value.ToLower());
                         SaveConfig();
                         InvokePriorityFilesChanged();
                     })
@@ -186,7 +196,7 @@ namespace Ann.Core
                 Config.PriorityFiles.ObserveRemoveChanged()
                     .Subscribe(p =>
                     {
-                        _priorityFiles.Remove(p.Value);
+                        _priorityFiles.Remove(p.Value.ToLower());
                         SaveConfig();
                         InvokePriorityFilesChanged();
                     })
