@@ -37,6 +37,12 @@ namespace Ann.Core.Test.Config
             Assert.Equal(Key.J, c.ShortcutKeys.Hide[0].Key);
             Assert.Equal(ModifierKeys.Control, c.ShortcutKeys.Hide[0].Modifiers);
 
+            c.ShortcutKeys = new ShortcutKeys();
+            Assert.Equal(Key.None, c.ShortcutKeys.Activate.Key);
+            Assert.Equal(ModifierKeys.None, c.ShortcutKeys.Activate.Modifiers);
+            Assert.NotNull(c.ShortcutKeys.Hide);
+            Assert.Equal(0, c.ShortcutKeys.Hide.Count);
+
             Assert.NotNull(c.TargetFolder);
             Assert.True(c.TargetFolder.IsIncludeSystemFolder);
             Assert.True(c.TargetFolder.IsIncludeSystemX86Folder);
@@ -60,7 +66,17 @@ namespace Ann.Core.Test.Config
             Assert.False(c.TargetFolder.IsIncludeProgramFilesFolder);
             Assert.False(c.TargetFolder.IsIncludeProgramsFolder);
 
-           c.TargetFolder.Folders = new ObservableCollection<Path>
+            c.TargetFolder = new TargetFolder();
+            Assert.True(c.TargetFolder.IsIncludeSystemFolder);
+            Assert.True(c.TargetFolder.IsIncludeSystemX86Folder);
+            Assert.True(c.TargetFolder.IsIncludeProgramsFolder);
+            Assert.True(c.TargetFolder.IsIncludeProgramFilesX86Folder);
+            Assert.True(c.TargetFolder.IsIncludeProgramFilesFolder);
+            Assert.True(c.TargetFolder.IsIncludeProgramsFolder);
+            Assert.NotNull(c.TargetFolder.Folders);
+            Assert.Equal(0, c.TargetFolder.Folders.Count);
+
+            c.TargetFolder.Folders = new ObservableCollection<Path>
            {
                new Path("AAA")
            };
@@ -70,16 +86,37 @@ namespace Ann.Core.Test.Config
             Assert.NotNull(c.PriorityFiles);
             Assert.Equal(0, c.PriorityFiles.Count);
 
+            c.PriorityFiles = new ObservableCollection<Path> {new Path("AA"), new Path("BB") };
+            Assert.Equal(2, c.PriorityFiles.Count);
+            Assert.Equal("AA", c.PriorityFiles[0].Value);
+            Assert.Equal("BB", c.PriorityFiles[1].Value);
+
             Assert.Equal(8, c.MaxCandidateLinesCount);
+            c.MaxCandidateLinesCount = 10;
+            Assert.Equal(10, c.MaxCandidateLinesCount);
+
             Assert.NotEqual(string.Empty, c.Culture);
+            c.Culture = "ja";
+            Assert.Equal("ja", c.Culture);
+
             Assert.Equal(256, c.IconCacheSize);
+            c.IconCacheSize = 0;
+            Assert.Equal(0, c.IconCacheSize);
+
             Assert.Equal(100, c.CandidatesCensoringSize);
+            c.CandidatesCensoringSize = 20;
+            Assert.Equal(20, c.CandidatesCensoringSize);
 
             Assert.Equal(
                 new[] {"exe", "lnk", "appref-ms", "bat", "cmd", "com", "vbs", "vbe", "js", "jse", "wsf", "wsh"},
                 c.ExecutableFileExts);
 
+            c.ExecutableFileExts = new ObservableCollection<string>();
+            Assert.Equal(0, c.ExecutableFileExts.Count);
+
             Assert.Empty(c.GitHubPersonalAccessToken);
+            c.GitHubPersonalAccessToken = "AAA";
+            Assert.Equal("AAA", c.GitHubPersonalAccessToken);
         }
     }
 }
