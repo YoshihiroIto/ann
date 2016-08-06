@@ -254,7 +254,7 @@ namespace Ann.Core.Config
         #region Activate
 
         private ShortcutKey _Activate =
-            new ShortcutKey {Key = Key.None};
+            new ShortcutKey {Key = Key.None, Modifiers = ModifierKeys.None};
 
         public ShortcutKey Activate
         {
