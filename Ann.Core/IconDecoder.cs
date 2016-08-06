@@ -36,7 +36,7 @@ namespace Ann.Core
 
         public ImageSource GetIcon(string path)
         {
-            var i = _IconCache.Get(path);
+            var i = _IconCache?.Get(path);
             if (i != null)
                 return i;
 
@@ -45,7 +45,7 @@ namespace Ann.Core
 
             var ext = System.IO.Path.GetExtension(path)?.ToLower();
 
-            if (ext == null)
+            if (string.IsNullOrEmpty(ext))
                 return null;
 
             if (_IconShareFileExt.Contains(ext))
@@ -78,7 +78,7 @@ namespace Ann.Core
             }
         }
 
-        public class RefSize
+        private class RefSize
         {
             public Size Size;
         }
@@ -91,7 +91,7 @@ namespace Ann.Core
             {
                 LazyInitializer.EnsureInitialized(ref _IconRefSize, () =>
                 {
-                    var source = PresentationSource.FromVisual(Application.Current.MainWindow);
+                    var source = PresentationSource.FromVisual(Application.Current?.MainWindow ?? new Window());
 
                     if (source?.CompositionTarget == null)
                         return new RefSize
