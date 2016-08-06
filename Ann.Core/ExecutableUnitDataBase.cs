@@ -134,20 +134,20 @@ namespace Ann.Core
             {
                 var rank = MakeRankSub(u.LowerFileName, u.LowerFileNameParts, input);
                 if (rank != int.MaxValue)
-                    return ((rank + 3*0)* extRanks.Count + extRank)*maxPathLength + pathLength;
+                    return ((rank + 4*0)* extRanks.Count + extRank)*maxPathLength + pathLength;
             }
 
             {
                 var rank = MakeRankSub(u.LowerName, u.LowerNameParts, input);
                 if (rank != int.MaxValue)
-                    return ((rank + 3*1) * extRanks.Count + extRank)*maxPathLength + pathLength;
+                    return ((rank + 4*1) * extRanks.Count + extRank)*maxPathLength + pathLength;
             }
 
             {
                 // ReSharper disable once RedundantAssignment
                 var rank = MakeRankSub(u.LowerDirectory, u.LowerDirectoryParts, input);
                 if (rank != int.MaxValue)
-                    return ((rank + 3*2)* extRanks.Count + extRank)*maxPathLength + pathLength;
+                    return ((rank + 4*2)* extRanks.Count + extRank)*maxPathLength + pathLength;
             }
 
             return int.MaxValue;
