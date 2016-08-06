@@ -33,7 +33,9 @@ namespace Ann.Core.Test
             foreach (var category in categories)
             {
                 var path = ConfigHelper.MakeFilePath(category, Constants.ConfigDirPath);
-                File.Delete(path);
+
+                if (File.Exists(path))
+                    File.Delete(path);
             }
         }
     }
