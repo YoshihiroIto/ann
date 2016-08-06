@@ -103,13 +103,28 @@ namespace Ann.Core.Test
             new string[0],
             new[] {@"target1\123abc456.exe", @"target1\abcd.exe", "target1/abc.exe"},
             "XXX")]
+        // ファイル名とディレクトリ名
+        [InlineData(
+            new[] {@"target1\aaa.exe", @"target1\zzz\aaa.exe", @"target1\aaa\zzz.exe"},
+            new[] {@"target1\zzz\aaa.exe", @"target1\aaa\zzz.exe", @"target1\aaa.exe"},
+            "aaa")]
+        // 複数ターゲット
+        [InlineData(
+            new[] {@"target3\aaa.exe", @"target1\zzz\aaa.exe", @"target2\aaa\zzz.exe"},
+            new[] {@"target1\zzz\aaa.exe", @"target2\aaa\zzz.exe", @"target3\aaa.exe"},
+            "aaa")]
         public void InputRank(string[] expected, string[] targetFiles, string input)
         {
             _context = new DisposableFileSystem();
             _context.CreateFiles(targetFiles);
 
             var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
-            var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
+            var targetPaths = new[]
+            {
+                System.IO.Path.Combine(_context.RootPath, "target1"),
+                System.IO.Path.Combine(_context.RootPath, "target2"),
+                System.IO.Path.Combine(_context.RootPath, "target3")
+            };
             var executableFileExts = new[] {"exe"};
 
             var db = new ExecutableUnitDataBase(dbFilePath);
@@ -122,10 +137,11 @@ namespace Ann.Core.Test
             var candidates = db.Find(input, executableFileExts).ToArray();
 
             Assert.Equal(
+                expected,
                 candidates
                     .Select(c => c.Path)
-                    .Select(p => p.Substring(baseLength)),
-                expected);
+                    .Select(p => p.Substring(baseLength))
+                );
         }
 
         [Theory]
