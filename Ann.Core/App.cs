@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using Ann.Foundation;
 using Ann.Foundation.Exception;
 using Ann.Foundation.Mvvm;
@@ -170,6 +172,28 @@ namespace Ann.Core
             _dataBase = new ExecutableUnitDataBase(IndexFilePath);
 
             LoadConfig();
+
+            SetupAutoUpdater();
+        }
+
+        public bool IsEnableAutoUpdater { get; set; }
+
+        private void SetupAutoUpdater()
+        {
+            Observable.Timer(TimeSpan.FromSeconds(3), TimeSpan.FromHours(12))
+                .Subscribe(async _ =>
+                {
+                    await VersionUpdater.Instance.CheckAsync();
+
+                    while (VersionUpdater.Instance.IsAvailableUpdate)
+                    {
+                        if (VersionUpdater.Instance.UpdateProgress == 100)
+                            if (IsEnableAutoUpdater)
+                                Application.Current.MainWindow.Close();
+
+                        await Task.Delay(TimeSpan.FromSeconds(1));
+                    }
+                }).AddTo(CompositeDisposable);
         }
 
         #region config

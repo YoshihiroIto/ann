@@ -202,6 +202,10 @@ namespace Ann.MainWindow
 
                 IsShowingSettingShow = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
 
+                IsShowingSettingShow
+                    .Subscribe(i => App.Instance.IsEnableAutoUpdater = i == false)
+                    .AddTo(CompositeDisposable);
+
                 ShowCommand = IsShowingSettingShow.Inverse().ToReactiveCommand().AddTo(CompositeDisposable);
                 ShowCommand
                     .Subscribe(_ => Messenger.Publish(new WindowActionMessage(WindowAction.VisibleActive)))
