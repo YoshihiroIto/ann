@@ -113,7 +113,7 @@ namespace Ann.Core.Test
             new[] {@"target3\aaa.exe", @"target1\zzz\aaa.exe", @"target2\aaa\zzz.exe"},
             new[] {@"target1\zzz\aaa.exe", @"target2\aaa\zzz.exe", @"target3\aaa.exe"},
             "aaa")]
-        public void InputRank(string[] expected, string[] targetFiles, string input)
+        public void InputScore(string[] expected, string[] targetFiles, string input)
         {
             _context = new DisposableFileSystem();
             _context.CreateFiles(targetFiles);
@@ -163,7 +163,7 @@ namespace Ann.Core.Test
             new[] {@"target1\abc.exe", @"target1\abc.bat"},
             new[] {@"target1\abc.txt", @"target1\abc.bat", @"target1\abc.exe"},
             new[] {".exe", ".bat", ".lnk"})]
-        public void ExtRank(string[] expected, string[] targetFiles, string[] exts)
+        public void ExtScore(string[] expected, string[] targetFiles, string[] exts)
         {
             _context = new DisposableFileSystem();
             _context.CreateFiles(targetFiles);

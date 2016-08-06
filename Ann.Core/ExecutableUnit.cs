@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Ann.Core
 {
-    [DebuggerDisplay("Id:{_id}, MaxId:{_maxId}, Rank:{_rank}, Path:{Path}")]
+    [DebuggerDisplay("Id:{_id}, MaxId:{_maxId}, Score:{_score}, Path:{Path}")]
     public class ExecutableUnit : IComparable<ExecutableUnit>
     {
         public readonly string Path;
@@ -23,14 +23,14 @@ namespace Ann.Core
         //
         private int _id;
         private int _maxId;
-        private int _rank;
+        private int _score;
 
-        public void SetRank(int r)
+        public void SetScore(int r)
         {
             if (r == int.MaxValue)
-                _rank = int.MaxValue;
+                _score = int.MaxValue;
             else
-                _rank = r*_maxId + _id;
+                _score = r*_maxId + _id;
         }
 
         public void SetId(int id, int maxId)
@@ -105,6 +105,6 @@ namespace Ann.Core
 
         private static readonly char[] Separator = {' ', '_', '-', '/', '\\'};
 
-        int IComparable<ExecutableUnit>.CompareTo(ExecutableUnit other) => _rank - other._rank;
+        int IComparable<ExecutableUnit>.CompareTo(ExecutableUnit other) => _score - other._score;
     }
 }

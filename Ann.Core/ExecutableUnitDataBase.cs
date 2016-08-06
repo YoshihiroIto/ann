@@ -66,8 +66,8 @@ namespace Ann.Core
 
             using (new TimeMeasure("Filtering"))
             {
-                var extRanks = new Dictionary<string, int>();
-                executableFileExtsArray.ForEach((e, i) => extRanks[e] = i);
+                var extScores = new Dictionary<string, int>();
+                executableFileExtsArray.ForEach((e, i) => extScores[e] = i);
 
                 var inputs = input.Split(' ');
                 var temp = new List<ExecutableUnit> {Capacity = targets.Length};
@@ -82,7 +82,7 @@ namespace Ann.Core
                         if (inputs.All(u.SearchKey.Contains) == false)
                             return local;
 
-                        u.SetRank(MakeRank(u, inputs, extRanks));
+                        u.SetScore(MakeScore(u, inputs, extScores));
                         local.Add(u);
 
                         return local;
@@ -104,56 +104,56 @@ namespace Ann.Core
             return _prevResult;
         }
 
-        private static int MakeRank(ExecutableUnit u, string[] inputs, Dictionary<string, int> extRanks)
+        private static int MakeScore(ExecutableUnit u, string[] inputs, Dictionary<string, int> extScores)
         {
-            var rank = 0;
+            var score = 0;
 
             foreach (var i in inputs)
             {
-                var r = MakeRank(u, i, extRanks);
+                var r = MakeScore(u, i, extScores);
                 if (r == int.MaxValue)
                     return int.MaxValue;
 
-                rank += r;
+                score += r;
             }
 
-            return rank/inputs.Length;
+            return score/inputs.Length;
         }
 
-        private static int MakeRank(ExecutableUnit u, string input, Dictionary<string, int> extRanks)
+        private static int MakeScore(ExecutableUnit u, string input, Dictionary<string, int> extScores)
         {
             // ReSharper disable once PossibleNullReferenceException
             var ext = System.IO.Path.GetExtension(u.Path).ToLower();
 
-            Debug.Assert(extRanks.ContainsKey(ext));
-            var extRank = extRanks[ext];
+            Debug.Assert(extScores.ContainsKey(ext));
+            var extScore = extScores[ext];
 
             const int maxPathLength = 256;
             var pathLength = Math.Min(u.Path.Length, maxPathLength);
 
             {
-                var rank = MakeRankSub(u.LowerFileName, u.LowerFileNameParts, input);
-                if (rank != int.MaxValue)
-                    return ((rank + 4*0)* extRanks.Count + extRank)*maxPathLength + pathLength;
+                var score = MakeScoreSub(u.LowerFileName, u.LowerFileNameParts, input);
+                if (score != int.MaxValue)
+                    return ((score + 4*0)* extScores.Count + extScore)*maxPathLength + pathLength;
             }
 
             {
-                var rank = MakeRankSub(u.LowerName, u.LowerNameParts, input);
-                if (rank != int.MaxValue)
-                    return ((rank + 4*1) * extRanks.Count + extRank)*maxPathLength + pathLength;
+                var score = MakeScoreSub(u.LowerName, u.LowerNameParts, input);
+                if (score != int.MaxValue)
+                    return ((score + 4*1) * extScores.Count + extScore)*maxPathLength + pathLength;
             }
 
             {
                 // ReSharper disable once RedundantAssignment
-                var rank = MakeRankSub(u.LowerDirectory, u.LowerDirectoryParts, input);
-                if (rank != int.MaxValue)
-                    return ((rank + 4*2)* extRanks.Count + extRank)*maxPathLength + pathLength;
+                var score = MakeScoreSub(u.LowerDirectory, u.LowerDirectoryParts, input);
+                if (score != int.MaxValue)
+                    return ((score + 4*2)* extScores.Count + extScore)*maxPathLength + pathLength;
             }
 
             return int.MaxValue;
         }
 
-        private static int MakeRankSub(string target, string[] targetParts, string input)
+        private static int MakeScoreSub(string target, string[] targetParts, string input)
         {
             if (target == input)
                 return 0;
