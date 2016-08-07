@@ -203,6 +203,18 @@ namespace Ann.Core
 
         public bool IsEnableAutoUpdater { get; set; }
 
+        #region AutoUpdateRemainingSeconds
+
+        private int _AutoUpdateRemainingSeconds;
+
+        public int AutoUpdateRemainingSeconds
+        {
+            get { return _AutoUpdateRemainingSeconds; }
+            set { SetProperty(ref _AutoUpdateRemainingSeconds, value); }
+        }
+
+        #endregion
+
         private void SetupAutoUpdater()
         {
             Observable.Timer(TimeSpan.FromSeconds(5), TimeSpan.FromHours(12))
@@ -223,7 +235,14 @@ namespace Ann.Core
                             {
                                 AutoUpdateState = AutoUpdateStates.CloseAfterNSec;
 
-                                await Task.Delay(TimeSpan.FromSeconds(Constants.AutoUpdateCloseDelaySec));
+                                AutoUpdateRemainingSeconds = Constants.AutoUpdateCloseDelaySec;
+
+                                while (AutoUpdateRemainingSeconds > 0)
+                                {
+                                    await Task.Delay(TimeSpan.FromSeconds(1));
+                                    -- AutoUpdateRemainingSeconds;
+                                }
+
                                 VersionUpdater.Instance.RequestRestart();
                                 Application.Current.MainWindow.Close();
                             }
