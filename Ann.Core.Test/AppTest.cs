@@ -11,7 +11,6 @@ namespace Ann.Core.Test
     {
         public AppTestFixture()
         {
-            TestHelper.IsTestMode = true;
             TestHelper.SetEntryAssembly();
 
             DeleteTestConfigs();
@@ -22,8 +21,6 @@ namespace Ann.Core.Test
         {
             App.Clean();
             DeleteTestConfigs();
-
-            TestHelper.IsTestMode = false;
         }
 
         public static void DeleteTestConfigs()
