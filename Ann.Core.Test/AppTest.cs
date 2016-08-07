@@ -51,12 +51,12 @@ namespace Ann.Core.Test
         // ReSharper disable once UnusedParameter.Local
         public AppTest(AppTestFixture f)
         {
+            App.Clean();
         }
 
         [Fact]
         public void Basic()
         {
-            App.Clean();
             App.Initialize();
 
             Assert.NotNull(App.Instance);
@@ -67,7 +67,6 @@ namespace Ann.Core.Test
         [Fact]
         public void NestingInitialize()
         {
-            App.Clean();
             App.Initialize();
 
             Assert.Throws<NestingException>(() =>
@@ -104,7 +103,6 @@ namespace Ann.Core.Test
         [Fact]
         public void OpenIndexAsync()
         {
-            App.Clean();
             App.Initialize();
 
             App.Instance.Config.TargetFolder.IsIncludeSystemFolder = false;
@@ -123,7 +121,6 @@ namespace Ann.Core.Test
         [Fact]
         public void UpdateIndexAsync()
         {
-            App.Clean();
             App.Initialize();
 
             App.Instance.Config.TargetFolder.IsIncludeSystemFolder = false;
@@ -142,7 +139,6 @@ namespace Ann.Core.Test
         [Fact]
         public void FindExecutableUnit()
         {
-            App.Clean();
             App.Initialize();
 
             App.Instance.Config.TargetFolder.Folders.Add(new Path(_context.RootPath));
@@ -174,7 +170,6 @@ namespace Ann.Core.Test
         [Fact]
         public void Mru()
         {
-            App.Clean();
             App.Initialize();
 
             App.Instance.SaveMru();
