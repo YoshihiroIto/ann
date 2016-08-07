@@ -79,20 +79,20 @@ namespace Ann.Properties {
         }
         
         /// <summary>
+        ///   Restart. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string AutoUpdateStates_CloseAfter0Sec_Restart {
+            get {
+                return ResourceManager.GetString("AutoUpdateStates_CloseAfter0Sec_Restart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Update is now ready. Restart after {0} seconds. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string AutoUpdateStates_CloseAfterNSec {
             get {
                 return ResourceManager.GetString("AutoUpdateStates_CloseAfterNSec", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Restart. に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        public static string AutoUpdateStates_Downloading {
-            get {
-                return ResourceManager.GetString("AutoUpdateStates_Downloading", resourceCulture);
             }
         }
         

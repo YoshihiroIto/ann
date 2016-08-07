@@ -240,7 +240,7 @@
   <data name="Message_FileNotFound" xml:space="preserve">
     <value>ファイルが見つかりません。</value>
   </data>
-  <data name="AutoUpdateStates_Downloading" xml:space="preserve">
+  <data name="AutoUpdateStates_CloseAfter0Sec_Restart" xml:space="preserve">
     <value>再起動します。</value>
   </data>
   <data name="AutoUpdateStates_CloseAfterNSec" xml:space="preserve">
