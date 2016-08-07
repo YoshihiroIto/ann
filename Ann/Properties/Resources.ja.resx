@@ -241,7 +241,7 @@
     <value>ファイルが見つかりません。</value>
   </data>
   <data name="AutoUpdateStates_Downloading" xml:space="preserve">
-    <value>更新ファイルをダウンロード中です。</value>
+    <value>再起動します。</value>
   </data>
   <data name="AutoUpdateStates_CloseAfterNSec" xml:space="preserve">
     <value>更新の準備が整いました。{0}秒後に再起動します。</value>
