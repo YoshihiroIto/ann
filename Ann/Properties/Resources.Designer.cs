@@ -79,6 +79,24 @@ namespace Ann.Properties {
         }
         
         /// <summary>
+        ///   Update is now ready. Restart after 3 seconds. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string AutoUpdateStates_CloseAfterThreeSec {
+            get {
+                return ResourceManager.GetString("AutoUpdateStates_CloseAfterThreeSec", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Downloading update file. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string AutoUpdateStates_Downloading {
+            get {
+                return ResourceManager.GetString("AutoUpdateStates_Downloading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Download に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string Download {
@@ -156,6 +174,24 @@ namespace Ann.Properties {
         public static string Message_ActivationShortcutKeyIsAlreadyInUse {
             get {
                 return ResourceManager.GetString("Message_ActivationShortcutKeyIsAlreadyInUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Failed to start. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Message_FailedToStart {
+            get {
+                return ResourceManager.GetString("Message_FailedToStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   File not found. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Message_FileNotFound {
+            get {
+                return ResourceManager.GetString("Message_FileNotFound", resourceCulture);
             }
         }
         

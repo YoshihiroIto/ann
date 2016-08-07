@@ -5,9 +5,9 @@ namespace Ann.Foundation
 {
     public static class ProcessHelper
     {
-        public static async Task RunAsync(string cmd, string args, bool isRunAsAdmin)
+        public static async Task<bool> RunAsync(string cmd, string args, bool isRunAsAdmin)
         {
-            await Task.Run(() =>
+            return await Task.Run(() =>
             {
                 var info = new ProcessStartInfo(cmd)
                 {
@@ -20,11 +20,14 @@ namespace Ann.Foundation
                 try
                 {
                     Process.Start(info);
+                    return true;
                 }
                 catch
                 {
                     // ignored
                 }
+
+                return false;
             });
         }
     }

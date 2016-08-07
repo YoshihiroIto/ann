@@ -234,4 +234,16 @@
   <data name="Settings_StartOnSystemUpdate" xml:space="preserve">
     <value>Start on system update</value>
   </data>
+  <data name="Message_FailedToStart" xml:space="preserve">
+    <value>Failed to start.</value>
+  </data>
+  <data name="Message_FileNotFound" xml:space="preserve">
+    <value>File not found.</value>
+  </data>
+  <data name="AutoUpdateStates_Downloading" xml:space="preserve">
+    <value>Downloading update file.</value>
+  </data>
+  <data name="AutoUpdateStates_CloseAfterThreeSec" xml:space="preserve">
+    <value>Update is now ready. Restart after 3 seconds.</value>
+  </data>
 </root>
