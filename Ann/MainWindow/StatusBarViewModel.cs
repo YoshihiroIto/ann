@@ -109,7 +109,8 @@ namespace Ann.MainWindow
                     switch (s)
                     {
                         case App.AutoUpdateStates.Downloading:
-                            _autoUpdaterItem = new StatusBarItemViewModel(Properties.Resources.AutoUpdateStates_Downloading);
+                            _autoUpdaterItem =
+                                new StatusBarItemViewModel(Properties.Resources.AutoUpdateStates_Downloading);
                             break;
 
                         case App.AutoUpdateStates.CloseAfterNSec:
@@ -124,12 +125,20 @@ namespace Ann.MainWindow
                     Messages.Add(_autoUpdaterItem);
                 }).AddTo(CompositeDisposable);
 
-
             VersionUpdater.Instance.ObserveProperty(x => x.UpdateProgress)
                 .Subscribe(p =>
                 {
                     if (App.Instance.AutoUpdateState == App.AutoUpdateStates.Downloading)
                         _autoUpdaterItem.Message.Value = $"{Properties.Resources.AutoUpdateStates_Downloading}({p}%)";
+                }).AddTo(CompositeDisposable);
+
+            App.Instance.ObserveProperty(x => x.AutoUpdateRemainingSeconds)
+                .Subscribe(p =>
+                {
+                    if (App.Instance.AutoUpdateState == App.AutoUpdateStates.CloseAfterNSec)
+                        _autoUpdaterItem.Message.Value =
+                            string.Format(
+                                Properties.Resources.AutoUpdateStates_CloseAfterNSec, p);
                 }).AddTo(CompositeDisposable);
         }
     }
