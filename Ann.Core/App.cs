@@ -28,6 +28,7 @@ namespace Ann.Core
 
         private HashSet<string> _priorityFiles = new HashSet<string>();
         private readonly ExecutableUnitDataBase _dataBase;
+
         private static string IndexFilePath => System.IO.Path.Combine(
             Constants.ConfigDirPath,
             $"{(TestHelper.IsTestMode ? "Test." : string.Empty)}index.dat");
@@ -71,7 +72,7 @@ namespace Ann.Core
 
         public static void RemoveIndexFile()
         {
-            if(File.Exists(IndexFilePath))
+            if (File.Exists(IndexFilePath))
                 File.Delete(IndexFilePath);
         }
 
@@ -159,23 +160,28 @@ namespace Ann.Core
             _priorityFiles = new HashSet<string>(Config.PriorityFiles.Select(p => p.Value.ToLower()));
         }
 
-        public async Task RunAsync(string appPath, bool isRunAsAdmin)
+        public async Task<bool> RunAsync(string appPath, bool isRunAsAdmin)
         {
-            await ProcessHelper.RunAsync(appPath, string.Empty, isRunAsAdmin);
+            var i = await ProcessHelper.RunAsync(appPath, string.Empty, isRunAsAdmin);
 
-            await Task.Run(() =>
+            if (i)
             {
-                MruList.AppPath.Remove(appPath);
-                MruList.AppPath.Insert(0, appPath);
+                await Task.Run(() =>
+                {
+                    MruList.AppPath.Remove(appPath);
+                    MruList.AppPath.Insert(0, appPath);
 
-                while (MruList.AppPath.Count > MaxMruCount)
-                    MruList.AppPath.RemoveAt(MruList.AppPath.Count - 1);
+                    while (MruList.AppPath.Count > MaxMruCount)
+                        MruList.AppPath.RemoveAt(MruList.AppPath.Count - 1);
 
-                SaveMru();
+                    SaveMru();
 
-                _mruOrders.Clear();
-                MruList.AppPath.ForEach((path, index) => _mruOrders[path] = index);
-            });
+                    _mruOrders.Clear();
+                    MruList.AppPath.ForEach((path, index) => _mruOrders[path] = index);
+                });
+            }
+
+            return i;
         }
 
         private App()
@@ -219,7 +225,7 @@ namespace Ann.Core
                 }).AddTo(CompositeDisposable);
         }
 
-#region config
+        #region config
 
         private void LoadConfig()
         {
@@ -267,6 +273,6 @@ namespace Ann.Core
             ConfigHelper.WriteConfig(ConfigHelper.Category.MostRecentUsedList, Constants.ConfigDirPath, MruList);
         }
 
-#endregion
+        #endregion
     }
 }

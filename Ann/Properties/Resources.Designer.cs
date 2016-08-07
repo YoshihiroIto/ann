@@ -160,6 +160,24 @@ namespace Ann.Properties {
         }
         
         /// <summary>
+        ///   Failed to start. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Message_FailedToStart {
+            get {
+                return ResourceManager.GetString("Message_FailedToStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   File not found に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Message_FileNotFound {
+            get {
+                return ResourceManager.GetString("Message_FileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cannot open the index. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string Message_IndexIsNotOpened {

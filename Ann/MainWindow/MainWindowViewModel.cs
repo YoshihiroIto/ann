@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -21,8 +22,11 @@ namespace Ann.MainWindow
     public class MainWindowViewModel : ViewModelBase
     {
         public ReactiveProperty<string> Input { get; }
-        public ReactiveProperty<string> InProgressMessage { get; }
-        public ReadOnlyReactiveProperty<bool> InProgress { get; }
+
+        public ReactiveCollection<string> StatusMessages { get; }
+        public ReadOnlyReactiveProperty<bool> IsProgressing { get; }
+
+        public ReactiveProperty<bool> IsIndexUpdating { get; }
         public ReactiveCommand IndexUpdateCommand { get; }
 
         public ReactiveCommand InitializeCommand { get; }
@@ -51,7 +55,6 @@ namespace Ann.MainWindow
 
         public ReadOnlyReactiveProperty<IndexOpeningResults> IndexOpeningResult { get; }
         public ReactiveProperty<bool> IsEnableActivateHotKey { get; }
-        public ReadOnlyReactiveProperty<string> Message { get; }
 
         public WindowMessageBroker Messenger { get; }
 
@@ -79,11 +82,16 @@ namespace Ann.MainWindow
 
                 Input = new ReactiveProperty<string>().AddTo(CompositeDisposable);
 
-                InProgressMessage = new ReactiveProperty<string>(string.Empty).AddTo(CompositeDisposable);
-                InProgress = InProgressMessage
-                    .Select(m => string.IsNullOrEmpty(m) == false)
-                    .ToReadOnlyReactiveProperty()
-                    .AddTo(CompositeDisposable);
+                StatusMessages = new ReactiveCollection<string>().AddTo(CompositeDisposable);
+
+                IsIndexUpdating = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
+                IsIndexUpdating.Subscribe(i =>
+                {
+                    if (i)
+                        StatusMessages.AddOnScheduler(Properties.Resources.Message_IndexUpdating);
+                    else
+                        StatusMessages.RemoveOnScheduler(Properties.Resources.Message_IndexUpdating);
+                }).AddTo(CompositeDisposable);
 
                 MaxCandidatesLinesCount = App.Instance.Config
                     .ToReactivePropertyAsSynchronized(x => x.MaxCandidateLinesCount)
@@ -98,7 +106,7 @@ namespace Ann.MainWindow
                         .ToReadOnlyReactiveProperty()
                         .AddTo(CompositeDisposable);
 
-                IndexUpdateCommand = InProgressMessage.Select(string.IsNullOrEmpty)
+                IndexUpdateCommand = IsIndexUpdating.Select(i => i == false)
                     .ToReactiveCommand()
                     .AddTo(CompositeDisposable);
 
@@ -161,8 +169,20 @@ namespace Ann.MainWindow
                     .ObserveOnUIDispatcher()
                     .Subscribe(async p =>
                     {
-                        Messenger.Publish(new WindowActionMessage(WindowAction.Hidden));
-                        await App.Instance.RunAsync(path, p == "admin");
+                        var i = await App.Instance.RunAsync(path, p == "admin");
+                        if (i)
+                        {
+                            Messenger.Publish(new WindowActionMessage(WindowAction.Hidden));
+                            return;
+                        }
+
+                        var errMes = Properties.Resources.Message_FailedToStart;
+                        if (File.Exists(path) == false)
+                            errMes += Properties.Resources.Message_FileNotFound;
+
+                        StatusMessages.AddOnScheduler(errMes);
+                        await Task.Delay(TimeSpan.FromSeconds(3));
+                        StatusMessages.RemoveOnScheduler(errMes);
                     }).AddTo(CompositeDisposable);
 
                 ContainingFolderOpenCommand = SelectedCandidate
@@ -221,6 +241,17 @@ namespace Ann.MainWindow
                     .Subscribe(_ => Messenger.Publish(new WindowActionMessage(WindowAction.Close)))
                     .AddTo(CompositeDisposable);
 
+                IsEnableActivateHotKey = new ReactiveProperty<bool>(true).AddTo(CompositeDisposable);
+
+                IsEnableActivateHotKey
+                    .Subscribe(i =>
+                    {
+                        if (i)
+                            StatusMessages.RemoveOnScheduler(Properties.Resources.Message_ActivationShortcutKeyIsAlreadyInUse);
+                        else
+                            StatusMessages.AddOnScheduler(Properties.Resources.Message_ActivationShortcutKeyIsAlreadyInUse);
+                    }).AddTo(CompositeDisposable);
+
                 IndexOpeningResult = App.Instance.ObserveProperty(x => x.IndexOpeningResult)
                     .ToReadOnlyReactiveProperty()
                     .AddTo(CompositeDisposable);
@@ -229,23 +260,21 @@ namespace Ann.MainWindow
                     .Where(r => r == IndexOpeningResults.Ok)
                     .Subscribe(_ => Input.ForceNotify())
                     .AddTo(CompositeDisposable);
+                IndexOpeningResult
+                    .Subscribe(r =>
+                    {
+                        if (r == IndexOpeningResults.InOpening)
+                            StatusMessages.AddOnScheduler(Properties.Resources.Message_InOpening);
+                        else
+                            StatusMessages.RemoveOnScheduler(Properties.Resources.Message_InOpening);
+                    }).AddTo(CompositeDisposable);
 
-                IsEnableActivateHotKey = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
-
-                Message =
+                IsProgressing =
                     Observable
                         .Merge(IndexOpeningResult.ToUnit())
-                        .Merge(IsEnableActivateHotKey.ToUnit())
-                        .Select(_ =>
-                        {
-                            if (IsEnableActivateHotKey.Value == false)
-                                return Properties.Resources.Message_ActivationShortcutKeyIsAlreadyInUse;
-
-                            if (IndexOpeningResult.Value == IndexOpeningResults.InOpening)
-                                return Properties.Resources.Message_InOpening;
-
-                            return string.Empty;
-                        })
+                        .Merge(IsIndexUpdating.ToUnit())
+                        .Select(_ => IndexOpeningResult.Value == IndexOpeningResults.InOpening ||
+                                     IsIndexUpdating.Value)
                         .ToReadOnlyReactiveProperty()
                         .AddTo(CompositeDisposable);
             }
@@ -275,9 +304,9 @@ namespace Ann.MainWindow
 
         private async Task UpdateIndexAsync()
         {
-            using (Disposable.Create(() => InProgressMessage.Value = string.Empty))
+            using (Disposable.Create(() => IsIndexUpdating.Value = false))
             {
-                InProgressMessage.Value = Properties.Resources.Message_IndexUpdating;
+                IsIndexUpdating.Value = true;
                 await App.Instance.UpdateIndexAsync();
                 Input.ForceNotify();
             }
@@ -312,7 +341,8 @@ namespace Ann.MainWindow
         {
             Debug.Assert(Config == null);
 
-            Config = ConfigHelper.ReadConfig<Core.Config.MainWindow>(ConfigHelper.Category.MainWindow, Constants.ConfigDirPath);
+            Config = ConfigHelper.ReadConfig<Core.Config.MainWindow>(ConfigHelper.Category.MainWindow,
+                Constants.ConfigDirPath);
         }
 
         private void SaveConfig()

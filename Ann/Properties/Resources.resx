@@ -234,4 +234,10 @@
   <data name="Settings_StartOnSystemUpdate" xml:space="preserve">
     <value>Start on system update</value>
   </data>
+  <data name="Message_FailedToStart" xml:space="preserve">
+    <value>Failed to start.</value>
+  </data>
+  <data name="Message_FileNotFound" xml:space="preserve">
+    <value>File not found</value>
+  </data>
 </root>

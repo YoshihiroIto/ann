@@ -37,7 +37,8 @@
         <behavior:WindowTaskTrayIconBehavior IconSource="/app.ico"
                                              LeftClickedCommand="{Binding ShowCommand,
                                                                           Mode=OneTime}"
-                                             ToolTipText="{Binding Caption, Mode=OneTime}">
+                                             ToolTipText="{Binding Caption,
+                                                                   Mode=OneTime}">
             <behavior:WindowTaskTrayIconBehavior.ContextMenu>
                 <ContextMenu>
                     <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_UpdateIndex, Mode=OneWay}" />
@@ -57,311 +58,241 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <StackPanel Margin="16">
-        <DockPanel LastChildFill="True">
-            <materialDesign:PopupBox Margin="0,0,-12,0"
-                                     Closed="PopupBox_Closed"
-                                     DockPanel.Dock="Right"
-                                     Foreground="Gainsboro"
-                                     PlacementMode="BottomAndAlignRightEdges">
-                <StackPanel>
-                    <Button Command="{Binding IndexUpdateCommand, Mode=OneTime}" Content="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_UpdateIndex, Mode=OneWay}" />
-                    <Button Command="{Binding SettingShowCommand, Mode=OneTime}" Content="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Settings, Mode=OneWay}" />
-                    <Separator />
-                    <Button Command="{Binding ExitCommand, Mode=OneTime}" Content="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Exit, Mode=OneWay}" />
-                </StackPanel>
-            </materialDesign:PopupBox>
+    <DockPanel LastChildFill="True">
+        <StackPanel Margin="16" DockPanel.Dock="Top">
+            <DockPanel LastChildFill="True">
+                <materialDesign:PopupBox Margin="0,0,-12,0"
+                                         Closed="PopupBox_Closed"
+                                         DockPanel.Dock="Right"
+                                         Foreground="Gainsboro"
+                                         PlacementMode="BottomAndAlignRightEdges">
+                    <StackPanel>
+                        <Button Command="{Binding IndexUpdateCommand, Mode=OneTime}" Content="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_UpdateIndex, Mode=OneWay}" />
+                        <Button Command="{Binding SettingShowCommand, Mode=OneTime}" Content="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Settings, Mode=OneWay}" />
+                        <Separator />
+                        <Button Command="{Binding ExitCommand, Mode=OneTime}" Content="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Exit, Mode=OneWay}" />
+                    </StackPanel>
+                </materialDesign:PopupBox>
 
-            <Border Width="24"
-                    Height="24"
-                    Margin="12,0,0,0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    DockPanel.Dock="Right"
-                    Padding="0"
-                    ToolTip="{Binding Message.Value,
-                                      Mode=OneWay}"
-                    ToolTipService.InitialShowDelay="0"
-                    ToolTipService.ShowDuration="100000000">
-                <materialDesign:PackIcon Width="24"
-                                         Height="24"
-                                         Foreground="DodgerBlue"
-                                         Kind="MessageTextOutline" />
-                <Border.Style>
-                    <Style TargetType="{x:Type Border}">
+                <TextBox x:Name="InputTextBox"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         CaretBrush="White"
+                         FontSize="32"
+                         Foreground="White"
+                         Text="{Binding Input.Value,
+                                        Mode=TwoWay,
+                                        UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Up"
+                                    Command="{Binding SelectedCandidateMoveCommand,
+                                                      Mode=OneTime}"
+                                    CommandParameter="-1" />
+                        <KeyBinding Key="Down"
+                                    Command="{Binding SelectedCandidateMoveCommand,
+                                                      Mode=OneTime}"
+                                    CommandParameter="1" />
+
+                        <KeyBinding Key="Tab"
+                                    Command="{Binding SelectedCandidateMoveCommand,
+                                                      Mode=OneTime}"
+                                    CommandParameter="-1"
+                                    Modifiers="Shift" />
+                        <KeyBinding Key="Tab"
+                                    Command="{Binding SelectedCandidateMoveCommand}"
+                                    CommandParameter="1" />
+                    </TextBox.InputBindings>
+                </TextBox>
+            </DockPanel>
+
+            <ListBox MaxHeight="{Binding CandidatesListMaxHeight.Value,
+                                         Mode=OneWay}"
+                     Margin="0,16,0,0"
+                     HorizontalContentAlignment="Stretch"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     Focusable="False"
+                     IsTabStop="False"
+                     ItemsSource="{Binding Candidates.Value,
+                                           Mode=OneWay}"
+                     ScrollViewer.CanContentScroll="True"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ScrollViewer.PanningMode="VerticalOnly"
+                     SelectedItem="{Binding SelectedCandidate.Value,
+                                            Mode=TwoWay}"
+                     SelectionChanged="ListBox_SelectionChanged"
+                     SelectionMode="Single"
+                     VirtualizingPanel.IsVirtualizing="True"
+                     VirtualizingPanel.ScrollUnit="Item"
+                     VirtualizingPanel.VirtualizationMode="Recycling">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel CanVerticallyScroll="True" Orientation="Vertical" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+
+                <ListBox.Style>
+                    <Style TargetType="{x:Type ListBox}">
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Message.Value, Mode=OneWay}" Value="">
+                            <DataTrigger Binding="{Binding Candidates.Value, Mode=OneWay}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Candidates.Value.Count, Mode=OneWay}" Value="0">
                                 <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
-
-                        <Setter Property="Visibility" Value="Visible" />
                     </Style>
-                </Border.Style>
-            </Border>
+                </ListBox.Style>
 
-            <StackPanel Margin="12,0,0,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        DockPanel.Dock="Right">
-                <StackPanel.Style>
-                    <Style TargetType="{x:Type StackPanel}">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding InProgress.Value, Mode=OneWay}" Value="False">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding InProgress.Value, Mode=OneWay}" Value="True">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-                        </Style.Triggers>
+                <ListBox.ItemContainerStyle>
+                    <Style BasedOn="{StaticResource CandidateListBoxItemStyle}" TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="VerticalContentAlignment" Value="Stretch" />
                     </Style>
-                </StackPanel.Style>
+                </ListBox.ItemContainerStyle>
 
-                <Button Width="24"
-                        Height="24"
-                        Command="{Binding IndexUpdateCommand,
-                                          Mode=OneTime}"
-                        Padding="0">
-                    <materialDesign:PackIcon Width="24"
-                                             Height="24"
-                                             Foreground="Orange"
-                                             Kind="SyncAlert" />
-                    <Button.Style>
-                        <Style BasedOn="{StaticResource MaterialDesignToolForegroundButton}" TargetType="{x:Type Button}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.InOpening}">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.OldIndex}">
-                                    <Setter Property="ToolTip" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Message_IndexIsOld, Mode=OneWay}" />
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.CanNotOpen}">
-                                    <Setter Property="ToolTip" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Message_IndexIsNotOpened, Mode=OneWay}" />
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.NotFound}">
-                                    <Setter Property="ToolTip" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Message_IndexNotFound, Mode=OneWay}" />
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding IndexOpeningResult.Value, Mode=OneWay}" Value="{x:Static core:IndexOpeningResults.Ok}">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-            </StackPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type mainWindow:ExecutableUnitViewModel}">
+                        <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown" SizeChanged="Grid_SizeChanged">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-            <ProgressBar Margin="12,0,0,0"
+                            <Image Grid.Column="0"
+                                   Width="{x:Static core:Constants.IconSize}"
+                                   Height="{x:Static core:Constants.IconSize}"
+                                   Margin="4"
+                                   Source="{Binding Icon,
+                                                    Mode=OneWay}" />
+
+                            <Grid Grid.Column="1"
+                                  Margin="0,4"
+                                  VerticalAlignment="Center">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0"
+                                           Grid.Column="0"
+                                           Margin="0,0,0,2"
+                                           FontSize="24"
+                                           Foreground="White"
+                                           Padding="0"
+                                           Text="{Binding Name,
+                                                          Mode=OneWay}"
+                                           TextTrimming="CharacterEllipsis"
+                                           ToolTip="{Binding Name,
+                                                             Mode=OneWay}" />
+
+                                <TextBlock Grid.Row="1"
+                                           Grid.Column="0"
+                                           Foreground="#AAA"
+                                           Padding="0"
+                                           Text="{Binding Path,
+                                                          Mode=OneWay}"
+                                           TextTrimming="CharacterEllipsis"
+                                           ToolTip="{Binding Path,
+                                                             Mode=OneWay}" />
+                            </Grid>
+
+                            <materialDesign:PopupBox Grid.Column="2"
+                                                     Margin="0,0,-8,-24"
+                                                     Closed="PopupBox_Closed"
+                                                     DockPanel.Dock="Right"
+                                                     Foreground="Gainsboro"
+                                                     PlacementMode="BottomAndAlignRightEdges"
+                                                     PreviewMouseLeftButtonUp="PopupBox_PreviewMouseLeftButtonUp">
+                                <StackPanel>
+                                    <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
+                                    <Button Command="{Binding DataContext.RunCommand,
+                                                              RelativeSource={RelativeSource AncestorType=Window},
+                                                              Mode=OneWay}"
+                                            CommandParameter="admin"
+                                            Content="Run As Administrator" />
+
+                                    <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
+                                    <Button Command="{Binding DataContext.ContainingFolderOpenCommand, RelativeSource={RelativeSource AncestorType=Window}, Mode=OneWay}" Content="Open Containing Folder" />
+                                </StackPanel>
+
+                                <materialDesign:PopupBox.Style>
+                                    <Style TargetType="{x:Type materialDesign:PopupBox}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="False">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </materialDesign:PopupBox.Style>
+                            </materialDesign:PopupBox>
+
+                            <Button Grid.Column="3"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Bottom"
+                                    materialDesign:RippleAssist.IsCentered="True"
+                                    Focusable="False"
+                                    IsTabStop="False">
+                                <materialDesign:PackIcon Kind="Star" />
+                                <Button.Style>
+                                    <Style BasedOn="{StaticResource MaterialDesignToolButton}" TargetType="{x:Type Button}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsPriorityFile, Mode=OneWay}" Value="True">
+                                                <Setter Property="Foreground" Value="Yellow" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsPriorityFile, Mode=OneWay}" Value="False">
+                                                <Setter Property="Foreground" Value="#888" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <interactivity:EventToReactiveCommand Command="{Binding IsPriorityFileFlipCommand, Mode=OneTime}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Button>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+
+        <DockPanel Background="#60EE3030" SnapsToDevicePixels="True">
+            <ProgressBar Width="16"
+                         Height="16"
+                         Margin="0,4,16,4"
                          HorizontalAlignment="Right"
                          VerticalAlignment="Center"
                          DockPanel.Dock="Right"
                          Foreground="White"
                          IsIndeterminate="True"
-                         ToolTip="{Binding InProgressMessage.Value,
-                                           Mode=OneWay}"
                          Value="0">
                 <ProgressBar.Style>
                     <Style BasedOn="{StaticResource MaterialDesignCircularProgressBar}" TargetType="{x:Type ProgressBar}">
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding InProgressMessage.Value, Mode=OneWay}" Value="">
-                                <Setter Property="Visibility" Value="Collapsed" />
+                            <DataTrigger Binding="{Binding IsProgressing.Value, Mode=OneWay}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsProgressing.Value, Mode=OneWay}" Value="False">
+                                <Setter Property="Visibility" Value="Hidden" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </ProgressBar.Style>
             </ProgressBar>
 
-            <TextBox x:Name="InputTextBox"
-                     Background="Transparent"
-                     BorderThickness="0"
-                     CaretBrush="White"
-                     FontSize="32"
-                     Foreground="White"
-                     Text="{Binding Input.Value,
-                                    Mode=TwoWay,
-                                    UpdateSourceTrigger=PropertyChanged}">
-                <TextBox.InputBindings>
-                    <KeyBinding Key="Up"
-                                Command="{Binding SelectedCandidateMoveCommand,
-                                                  Mode=OneTime}"
-                                CommandParameter="-1" />
-                    <KeyBinding Key="Down"
-                                Command="{Binding SelectedCandidateMoveCommand,
-                                                  Mode=OneTime}"
-                                CommandParameter="1" />
-
-                    <KeyBinding Key="Tab"
-                                Command="{Binding SelectedCandidateMoveCommand,
-                                                  Mode=OneTime}"
-                                CommandParameter="-1"
-                                Modifiers="Shift" />
-                    <KeyBinding Key="Tab"
-                                Command="{Binding SelectedCandidateMoveCommand}"
-                                CommandParameter="1" />
-                </TextBox.InputBindings>
-            </TextBox>
-        </DockPanel>
-
-        <ListBox MaxHeight="{Binding CandidatesListMaxHeight.Value,
-                                     Mode=OneWay}"
-                 Margin="0,16,0,0"
-                 HorizontalContentAlignment="Stretch"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 Focusable="False"
-                 IsTabStop="False"
-                 ItemsSource="{Binding Candidates.Value,
-                                       Mode=OneWay}"
-                 ScrollViewer.CanContentScroll="True"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 ScrollViewer.PanningMode="VerticalOnly"
-                 SelectedItem="{Binding SelectedCandidate.Value,
-                                        Mode=TwoWay}"
-                 SelectionChanged="ListBox_SelectionChanged"
-                 SelectionMode="Single"
-                 VirtualizingPanel.IsVirtualizing="True"
-                 VirtualizingPanel.ScrollUnit="Item"
-                 VirtualizingPanel.VirtualizationMode="Recycling">
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <VirtualizingStackPanel CanVerticallyScroll="True" Orientation="Vertical" />
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-
-            <ListBox.Style>
-                <Style TargetType="{x:Type ListBox}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Candidates.Value, Mode=OneWay}" Value="{x:Null}">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Candidates.Value.Count, Mode=OneWay}" Value="0">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ListBox.Style>
-
-            <ListBox.ItemContainerStyle>
-                <Style BasedOn="{StaticResource CandidateListBoxItemStyle}" TargetType="{x:Type ListBoxItem}">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    <Setter Property="VerticalContentAlignment" Value="Stretch" />
-                </Style>
-            </ListBox.ItemContainerStyle>
-
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type mainWindow:ExecutableUnitViewModel}">
-                    <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown" SizeChanged="Grid_SizeChanged">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-
-                        <Image Grid.Column="0"
-                               Width="{x:Static core:Constants.IconSize}"
-                               Height="{x:Static core:Constants.IconSize}"
-                               Margin="4"
-                               Source="{Binding Icon,
+            <ItemsControl Margin="16,4,8,4"
+                          VerticalAlignment="Center"
+                          Foreground="Gainsboro"
+                          ItemsSource="{Binding StatusMessages,
                                                 Mode=OneWay}" />
-
-                        <Grid Grid.Column="1"
-                              Margin="0,4"
-                              VerticalAlignment="Center">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <TextBlock Grid.Row="0"
-                                       Grid.Column="0"
-                                       Margin="0,0,0,2"
-                                       FontSize="24"
-                                       Foreground="White"
-                                       Padding="0"
-                                       Text="{Binding Name,
-                                                      Mode=OneWay}"
-                                       TextTrimming="CharacterEllipsis"
-                                       ToolTip="{Binding Name,
-                                                         Mode=OneWay}" />
-
-                            <TextBlock Grid.Row="1"
-                                       Grid.Column="0"
-                                       Foreground="#AAA"
-                                       Padding="0"
-                                       Text="{Binding Path,
-                                                      Mode=OneWay}"
-                                       TextTrimming="CharacterEllipsis"
-                                       ToolTip="{Binding Path,
-                                                         Mode=OneWay}" />
-                        </Grid>
-
-                        <materialDesign:PopupBox Grid.Column="2"
-                                                 Margin="0,0,-8,-24"
-                                                 Closed="PopupBox_Closed"
-                                                 DockPanel.Dock="Right"
-                                                 Foreground="Gainsboro"
-                                                 PlacementMode="BottomAndAlignRightEdges"
-                                                 PreviewMouseLeftButtonUp="PopupBox_PreviewMouseLeftButtonUp">
-                            <StackPanel>
-                                <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                                <Button Command="{Binding DataContext.RunCommand,
-                                                          RelativeSource={RelativeSource AncestorType=Window},
-                                                          Mode=OneWay}"
-                                        CommandParameter="admin"
-                                        Content="Run As Administrator" />
-
-                                <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                                <Button Command="{Binding DataContext.ContainingFolderOpenCommand, RelativeSource={RelativeSource AncestorType=Window}, Mode=OneWay}" Content="Open Containing Folder" />
-                            </StackPanel>
-
-                            <materialDesign:PopupBox.Style>
-                                <Style TargetType="{x:Type materialDesign:PopupBox}">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="False">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </materialDesign:PopupBox.Style>
-                        </materialDesign:PopupBox>
-
-                        <Button Grid.Column="3"
-                                Margin="0,0,12,0"
-                                VerticalAlignment="Bottom"
-                                materialDesign:RippleAssist.IsCentered="True"
-                                Focusable="False"
-                                IsTabStop="False">
-                            <materialDesign:PackIcon Kind="Star" />
-                            <Button.Style>
-                                <Style BasedOn="{StaticResource MaterialDesignToolButton}" TargetType="{x:Type Button}">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsPriorityFile, Mode=OneWay}" Value="True">
-                                            <Setter Property="Foreground" Value="Yellow" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsPriorityFile, Mode=OneWay}" Value="False">
-                                            <Setter Property="Foreground" Value="#888" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="Click">
-                                    <interactivity:EventToReactiveCommand Command="{Binding IsPriorityFileFlipCommand, Mode=OneTime}" />
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                        </Button>
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-    </StackPanel>
+        </DockPanel>
+    </DockPanel>
 </Window>

@@ -234,4 +234,10 @@
   <data name="Settings_StartOnSystemUpdate" xml:space="preserve">
     <value>システム起動時に起動する</value>
   </data>
+  <data name="Message_FailedToStart" xml:space="preserve">
+    <value>起動に失敗しました。</value>
+  </data>
+  <data name="Message_FileNotFound" xml:space="preserve">
+    <value>ファイルが見つかりません。</value>
+  </data>
 </root>
