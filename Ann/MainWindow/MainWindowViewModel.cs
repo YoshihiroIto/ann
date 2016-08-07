@@ -23,9 +23,6 @@ namespace Ann.MainWindow
     {
         public ReactiveProperty<string> Input { get; }
 
-        public ReactiveCollection<string> StatusMessages { get; }
-        public ReadOnlyReactiveProperty<bool> IsProgressing { get; }
-
         public ReactiveProperty<bool> IsIndexUpdating { get; }
         public ReactiveCommand IndexUpdateCommand { get; }
 
@@ -64,6 +61,8 @@ namespace Ann.MainWindow
 
         private readonly IconDecoder _iconDecoder = new IconDecoder();
 
+        public StatusBarViewModel StatusBar { get; }
+
         public MainWindowViewModel()
         {
             using (new TimeMeasure("MainWindowViewModel.ctor"))
@@ -81,16 +80,27 @@ namespace Ann.MainWindow
                 Top = Config.ToReactivePropertyAsSynchronized(x => x.Top).AddTo(CompositeDisposable);
 
                 Input = new ReactiveProperty<string>().AddTo(CompositeDisposable);
-
-                StatusMessages = new ReactiveCollection<string>().AddTo(CompositeDisposable);
+                StatusBar = new StatusBarViewModel().AddTo(CompositeDisposable);
 
                 IsIndexUpdating = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
                 IsIndexUpdating.Subscribe(i =>
                 {
                     if (i)
-                        StatusMessages.AddOnScheduler(Properties.Resources.Message_IndexUpdating);
+                    {
+                        var item = new ProcessingStatusBarItemViewModel(
+                            StatusBarItemViewModel.SearchKey.IndexUpdating,
+                            Properties.Resources.Message_IndexUpdating);
+                        StatusBar.Messages.AddOnScheduler(item);
+                    }
                     else
-                        StatusMessages.RemoveOnScheduler(Properties.Resources.Message_IndexUpdating);
+                    {
+                        var item = StatusBar.Messages
+                            .FirstOrDefault(
+                                x => x.Key == StatusBarItemViewModel.SearchKey.IndexUpdating);
+
+                        StatusBar.Messages.RemoveOnScheduler(item);
+                        item?.Dispose();
+                    }
                 }).AddTo(CompositeDisposable);
 
                 MaxCandidatesLinesCount = App.Instance.Config
@@ -180,9 +190,12 @@ namespace Ann.MainWindow
                         if (File.Exists(path) == false)
                             errMes += Properties.Resources.Message_FileNotFound;
 
-                        StatusMessages.AddOnScheduler(errMes);
+                        var item = new StatusBarItemViewModel(errMes);
+
+                        StatusBar.Messages.AddOnScheduler(item);
                         await Task.Delay(TimeSpan.FromSeconds(3));
-                        StatusMessages.RemoveOnScheduler(errMes);
+                        StatusBar.Messages.RemoveOnScheduler(item);
+                        item.Dispose();
                     }).AddTo(CompositeDisposable);
 
                 ContainingFolderOpenCommand = SelectedCandidate
@@ -246,10 +259,22 @@ namespace Ann.MainWindow
                 IsEnableActivateHotKey
                     .Subscribe(i =>
                     {
-                        if (i)
-                            StatusMessages.RemoveOnScheduler(Properties.Resources.Message_ActivationShortcutKeyIsAlreadyInUse);
+                        if (i == false)
+                        {
+                            var item = new StatusBarItemViewModel(
+                                StatusBarItemViewModel.SearchKey.NoKey,
+                                Properties.Resources.Message_ActivationShortcutKeyIsAlreadyInUse);
+                            StatusBar.Messages.AddOnScheduler(item);
+                        }
                         else
-                            StatusMessages.AddOnScheduler(Properties.Resources.Message_ActivationShortcutKeyIsAlreadyInUse);
+                        {
+                            var item = StatusBar.Messages
+                                .FirstOrDefault(
+                                    x => x.Key == StatusBarItemViewModel.SearchKey.ActivationShortcutKeyIsAlreadyInUse);
+
+                            StatusBar.Messages.RemoveOnScheduler(item);
+                            item?.Dispose();
+                        }
                     }).AddTo(CompositeDisposable);
 
                 IndexOpeningResult = App.Instance.ObserveProperty(x => x.IndexOpeningResult)
@@ -264,19 +289,22 @@ namespace Ann.MainWindow
                     .Subscribe(r =>
                     {
                         if (r == IndexOpeningResults.InOpening)
-                            StatusMessages.AddOnScheduler(Properties.Resources.Message_InOpening);
+                        {
+                            var item = new ProcessingStatusBarItemViewModel(
+                                StatusBarItemViewModel.SearchKey.InOpening,
+                                Properties.Resources.Message_InOpening);
+                            StatusBar.Messages.AddOnScheduler(item);
+                        }
                         else
-                            StatusMessages.RemoveOnScheduler(Properties.Resources.Message_InOpening);
-                    }).AddTo(CompositeDisposable);
+                        {
+                            var item = StatusBar.Messages
+                                .FirstOrDefault(
+                                    x => x.Key == StatusBarItemViewModel.SearchKey.InOpening);
 
-                IsProgressing =
-                    Observable
-                        .Merge(IndexOpeningResult.ToUnit())
-                        .Merge(IsIndexUpdating.ToUnit())
-                        .Select(_ => IndexOpeningResult.Value == IndexOpeningResults.InOpening ||
-                                     IsIndexUpdating.Value)
-                        .ToReadOnlyReactiveProperty()
-                        .AddTo(CompositeDisposable);
+                            StatusBar.Messages.RemoveOnScheduler(item);
+                            item?.Dispose();
+                        }
+                    }).AddTo(CompositeDisposable);
 
                 SetupVersionUpdater();
             }
@@ -359,25 +387,35 @@ namespace Ann.MainWindow
 
         private void SetupVersionUpdater()
         {
-            var oldMessage = default(string);
+            var oldItem = default(StatusBarItemViewModel);
+
+            CompositeDisposable.Add(() => oldItem?.Dispose());
 
             App.Instance.ObserveProperty(x => x.AutoUpdateState)
                 .Subscribe(s =>
                 {
-                    if (oldMessage != null)
-                        StatusMessages.RemoveOnScheduler(oldMessage);
+                    if (oldItem != null)
+                    {
+                        StatusBar.Messages.RemoveOnScheduler(oldItem);
+                        oldItem.Dispose();
+                    }
 
                     switch (s)
                     {
                         case App.AutoUpdateStates.Downloading:
-                            oldMessage = Properties.Resources.AutoUpdateStates_Downloading;
+                            oldItem = new StatusBarItemViewModel(Properties.Resources.AutoUpdateStates_Downloading);
                             break;
+
                         case App.AutoUpdateStates.CloseAfterNSec:
-                            oldMessage = string.Format(Properties.Resources.AutoUpdateStates_CloseAfterNSec, Constants.AutoUpdateCloseDelaySec);
+                            oldItem =
+                                new StatusBarItemViewModel(
+                                    string.Format(
+                                        Properties.Resources.AutoUpdateStates_CloseAfterNSec,
+                                        Constants.AutoUpdateCloseDelaySec));
                             break;
                     }
 
-                    StatusMessages.Add(oldMessage);
+                    StatusBar.Messages.Add(oldItem);
                 }).AddTo(CompositeDisposable);
         }
     }
