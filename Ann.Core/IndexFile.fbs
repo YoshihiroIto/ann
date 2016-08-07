@@ -3,7 +3,7 @@ namespace IndexFile;
 enum Versions : int
 {
     Version0 = 0,
-    Version = 5,
+    Version = 6,
 }
 
 table ExecutableUnit

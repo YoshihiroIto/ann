@@ -332,7 +332,6 @@ namespace Ann.Core
                 {
                     f = f.Replace('/', '\\');
                     f = f.TrimEnd('\\') + '\\';
-                    f = f.ToLower();
                     return f;
                 })
                 .OrderByDescending(f => f.Length)

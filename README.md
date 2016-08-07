@@ -15,3 +15,19 @@ Download
 
 [releases](https://github.com/YoshihiroIto/ann/releases) Ann-X.X.X-Setup.exe
 
+
+
+License
+-------
+
+[MIT](https://github.com/YoshihiroIto/ann/blob/master/LICENSE)
+
+
+
+Author
+------
+
+[Yoshihiro Ito](https://github.com/YoshihiroIto)
+
+
+
