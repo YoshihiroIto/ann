@@ -113,7 +113,7 @@ namespace Ann.Core.Test
 
             App.Instance.OpenIndexAsync().Wait();
 
-            Assert.Equal(IndexOpeningResults.Ok, App.Instance.IndexOpeningResult);
+            Assert.Equal(IndexOpeningResults.NotFound, App.Instance.IndexOpeningResult);
 
             App.Destory();
         }

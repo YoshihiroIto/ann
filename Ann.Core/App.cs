@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -27,7 +28,9 @@ namespace Ann.Core
 
         private HashSet<string> _priorityFiles = new HashSet<string>();
         private readonly ExecutableUnitDataBase _dataBase;
-        private static string IndexFilePath => System.IO.Path.Combine(Constants.ConfigDirPath, "index.dat");
+        private static string IndexFilePath => System.IO.Path.Combine(
+            Constants.ConfigDirPath,
+            $"{(TestHelper.IsTestMode ? "Test." : string.Empty)}index.dat");
 
         #region IndexOpeningResult
 
@@ -43,6 +46,8 @@ namespace Ann.Core
 
         public static void Clean()
         {
+            RemoveIndexFile();
+
             Instance?.Dispose();
             Instance = null;
         }
@@ -62,6 +67,12 @@ namespace Ann.Core
 
             Instance.Dispose();
             Instance = null;
+        }
+
+        public static void RemoveIndexFile()
+        {
+            if(File.Exists(IndexFilePath))
+                File.Delete(IndexFilePath);
         }
 
         public bool IsPriorityFile(string path) => _priorityFiles.Contains(path.ToLower());
