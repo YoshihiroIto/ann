@@ -236,6 +236,8 @@ namespace Ann.Core
                                 -- AutoUpdateRemainingSeconds;
                             }
 
+                            await Task.Delay(TimeSpan.FromSeconds(1));
+
                             VersionUpdater.Instance.RequestRestart();
                             Application.Current.MainWindow.Close();
                         }
