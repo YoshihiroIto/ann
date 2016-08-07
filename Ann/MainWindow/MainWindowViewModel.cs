@@ -245,8 +245,6 @@ namespace Ann.MainWindow
                     .AddTo(CompositeDisposable);
 
                 StatusBar = new StatusBarViewModel(this).AddTo(CompositeDisposable);
-
-                SetupVersionUpdater();
             }
         }
 
@@ -323,40 +321,6 @@ namespace Ann.MainWindow
         private static async Task OpenByExplorer(string path)
         {
             await ProcessHelper.RunAsync("EXPLORER", $"/select,\"{path}\"", false);
-        }
-
-        private void SetupVersionUpdater()
-        {
-            var oldItem = default(StatusBarItemViewModel);
-
-            CompositeDisposable.Add(() => oldItem?.Dispose());
-
-            App.Instance.ObserveProperty(x => x.AutoUpdateState)
-                .Subscribe(s =>
-                {
-                    if (oldItem != null)
-                    {
-                        StatusBar.Messages.RemoveOnScheduler(oldItem);
-                        oldItem.Dispose();
-                    }
-
-                    switch (s)
-                    {
-                        case App.AutoUpdateStates.Downloading:
-                            oldItem = new StatusBarItemViewModel(Properties.Resources.AutoUpdateStates_Downloading);
-                            break;
-
-                        case App.AutoUpdateStates.CloseAfterNSec:
-                            oldItem =
-                                new StatusBarItemViewModel(
-                                    string.Format(
-                                        Properties.Resources.AutoUpdateStates_CloseAfterNSec,
-                                        Constants.AutoUpdateCloseDelaySec));
-                            break;
-                    }
-
-                    StatusBar.Messages.Add(oldItem);
-                }).AddTo(CompositeDisposable);
         }
     }
 }

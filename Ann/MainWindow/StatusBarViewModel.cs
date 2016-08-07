@@ -87,6 +87,43 @@ namespace Ann.MainWindow
                         item?.Dispose();
                     }
                 }).AddTo(CompositeDisposable);
+
+            SetupVersionUpdater();
         }
+
+        private void SetupVersionUpdater()
+        {
+            var oldItem = default(StatusBarItemViewModel);
+
+            CompositeDisposable.Add(() => oldItem?.Dispose());
+
+            App.Instance.ObserveProperty(x => x.AutoUpdateState)
+                .Subscribe(s =>
+                {
+                    if (oldItem != null)
+                    {
+                        Messages.RemoveOnScheduler(oldItem);
+                        oldItem.Dispose();
+                    }
+
+                    switch (s)
+                    {
+                        case App.AutoUpdateStates.Downloading:
+                            oldItem = new StatusBarItemViewModel(Properties.Resources.AutoUpdateStates_Downloading);
+                            break;
+
+                        case App.AutoUpdateStates.CloseAfterNSec:
+                            oldItem =
+                                new StatusBarItemViewModel(
+                                    string.Format(
+                                        Properties.Resources.AutoUpdateStates_CloseAfterNSec,
+                                        Constants.AutoUpdateCloseDelaySec));
+                            break;
+                    }
+
+                    Messages.Add(oldItem);
+                }).AddTo(CompositeDisposable);
+        }
+
     }
 }
