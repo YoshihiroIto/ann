@@ -224,28 +224,21 @@ namespace Ann.Core
                     await VersionUpdater.Instance.CheckAsync();
 
                     if (VersionUpdater.Instance.IsAvailableUpdate)
-                        AutoUpdateState = AutoUpdateStates.Downloading;
-
-                    while (VersionUpdater.Instance.IsAvailableUpdate)
                     {
-                        await Task.Delay(TimeSpan.FromSeconds(1));
+                        if (IsEnableAutoUpdater)
+                        {
+                            AutoUpdateState = AutoUpdateStates.CloseAfterNSec;
+                            AutoUpdateRemainingSeconds = Constants.AutoUpdateCloseDelaySec;
 
-                        if (VersionUpdater.Instance.UpdateProgress == 100)
-                            if (IsEnableAutoUpdater)
+                            while (AutoUpdateRemainingSeconds > 0)
                             {
-                                AutoUpdateState = AutoUpdateStates.CloseAfterNSec;
-
-                                AutoUpdateRemainingSeconds = Constants.AutoUpdateCloseDelaySec;
-
-                                while (AutoUpdateRemainingSeconds > 0)
-                                {
-                                    await Task.Delay(TimeSpan.FromSeconds(1));
-                                    -- AutoUpdateRemainingSeconds;
-                                }
-
-                                VersionUpdater.Instance.RequestRestart();
-                                Application.Current.MainWindow.Close();
+                                await Task.Delay(TimeSpan.FromSeconds(1));
+                                -- AutoUpdateRemainingSeconds;
                             }
+
+                            VersionUpdater.Instance.RequestRestart();
+                            Application.Current.MainWindow.Close();
+                        }
                     }
                 }).AddTo(CompositeDisposable);
         }
@@ -253,7 +246,6 @@ namespace Ann.Core
         public enum AutoUpdateStates
         {
             Wait,
-            Downloading,
             CloseAfterNSec
         }
 
