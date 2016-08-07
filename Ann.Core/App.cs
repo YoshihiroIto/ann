@@ -174,6 +174,14 @@ namespace Ann.Core
             LoadConfig();
 
             SetupAutoUpdater();
+
+            Task.Run(async () =>
+            {
+                if (Config.IsStartOnSystemStartup)
+                    await VersionUpdater.Instance.CreateStartupShortcut();
+                else
+                    await VersionUpdater.Instance.RemoveStartupShortcut();
+            });
         }
 
         public bool IsEnableAutoUpdater { get; set; }

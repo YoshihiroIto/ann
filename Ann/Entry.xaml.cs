@@ -24,8 +24,6 @@ namespace Ann
             DisposableChecker.Start(m => MessageBox.Show(m));
             VersionUpdater.Initialize();
             {
-                Task.Run(async () => await VersionUpdater.Instance.CheckAsync());
-
                 var e = new Entry();
                 e.InitializeComponent();
                 e.Run();
