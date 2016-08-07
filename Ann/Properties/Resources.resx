@@ -243,7 +243,7 @@
   <data name="AutoUpdateStates_Downloading" xml:space="preserve">
     <value>Downloading update file.</value>
   </data>
-  <data name="AutoUpdateStates_CloseAfterThreeSec" xml:space="preserve">
-    <value>Update is now ready. Restart after 3 seconds.</value>
+  <data name="AutoUpdateStates_CloseAfterNSec" xml:space="preserve">
+    <value>Update is now ready. Restart after {0} seconds.</value>
   </data>
 </root>
