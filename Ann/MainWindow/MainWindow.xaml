@@ -264,35 +264,6 @@
             </ListBox>
         </StackPanel>
 
-        <DockPanel Background="#60EE3030" SnapsToDevicePixels="True">
-            <ProgressBar Width="16"
-                         Height="16"
-                         Margin="0,4,16,4"
-                         HorizontalAlignment="Right"
-                         VerticalAlignment="Center"
-                         DockPanel.Dock="Right"
-                         Foreground="White"
-                         IsIndeterminate="True"
-                         Value="0">
-                <ProgressBar.Style>
-                    <Style BasedOn="{StaticResource MaterialDesignCircularProgressBar}" TargetType="{x:Type ProgressBar}">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsProgressing.Value, Mode=OneWay}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding IsProgressing.Value, Mode=OneWay}" Value="False">
-                                <Setter Property="Visibility" Value="Hidden" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ProgressBar.Style>
-            </ProgressBar>
-
-            <ItemsControl Margin="16,4,8,4"
-                          VerticalAlignment="Center"
-                          Foreground="Gainsboro"
-                          ItemsSource="{Binding StatusMessages,
-                                                Mode=OneWay}" />
-        </DockPanel>
+        <mainWindow:StatusBar DataContext="{Binding StatusBar, Mode=OneTime}" />
     </DockPanel>
 </Window>

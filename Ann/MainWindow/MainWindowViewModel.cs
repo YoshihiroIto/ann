@@ -23,9 +23,6 @@ namespace Ann.MainWindow
     {
         public ReactiveProperty<string> Input { get; }
 
-        public ReactiveCollection<string> StatusMessages { get; }
-        public ReadOnlyReactiveProperty<bool> IsProgressing { get; }
-
         public ReactiveProperty<bool> IsIndexUpdating { get; }
         public ReactiveCommand IndexUpdateCommand { get; }
 
@@ -64,6 +61,8 @@ namespace Ann.MainWindow
 
         private readonly IconDecoder _iconDecoder = new IconDecoder();
 
+        public StatusBarViewModel StatusBar { get; }
+
         public MainWindowViewModel()
         {
             using (new TimeMeasure("MainWindowViewModel.ctor"))
@@ -74,24 +73,14 @@ namespace Ann.MainWindow
 
                 InitializeCommand = new ReactiveCommand().AddTo(CompositeDisposable);
                 InitializeCommand
-                    .Subscribe(async _ => await InitializeAwait())
+                    .Subscribe(async _ => await InitializeAsync())
                     .AddTo(CompositeDisposable);
 
                 Left = Config.ToReactivePropertyAsSynchronized(x => x.Left).AddTo(CompositeDisposable);
                 Top = Config.ToReactivePropertyAsSynchronized(x => x.Top).AddTo(CompositeDisposable);
 
                 Input = new ReactiveProperty<string>().AddTo(CompositeDisposable);
-
-                StatusMessages = new ReactiveCollection<string>().AddTo(CompositeDisposable);
-
                 IsIndexUpdating = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
-                IsIndexUpdating.Subscribe(i =>
-                {
-                    if (i)
-                        StatusMessages.AddOnScheduler(Properties.Resources.Message_IndexUpdating);
-                    else
-                        StatusMessages.RemoveOnScheduler(Properties.Resources.Message_IndexUpdating);
-                }).AddTo(CompositeDisposable);
 
                 MaxCandidatesLinesCount = App.Instance.Config
                     .ToReactivePropertyAsSynchronized(x => x.MaxCandidateLinesCount)
@@ -180,9 +169,12 @@ namespace Ann.MainWindow
                         if (File.Exists(path) == false)
                             errMes += Properties.Resources.Message_FileNotFound;
 
-                        StatusMessages.AddOnScheduler(errMes);
+                        var item = new StatusBarItemViewModel(errMes);
+
+                        StatusBar.Messages.AddOnScheduler(item);
                         await Task.Delay(TimeSpan.FromSeconds(3));
-                        StatusMessages.RemoveOnScheduler(errMes);
+                        StatusBar.Messages.RemoveOnScheduler(item);
+                        item.Dispose();
                     }).AddTo(CompositeDisposable);
 
                 ContainingFolderOpenCommand = SelectedCandidate
@@ -243,15 +235,6 @@ namespace Ann.MainWindow
 
                 IsEnableActivateHotKey = new ReactiveProperty<bool>(true).AddTo(CompositeDisposable);
 
-                IsEnableActivateHotKey
-                    .Subscribe(i =>
-                    {
-                        if (i)
-                            StatusMessages.RemoveOnScheduler(Properties.Resources.Message_ActivationShortcutKeyIsAlreadyInUse);
-                        else
-                            StatusMessages.AddOnScheduler(Properties.Resources.Message_ActivationShortcutKeyIsAlreadyInUse);
-                    }).AddTo(CompositeDisposable);
-
                 IndexOpeningResult = App.Instance.ObserveProperty(x => x.IndexOpeningResult)
                     .ToReadOnlyReactiveProperty()
                     .AddTo(CompositeDisposable);
@@ -260,29 +243,12 @@ namespace Ann.MainWindow
                     .Where(r => r == IndexOpeningResults.Ok)
                     .Subscribe(_ => Input.ForceNotify())
                     .AddTo(CompositeDisposable);
-                IndexOpeningResult
-                    .Subscribe(r =>
-                    {
-                        if (r == IndexOpeningResults.InOpening)
-                            StatusMessages.AddOnScheduler(Properties.Resources.Message_InOpening);
-                        else
-                            StatusMessages.RemoveOnScheduler(Properties.Resources.Message_InOpening);
-                    }).AddTo(CompositeDisposable);
 
-                IsProgressing =
-                    Observable
-                        .Merge(IndexOpeningResult.ToUnit())
-                        .Merge(IsIndexUpdating.ToUnit())
-                        .Select(_ => IndexOpeningResult.Value == IndexOpeningResults.InOpening ||
-                                     IsIndexUpdating.Value)
-                        .ToReadOnlyReactiveProperty()
-                        .AddTo(CompositeDisposable);
-
-                SetupVersionUpdater();
+                StatusBar = new StatusBarViewModel(this).AddTo(CompositeDisposable);
             }
         }
 
-        private async Task InitializeAwait()
+        private async Task InitializeAsync()
         {
             Observable
                 .Merge(Left)
@@ -355,30 +321,6 @@ namespace Ann.MainWindow
         private static async Task OpenByExplorer(string path)
         {
             await ProcessHelper.RunAsync("EXPLORER", $"/select,\"{path}\"", false);
-        }
-
-        private void SetupVersionUpdater()
-        {
-            var oldMessage = default(string);
-
-            App.Instance.ObserveProperty(x => x.AutoUpdateState)
-                .Subscribe(s =>
-                {
-                    if (oldMessage != null)
-                        StatusMessages.RemoveOnScheduler(oldMessage);
-
-                    switch (s)
-                    {
-                        case App.AutoUpdateStates.Downloading:
-                            oldMessage = Properties.Resources.AutoUpdateStates_Downloading;
-                            break;
-                        case App.AutoUpdateStates.CloseAfterNSec:
-                            oldMessage = string.Format(Properties.Resources.AutoUpdateStates_CloseAfterNSec, Constants.AutoUpdateCloseDelaySec);
-                            break;
-                    }
-
-                    StatusMessages.Add(oldMessage);
-                }).AddTo(CompositeDisposable);
         }
     }
 }
