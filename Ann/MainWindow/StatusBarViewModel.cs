@@ -91,29 +91,29 @@ namespace Ann.MainWindow
             SetupVersionUpdater();
         }
 
+        private StatusBarItemViewModel _autoUpdaterItem;
+
         private void SetupVersionUpdater()
         {
-            var oldItem = default(StatusBarItemViewModel);
-
-            CompositeDisposable.Add(() => oldItem?.Dispose());
+            CompositeDisposable.Add(() => _autoUpdaterItem?.Dispose());
 
             App.Instance.ObserveProperty(x => x.AutoUpdateState)
                 .Subscribe(s =>
                 {
-                    if (oldItem != null)
+                    if (_autoUpdaterItem != null)
                     {
-                        Messages.RemoveOnScheduler(oldItem);
-                        oldItem.Dispose();
+                        Messages.RemoveOnScheduler(_autoUpdaterItem);
+                        _autoUpdaterItem.Dispose();
                     }
 
                     switch (s)
                     {
                         case App.AutoUpdateStates.Downloading:
-                            oldItem = new StatusBarItemViewModel(Properties.Resources.AutoUpdateStates_Downloading);
+                            _autoUpdaterItem = new StatusBarItemViewModel(Properties.Resources.AutoUpdateStates_Downloading);
                             break;
 
                         case App.AutoUpdateStates.CloseAfterNSec:
-                            oldItem =
+                            _autoUpdaterItem =
                                 new StatusBarItemViewModel(
                                     string.Format(
                                         Properties.Resources.AutoUpdateStates_CloseAfterNSec,
@@ -121,9 +121,16 @@ namespace Ann.MainWindow
                             break;
                     }
 
-                    Messages.Add(oldItem);
+                    Messages.Add(_autoUpdaterItem);
+                }).AddTo(CompositeDisposable);
+
+
+            VersionUpdater.Instance.ObserveProperty(x => x.UpdateProgress)
+                .Subscribe(p =>
+                {
+                    if (App.Instance.AutoUpdateState == App.AutoUpdateStates.Downloading)
+                        _autoUpdaterItem.Message.Value = $"{Properties.Resources.AutoUpdateStates_Downloading}({p}%)";
                 }).AddTo(CompositeDisposable);
         }
-
     }
 }
