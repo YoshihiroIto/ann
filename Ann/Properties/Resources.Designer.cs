@@ -88,7 +88,7 @@ namespace Ann.Properties {
         }
         
         /// <summary>
-        ///   Downloading update file. に類似しているローカライズされた文字列を検索します。
+        ///   Restart. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string AutoUpdateStates_Downloading {
             get {

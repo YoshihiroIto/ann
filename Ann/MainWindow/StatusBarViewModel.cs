@@ -123,8 +123,9 @@ namespace Ann.MainWindow
                 {
                     if (App.Instance.AutoUpdateState == App.AutoUpdateStates.CloseAfterNSec)
                         _autoUpdaterItem.Message.Value =
-                            string.Format(
-                                Properties.Resources.AutoUpdateStates_CloseAfterNSec, p);
+                            p == 0
+                                ? Properties.Resources.Restart
+                                : string.Format(Properties.Resources.AutoUpdateStates_CloseAfterNSec, p);
                 }).AddTo(CompositeDisposable);
         }
     }
