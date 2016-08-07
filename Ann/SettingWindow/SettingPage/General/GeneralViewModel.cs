@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
@@ -11,6 +12,7 @@ namespace Ann.SettingWindow.SettingPage.General
     {
         public ReactiveProperty<int> MaxCandidateLinesCount { get; }
         public ReactiveProperty<CultureSummry> SelectedCulture { get; }
+        public ReactiveProperty<bool> IsStartOnSystemStartup { get; }
 
         public static readonly int[] MaxCandidateLines
             = Enumerable.Range(1, 10).ToArray();
@@ -21,6 +23,18 @@ namespace Ann.SettingWindow.SettingPage.General
 
             MaxCandidateLinesCount = model.ToReactivePropertyAsSynchronized(x => x.MaxCandidateLinesCount)
                 .AddTo(CompositeDisposable);
+
+            IsStartOnSystemStartup = model.ToReactivePropertyAsSynchronized(x => x.IsStartOnSystemStartup)
+                .AddTo(CompositeDisposable);
+
+            IsStartOnSystemStartup
+                .Subscribe(async i =>
+                {
+                    if (i)
+                        await VersionUpdater.Instance.CreateStartupShortcut();
+                    else
+                        await VersionUpdater.Instance.RemoveStartupShortcut();
+                }).AddTo(CompositeDisposable);
 
             SelectedCulture =
                 model.ToReactivePropertyAsSynchronized(

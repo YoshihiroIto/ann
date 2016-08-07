@@ -1,12 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using Splat;
 
 namespace Ann.Foundation
 {
     public static class TestHelper
     {
-        public static bool IsTestMode { get; set; }
+        public static bool IsTestMode => ModeDetector.InUnitTestRunner();
 
         public static void SetEntryAssembly()
         {

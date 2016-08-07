@@ -125,15 +125,12 @@ namespace Ann.Core
             using (var mgr = await UpdateManager.GitHubUpdateManager(Constants.AnnGitHubUrl,
                 accessToken: App.Instance.Config.GitHubPersonalAccessToken))
             {
-                mgr.CreateShortcutsForExecutable("Ann.exe", ShortcutLocation.Startup, false);
-
                 var updateInfo = await mgr.CheckForUpdate();
                 IsAvailableUpdate = updateInfo.CurrentlyInstalledVersion.SHA1 != updateInfo.FutureReleaseEntry.SHA1;
             }
         }
 
-#if false
-        private async Task CreateStartupShortcut()
+        public async Task CreateStartupShortcut()
         {
             if (IsEnableSilentUpdate == false)
                 return;
@@ -144,7 +141,18 @@ namespace Ann.Core
                 mgr.CreateShortcutsForExecutable("Ann.exe", ShortcutLocation.Startup, false);
             }
         }
-#endif
+
+        public async Task RemoveStartupShortcut()
+        {
+            if (IsEnableSilentUpdate == false)
+                return;
+
+            using (var mgr = await UpdateManager.GitHubUpdateManager(Constants.AnnGitHubUrl,
+                accessToken: App.Instance.Config.GitHubPersonalAccessToken))
+            {
+                mgr.RemoveShortcutsForExecutable("Ann.exe", ShortcutLocation.Startup);
+            }
+        }
 
         private VersionUpdater()
         {
@@ -163,8 +171,6 @@ namespace Ann.Core
                             if (IsAvailableUpdate)
                                 VersionCheckingState = VersionCheckingStates.Downloaded;
                     }).AddTo(CompositeDisposable);
-
-                //Task.Run(async () => await CreateStartupShortcut());
             }
         }
     }

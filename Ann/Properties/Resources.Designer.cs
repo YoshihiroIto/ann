@@ -331,6 +331,15 @@ namespace Ann.Properties {
         }
         
         /// <summary>
+        ///   Start on system update に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Settings_StartOnSystemUpdate {
+            get {
+                return ResourceManager.GetString("Settings_StartOnSystemUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Target Folders に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string Settings_TargetFolders {

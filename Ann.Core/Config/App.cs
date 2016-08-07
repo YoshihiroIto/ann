@@ -56,6 +56,18 @@ namespace Ann.Core.Config
 
         #endregion
 
+        #region IsStartOnSystemStartup
+
+        private bool _IsStartOnSystemStartup = true;
+
+        public bool IsStartOnSystemStartup
+        {
+            get { return _IsStartOnSystemStartup; }
+            set { SetProperty(ref _IsStartOnSystemStartup, value); }
+        }
+
+        #endregion
+
         #region Culture
 
         private string _Culture;

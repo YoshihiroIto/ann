@@ -231,4 +231,7 @@
   <data name="VersionChecker_Downloaded" xml:space="preserve">
     <value>Download was completed. Version up at after restart.</value>
   </data>
+  <data name="Settings_StartOnSystemUpdate" xml:space="preserve">
+    <value>Start on system update</value>
+  </data>
 </root>

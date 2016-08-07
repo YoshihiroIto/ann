@@ -95,6 +95,10 @@ namespace Ann.Core.Test.Config
             c.MaxCandidateLinesCount = 10;
             Assert.Equal(10, c.MaxCandidateLinesCount);
 
+            Assert.True(c.IsStartOnSystemStartup);
+            c.IsStartOnSystemStartup = false;
+            Assert.False(c.IsStartOnSystemStartup);
+
             Assert.NotEqual(string.Empty, c.Culture);
             c.Culture = "ja";
             Assert.Equal("ja", c.Culture);
