@@ -98,7 +98,7 @@ namespace Ann.Core
 
             foreach (var f in targetFolders)
             {
-                var ft = f.Trim('\\');
+                var ft = f.ToLower().Trim('\\');
                 if (srcLower.StartsWith(ft))
                     return srcLower.Substring(ft.Length);
             }
