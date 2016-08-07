@@ -221,9 +221,9 @@ namespace Ann.Core
                         if (VersionUpdater.Instance.UpdateProgress == 100)
                             if (IsEnableAutoUpdater)
                             {
-                                AutoUpdateState = AutoUpdateStates.CloseAfterThreeSec;
+                                AutoUpdateState = AutoUpdateStates.CloseAfterNSec;
 
-                                await Task.Delay(TimeSpan.FromSeconds(3));
+                                await Task.Delay(TimeSpan.FromSeconds(Constants.AutoUpdateCloseDelaySec));
                                 VersionUpdater.Instance.RequestRestart();
                                 Application.Current.MainWindow.Close();
                             }
@@ -235,7 +235,7 @@ namespace Ann.Core
         {
             Wait,
             Downloading,
-            CloseAfterThreeSec
+            CloseAfterNSec
         }
 
         #region AutoUpdateState

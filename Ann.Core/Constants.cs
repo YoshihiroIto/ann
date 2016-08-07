@@ -15,6 +15,7 @@ namespace Ann.Core
     public static class Constants
     {
         public const double IconSize = 48;
+        public const int AutoUpdateCloseDelaySec = 5;
 
         public static string AnnGitHubUrl = "https://github.com/YoshihiroIto/Ann";
         public static string AnnTwitterUrl = "https://twitter.com/yoiyoi322";

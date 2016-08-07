@@ -79,11 +79,11 @@ namespace Ann.Properties {
         }
         
         /// <summary>
-        ///   Update is now ready. Restart after 3 seconds. に類似しているローカライズされた文字列を検索します。
+        ///   Update is now ready. Restart after {0} seconds. に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string AutoUpdateStates_CloseAfterThreeSec {
+        public static string AutoUpdateStates_CloseAfterNSec {
             get {
-                return ResourceManager.GetString("AutoUpdateStates_CloseAfterThreeSec", resourceCulture);
+                return ResourceManager.GetString("AutoUpdateStates_CloseAfterNSec", resourceCulture);
             }
         }
         

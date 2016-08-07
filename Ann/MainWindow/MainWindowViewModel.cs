@@ -372,8 +372,8 @@ namespace Ann.MainWindow
                         case App.AutoUpdateStates.Downloading:
                             oldMessage = Properties.Resources.AutoUpdateStates_Downloading;
                             break;
-                        case App.AutoUpdateStates.CloseAfterThreeSec:
-                            oldMessage = Properties.Resources.AutoUpdateStates_CloseAfterThreeSec;
+                        case App.AutoUpdateStates.CloseAfterNSec:
+                            oldMessage = string.Format(Properties.Resources.AutoUpdateStates_CloseAfterNSec, Constants.AutoUpdateCloseDelaySec);
                             break;
                     }
 
