@@ -136,7 +136,6 @@ namespace Ann.Core.Test
             App.Destory();
         }
 
-#if false
         [Fact]
         public void FindExecutableUnit()
         {
@@ -167,7 +166,6 @@ namespace Ann.Core.Test
 
             App.Destory();
         }
-#endif
 
         [Fact]
         public void Mru()
