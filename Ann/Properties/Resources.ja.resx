@@ -240,4 +240,10 @@
   <data name="Message_FileNotFound" xml:space="preserve">
     <value>ファイルが見つかりません。</value>
   </data>
+  <data name="AutoUpdateStates_Downloading" xml:space="preserve">
+    <value>更新ファイルをダウンロード中です。</value>
+  </data>
+  <data name="AutoUpdateStates_CloseAfterThreeSec" xml:space="preserve">
+    <value>更新の準備が整いました。３秒後に再起動します。</value>
+  </data>
 </root>

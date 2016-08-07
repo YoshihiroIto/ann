@@ -79,6 +79,24 @@ namespace Ann.Properties {
         }
         
         /// <summary>
+        ///   Update is now ready. Restart after 3 seconds. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string AutoUpdateStates_CloseAfterThreeSec {
+            get {
+                return ResourceManager.GetString("AutoUpdateStates_CloseAfterThreeSec", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Downloading update file. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string AutoUpdateStates_Downloading {
+            get {
+                return ResourceManager.GetString("AutoUpdateStates_Downloading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Download に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string Download {
@@ -169,7 +187,7 @@ namespace Ann.Properties {
         }
         
         /// <summary>
-        ///   File not found に類似しているローカライズされた文字列を検索します。
+        ///   File not found. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string Message_FileNotFound {
             get {

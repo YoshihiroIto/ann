@@ -277,6 +277,8 @@ namespace Ann.MainWindow
                                      IsIndexUpdating.Value)
                         .ToReadOnlyReactiveProperty()
                         .AddTo(CompositeDisposable);
+
+                SetupVersionUpdater();
             }
         }
 
@@ -353,6 +355,30 @@ namespace Ann.MainWindow
         private static async Task OpenByExplorer(string path)
         {
             await ProcessHelper.RunAsync("EXPLORER", $"/select,\"{path}\"", false);
+        }
+
+        private void SetupVersionUpdater()
+        {
+            var oldMessage = default(string);
+
+            App.Instance.ObserveProperty(x => x.AutoUpdateState)
+                .Subscribe(s =>
+                {
+                    if (oldMessage != null)
+                        StatusMessages.RemoveOnScheduler(oldMessage);
+
+                    switch (s)
+                    {
+                        case App.AutoUpdateStates.Downloading:
+                            oldMessage = Properties.Resources.AutoUpdateStates_Downloading;
+                            break;
+                        case App.AutoUpdateStates.CloseAfterThreeSec:
+                            oldMessage = Properties.Resources.AutoUpdateStates_CloseAfterThreeSec;
+                            break;
+                    }
+
+                    StatusMessages.Add(oldMessage);
+                }).AddTo(CompositeDisposable);
         }
     }
 }

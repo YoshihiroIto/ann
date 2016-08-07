@@ -211,6 +211,9 @@ namespace Ann.Core
                 {
                     await VersionUpdater.Instance.CheckAsync();
 
+                    if (VersionUpdater.Instance.IsAvailableUpdate)
+                        AutoUpdateState = AutoUpdateStates.Downloading;
+
                     while (VersionUpdater.Instance.IsAvailableUpdate)
                     {
                         await Task.Delay(TimeSpan.FromSeconds(1));
@@ -218,12 +221,34 @@ namespace Ann.Core
                         if (VersionUpdater.Instance.UpdateProgress == 100)
                             if (IsEnableAutoUpdater)
                             {
+                                AutoUpdateState = AutoUpdateStates.CloseAfterThreeSec;
+
+                                await Task.Delay(TimeSpan.FromSeconds(3));
                                 VersionUpdater.Instance.RequestRestart();
                                 Application.Current.MainWindow.Close();
                             }
                     }
                 }).AddTo(CompositeDisposable);
         }
+
+        public enum AutoUpdateStates
+        {
+            Wait,
+            Downloading,
+            CloseAfterThreeSec
+        }
+
+        #region AutoUpdateState
+
+        private AutoUpdateStates _AutoUpdateState;
+
+        public AutoUpdateStates AutoUpdateState
+        {
+            get { return _AutoUpdateState; }
+            set { SetProperty(ref _AutoUpdateState, value); }
+        }
+
+        #endregion
 
         #region config
 

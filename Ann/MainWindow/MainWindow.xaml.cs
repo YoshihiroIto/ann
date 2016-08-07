@@ -7,7 +7,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Ann.Core;
 using Ann.Foundation;
-using Ann.Foundation.Control;
 using Ann.Foundation.Mvvm.Message;
 using Reactive.Bindings.Extensions;
 
