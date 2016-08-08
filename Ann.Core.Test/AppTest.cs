@@ -81,6 +81,13 @@ namespace Ann.Core.Test
         }
 
         [Fact]
+        public void Uninitialized()
+        {
+            Assert.Throws<UninitializedException>(() =>
+                App.Instance.AutoUpdateRemainingSeconds);
+        }
+
+        [Fact]
         public void PriorityFile()
         {
             App.Initialize();
