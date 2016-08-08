@@ -37,21 +37,21 @@ namespace Ann.Core.Test
         }
     }
 
-    public class AppTest : IClassFixture<AppTestFixture>
+    public class AppTest : IClassFixture<AppTestFixture>, IDisposable
     {
         private readonly DisposableFileSystem _context = new DisposableFileSystem();
+
+        // ReSharper disable once UnusedParameter.Local
+        public AppTest(AppTestFixture f)
+        {
+            App.Clean();
+        }
 
         public void Dispose()
         {
             _context?.Dispose();
             App.Clean();
             AppTestFixture.DeleteTestConfigs();
-        }
-
-        // ReSharper disable once UnusedParameter.Local
-        public AppTest(AppTestFixture f)
-        {
-            App.Clean();
         }
 
         [Fact]
@@ -101,6 +101,24 @@ namespace Ann.Core.Test
         }
 
         [Fact]
+        public void TagetFolders()
+        {
+            App.Initialize();
+
+            Assert.Equal(5, App.Instance.TagetFolders.Count());
+
+            App.Instance.Config.TargetFolder.IsIncludeSystemFolder = false;
+            App.Instance.Config.TargetFolder.IsIncludeSystemX86Folder = false;
+            App.Instance.Config.TargetFolder.IsIncludeProgramsFolder = false;
+            App.Instance.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
+            App.Instance.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
+
+            Assert.Equal(0, App.Instance.TagetFolders.Count());
+            
+            App.Destory();
+        }
+
+        [Fact]
         public void OpenIndexAsync()
         {
             App.Initialize();
@@ -143,6 +161,12 @@ namespace Ann.Core.Test
 
             App.Instance.Config.TargetFolder.Folders.Add(new Path(_context.RootPath));
 
+            App.Instance.Config.TargetFolder.IsIncludeSystemFolder = false;
+            App.Instance.Config.TargetFolder.IsIncludeSystemX86Folder = false;
+            App.Instance.Config.TargetFolder.IsIncludeProgramsFolder = false;
+            App.Instance.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
+            App.Instance.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
+
             _context.CreateFiles(
                 "aa.exe",
                 "aaa.exe",
@@ -173,6 +197,23 @@ namespace Ann.Core.Test
             App.Initialize();
 
             App.Instance.SaveMru();
+
+            App.Destory();
+        }
+
+        [Fact]
+        public void AutoUpdater()
+        {
+            App.Initialize();
+
+            Assert.Equal(0, App.Instance.AutoUpdateRemainingSeconds);
+            Assert.Equal(App.AutoUpdateStates.Wait, App.Instance.AutoUpdateState);
+
+            Assert.False(App.Instance.IsEnableAutoUpdater);
+            App.Instance.IsEnableAutoUpdater = false;
+            Assert.False(App.Instance.IsEnableAutoUpdater);
+            App.Instance.IsEnableAutoUpdater = true;
+            Assert.True(App.Instance.IsEnableAutoUpdater);
 
             App.Destory();
         }

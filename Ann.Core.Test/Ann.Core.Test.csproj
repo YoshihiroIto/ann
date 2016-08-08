@@ -93,6 +93,7 @@
     <Compile Include="Config\MostRecentUsedListTest.cs" />
     <Compile Include="Config\MainWindowTest.cs" />
     <Compile Include="Config\AppTest.cs" />
+    <Compile Include="VersionUpdaterTest.cs" />
     <Compile Include="ConstantsTest.cs" />
     <Compile Include="ExecutableUnitDataBaseBasicTest.cs">
       <DependentUpon>ExecutableUnitDataBaseTest.cs</DependentUpon>

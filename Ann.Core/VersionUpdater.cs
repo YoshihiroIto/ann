@@ -6,26 +6,41 @@ using Ann.Foundation.Mvvm;
 using Reactive.Bindings.Extensions;
 using Squirrel;
 using System.Reactive.Disposables;
+using Ann.Foundation.Exception;
 
 namespace Ann.Core
 {
     public class VersionUpdater : DisposableModelBase
     {
-        public static VersionUpdater Instance { get; } = new VersionUpdater();
+        public static VersionUpdater Instance { get; private set; }
 
         public bool IsEnableSilentUpdate { get; }
         public bool IsRestartRequested { get; private set; }
         public bool IsAvailableUpdate { get; private set; }
 
+        public static void Clean()
+        {
+            Instance?.Dispose();
+            Instance = null;
+        }
+
         public static void Initialize()
         {
+            if (Instance != null)
+                throw new NestingException();
+
+            Instance = new VersionUpdater();
         }
 
         public static void Destory()
         {
+            if (Instance == null)
+                throw new NestingException();
+
             var isRestart = Instance.IsEnableSilentUpdate && Instance.IsRestartRequested;
 
             Instance.Dispose();
+            Instance = null;
 
             if (isRestart)
                 UpdateManager.RestartApp();
@@ -38,7 +53,7 @@ namespace Ann.Core
         public VersionCheckingStates VersionCheckingState
         {
             get { return _VersionCheckingState; }
-            set { SetProperty(ref _VersionCheckingState, value); }
+            private set { SetProperty(ref _VersionCheckingState, value); }
         }
 
         #endregion
@@ -50,13 +65,16 @@ namespace Ann.Core
         public int UpdateProgress
         {
             get { return _UpdateProgress; }
-            set { SetProperty(ref _UpdateProgress, value); }
+            private set { SetProperty(ref _UpdateProgress, value); }
         }
 
         #endregion
 
         public void RequestRestart()
         {
+            if (IsEnableSilentUpdate == false)
+                return;
+
             IsRestartRequested = true;
         }
 

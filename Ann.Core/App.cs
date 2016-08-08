@@ -97,7 +97,7 @@ namespace Ann.Core
             return true;
         }
 
-        private IEnumerable<string> TagetFolders
+        public IEnumerable<string> TagetFolders
         {
             get
             {
@@ -210,7 +210,7 @@ namespace Ann.Core
         public int AutoUpdateRemainingSeconds
         {
             get { return _AutoUpdateRemainingSeconds; }
-            set { SetProperty(ref _AutoUpdateRemainingSeconds, value); }
+            private set { SetProperty(ref _AutoUpdateRemainingSeconds, value); }
         }
 
         #endregion
@@ -258,7 +258,7 @@ namespace Ann.Core
         public AutoUpdateStates AutoUpdateState
         {
             get { return _AutoUpdateState; }
-            set { SetProperty(ref _AutoUpdateState, value); }
+            private set { SetProperty(ref _AutoUpdateState, value); }
         }
 
         #endregion
