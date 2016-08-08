@@ -20,10 +20,10 @@ namespace Ann.Test.SettingWindow.SettingPage
         }
     }
 
-    public class AboutTest : IClassFixture<AboutTestFixture>,  IDisposable
+    public class AboutViewModelTest : IClassFixture<AboutTestFixture>,  IDisposable
     {
         // ReSharper disable once UnusedParameter.Local
-        public AboutTest(AboutTestFixture f)
+        public AboutViewModelTest(AboutTestFixture f)
         {
             VersionUpdater.Clean();
         }

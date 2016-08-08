@@ -25,10 +25,10 @@ namespace Ann.Test.SettingWindow.SettingPage
         }
     }
 
-    public class PriorityFilesTest : IClassFixture<PriorityFilesTestFixture>,  IDisposable
+    public class PriorityFilesViewModelTest : IClassFixture<PriorityFilesTestFixture>,  IDisposable
     {
         // ReSharper disable once UnusedParameter.Local
-        public PriorityFilesTest(PriorityFilesTestFixture f)
+        public PriorityFilesViewModelTest(PriorityFilesTestFixture f)
         {
             App.Clean();
             VersionUpdater.Clean();

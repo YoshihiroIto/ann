@@ -107,9 +107,9 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingWindow\PathViewModelTest.cs" />
-    <Compile Include="SettingWindow\SettingPage\PriorityFilesTest.cs" />
-    <Compile Include="SettingWindow\SettingPage\GeneralTest.cs" />
-    <Compile Include="SettingWindow\SettingPage\AboutTest.cs" />
+    <Compile Include="SettingWindow\SettingPage\PriorityFilesViewModelTest.cs" />
+    <Compile Include="SettingWindow\SettingPage\GeneralViewModelTest.cs" />
+    <Compile Include="SettingWindow\SettingPage\AboutViewModelTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
