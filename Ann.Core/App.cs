@@ -15,7 +15,18 @@ namespace Ann.Core
 {
     public class App : DisposableModelBase
     {
-        public static App Instance { get; private set; }
+        private static App _Instance;
+
+        public static App Instance
+        {
+            get
+            {
+                if (_Instance == null)
+                    throw new UninitializedException();
+
+                return _Instance;
+            }
+        }
 
         public Config.App Config { get; private set; }
         public Config.MostRecentUsedList MruList { get; private set; }
@@ -49,25 +60,24 @@ namespace Ann.Core
         {
             RemoveIndexFile();
 
-            Instance?.Dispose();
-            Instance = null;
+            _Instance?.Dispose();
+            _Instance = null;
         }
 
         public static void Initialize()
         {
-            if (Instance != null)
+            if (_Instance != null)
                 throw new NestingException();
 
-            Instance = new App();
+            _Instance = new App();
         }
 
         public static void Destory()
         {
-            if (Instance == null)
+            if (_Instance == null)
                 throw new NestingException();
 
-            Instance.Dispose();
-            Instance = null;
+            Clean();
         }
 
         public static void RemoveIndexFile()
@@ -97,7 +107,7 @@ namespace Ann.Core
             return true;
         }
 
-        private IEnumerable<string> TagetFolders
+        public IEnumerable<string> TagetFolders
         {
             get
             {
@@ -210,7 +220,7 @@ namespace Ann.Core
         public int AutoUpdateRemainingSeconds
         {
             get { return _AutoUpdateRemainingSeconds; }
-            set { SetProperty(ref _AutoUpdateRemainingSeconds, value); }
+            private set { SetProperty(ref _AutoUpdateRemainingSeconds, value); }
         }
 
         #endregion
@@ -258,7 +268,7 @@ namespace Ann.Core
         public AutoUpdateStates AutoUpdateState
         {
             get { return _AutoUpdateState; }
-            set { SetProperty(ref _AutoUpdateState, value); }
+            private set { SetProperty(ref _AutoUpdateState, value); }
         }
 
         #endregion

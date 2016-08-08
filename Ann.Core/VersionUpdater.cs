@@ -6,26 +6,51 @@ using Ann.Foundation.Mvvm;
 using Reactive.Bindings.Extensions;
 using Squirrel;
 using System.Reactive.Disposables;
+using Ann.Foundation.Exception;
 
 namespace Ann.Core
 {
     public class VersionUpdater : DisposableModelBase
     {
-        public static VersionUpdater Instance { get; } = new VersionUpdater();
+        private static VersionUpdater _Instance;
+
+        public static VersionUpdater Instance
+        {
+            get
+            {
+                if (_Instance == null)
+                    throw new UninitializedException();
+
+                return _Instance;
+            }
+        }
 
         public bool IsEnableSilentUpdate { get; }
         public bool IsRestartRequested { get; private set; }
         public bool IsAvailableUpdate { get; private set; }
 
+        public static void Clean()
+        {
+            _Instance?.Dispose();
+            _Instance = null;
+        }
+
         public static void Initialize()
         {
+            if (_Instance != null)
+                throw new NestingException();
+
+            _Instance = new VersionUpdater();
         }
 
         public static void Destory()
         {
-            var isRestart = Instance.IsEnableSilentUpdate && Instance.IsRestartRequested;
+            if (_Instance == null)
+                throw new NestingException();
 
-            Instance.Dispose();
+            var isRestart = _Instance.IsEnableSilentUpdate && _Instance.IsRestartRequested;
+
+            Clean();
 
             if (isRestart)
                 UpdateManager.RestartApp();
@@ -38,7 +63,7 @@ namespace Ann.Core
         public VersionCheckingStates VersionCheckingState
         {
             get { return _VersionCheckingState; }
-            set { SetProperty(ref _VersionCheckingState, value); }
+            private set { SetProperty(ref _VersionCheckingState, value); }
         }
 
         #endregion
@@ -50,13 +75,16 @@ namespace Ann.Core
         public int UpdateProgress
         {
             get { return _UpdateProgress; }
-            set { SetProperty(ref _UpdateProgress, value); }
+            private set { SetProperty(ref _UpdateProgress, value); }
         }
 
         #endregion
 
         public void RequestRestart()
         {
+            if (IsEnableSilentUpdate == false)
+                return;
+
             IsRestartRequested = true;
         }
 

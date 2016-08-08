@@ -1,14 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Xunit.StaFact.0.1.36-beta\build\net45\Xunit.StaFact.props" Condition="Exists('..\packages\Xunit.StaFact.0.1.36-beta\build\net45\Xunit.StaFact.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{47F91D27-7D58-4F66-AADD-C8B4BB452F9A}</ProjectGuid>
+    <ProjectGuid>{F2A7F3CB-5870-46F9-AEE7-E765D0A79C30}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Ann.Core.Test</RootNamespace>
-    <AssemblyName>Ann.Core.Test</AssemblyName>
+    <RootNamespace>Ann.Test</RootNamespace>
+    <AssemblyName>Ann.Test</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -17,8 +16,6 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -39,23 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="dotMemory.Unit, Version=103.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.dotMemoryUnit.2.3.20160517.113140\lib\dotMemory.Unit.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WindowsAPICodePack-Core.1.1.2\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
-    <Reference Include="System.Windows" />
-    <Reference Include="WindowsBase" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\packages\xunit.abstractions.2.0.0\lib\net35\xunit.abstractions.dll</HintPath>
       <Private>True</Private>
@@ -72,14 +53,6 @@
       <HintPath>..\packages\xunit.extensibility.execution.2.1.0\lib\net45\xunit.execution.desktop.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Xunit.StaFact, Version=0.1.0.0, Culture=neutral, PublicKeyToken=593f35978b459a4b, processorArchitecture=MSIL">
-      <HintPath>..\packages\Xunit.StaFact.0.1.36-beta\lib\net45\Xunit.StaFact.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="YamlDotNet, Version=3.9.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\YamlDotNet.3.9.0\lib\net35\YamlDotNet.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -90,37 +63,21 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="Config\MostRecentUsedListTest.cs" />
-    <Compile Include="Config\MainWindowTest.cs" />
-    <Compile Include="Config\AppTest.cs" />
-    <Compile Include="VersionUpdaterTest.cs" />
-    <Compile Include="ConstantsTest.cs" />
-    <Compile Include="ExecutableUnitDataBaseBasicTest.cs">
-      <DependentUpon>ExecutableUnitDataBaseTest.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ExecutableUnitDataBaseFindTest.cs">
-      <DependentUpon>ExecutableUnitDataBaseTest.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ExecutableUnitDataBaseTest.cs" />
-    <Compile Include="AppTest.cs" />
-    <Compile Include="IconDecoderTest.cs" />
-    <Compile Include="PathTest.cs" />
-    <Compile Include="CultureSummryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SettingWindow\SettingPage\About\AboutTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Ann.Core\Ann.Core.csproj">
-      <Project>{8876f2ee-02ba-416e-9c03-96bcf42259fe}</Project>
-      <Name>Ann.Core</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Ann.Foundation\Ann.Foundation.csproj">
       <Project>{74a85611-46ff-49a5-853c-5252f5509446}</Project>
       <Name>Ann.Foundation</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
+    <ProjectReference Include="..\Ann\Ann.csproj">
+      <Project>{9396e3c3-3e65-4ca9-a7c0-a7029ee3cd48}</Project>
+      <Name>Ann</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
@@ -142,12 +99,6 @@
   </Choose>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>このプロジェクトは、このコンピューター上にない NuGet パッケージを参照しています。それらのパッケージをダウンロードするには、[NuGet パッケージの復元] を使用します。詳細については、http://go.microsoft.com/fwlink/?LinkID=322105 を参照してください。見つからないファイルは {0} です。</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Xunit.StaFact.0.1.36-beta\build\net45\Xunit.StaFact.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Xunit.StaFact.0.1.36-beta\build\net45\Xunit.StaFact.props'))" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

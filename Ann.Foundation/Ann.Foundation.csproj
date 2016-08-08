@@ -97,6 +97,7 @@
     <Compile Include="Control\Behavior\WindowDisposeDataContextOnClosedBehavior.cs" />
     <Compile Include="DirectoryHelper.cs" />
     <Compile Include="DisposableFileSystem.cs" />
+    <Compile Include="Exception\UninitializedException.cs" />
     <Compile Include="Exception\NestingException.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="WindowsHelper.cs" />
