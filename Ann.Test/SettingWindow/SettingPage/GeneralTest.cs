@@ -84,17 +84,19 @@ namespace Ann.Test.SettingWindow.SettingPage
             VersionUpdater.Destory();
         }
 
-        [Fact]
-        public void SelectedCulture_en()
+        [Theory]
+        [InlineData("日本語", "ja")]
+        [InlineData("English","en")]
+        public void SelectedCulture(string caption, string cultureName)
         {
             VersionUpdater.Initialize();
-            CultureInfo.CurrentUICulture = new CultureInfo("en");
+            CultureInfo.CurrentUICulture = new CultureInfo(cultureName);
 
             var app = new Core.Config.App();
             using (var vm = new GeneralViewModel(app))
             {
-                Assert.Equal("en", vm.SelectedCulture.Value.CultureName);
-                Assert.Equal("English", vm.SelectedCulture.Value.Caption);
+                Assert.Equal(cultureName, vm.SelectedCulture.Value.CultureName);
+                Assert.Equal(caption, vm.SelectedCulture.Value.Caption);
             }
 
             VersionUpdater.Destory();

@@ -124,24 +124,16 @@ namespace Ann.Core.Test.Config
             Assert.Equal("AAA", c.GitHubPersonalAccessToken);
         }
 
-        [Fact]
-        public void DefaultCulture_ja()
+        [Theory]
+        [InlineData("ja")]
+        [InlineData("en")]
+        public void DefaultCulture(string lang)
         {
-            CultureInfo.CurrentUICulture = new CultureInfo("ja");
+            CultureInfo.CurrentUICulture = new CultureInfo(lang);
             
             var c = new Core.Config.App();
 
-            Assert.Equal("ja", c.Culture);
-        }
-
-        [Fact]
-        public void DefaultCulture_en()
-        {
-            CultureInfo.CurrentUICulture = new CultureInfo("en");
-            
-            var c = new Core.Config.App();
-
-            Assert.Equal("en", c.Culture);
+            Assert.Equal(lang, c.Culture);
         }
     }
 }
