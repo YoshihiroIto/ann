@@ -7,7 +7,15 @@ using Ann.Foundation;
 
 namespace Ann.Core.Test.Config
 {
-    public class AppTest
+    public class AppTestFixture
+    {
+        public AppTestFixture()
+        {
+            TestHelper.SetEntryAssembly();
+        }
+    }
+
+    public class AppTest : IClassFixture<AppTestFixture>
     {
         [Fact]
         public void Basic()
