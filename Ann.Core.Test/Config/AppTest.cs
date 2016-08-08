@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Globalization;
 using Xunit;
 using System.Windows.Input;
 using Ann.Core.Config;
@@ -121,6 +122,26 @@ namespace Ann.Core.Test.Config
             Assert.Empty(c.GitHubPersonalAccessToken);
             c.GitHubPersonalAccessToken = "AAA";
             Assert.Equal("AAA", c.GitHubPersonalAccessToken);
+        }
+
+        [Fact]
+        public void DefaultCulture_ja()
+        {
+            CultureInfo.CurrentUICulture = new CultureInfo("ja");
+            
+            var c = new Core.Config.App();
+
+            Assert.Equal("ja", c.Culture);
+        }
+
+        [Fact]
+        public void DefaultCulture_en()
+        {
+            CultureInfo.CurrentUICulture = new CultureInfo("en");
+            
+            var c = new Core.Config.App();
+
+            Assert.Equal("en", c.Culture);
         }
     }
 }
