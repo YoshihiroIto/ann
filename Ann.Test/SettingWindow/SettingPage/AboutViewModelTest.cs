@@ -42,9 +42,6 @@ namespace Ann.Test.SettingWindow.SettingPage
             {
                Assert.Equal(VersionCheckingStates.Wait, vm.VersionCheckingState.Value);
                Assert.Equal(0, vm.UpdateProgress.Value);
-
-
-                vm.CheckVersionAsync().Wait();
             }
 
             VersionUpdater.Destory();
