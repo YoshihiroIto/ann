@@ -17,6 +17,7 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
         public ReactiveCommand<PathViewModel> FileRemoveCommand { get; }
 
         public PriorityFilesViewModel(Core.Config.App model)
+
         {
             Debug.Assert(model != null);
 

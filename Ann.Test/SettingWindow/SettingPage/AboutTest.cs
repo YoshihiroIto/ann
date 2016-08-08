@@ -4,7 +4,7 @@ using Ann.Foundation;
 using Ann.SettingWindow.SettingPage.About;
 using Xunit;
 
-namespace Ann.Test.SettingWindow.SettingPage.About
+namespace Ann.Test.SettingWindow.SettingPage
 {
     public class AboutTestFixture : IDisposable
     {
@@ -20,7 +20,7 @@ namespace Ann.Test.SettingWindow.SettingPage.About
         }
     }
 
-    public class AboutTest :IClassFixture<AboutTestFixture>,  IDisposable
+    public class AboutTest : IClassFixture<AboutTestFixture>,  IDisposable
     {
         // ReSharper disable once UnusedParameter.Local
         public AboutTest(AboutTestFixture f)
