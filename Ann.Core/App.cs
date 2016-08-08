@@ -58,8 +58,6 @@ namespace Ann.Core
 
         public static void Clean()
         {
-            RemoveIndexFile();
-
             _Instance?.Dispose();
             _Instance = null;
         }
