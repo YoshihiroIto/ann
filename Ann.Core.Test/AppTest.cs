@@ -15,11 +15,13 @@ namespace Ann.Core.Test
 
             DeleteTestConfigs();
             App.Clean();
+            App.RemoveIndexFile();
         }
 
         public void Dispose()
         {
             App.Clean();
+            App.RemoveIndexFile();
             DeleteTestConfigs();
         }
 
@@ -45,12 +47,14 @@ namespace Ann.Core.Test
         public AppTest(AppTestFixture f)
         {
             App.Clean();
+            App.RemoveIndexFile();
         }
 
         public void Dispose()
         {
             _context?.Dispose();
             App.Clean();
+            App.RemoveIndexFile();
             AppTestFixture.DeleteTestConfigs();
         }
 
