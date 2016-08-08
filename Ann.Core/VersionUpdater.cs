@@ -12,7 +12,18 @@ namespace Ann.Core
 {
     public class VersionUpdater : DisposableModelBase
     {
-        public static VersionUpdater Instance { get; private set; }
+        private static VersionUpdater _Instance;
+
+        public static VersionUpdater Instance
+        {
+            get
+            {
+                if (_Instance == null)
+                    throw new UninitializedException();
+
+                return _Instance;
+            }
+        }
 
         public bool IsEnableSilentUpdate { get; }
         public bool IsRestartRequested { get; private set; }
@@ -20,27 +31,26 @@ namespace Ann.Core
 
         public static void Clean()
         {
-            Instance?.Dispose();
-            Instance = null;
+            _Instance?.Dispose();
+            _Instance = null;
         }
 
         public static void Initialize()
         {
-            if (Instance != null)
+            if (_Instance != null)
                 throw new NestingException();
 
-            Instance = new VersionUpdater();
+            _Instance = new VersionUpdater();
         }
 
         public static void Destory()
         {
-            if (Instance == null)
+            if (_Instance == null)
                 throw new NestingException();
 
-            var isRestart = Instance.IsEnableSilentUpdate && Instance.IsRestartRequested;
+            var isRestart = _Instance.IsEnableSilentUpdate && _Instance.IsRestartRequested;
 
-            Instance.Dispose();
-            Instance = null;
+            Clean();
 
             if (isRestart)
                 UpdateManager.RestartApp();

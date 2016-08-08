@@ -71,5 +71,12 @@ namespace Ann.Core.Test
             Assert.Throws<NestingException>(() =>
                 VersionUpdater.Destory());
         }
+
+        [Fact]
+        public void Uninitialized()
+        {
+            Assert.Throws<UninitializedException>(() =>
+                VersionUpdater.Instance.IsAvailableUpdate);
+        }
     }
 }
