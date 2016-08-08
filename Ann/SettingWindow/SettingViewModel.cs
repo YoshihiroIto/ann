@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using Ann.Core;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 using Ann.Foundation.Mvvm.Message;
@@ -30,7 +31,9 @@ namespace Ann.SettingWindow
             CompositeDisposable.Add(() => Pages.ForEach(p => p.Dispose()));
 
             InitializeCommand = new ReactiveCommand().AddTo(CompositeDisposable);
-            InitializeCommand.Subscribe(async _ => await _about.CheckVersionAsync()).AddTo(CompositeDisposable);
+            InitializeCommand
+                .Subscribe(async _ => await VersionUpdater.Instance.CheckAsync())
+                .AddTo(CompositeDisposable);
 
             CloseCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             CloseCommand
@@ -43,11 +46,9 @@ namespace Ann.SettingWindow
                 new ShortcutsViewModel(model),
                 new TargetFoldersViewModel(model),
                 new PriorityFilesViewModel(model),
-                _about = new AboutViewModel()
+                new AboutViewModel()
             };
             SelectedPage = new ReactiveProperty<ViewModelBase>(Pages[0]).AddTo(CompositeDisposable);
         }
-
-        private readonly AboutViewModel _about;
     }
 }
