@@ -148,6 +148,43 @@ namespace Ann.Core.Test
         }
 
         [Fact]
+        public void ReopenIndexAsync()
+        {
+            {
+                App.Initialize();
+
+                App.Instance.Config.TargetFolder.IsIncludeSystemFolder = false;
+                App.Instance.Config.TargetFolder.IsIncludeSystemX86Folder = false;
+                App.Instance.Config.TargetFolder.IsIncludeProgramsFolder = false;
+                App.Instance.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
+                App.Instance.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
+
+                App.Instance.OpenIndexAsync().Wait();
+                Assert.Equal(IndexOpeningResults.NotFound, App.Instance.IndexOpeningResult);
+
+                App.Instance.UpdateIndexAsync().Wait();
+                Assert.Equal(IndexOpeningResults.Ok, App.Instance.IndexOpeningResult);
+
+                App.Destory();
+            }
+
+            {
+                App.Initialize();
+
+                App.Instance.Config.TargetFolder.IsIncludeSystemFolder = false;
+                App.Instance.Config.TargetFolder.IsIncludeSystemX86Folder = false;
+                App.Instance.Config.TargetFolder.IsIncludeProgramsFolder = false;
+                App.Instance.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
+                App.Instance.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
+
+                App.Instance.OpenIndexAsync().Wait();
+                Assert.Equal(IndexOpeningResults.Ok, App.Instance.IndexOpeningResult);
+
+                App.Destory();
+            }
+        }
+
+        [Fact]
         public void UpdateIndexAsync()
         {
             App.Initialize();
