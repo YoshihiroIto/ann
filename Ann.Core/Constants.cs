@@ -34,6 +34,8 @@ namespace Ann.Core
                 ? Environment.GetEnvironmentVariable("PROGRAMFILES(X86)")
                 : Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
 
+        public static string CommonStartMenuFolder => Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu);
+
         private static OpenSource[] _OpenSources;
 
         public static OpenSource[] OpenSources

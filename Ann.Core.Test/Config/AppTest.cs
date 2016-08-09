@@ -6,7 +6,7 @@ using Ann.Core.Config;
 
 namespace Ann.Core.Test.Config
 {
-    public class AppTest 
+    public class AppTest
     {
         [Fact]
         public void Basic()
@@ -50,6 +50,8 @@ namespace Ann.Core.Test.Config
             Assert.True(c.TargetFolder.IsIncludeProgramFilesX86Folder);
             Assert.True(c.TargetFolder.IsIncludeProgramFilesFolder);
             Assert.True(c.TargetFolder.IsIncludeProgramsFolder);
+            Assert.True(c.TargetFolder.IsIncludeCommonStartMenu);
+
             Assert.NotNull(c.TargetFolder.Folders);
             Assert.Equal(0, c.TargetFolder.Folders.Count);
 
@@ -59,12 +61,14 @@ namespace Ann.Core.Test.Config
             c.TargetFolder.IsIncludeProgramFilesX86Folder = false;
             c.TargetFolder.IsIncludeProgramFilesFolder = false;
             c.TargetFolder.IsIncludeProgramsFolder = false;
+            c.TargetFolder.IsIncludeCommonStartMenu = false;
             Assert.False(c.TargetFolder.IsIncludeSystemFolder);
             Assert.False(c.TargetFolder.IsIncludeSystemX86Folder);
             Assert.False(c.TargetFolder.IsIncludeProgramsFolder);
             Assert.False(c.TargetFolder.IsIncludeProgramFilesX86Folder);
             Assert.False(c.TargetFolder.IsIncludeProgramFilesFolder);
             Assert.False(c.TargetFolder.IsIncludeProgramsFolder);
+            Assert.False(c.TargetFolder.IsIncludeCommonStartMenu);
 
             c.TargetFolder = new TargetFolder();
             Assert.True(c.TargetFolder.IsIncludeSystemFolder);
@@ -73,20 +77,21 @@ namespace Ann.Core.Test.Config
             Assert.True(c.TargetFolder.IsIncludeProgramFilesX86Folder);
             Assert.True(c.TargetFolder.IsIncludeProgramFilesFolder);
             Assert.True(c.TargetFolder.IsIncludeProgramsFolder);
+            Assert.True(c.TargetFolder.IsIncludeCommonStartMenu);
             Assert.NotNull(c.TargetFolder.Folders);
             Assert.Equal(0, c.TargetFolder.Folders.Count);
 
             c.TargetFolder.Folders = new ObservableCollection<Path>
-           {
-               new Path("AAA")
-           };
+            {
+                new Path("AAA")
+            };
             Assert.Equal(1, c.TargetFolder.Folders.Count);
             Assert.Equal("AAA", c.TargetFolder.Folders[0].Value);
 
             Assert.NotNull(c.PriorityFiles);
             Assert.Equal(0, c.PriorityFiles.Count);
 
-            c.PriorityFiles = new ObservableCollection<Path> {new Path("AA"), new Path("BB") };
+            c.PriorityFiles = new ObservableCollection<Path> {new Path("AA"), new Path("BB")};
             Assert.Equal(2, c.PriorityFiles.Count);
             Assert.Equal("AA", c.PriorityFiles[0].Value);
             Assert.Equal("BB", c.PriorityFiles[1].Value);
@@ -131,7 +136,7 @@ namespace Ann.Core.Test.Config
             TestHelper.CleanTestEnv();
 
             CultureInfo.CurrentUICulture = new CultureInfo(lang);
-            
+
             var c = new Core.Config.App();
 
             Assert.Equal(lang, c.Culture);

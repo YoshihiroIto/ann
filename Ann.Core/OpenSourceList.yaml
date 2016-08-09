@@ -51,10 +51,8 @@
     Installing this package installs xunit.core and xunit.assert.
   Url: https://github.com/xunit/xunit
 - Name: xUnit.net [Abstractions]
-  Auther: James Newkirk,  Brad Wilson
-  Summry: >-
-    Common abstractions used to exchange information between xUnit.net and version-independent runners (xunit.abstractions.dll).
-          Supported platforms: Desktop .NET 3.5+, Modern Windows 8+, Windows Phone 8+ (Silverlight), Windows Phone 8.1+ (Universal), Portable Libraries (supporting Profile259).
+  Auther: James Newkirk,Brad Wilson
+  Summry: Common abstractions used to exchange information between xUnit.net and version-independent runners (xunit.abstractions.dll).
   Url: https://github.com/xunit/xunit
 - Name: xUnit.net [Assertion Library]
   Auther: James Newkirk, Brad Wilson

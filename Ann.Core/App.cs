@@ -138,6 +138,9 @@ namespace Ann.Core
 
                     if (Config.TargetFolder.IsIncludeProgramFilesX86Folder)
                         folders.Add(Constants.ProgramFilesX86Folder);
+
+                    if (Config.TargetFolder.IsIncludeCommonStartMenu)
+                        folders.Add(Constants.CommonStartMenuFolder);
                 }
 
                 return Config.TargetFolder.Folders.Select(x => x.Value)

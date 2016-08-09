@@ -221,6 +221,18 @@ namespace Ann.Core.Config
 
         #endregion
 
+        #region IsIncludeCommonStartMenu
+
+        private bool _IsIncludeCommonStartMenu = true;
+
+        public bool IsIncludeCommonStartMenu
+        {
+            get { return _IsIncludeCommonStartMenu; }
+            set { SetProperty(ref _IsIncludeCommonStartMenu, value); }
+        }
+
+        #endregion
+
         #region Folders
 
         private ObservableCollection<Path> _Folders = new ObservableCollection<Path>();

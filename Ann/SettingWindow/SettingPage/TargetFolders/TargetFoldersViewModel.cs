@@ -15,6 +15,7 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
         public ReactiveProperty<bool> IsIncludeProgramsFolder { get; }
         public ReactiveProperty<bool> IsIncludeProgramFilesFolder { get; }
         public ReactiveProperty<bool> IsIncludeProgramFilesX86Folder { get; }
+        public ReactiveProperty<bool> IsIncludeCommonStartMenuFolder { get; }
 
         public ReadOnlyReactiveCollection<PathViewModel> Folders { get; set; }
 
@@ -43,6 +44,10 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
 
             IsIncludeProgramFilesX86Folder =
                 model.TargetFolder.ToReactivePropertyAsSynchronized(x => x.IsIncludeProgramFilesX86Folder)
+                    .AddTo(CompositeDisposable);
+
+            IsIncludeCommonStartMenuFolder =
+                model.TargetFolder.ToReactivePropertyAsSynchronized(x => x.IsIncludeCommonStartMenu)
                     .AddTo(CompositeDisposable);
 
             Folders = model.TargetFolder.Folders.ToReadOnlyReactiveCollection(p => new PathViewModel(p, true))

@@ -29,6 +29,9 @@
     <CheckBox Margin="16,0,0,8"
               Content="{x:Static core:Constants.ProgramFilesFolder}"
               IsChecked="{Binding IsIncludeProgramFilesFolder.Value}" />
+    <CheckBox Margin="16,0,0,8"
+              Content="{x:Static core:Constants.CommonStartMenuFolder}"
+              IsChecked="{Binding IsIncludeCommonStartMenuFolder.Value}" />
 
     <TextBlock Margin="0,48,0,8"
                Style="{StaticResource SubheadingTextBlockStyle}"
