@@ -1,50 +1,20 @@
-﻿using System;
-using System.Reactive.Concurrency;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using Ann.Core;
 using Ann.Core.Config;
-using Ann.Foundation;
 using Ann.SettingWindow.SettingPage.Shortcuts;
-using Reactive.Bindings;
 using Xunit;
 using App = Ann.Core.App;
+using TestHelper = Ann.Core.TestHelper;
 
 namespace Ann.Test.SettingWindow.SettingPage
 {
-    public class ShortcutsTestFixture : IDisposable
+    public class ShortcutsViewModelTest
     {
-        public ShortcutsTestFixture()
-        {
-            TestHelper.SetEntryAssembly();
-            App.Clean();
-            VersionUpdater.Clean();
-            ReactivePropertyScheduler.SetDefault(ImmediateScheduler.Instance);
-        }
-
-        public void Dispose()
-        {
-            VersionUpdater.Clean();
-        }
-    }
-
-    public class ShortcutsViewModelTest : IClassFixture<ShortcutsTestFixture>,  IDisposable
-    {
-        // ReSharper disable once UnusedParameter.Local
-        public ShortcutsViewModelTest(ShortcutsTestFixture f)
-        {
-            App.Clean();
-            VersionUpdater.Clean();
-        }
-
-        public void Dispose()
-        {
-            App.Clean();
-            VersionUpdater.Clean();
-        }
-
         [Fact]
         public void Basic()
         {
+            TestHelper.CleanTestEnv();
+
             App.Initialize();
             VersionUpdater.Initialize();
 
@@ -60,6 +30,8 @@ namespace Ann.Test.SettingWindow.SettingPage
         [Fact]
         public void Activate()
         {
+            TestHelper.CleanTestEnv();
+
             App.Initialize();
             VersionUpdater.Initialize();
 
@@ -80,6 +52,8 @@ namespace Ann.Test.SettingWindow.SettingPage
         [Fact]
         public void HideShortcutside()
         {
+            TestHelper.CleanTestEnv();
+
             App.Initialize();
             VersionUpdater.Initialize();
 

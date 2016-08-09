@@ -55,7 +55,7 @@ namespace Ann.Core
 
         private static string IndexFilePath => System.IO.Path.Combine(
             Constants.ConfigDirPath,
-            $"{(TestHelper.IsTestMode ? "Test." : string.Empty)}index.dat");
+            $"{(Foundation.TestHelper.IsTestMode ? "Test." : string.Empty)}index.dat");
 
         #region IndexOpeningResult
 

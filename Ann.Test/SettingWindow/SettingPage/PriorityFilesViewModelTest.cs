@@ -1,48 +1,18 @@
-﻿using System;
-using System.Reactive.Concurrency;
-using Ann.Core;
-using Ann.Foundation;
+﻿using Ann.Core;
 using Ann.SettingWindow.SettingPage;
 using Ann.SettingWindow.SettingPage.PriorityFiles;
-using Reactive.Bindings;
 using Xunit;
+using TestHelper = Ann.Core.TestHelper;
 
 namespace Ann.Test.SettingWindow.SettingPage
 {
-    public class PriorityFilesTestFixture : IDisposable
+    public class PriorityFilesViewModelTest
     {
-        public PriorityFilesTestFixture()
-        {
-            TestHelper.SetEntryAssembly();
-            App.Clean();
-            VersionUpdater.Clean();
-            ReactivePropertyScheduler.SetDefault(ImmediateScheduler.Instance);
-        }
-
-        public void Dispose()
-        {
-            VersionUpdater.Clean();
-        }
-    }
-
-    public class PriorityFilesViewModelTest : IClassFixture<PriorityFilesTestFixture>,  IDisposable
-    {
-        // ReSharper disable once UnusedParameter.Local
-        public PriorityFilesViewModelTest(PriorityFilesTestFixture f)
-        {
-            App.Clean();
-            VersionUpdater.Clean();
-        }
-
-        public void Dispose()
-        {
-            App.Clean();
-            VersionUpdater.Clean();
-        }
-
         [Fact]
         public void Basic()
         {
+            TestHelper.CleanTestEnv();
+
             App.Initialize();
             VersionUpdater.Initialize();
 
@@ -58,6 +28,8 @@ namespace Ann.Test.SettingWindow.SettingPage
         [Fact]
         public void Files()
         {
+            TestHelper.CleanTestEnv();
+
             App.Initialize();
             VersionUpdater.Initialize();
 
@@ -87,6 +59,8 @@ namespace Ann.Test.SettingWindow.SettingPage
         [Fact]
         public void FileAddCommand()
         {
+            TestHelper.CleanTestEnv();
+
             App.Initialize();
             VersionUpdater.Initialize();
 
@@ -109,6 +83,8 @@ namespace Ann.Test.SettingWindow.SettingPage
         [Fact]
         public void FileRemoveCommand()
         {
+            TestHelper.CleanTestEnv();
+
             App.Initialize();
             VersionUpdater.Initialize();
 
@@ -139,6 +115,8 @@ namespace Ann.Test.SettingWindow.SettingPage
         [Fact]
         public void PathFolderSelect()
         {
+            TestHelper.CleanTestEnv();
+
             App.Initialize();
             VersionUpdater.Initialize();
 

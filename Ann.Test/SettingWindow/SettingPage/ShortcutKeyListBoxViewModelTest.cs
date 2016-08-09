@@ -13,6 +13,8 @@ namespace Ann.Test.SettingWindow.SettingPage
         [Fact]
         public void Basic()
         {
+            TestHelper.CleanTestEnv();
+
             App.Initialize();
             VersionUpdater.Initialize();
 
@@ -31,6 +33,8 @@ namespace Ann.Test.SettingWindow.SettingPage
         [Fact]
         public void KeyAddCommand()
         {
+            TestHelper.CleanTestEnv();
+
             App.Initialize();
             VersionUpdater.Initialize();
 
@@ -49,6 +53,8 @@ namespace Ann.Test.SettingWindow.SettingPage
         [Fact]
         public void KeyRemoveCommand()
         {
+            TestHelper.CleanTestEnv();
+
             App.Initialize();
             VersionUpdater.Initialize();
 
@@ -72,7 +78,6 @@ namespace Ann.Test.SettingWindow.SettingPage
 
             VersionUpdater.Destory();
             App.Destory();
-            
         }
     }
 }

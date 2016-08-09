@@ -1,41 +1,15 @@
-﻿using System;
-using Ann.Foundation;
-using Ann.Foundation.Exception;
+﻿using Ann.Foundation.Exception;
 using Xunit;
 
 namespace Ann.Core.Test
 {
-    public class VersionUpdaterTestFixture : IDisposable
+    public class VersionUpdaterTest
     {
-        public VersionUpdaterTestFixture()
-        {
-            TestHelper.SetEntryAssembly();
-
-            VersionUpdater.Clean();
-        }
-
-        public void Dispose()
-        {
-            VersionUpdater.Clean();
-        }
-    }
-
-    public class VersionUpdaterTest : IClassFixture<VersionUpdaterTestFixture>, IDisposable
-    {
-        // ReSharper disable once UnusedParameter.Local
-        public VersionUpdaterTest(VersionUpdaterTestFixture f)
-        {
-            VersionUpdater.Clean();
-        }
-
-        public void Dispose()
-        {
-            VersionUpdater.Clean();
-        }
-
         [Fact]
         public void BasicOnDisabledSilentUpdate()
         {
+            TestHelper.CleanTestEnv();
+
             VersionUpdater.Initialize();
 
             Assert.False(VersionUpdater.Instance.IsEnableSilentUpdate);
@@ -59,6 +33,8 @@ namespace Ann.Core.Test
         [Fact]
         public void NestingInitialize()
         {
+            TestHelper.CleanTestEnv();
+
             VersionUpdater.Initialize();
 
             Assert.Throws<NestingException>(() =>
@@ -68,6 +44,8 @@ namespace Ann.Core.Test
         [Fact]
         public void NestingDestory()
         {
+            TestHelper.CleanTestEnv();
+
             Assert.Throws<NestingException>(() =>
                 VersionUpdater.Destory());
         }
@@ -75,6 +53,8 @@ namespace Ann.Core.Test
         [Fact]
         public void Uninitialized()
         {
+            TestHelper.CleanTestEnv();
+
             Assert.Throws<UninitializedException>(() =>
                 VersionUpdater.Instance.IsAvailableUpdate);
         }

@@ -9,25 +9,18 @@ using Xunit;
 
 namespace Ann.Core.Test
 {
-    public class AppTestFixture : IDisposable
+    public class AppTest :  IDisposable
     {
-        public AppTestFixture()
-        {
-            TestHelper.SetEntryAssembly();
-
-            DeleteTestConfigs();
-            App.Clean();
-            App.RemoveIndexFile();
-        }
+        private readonly DisposableFileSystem _context = new DisposableFileSystem();
 
         public void Dispose()
         {
-            App.Clean();
+            _context?.Dispose();
             App.RemoveIndexFile();
             DeleteTestConfigs();
         }
 
-        public static void DeleteTestConfigs()
+        private static void DeleteTestConfigs()
         {
             var categories = Enum.GetValues(typeof(ConfigHelper.Category)).Cast<ConfigHelper.Category>();
 
@@ -39,30 +32,12 @@ namespace Ann.Core.Test
                     File.Delete(path);
             }
         }
-    }
-
-    public class AppTest : IClassFixture<AppTestFixture>, IDisposable
-    {
-        private readonly DisposableFileSystem _context = new DisposableFileSystem();
-
-        // ReSharper disable once UnusedParameter.Local
-        public AppTest(AppTestFixture f)
-        {
-            App.Clean();
-            App.RemoveIndexFile();
-        }
-
-        public void Dispose()
-        {
-            _context?.Dispose();
-            App.Clean();
-            App.RemoveIndexFile();
-            AppTestFixture.DeleteTestConfigs();
-        }
 
         [Fact]
         public void Basic()
         {
+            TestHelper.CleanTestEnv();
+
             App.Initialize();
 
             Assert.NotNull(App.Instance);
@@ -73,6 +48,8 @@ namespace Ann.Core.Test
         [Fact]
         public void NestingInitialize()
         {
+            TestHelper.CleanTestEnv();
+
             App.Initialize();
 
             Assert.Throws<NestingException>(() =>
@@ -82,6 +59,8 @@ namespace Ann.Core.Test
         [Fact]
         public void NestingDestory()
         {
+            TestHelper.CleanTestEnv();
+
             Assert.Throws<NestingException>(() =>
                 App.Destory());
         }
@@ -89,6 +68,8 @@ namespace Ann.Core.Test
         [Fact]
         public void Uninitialized()
         {
+            TestHelper.CleanTestEnv();
+
             Assert.Throws<UninitializedException>(() =>
                 App.Instance.AutoUpdateRemainingSeconds);
         }
@@ -96,6 +77,8 @@ namespace Ann.Core.Test
         [Fact]
         public void PriorityFile()
         {
+            TestHelper.CleanTestEnv();
+
             App.Initialize();
 
             Assert.False(App.Instance.IsPriorityFile("AAA"));
@@ -116,6 +99,8 @@ namespace Ann.Core.Test
         [Fact]
         public void TagetFolders()
         {
+            TestHelper.CleanTestEnv();
+
             App.Initialize();
 
             Assert.Equal(5, App.Instance.TagetFolders.Count());
@@ -134,6 +119,8 @@ namespace Ann.Core.Test
         [Fact]
         public void OpenIndexAsync()
         {
+            TestHelper.CleanTestEnv();
+
             App.Initialize();
 
             App.Instance.Config.TargetFolder.IsIncludeSystemFolder = false;
@@ -152,6 +139,8 @@ namespace Ann.Core.Test
         [Fact]
         public void ReopenIndexAsync()
         {
+            TestHelper.CleanTestEnv();
+
             {
                 App.Initialize();
 
@@ -189,6 +178,8 @@ namespace Ann.Core.Test
         [Fact]
         public void UpdateIndexAsync()
         {
+            TestHelper.CleanTestEnv();
+
             App.Initialize();
 
             App.Instance.Config.TargetFolder.IsIncludeSystemFolder = false;
@@ -207,6 +198,8 @@ namespace Ann.Core.Test
         [Fact]
         public void FindExecutableUnit()
         {
+            TestHelper.CleanTestEnv();
+
             App.Initialize();
 
             App.Instance.Config.TargetFolder.Folders.Add(new Path(_context.RootPath));
@@ -260,6 +253,8 @@ namespace Ann.Core.Test
         [Fact]
         public void Mru()
         {
+            TestHelper.CleanTestEnv();
+
             App.Initialize();
 
             App.Instance.SaveMru();
@@ -270,6 +265,8 @@ namespace Ann.Core.Test
         [Fact]
         public void AutoUpdater()
         {
+            TestHelper.CleanTestEnv();
+
             App.Initialize();
 
             Assert.Equal(0, App.Instance.AutoUpdateRemainingSeconds);

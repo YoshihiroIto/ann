@@ -12,6 +12,8 @@ namespace Ann.Test.SettingWindow.SettingPage
         [Fact]
         public void Basic()
         {
+            TestHelper.CleanTestEnv();
+
             App.Initialize();
             VersionUpdater.Initialize();
 

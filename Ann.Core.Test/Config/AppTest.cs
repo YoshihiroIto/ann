@@ -3,24 +3,15 @@ using System.Globalization;
 using Xunit;
 using System.Windows.Input;
 using Ann.Core.Config;
-using Ann.Foundation;
 
 namespace Ann.Core.Test.Config
 {
-    public class AppTestFixture
-    {
-        public AppTestFixture()
-        {
-            TestHelper.SetEntryAssembly();
-        }
-    }
-
-    public class AppTest : IClassFixture<AppTestFixture>
+    public class AppTest 
     {
         [Fact]
         public void Basic()
         {
-            TestHelper.SetEntryAssembly();
+            TestHelper.CleanTestEnv();
 
             var c = new Core.Config.App();
 
@@ -137,6 +128,8 @@ namespace Ann.Core.Test.Config
         [InlineData("en")]
         public void DefaultCulture(string lang)
         {
+            TestHelper.CleanTestEnv();
+
             CultureInfo.CurrentUICulture = new CultureInfo(lang);
             
             var c = new Core.Config.App();

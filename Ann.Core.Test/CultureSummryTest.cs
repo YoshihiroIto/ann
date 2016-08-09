@@ -7,6 +7,8 @@ namespace Ann.Core.Test
         [Fact]
         public void Basic()
         {
+            TestHelper.CleanTestEnv();
+
             var c = new CultureSummry
             {
                 Caption = "A",

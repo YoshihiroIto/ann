@@ -16,6 +16,8 @@ namespace Ann.Core.Test
         [InlineData("BBB", new[] {"target1/aaa.exe", @"target1\BBB.exe", "target1/ccc.exe", "target1/ddd.bin"})]
         public void Basic(string name, string[] targetFiles)
         {
+            TestHelper.CleanTestEnv();
+
             _context = new DisposableFileSystem();
             _context.CreateFiles(targetFiles);
 
@@ -44,6 +46,8 @@ namespace Ann.Core.Test
         [InlineData(null, new[] {"target1/aaa.exe", @"target1\BBB.exe", "target1/ccc.exe", "target1/ddd.bin"})]
         public void InputEmpty(string input, string[] targetFiles)
         {
+            TestHelper.CleanTestEnv();
+
             _context = new DisposableFileSystem();
             _context.CreateFiles(targetFiles);
 
@@ -115,6 +119,8 @@ namespace Ann.Core.Test
             "aaa")]
         public void InputScore(string[] expected, string[] targetFiles, string input)
         {
+            TestHelper.CleanTestEnv();
+
             _context = new DisposableFileSystem();
             _context.CreateFiles(targetFiles);
 
@@ -165,6 +171,8 @@ namespace Ann.Core.Test
             new[] {".exe", ".bat", ".lnk"})]
         public void ExtScore(string[] expected, string[] targetFiles, string[] exts)
         {
+            TestHelper.CleanTestEnv();
+
             _context = new DisposableFileSystem();
             _context.CreateFiles(targetFiles);
 
@@ -206,6 +214,8 @@ namespace Ann.Core.Test
             "xxx qqq")]
         public void InputDirectory(string[] expected, string[] targetFiles, string input)
         {
+            TestHelper.CleanTestEnv();
+
             _context = new DisposableFileSystem();
             _context.CreateFiles(targetFiles);
 

@@ -1,41 +1,17 @@
-﻿using System;
-using Ann.Core;
-using Ann.Foundation;
+﻿using Ann.Core;
 using Ann.SettingWindow.SettingPage.About;
 using Xunit;
+using TestHelper = Ann.Core.TestHelper;
 
 namespace Ann.Test.SettingWindow.SettingPage
 {
-    public class AboutTestFixture : IDisposable
+    public class AboutViewModelTest
     {
-        public AboutTestFixture()
-        {
-            TestHelper.SetEntryAssembly();
-            VersionUpdater.Clean();
-        }
-
-        public void Dispose()
-        {
-            VersionUpdater.Clean();
-        }
-    }
-
-    public class AboutViewModelTest : IClassFixture<AboutTestFixture>,  IDisposable
-    {
-        // ReSharper disable once UnusedParameter.Local
-        public AboutViewModelTest(AboutTestFixture f)
-        {
-            VersionUpdater.Clean();
-        }
-
-        public void Dispose()
-        {
-            VersionUpdater.Clean();
-        }
-
         [Fact]
         public void Basic()
         {
+            TestHelper.CleanTestEnv();
+
             VersionUpdater.Initialize();
 
             using (var vm = new AboutViewModel())
@@ -50,6 +26,8 @@ namespace Ann.Test.SettingWindow.SettingPage
         [Fact]
         public void RestartCommand()
         {
+            TestHelper.CleanTestEnv();
+
             VersionUpdater.Initialize();
 
             using (var vm = new AboutViewModel())

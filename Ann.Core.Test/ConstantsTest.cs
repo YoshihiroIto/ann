@@ -10,7 +10,7 @@ namespace Ann.Core.Test
         [Fact]
         public void Basic()
         {
-            TestHelper.SetEntryAssembly();
+            TestHelper.CleanTestEnv();
 
             Assert.Contains("github.com", Constants.AnnGitHubUrl);
             Assert.Contains("twitter.com", Constants.AnnTwitterUrl);
