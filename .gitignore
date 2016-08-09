@@ -243,6 +243,3 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
-
-# Ann
-Ann.Core/OpenSourceList.yaml
