@@ -6,9 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ann", "Ann\Ann.csproj", "{9396E3C3-3E65-4CA9-A7C0-A7029EE3CD48}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ann.Core", "Ann.Core\Ann.Core.csproj", "{8876F2EE-02BA-416E-9C03-96BCF42259FE}"
-	ProjectSection(ProjectDependencies) = postProject
-		{F7D78A68-0008-4D49-B30C-0170249FC155} = {F7D78A68-0008-4D49-B30C-0170249FC155}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ann.Core.Test", "Ann.Core.Test\Ann.Core.Test.csproj", "{47F91D27-7D58-4F66-AADD-C8B4BB452F9A}"
 EndProject
