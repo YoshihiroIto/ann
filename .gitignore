@@ -246,3 +246,4 @@ ModelManifest.xml
 
 # Ann
 Ann.Core/OpenSourceList.yaml
+Externals/Ann.GenOpenSourceList/**/*

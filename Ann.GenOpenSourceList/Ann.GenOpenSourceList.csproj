@@ -78,12 +78,6 @@ mkdir $(SolutionDir)\Externals\Ann.GenOpenSourceList
 
 xcopy /e $(ProjectDir)bin\$(ConfigurationName) $(SolutionDir)Externals\Ann.GenOpenSourceList\
 
-del /q $(SolutionDir)\Externals\Ann.GenOpenSourceList\*.config
-del /q $(SolutionDir)\Externals\Ann.GenOpenSourceList\*.pdb
-del /q $(SolutionDir)\Externals\Ann.GenOpenSourceList\*.xml
-del $(SolutionDir)\Externals\Ann.GenOpenSourceList\Ann.GenOpenSourceList.vshost.exe
-del $(SolutionDir)\Externals\Ann.GenOpenSourceList\Ann.GenOpenSourceList.vshost.exe.manifest
-
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
