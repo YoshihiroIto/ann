@@ -109,6 +109,7 @@
     <Compile Include="SettingWindow\PathViewModelTest.cs" />
     <Compile Include="SettingWindow\SettingPage\ShortcutKeyListBoxViewModelTest.cs" />
     <Compile Include="SettingWindow\SettingPage\ShortcutKeyViewModelTest.cs" />
+    <Compile Include="SettingWindow\SettingPage\TargetFoldersViewModelTest.cs" />
     <Compile Include="SettingWindow\SettingPage\ShortcutsViewModelTest.cs" />
     <Compile Include="SettingWindow\SettingPage\PriorityFilesViewModelTest.cs" />
     <Compile Include="SettingWindow\SettingPage\GeneralViewModelTest.cs" />
