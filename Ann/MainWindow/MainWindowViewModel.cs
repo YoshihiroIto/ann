@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -28,7 +28,7 @@ namespace Ann.MainWindow
 
         public ReactiveCommand InitializeCommand { get; }
 
-        public ReadOnlyReactiveProperty<ObservableCollection<ExecutableUnitViewModel>> Candidates { get; }
+        public ReactiveProperty<ExecutableUnitViewModel[]> Candidates { get; }
         public ReactiveProperty<ExecutableUnitViewModel> SelectedCandidate { get; }
         public ReactiveCommand<object> SelectedCandidateMoveCommand { get; }
 
@@ -103,22 +103,30 @@ namespace Ann.MainWindow
                     .Subscribe(async _ => await UpdateIndexAsync())
                     .AddTo(CompositeDisposable);
 
-                Candidates =
-                    Observable
-                        .Merge(Input.ToUnit())
-                        .Merge(App.Instance.Config.ObserveProperty(x => x.CandidatesCensoringSize).ToUnit())
-                        .Select(_ =>
-                        {
-                            DisposeCandidates();
+                Observable
+                    .Merge(Input.ToUnit())
+                    .Merge(App.Instance.Config.ObserveProperty(x => x.CandidatesCensoringSize).ToUnit())
+                    .Throttle(TimeSpan.FromMilliseconds(50))
+                    .Subscribe(_ => App.Instance.Find(Input.Value, App.Instance.Config.CandidatesCensoringSize))
+                    .AddTo(CompositeDisposable);
 
-                            return
-                                new ObservableCollection<ExecutableUnitViewModel>(
-                                    App.Instance.FindExecutableUnit(Input.Value)
-                                        .Take(App.Instance.Config.CandidatesCensoringSize)
-                                        .Select(u => new ExecutableUnitViewModel(this, u)));
-                        })
-                        .ToReadOnlyReactiveProperty()
-                        .AddTo(CompositeDisposable);
+                Candidates = new ReactiveProperty<ExecutableUnitViewModel[]>().AddTo(CompositeDisposable);
+                App.Instance.ObserveProperty(x => x.Candidates)
+                    .ObserveOn(ThreadPoolScheduler.Instance)
+                    .Subscribe(c =>
+                    {
+                        var old = Candidates.Value;
+
+                        Candidates.Value =
+                            c.Select(u => new ExecutableUnitViewModel(this, u)).ToArray();
+
+                        if (old == null)
+                            return;
+
+                        foreach (var o in old)
+                            o.Dispose();
+                    })
+                    .AddTo(CompositeDisposable);
 
                 SelectedCandidate = Candidates
                     .Select(c => c?.FirstOrDefault())
@@ -137,8 +145,8 @@ namespace Ann.MainWindow
                         var next = current + int.Parse((string) p);
 
                         if (next == -1)
-                            next = Candidates.Value.Count - 1;
-                        else if (next == Candidates.Value.Count)
+                            next = Candidates.Value.Length - 1;
+                        else if (next == Candidates.Value.Length)
                             next = 0;
 
                         SelectedCandidate.Value = Candidates.Value[next];

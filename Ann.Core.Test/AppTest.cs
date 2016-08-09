@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Ann.Foundation;
 using Ann.Foundation.Exception;
+using Reactive.Bindings.Extensions;
 using Xunit;
 
 namespace Ann.Core.Test
@@ -222,14 +224,30 @@ namespace Ann.Core.Test
 
             App.Instance.UpdateIndexAsync().Wait();
 
-            var f1 = App.Instance.FindExecutableUnit("aaa").ToArray();
+            using (var e1 = new ManualResetEventSlim())
+            // ReSharper disable once AccessToDisposedClosure
+            using (App.Instance.ObserveProperty(x => x.Candidates, false).Subscribe(_ => e1.Set()))
+            {
+                App.Instance.Find("aaa", 10);
+                e1.Wait();
+            }
+
+            var f1 = App.Instance.Candidates.ToArray();
             Assert.Equal(2, f1.Length);
             Assert.Equal("aaa.exe", System.IO.Path.GetFileName(f1[0].Path));
             Assert.Equal("aaaa.exe", System.IO.Path.GetFileName(f1[1].Path));
 
             App.Instance.AddPriorityFile(System.IO.Path.Combine(_context.RootPath, "aaaa.exe"));
 
-            var f2 = App.Instance.FindExecutableUnit("aaa").ToArray();
+            using (var e1 = new ManualResetEventSlim())
+            // ReSharper disable once AccessToDisposedClosure
+            using (App.Instance.ObserveProperty(x => x.Candidates, false).Subscribe(_ => e1.Set()))
+            {
+                App.Instance.Find("aaa", 10);
+                e1.Wait();
+            }
+
+            var f2 = App.Instance.Candidates.ToArray();
             Assert.Equal(2, f2.Length);
             Assert.Equal("aaaa.exe", System.IO.Path.GetFileName(f2[0].Path));
             Assert.Equal("aaa.exe", System.IO.Path.GetFileName(f2[1].Path));
