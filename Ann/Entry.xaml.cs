@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Runtime;
-using System.Threading.Tasks;
 using System.Windows;
 using Ann.Core;
 using Ann.Foundation;
