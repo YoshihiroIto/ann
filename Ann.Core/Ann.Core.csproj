@@ -154,7 +154,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="TestHelper.cs" />
     <Compile Include="Types.cs" />
+    <Compile Include="InputControler.cs" />
     <Compile Include="VersionUpdater.cs" />
   </ItemGroup>
   <ItemGroup>

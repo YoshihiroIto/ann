@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Ann.Core;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm;
@@ -44,11 +43,6 @@ namespace Ann.SettingWindow.SettingPage.About
                 VersionUpdater.Instance.RequestRestart();
                 MessageBroker.Default.Publish(new WindowActionMessage(WindowAction.Close));
             }).AddTo(CompositeDisposable);
-        }
-
-        public async Task CheckVersionAsync()
-        {
-            await VersionUpdater.Instance.CheckAsync();
         }
     }
 }

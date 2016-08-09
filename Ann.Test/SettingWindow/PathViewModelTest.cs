@@ -1,43 +1,19 @@
-﻿using System;
-using Ann.Core;
-using Ann.Foundation;
+﻿using Ann.Core;
 using Ann.Foundation.Mvvm.Message;
 using Ann.SettingWindow.SettingPage;
 using Reactive.Bindings.Notifiers;
 using Xunit;
+using TestHelper = Ann.Core.TestHelper;
 
 namespace Ann.Test.SettingWindow
 {
-    public class PathViewModeTestFixture : IDisposable
+    public class PathViewModelTest
     {
-        public PathViewModeTestFixture()
-        {
-            TestHelper.SetEntryAssembly();
-            VersionUpdater.Clean();
-        }
-
-        public void Dispose()
-        {
-            VersionUpdater.Clean();
-        }
-    }
-
-    public class PathViewModelTest : IClassFixture<PathViewModeTestFixture>, IDisposable
-    {
-        // ReSharper disable once UnusedParameter.Local
-        public PathViewModelTest(PathViewModeTestFixture f)
-        {
-            VersionUpdater.Clean();
-        }
-
-        public void Dispose()
-        {
-            VersionUpdater.Clean();
-        }
-
         [Fact]
         public void Basic()
         {
+            TestHelper.CleanTestEnv();
+
             VersionUpdater.Initialize();
 
             using (var vm = new PathViewModel(new Path("AA"), false))
@@ -51,6 +27,8 @@ namespace Ann.Test.SettingWindow
         [Fact]
         public void FolderSelectDialogOpenCommand()
         {
+            TestHelper.CleanTestEnv();
+
             VersionUpdater.Initialize();
 
             using (MessageBroker.Default

@@ -28,6 +28,18 @@ namespace Ann.Core
             }
         }
 
+        #region Candidates
+
+        private IEnumerable<ExecutableUnit> _Candidates = Enumerable.Empty<ExecutableUnit>();
+
+        public IEnumerable<ExecutableUnit> Candidates
+        {
+            get { return _Candidates; }
+            set { SetProperty(ref _Candidates, value); }
+        }
+
+        #endregion
+
         public Config.App Config { get; private set; }
         public Config.MostRecentUsedList MruList { get; private set; }
 
@@ -39,10 +51,11 @@ namespace Ann.Core
 
         private HashSet<string> _priorityFiles = new HashSet<string>();
         private readonly ExecutableUnitDataBase _dataBase;
+        private readonly InputControler _inputControler;
 
         private static string IndexFilePath => System.IO.Path.Combine(
             Constants.ConfigDirPath,
-            $"{(TestHelper.IsTestMode ? "Test." : string.Empty)}index.dat");
+            $"{(Foundation.TestHelper.IsTestMode ? "Test." : string.Empty)}index.dat");
 
         #region IndexOpeningResult
 
@@ -143,10 +156,17 @@ namespace Ann.Core
             IndexOpeningResult = await _dataBase.UpdateIndexAsync(TagetFolders, Config.ExecutableFileExts);
         }
 
-        public IEnumerable<ExecutableUnit> FindExecutableUnit(string name) =>
-            _dataBase
-                .Find(name, Config.ExecutableFileExts)
-                .OrderBy(u => MakeOrder(u.Path));
+        public void Find(string input, int maxCandidates)
+        {
+            _inputControler.Push(() =>
+            {
+                Candidates = _dataBase
+                    .Find(input, Config.ExecutableFileExts)
+                    .OrderBy(u => MakeOrder(u.Path))
+                    .Take(maxCandidates)
+                    .ToArray();
+            });
+        }
 
         private const int MaxMruCount = 50;
         private readonly Dictionary<string, int> _mruOrders = new Dictionary<string, int>();
@@ -195,6 +215,7 @@ namespace Ann.Core
         private App()
         {
             _dataBase = new ExecutableUnitDataBase(IndexFilePath);
+            _inputControler = new InputControler().AddTo(CompositeDisposable);
 
             LoadConfig();
 

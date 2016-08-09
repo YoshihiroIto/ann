@@ -64,7 +64,7 @@ namespace Ann.Core
 
             var executableFileExtsArray = NormalizeExecutableFileExts(executableFileExts);
 
-            using (new TimeMeasure("Filtering"))
+            using (new TimeMeasure($"Filtering -- {input}"))
             {
                 var extScores = new Dictionary<string, int>();
                 executableFileExtsArray.ForEach((e, i) => extScores[e] = i);

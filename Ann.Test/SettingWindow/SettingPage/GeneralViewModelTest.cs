@@ -1,42 +1,18 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using Ann.Core;
-using Ann.Foundation;
 using Ann.SettingWindow.SettingPage.General;
 using Xunit;
+using TestHelper = Ann.Core.TestHelper;
 
 namespace Ann.Test.SettingWindow.SettingPage
 {
-    public class GeneralTestFixture : IDisposable
+    public class GeneralViewModelTest
     {
-        public GeneralTestFixture()
-        {
-            TestHelper.SetEntryAssembly();
-            VersionUpdater.Clean();
-        }
-
-        public void Dispose()
-        {
-            VersionUpdater.Clean();
-        }
-    }
-
-    public class GeneralViewModelTest : IClassFixture<GeneralTestFixture>, IDisposable
-    {
-        // ReSharper disable once UnusedParameter.Local
-        public GeneralViewModelTest(GeneralTestFixture f)
-        {
-            VersionUpdater.Clean();
-        }
-
-        public void Dispose()
-        {
-            VersionUpdater.Clean();
-        }
-
         [Fact]
         public void Basic()
         {
+            TestHelper.CleanTestEnv();
+
             VersionUpdater.Initialize();
 
             var app = new Core.Config.App();
@@ -50,6 +26,8 @@ namespace Ann.Test.SettingWindow.SettingPage
         [Fact]
         public void MaxCandidateLinesCount()
         {
+            TestHelper.CleanTestEnv();
+
             VersionUpdater.Initialize();
 
             var app = new Core.Config.App();
@@ -71,6 +49,8 @@ namespace Ann.Test.SettingWindow.SettingPage
         [Fact]
         public void SelectedCulture_ja()
         {
+            TestHelper.CleanTestEnv();
+
             VersionUpdater.Initialize();
             CultureInfo.CurrentUICulture = new CultureInfo("ja");
 
@@ -89,6 +69,8 @@ namespace Ann.Test.SettingWindow.SettingPage
         [InlineData("English","en")]
         public void SelectedCulture(string caption, string cultureName)
         {
+            TestHelper.CleanTestEnv();
+
             VersionUpdater.Initialize();
             CultureInfo.CurrentUICulture = new CultureInfo(cultureName);
 
@@ -105,6 +87,8 @@ namespace Ann.Test.SettingWindow.SettingPage
         [Fact]
         public void SelectableCulture()
         {
+            TestHelper.CleanTestEnv();
+
             var sc = new SelectableCulture();
 
             Assert.Null(sc.CultureName);

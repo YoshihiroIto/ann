@@ -14,7 +14,7 @@ namespace Ann.Core.Test
         [WpfFact]
         public void Basic()
         {
-            TestHelper.SetEntryAssembly();
+            TestHelper.CleanTestEnv();
 
             var decoder = new IconDecoder();
             var ann = Assembly.GetEntryAssembly();
@@ -31,7 +31,7 @@ namespace Ann.Core.Test
         [WpfFact]
         public void Cache()
         {
-            TestHelper.SetEntryAssembly();
+            TestHelper.CleanTestEnv();
 
             var decoder = new IconDecoder {IconCacheSize = 10};
 
@@ -49,6 +49,8 @@ namespace Ann.Core.Test
         [WpfFact]
         public void NotFound()
         {
+            TestHelper.CleanTestEnv();
+
             var decoder = new IconDecoder();
 
             var icon = decoder.GetIcon("XXXXX");
@@ -59,7 +61,7 @@ namespace Ann.Core.Test
         [WpfFact]
         public void IconCacheSize()
         {
-            TestHelper.SetEntryAssembly();
+            TestHelper.CleanTestEnv();
 
             var decoder = new IconDecoder();
 
@@ -71,6 +73,8 @@ namespace Ann.Core.Test
         [WpfFact]
         public void IconShareFileExt()
         {
+            TestHelper.CleanTestEnv();
+
             var decoder = new IconDecoder();
 
             _context.CreateFile("test1.js");
@@ -88,6 +92,8 @@ namespace Ann.Core.Test
         [WpfFact]
         public void NoExt()
         {
+            TestHelper.CleanTestEnv();
+
             var decoder = new IconDecoder();
             _context.CreateFile("AAAA");
 
