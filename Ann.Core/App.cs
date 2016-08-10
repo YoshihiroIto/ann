@@ -249,7 +249,7 @@ namespace Ann.Core
 
         private void SetupAutoUpdater()
         {
-            Observable.Timer(TimeSpan.FromSeconds(5), TimeSpan.FromHours(12))
+            Observable.Timer(TimeSpan.FromSeconds(5), TimeSpan.FromHours(8))
                 .ObserveOnUIDispatcher()
                 .Subscribe(async _ =>
                 {
