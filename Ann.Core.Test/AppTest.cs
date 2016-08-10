@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Ann.Core.Test
 {
-    public class AppTest :  IDisposable
+    public class AppTest : IDisposable
     {
         private readonly DisposableFileSystem _context = new DisposableFileSystem();
 
@@ -103,16 +103,17 @@ namespace Ann.Core.Test
 
             App.Initialize();
 
-            Assert.Equal(5, App.Instance.TagetFolders.Count());
+            Assert.Equal(6, App.Instance.TagetFolders.Count());
 
             App.Instance.Config.TargetFolder.IsIncludeSystemFolder = false;
             App.Instance.Config.TargetFolder.IsIncludeSystemX86Folder = false;
             App.Instance.Config.TargetFolder.IsIncludeProgramsFolder = false;
             App.Instance.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
             App.Instance.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
+            App.Instance.Config.TargetFolder.IsIncludeCommonStartMenu = false;
 
             Assert.Equal(0, App.Instance.TagetFolders.Count());
-            
+
             App.Destory();
         }
 
@@ -128,6 +129,7 @@ namespace Ann.Core.Test
             App.Instance.Config.TargetFolder.IsIncludeProgramsFolder = false;
             App.Instance.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
             App.Instance.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
+            App.Instance.Config.TargetFolder.IsIncludeCommonStartMenu = false;
 
             App.Instance.OpenIndexAsync().Wait();
 
@@ -149,6 +151,7 @@ namespace Ann.Core.Test
                 App.Instance.Config.TargetFolder.IsIncludeProgramsFolder = false;
                 App.Instance.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
                 App.Instance.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
+                App.Instance.Config.TargetFolder.IsIncludeCommonStartMenu = false;
 
                 App.Instance.OpenIndexAsync().Wait();
                 Assert.Equal(IndexOpeningResults.NotFound, App.Instance.IndexOpeningResult);
@@ -167,6 +170,7 @@ namespace Ann.Core.Test
                 App.Instance.Config.TargetFolder.IsIncludeProgramsFolder = false;
                 App.Instance.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
                 App.Instance.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
+                App.Instance.Config.TargetFolder.IsIncludeCommonStartMenu = false;
 
                 App.Instance.OpenIndexAsync().Wait();
                 Assert.Equal(IndexOpeningResults.Ok, App.Instance.IndexOpeningResult);
@@ -187,6 +191,7 @@ namespace Ann.Core.Test
             App.Instance.Config.TargetFolder.IsIncludeProgramsFolder = false;
             App.Instance.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
             App.Instance.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
+            App.Instance.Config.TargetFolder.IsIncludeCommonStartMenu = false;
 
             App.Instance.UpdateIndexAsync().Wait();
 
@@ -209,6 +214,7 @@ namespace Ann.Core.Test
             App.Instance.Config.TargetFolder.IsIncludeProgramsFolder = false;
             App.Instance.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
             App.Instance.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
+            App.Instance.Config.TargetFolder.IsIncludeCommonStartMenu = false;
 
             _context.CreateFiles(
                 "aa.exe",
@@ -218,7 +224,7 @@ namespace Ann.Core.Test
             App.Instance.UpdateIndexAsync().Wait();
 
             using (var e1 = new ManualResetEventSlim())
-            // ReSharper disable once AccessToDisposedClosure
+                // ReSharper disable once AccessToDisposedClosure
             using (App.Instance.ObserveProperty(x => x.Candidates, false).Subscribe(_ => e1.Set()))
             {
                 App.Instance.Find("aaa", 10);
@@ -233,7 +239,7 @@ namespace Ann.Core.Test
             App.Instance.AddPriorityFile(System.IO.Path.Combine(_context.RootPath, "aaaa.exe"));
 
             using (var e1 = new ManualResetEventSlim())
-            // ReSharper disable once AccessToDisposedClosure
+                // ReSharper disable once AccessToDisposedClosure
             using (App.Instance.ObserveProperty(x => x.Candidates, false).Subscribe(_ => e1.Set()))
             {
                 App.Instance.Find("aaa", 10);

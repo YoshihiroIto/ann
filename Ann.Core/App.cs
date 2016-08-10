@@ -138,6 +138,9 @@ namespace Ann.Core
 
                     if (Config.TargetFolder.IsIncludeProgramFilesX86Folder)
                         folders.Add(Constants.ProgramFilesX86Folder);
+
+                    if (Config.TargetFolder.IsIncludeCommonStartMenu)
+                        folders.Add(Constants.CommonStartMenuFolder);
                 }
 
                 return Config.TargetFolder.Folders.Select(x => x.Value)
@@ -246,7 +249,7 @@ namespace Ann.Core
 
         private void SetupAutoUpdater()
         {
-            Observable.Timer(TimeSpan.FromSeconds(5), TimeSpan.FromHours(12))
+            Observable.Timer(TimeSpan.FromSeconds(5), TimeSpan.FromHours(8))
                 .ObserveOnUIDispatcher()
                 .Subscribe(async _ =>
                 {
