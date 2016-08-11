@@ -35,9 +35,10 @@ namespace Ann.Core
                 {
                     try
                     {
-                        File.Delete(path);
                         if (File.Exists(path) == false)
                             break;
+
+                        File.Delete(path);
                     }
                     catch
                     {
