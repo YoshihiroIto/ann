@@ -1,17 +1,22 @@
 ﻿<StackPanel x:Class="Ann.SettingWindow.SettingPage.Shortcuts.ShortcutkeyListBox"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:app="clr-namespace:Ann"
             xmlns:control="clr-namespace:Ann.Foundation.Control;assembly=Ann.Foundation"
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             xmlns:shortcuts="clr-namespace:Ann.SettingWindow.SettingPage.Shortcuts"
-            xmlns:app="clr-namespace:Ann"
             d:DesignHeight="300"
             d:DesignWidth="300"
             Grid.IsSharedSizeScope="True"
             mc:Ignorable="d">
-    <ListBox HorizontalContentAlignment="Stretch" ItemsSource="{Binding Items, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type shortcuts:ShortcutkeyListBox}}}">
+    <ListBox x:Name="ListBox"
+             HorizontalContentAlignment="Stretch"
+             ItemsSource="{Binding Items,
+                                   Mode=OneWay,
+                                   RelativeSource={RelativeSource FindAncestor,
+                                                                  AncestorType={x:Type shortcuts:ShortcutkeyListBox}}}">
         <ListBox.ItemTemplate>
             <DataTemplate DataType="shortcuts:ShortcutKeyViewModel">
                 <Grid Margin="0,0,0,4">
@@ -20,24 +25,29 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <!--  位置合わせ  -->
-                    <Button Grid.Column="0"
-                            Style="{StaticResource FlatIconButtonStyle}"
-                            Visibility="Hidden">
-                        <materialDesign:PackIcon Kind="Delete" />
-                    </Button>
-
                     <control:ShortcutKeyInputBox Key="{Binding Key.Value}"
                                                  Grid.Column="0"
                                                  Margin="0"
-                                                 materialDesign:HintAssist.Hint="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Settings_KeyStroke, Mode=OneWay}"
+                                                 materialDesign:HintAssist.Hint="{Binding Source={x:Static app:CultureService.Instance},
+                                                                                          Path=Resources.Settings_KeyStroke,
+                                                                                          Mode=OneWay}"
                                                  IsAlt="{Binding IsAlt.Value}"
                                                  IsControl="{Binding IsControl.Value}"
                                                  IsShift="{Binding IsShift.Value}"
                                                  Style="{StaticResource MaterialDesignTextBox}" />
 
+                    <!--  位置合わせ  -->
+                    <Button Grid.Column="0"
+                            Width="24"
+                            Height="24"
+                            Style="{StaticResource FlatIconButtonStyle}"
+                            Visibility="Hidden">
+                        <materialDesign:PackIcon Kind="Delete" />
+                    </Button>
+
                     <Button Grid.Column="1"
-                            Margin="0,0,4,0"
+                            Width="24"
+                            Height="24"
                             Command="{Binding RemoveCommand,
                                               RelativeSource={RelativeSource FindAncestor,
                                                                              AncestorType={x:Type shortcuts:ShortcutkeyListBox}}}"
@@ -79,6 +89,8 @@
             Command="{Binding AddCommand,
                               RelativeSource={RelativeSource FindAncestor,
                                                              AncestorType={x:Type shortcuts:ShortcutkeyListBox}}}"
-            Content="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Settings_AddKey, Mode=OneWay}"
+            Content="{Binding Source={x:Static app:CultureService.Instance},
+                              Path=Resources.Settings_AddKey,
+                              Mode=OneWay}"
             Style="{StaticResource FlatButtonStyle}" />
 </StackPanel>

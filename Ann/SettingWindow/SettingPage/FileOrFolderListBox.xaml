@@ -1,16 +1,21 @@
 ﻿<StackPanel x:Class="Ann.SettingWindow.SettingPage.FileOrFolderListBox"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:app="clr-namespace:Ann"
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             xmlns:settingPage="clr-namespace:Ann.SettingWindow.SettingPage"
-            xmlns:app="clr-namespace:Ann"
             d:DesignHeight="300"
             d:DesignWidth="300"
             Grid.IsSharedSizeScope="True"
             mc:Ignorable="d">
-    <ListBox HorizontalContentAlignment="Stretch" ItemsSource="{Binding Items, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type settingPage:FileOrFolderListBox}}}">
+    <ListBox x:Name="ListBox"
+             HorizontalContentAlignment="Stretch"
+             ItemsSource="{Binding Items,
+                                   Mode=OneWay,
+                                   RelativeSource={RelativeSource FindAncestor,
+                                                                  AncestorType={x:Type settingPage:FileOrFolderListBox}}}">
         <ListBox.ItemTemplate>
             <DataTemplate DataType="settingPage:PathViewModel">
                 <Grid Margin="0,0,0,4">
@@ -20,8 +25,18 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
+                    <!--  位置合わせ  -->
                     <Button Grid.Column="0"
-                            Margin="0,0,4,0"
+                            Width="24"
+                            Height="24"
+                            Style="{StaticResource FlatIconButtonStyle}"
+                            Visibility="Hidden">
+                        <materialDesign:PackIcon Kind="Delete" />
+                    </Button>
+
+                    <Button Grid.Column="0"
+                            Width="24"
+                            Height="24"
                             Command="{Binding FolderSelectDialogOpenCommand,
                                               Mode=OneTime}"
                             Style="{StaticResource FlatIconButtonStyle}">
@@ -57,11 +72,15 @@
                     </TextBox>
 
                     <Button Grid.Column="2"
+                            Width="24"
+                            Height="24"
                             Command="{Binding RemoveCommand,
                                               RelativeSource={RelativeSource FindAncestor,
                                                                              AncestorType={x:Type settingPage:FileOrFolderListBox}}}"
                             CommandParameter="{Binding}">
-                        <materialDesign:PackIcon Kind="Delete" />
+                        <materialDesign:PackIcon Width="16"
+                                                 Height="16"
+                                                 Kind="Delete" />
 
                         <Button.Style>
                             <Style BasedOn="{StaticResource FlatIconButtonStyle}" TargetType="{x:Type Button}">
