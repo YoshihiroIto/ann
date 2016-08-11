@@ -54,7 +54,7 @@ namespace Ann.MainWindow
                     if (i == false)
                     {
                         var item = new StatusBarItemViewModel(
-                            StatusBarItemViewModel.SearchKey.NoKey,
+                            StatusBarItemViewModel.SearchKey.ActivationShortcutKeyIsAlreadyInUse,
                             Properties.Resources.Message_ActivationShortcutKeyIsAlreadyInUse);
                         Messages.AddOnScheduler(item);
                     }
