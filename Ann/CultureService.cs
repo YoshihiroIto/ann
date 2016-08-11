@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
-using Ann.Core;
+using Ann.Foundation.Exception;
 using Ann.Foundation.Mvvm;
 using Ann.Properties;
 using Reactive.Bindings.Extensions;
@@ -9,7 +10,40 @@ namespace Ann
 {
     public class CultureService : DisposableModelBase
     {
-        public static CultureService Instance { get; } = new CultureService();
+        private static CultureService _Instance;
+
+        public static CultureService Instance
+        {
+            get
+            {
+                if (_Instance == null)
+                    throw new UninitializedException();
+
+                return _Instance;
+            }
+        }
+
+        public static void Clean()
+        {
+            _Instance?.Dispose();
+            _Instance = null;
+        }
+
+        public static void Initialize(Core.Config.App config)
+        {
+            if (_Instance != null)
+                throw new NestingException();
+
+            _Instance = new CultureService(config);
+        }
+
+        public static void Destory()
+        {
+            if (_Instance == null)
+                throw new NestingException();
+
+            Clean();
+        }
 
         public Resources Resources { get; } = new Resources();
 
@@ -34,13 +68,13 @@ namespace Ann
 
         #endregion
 
-        private CultureService()
+        private CultureService(Core.Config.App config)
         {
-            App.Instance.Config.ObserveProperty(x => x.Culture)
-                .Subscribe(c => CultureName = c)
-                .AddTo(App.Instance.CompositeDisposable);
+            Debug.Assert(config != null);
 
-            App.Instance.CompositeDisposable.Add(this);
+            config.ObserveProperty(x => x.Culture)
+                .Subscribe(c => CultureName = c)
+                .AddTo(CompositeDisposable);
         }
     }
 }
