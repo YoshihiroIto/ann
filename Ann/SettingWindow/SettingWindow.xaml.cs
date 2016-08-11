@@ -10,30 +10,20 @@ namespace Ann.SettingWindow
     /// </summary>
     public partial class SettingWindow
     {
-        public static bool IsOpend { get; private set; }
-
         public SettingWindow()
         {
             InitializeComponent();
 
             Loaded += OnLoaded;
-            Unloaded += OnUnloaded;
         }
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            IsOpend = true;
-
             var handle = new WindowInteropHelper(this).Handle;
             var style = GetWindowLong(handle, GWL_STYLE);
             style &= ~WS_MAXIMIZEBOX;
             style &= ~WS_MINIMIZEBOX;
             SetWindowLong(handle, GWL_STYLE, style);
-        }
-
-        private static void OnUnloaded(object sender, RoutedEventArgs routedEventArgs)
-        {
-            IsOpend = false;
         }
 
         // ReSharper disable InconsistentNaming
