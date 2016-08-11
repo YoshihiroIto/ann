@@ -111,7 +111,7 @@ namespace Ann.MainWindow
                     if (s == App.AutoUpdateStates.CloseAfterNSec)
                     {
                         _autoUpdaterItem =
-                            new StatusBarItemViewModel(
+                            new WaitingStatusBarItemViewModel(
                                 string.Format(
                                     Properties.Resources.AutoUpdateStates_CloseAfterNSec,
                                     Constants.AutoUpdateCloseDelaySec));

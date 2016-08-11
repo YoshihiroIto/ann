@@ -21,6 +21,18 @@ namespace Ann.Test.MainWindow
                 Assert.Equal("DEF", vm.Message.Value);
                 Assert.Equal(StatusBarItemViewModel.SearchKey.InOpening, vm.Key);
             }
+
+            using (var vm = new ProcessingStatusBarItemViewModel(StatusBarItemViewModel.SearchKey.InOpening, "XYZ"))
+            {
+                Assert.Equal("XYZ", vm.Message.Value);
+                Assert.Equal(StatusBarItemViewModel.SearchKey.InOpening, vm.Key);
+            }
+
+            using (var vm = new WaitingStatusBarItemViewModel(StatusBarItemViewModel.SearchKey.InOpening, "XYZ"))
+            {
+                Assert.Equal("XYZ", vm.Message.Value);
+                Assert.Equal(StatusBarItemViewModel.SearchKey.InOpening, vm.Key);
+            }
         }
     }
 }
