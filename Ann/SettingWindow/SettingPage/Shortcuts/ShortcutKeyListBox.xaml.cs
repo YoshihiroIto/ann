@@ -94,7 +94,6 @@ namespace Ann.SettingWindow.SettingPage.Shortcuts
 
                     var item = ListBox
                         .ItemContainerGenerator
-                        //.ContainerFromItem(Items[e.NewStartingIndex]);
                         .ContainerFromIndex(e.NewStartingIndex);
 
                     var inputBox = WpfHelper.FindChild<ShortcutKeyInputBox>(item);
