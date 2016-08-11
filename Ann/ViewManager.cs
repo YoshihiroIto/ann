@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using Ann.Foundation.Exception;
 using Ann.Foundation.Mvvm;
 using Ann.Foundation.Mvvm.Message;
 using Ann.SettingWindow;
@@ -11,13 +12,34 @@ namespace Ann
 {
     public class ViewManager : DisposableModelBase
     {
-        public static ViewManager Instance { get; } = new ViewManager();
+        private static ViewManager _Instance;
+        public static ViewManager Instance
+        {
+            get
+            {
+                if (_Instance == null)
+                    throw new UninitializedException();
+
+                return _Instance;
+            }
+        }
 
         public Dispatcher UiDispatcher { get; private set; }
+
+        public static void Clean()
+        {
+            _Instance?.Dispose();
+            _Instance = null;
+        }
 
         public static void Initialize(Dispatcher uiDispatcher)
         {
             Debug.Assert(uiDispatcher != null);
+
+            if (_Instance != null)
+                throw new NestingException();
+
+            _Instance = new ViewManager();
 
             Instance.UiDispatcher = uiDispatcher;
 
@@ -26,7 +48,10 @@ namespace Ann
 
         public static void Destory()
         {
-            Instance?.Dispose();
+            if (_Instance == null)
+                throw new NestingException();
+
+            Clean();
         }
 
         private ViewManager()

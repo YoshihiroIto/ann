@@ -43,4 +43,17 @@ namespace Ann.MainWindow
         {
         }
     }
+
+    public class WaitingStatusBarItemViewModel : StatusBarItemViewModel
+    {
+        public WaitingStatusBarItemViewModel(string message)
+            : base(message)
+        {
+        }
+
+        public WaitingStatusBarItemViewModel(SearchKey key, string message)
+            : base(key, message)
+        {
+        }
+    }
 }

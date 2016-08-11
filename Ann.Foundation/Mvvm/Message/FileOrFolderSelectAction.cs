@@ -20,14 +20,29 @@ namespace Ann.Foundation.Mvvm.Message
                         dialog.Filters.Add(filter);
                 }
 
-                var window = Application.Current.Windows
+                var window = Application.Current?.Windows
                     .OfType<Window>()
                     .FirstOrDefault(w => w.IsActive);
 
-                message.Response =
-                    dialog.ShowDialog(window) == CommonFileDialogResult.Ok
-                        ? dialog.FileName
-                        : null;
+                try
+                {
+                    if (window != null)
+                        message.Response =
+                            dialog.ShowDialog(window) == CommonFileDialogResult.Ok
+                                ? dialog.FileName
+                                : null;
+                    else
+                    {
+                        message.Response =
+                            dialog.ShowDialog() == CommonFileDialogResult.Ok
+                                ? dialog.FileName
+                                : null;
+                    }
+                }
+                catch
+                {
+                    // ignored
+                }
             }
         }
     }

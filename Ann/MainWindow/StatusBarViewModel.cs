@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows;
@@ -17,12 +18,14 @@ namespace Ann.MainWindow
 
         public StatusBarViewModel(MainWindowViewModel parent)
         {
+            Debug.Assert(parent != null);
+
             Messages = new ReactiveCollection<StatusBarItemViewModel>().AddTo(CompositeDisposable);
             CompositeDisposable.Add(() => Messages.ForEach(x => x.Dispose()));
 
             Visibility = Messages.CollectionChangedAsObservable()
                 .Select(_ => Messages.Any() ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed)
-                .ToReadOnlyReactiveProperty()
+                .ToReadOnlyReactiveProperty(System.Windows.Visibility.Collapsed)
                 .AddTo(CompositeDisposable);
 
             parent.IsIndexUpdating.Subscribe(i =>
@@ -45,14 +48,13 @@ namespace Ann.MainWindow
                 }
             }).AddTo(CompositeDisposable);
 
-
             parent.IsEnableActivateHotKey
                 .Subscribe(i =>
                 {
                     if (i == false)
                     {
                         var item = new StatusBarItemViewModel(
-                            StatusBarItemViewModel.SearchKey.NoKey,
+                            StatusBarItemViewModel.SearchKey.ActivationShortcutKeyIsAlreadyInUse,
                             Properties.Resources.Message_ActivationShortcutKeyIsAlreadyInUse);
                         Messages.AddOnScheduler(item);
                     }
@@ -109,13 +111,14 @@ namespace Ann.MainWindow
                     if (s == App.AutoUpdateStates.CloseAfterNSec)
                     {
                         _autoUpdaterItem =
-                            new StatusBarItemViewModel(
+                            new WaitingStatusBarItemViewModel(
                                 string.Format(
                                     Properties.Resources.AutoUpdateStates_CloseAfterNSec,
                                     Constants.AutoUpdateCloseDelaySec));
                     }
 
-                    Messages.Add(_autoUpdaterItem);
+                    if (_autoUpdaterItem != null)
+                        Messages.Add(_autoUpdaterItem);
                 }).AddTo(CompositeDisposable);
 
             App.Instance.ObserveProperty(x => x.AutoUpdateRemainingSeconds)

@@ -228,10 +228,11 @@ namespace Ann.Core
         {
             var targetFoldersArray = NormalizeTargetFolders(targetFolders);
 
+            if (File.Exists(_indexFile) == false)
+                return IndexOpeningResults.NotFound;
+
             return await Task.Run(() =>
             {
-                if (File.Exists(_indexFile) == false)
-                    return IndexOpeningResults.NotFound;
 
                 try
                 {

@@ -3,9 +3,8 @@ using Ann.Foundation.Mvvm.Message;
 using Ann.SettingWindow.SettingPage;
 using Reactive.Bindings.Notifiers;
 using Xunit;
-using TestHelper = Ann.Core.TestHelper;
 
-namespace Ann.Test.SettingWindow
+namespace Ann.Test.SettingWindow.SettingPage
 {
     public class PathViewModelTest
     {

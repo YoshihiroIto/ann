@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using Ann.Foundation;
@@ -16,21 +15,6 @@ namespace Ann.Core.Test
         public void Dispose()
         {
             _context?.Dispose();
-            App.RemoveIndexFile();
-            DeleteTestConfigs();
-        }
-
-        private static void DeleteTestConfigs()
-        {
-            var categories = Enum.GetValues(typeof(ConfigHelper.Category)).Cast<ConfigHelper.Category>();
-
-            foreach (var category in categories)
-            {
-                var path = ConfigHelper.MakeFilePath(category, Constants.ConfigDirPath);
-
-                if (File.Exists(path))
-                    File.Delete(path);
-            }
         }
 
         [Fact]

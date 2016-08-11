@@ -28,6 +28,7 @@ namespace Ann
                 e.Run();
 
                 ViewManager.Destory();
+                CultureService.Destory();
                 App.Destory();
             }
             VersionUpdater.Destory();
@@ -39,6 +40,7 @@ namespace Ann
             base.OnStartup(e);
 
             App.Initialize();
+            CultureService.Initialize(App.Instance.Config);
             ViewManager.Initialize(Dispatcher);
 
             Reactive.Bindings.UIDispatcherScheduler.Initialize();

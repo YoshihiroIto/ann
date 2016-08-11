@@ -1,7 +1,6 @@
 ﻿using Ann.Core;
 using Ann.SettingWindow.SettingPage.About;
 using Xunit;
-using TestHelper = Ann.Core.TestHelper;
 
 namespace Ann.Test.SettingWindow.SettingPage
 {
