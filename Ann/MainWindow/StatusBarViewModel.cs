@@ -115,7 +115,8 @@ namespace Ann.MainWindow
                                     Constants.AutoUpdateCloseDelaySec));
                     }
 
-                    Messages.Add(_autoUpdaterItem);
+                    if (_autoUpdaterItem != null)
+                        Messages.Add(_autoUpdaterItem);
                 }).AddTo(CompositeDisposable);
 
             App.Instance.ObserveProperty(x => x.AutoUpdateRemainingSeconds)
