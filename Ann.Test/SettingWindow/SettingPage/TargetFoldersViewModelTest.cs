@@ -3,7 +3,6 @@ using Ann.SettingWindow.SettingPage;
 using Ann.SettingWindow.SettingPage.TargetFolders;
 using Xunit;
 using App = Ann.Core.App;
-using TestHelper = Ann.Core.TestHelper;
 
 namespace Ann.Test.SettingWindow.SettingPage
 {

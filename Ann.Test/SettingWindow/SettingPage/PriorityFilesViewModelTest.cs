@@ -2,7 +2,6 @@
 using Ann.SettingWindow.SettingPage;
 using Ann.SettingWindow.SettingPage.PriorityFiles;
 using Xunit;
-using TestHelper = Ann.Core.TestHelper;
 
 namespace Ann.Test.SettingWindow.SettingPage
 {
