@@ -65,7 +65,6 @@ namespace Ann.Test.MainWindow
             App.Destory();
         }
 
-
         [WpfFact]
         public void IsPriorityFileFlipCommand()
         {
@@ -100,6 +99,5 @@ namespace Ann.Test.MainWindow
             VersionUpdater.Destory();
             App.Destory();
         }
-
     }
 }
