@@ -112,6 +112,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="MainWindow\StatusBarItemViewModelTest.cs" />
     <Compile Include="MainWindow\StatusBarViewModelTest.cs" />
     <Compile Include="MainWindow\ExecutableUnitViewModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
