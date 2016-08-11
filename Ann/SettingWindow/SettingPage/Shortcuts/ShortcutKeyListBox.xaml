@@ -25,13 +25,6 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <!--  位置合わせ  -->
-                    <Button Grid.Column="0"
-                            Style="{StaticResource FlatIconButtonStyle}"
-                            Visibility="Hidden">
-                        <materialDesign:PackIcon Kind="Delete" />
-                    </Button>
-
                     <control:ShortcutKeyInputBox Key="{Binding Key.Value}"
                                                  Grid.Column="0"
                                                  Margin="0"
@@ -43,8 +36,18 @@
                                                  IsShift="{Binding IsShift.Value}"
                                                  Style="{StaticResource MaterialDesignTextBox}" />
 
+                    <!--  位置合わせ  -->
+                    <Button Grid.Column="0"
+                            Width="24"
+                            Height="24"
+                            Style="{StaticResource FlatIconButtonStyle}"
+                            Visibility="Hidden">
+                        <materialDesign:PackIcon Kind="Delete" />
+                    </Button>
+
                     <Button Grid.Column="1"
-                            Margin="0,0,4,0"
+                            Width="24"
+                            Height="24"
                             Command="{Binding RemoveCommand,
                                               RelativeSource={RelativeSource FindAncestor,
                                                                              AncestorType={x:Type shortcuts:ShortcutkeyListBox}}}"
