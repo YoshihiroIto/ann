@@ -241,15 +241,6 @@ namespace Ann.Properties {
         }
         
         /// <summary>
-        ///   Open Source Libraries に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        public static string OpenSourceLibraries {
-            get {
-                return ResourceManager.GetString("OpenSourceLibraries", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Restart に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string Restart {
@@ -390,6 +381,15 @@ namespace Ann.Properties {
         public static string Settings_UserFolders {
             get {
                 return ResourceManager.GetString("Settings_UserFolders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Use Open Source Libraries に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string UseOpenSourceLibraries {
+            get {
+                return ResourceManager.GetString("UseOpenSourceLibraries", resourceCulture);
             }
         }
         

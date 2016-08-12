@@ -186,8 +186,8 @@
   <data name="Ann_Introduction" xml:space="preserve">
     <value>Simple implementation commandline launcher</value>
   </data>
-  <data name="OpenSourceLibraries" xml:space="preserve">
-    <value>Open Source Libraries</value>
+  <data name="UseOpenSourceLibraries" xml:space="preserve">
+    <value>Use Open Source Libraries</value>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
