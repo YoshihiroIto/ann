@@ -36,7 +36,7 @@ namespace Ann.GenOpenSourceList.Test
                 Assert.Equal("ReactiveProperty", list[0].Name);
                 Assert.Equal("neuecc xin9le okazuki", list[0].Auther);
                 Assert.Equal(
-                    "ReactiveProperty is MVVM and Asynchronous Extensions for Reactive Extensions(Rx-Main). Target is .NET 4, .NET 4.x, WP8, Windows store apps(Win8.1), Windows Phone 8.1, UWP.",
+                    "ReactiveProperty is MVVM and Asynchronous Extensions for Reactive Extensions(System.Reactive). Target is .NET 4.5, .NET 4.6, UWP ,Xamarin(Android, iOS, Forms) and .NET Standard 1.1.",
                     list[0].Summry);
                 Assert.Equal("https://github.com/runceel/ReactiveProperty",list[0].Url);
             }
@@ -71,7 +71,7 @@ namespace Ann.GenOpenSourceList.Test
                 Assert.Equal("ReactiveProperty", list[0].Name);
                 Assert.Equal("neuecc xin9le okazuki", list[0].Auther);
                 Assert.Equal(
-                    "ReactiveProperty is MVVM and Asynchronous Extensions for Reactive Extensions(Rx-Main). Target is .NET 4, .NET 4.x, WP8, Windows store apps(Win8.1), Windows Phone 8.1, UWP.",
+                    "ReactiveProperty is MVVM and Asynchronous Extensions for Reactive Extensions(System.Reactive). Target is .NET 4.5, .NET 4.6, UWP ,Xamarin(Android, iOS, Forms) and .NET Standard 1.1.",
                     list[0].Summry);
                 Assert.Equal("https://github.com/runceel/ReactiveProperty",list[0].Url);
             }
@@ -95,7 +95,7 @@ namespace Ann.GenOpenSourceList.Test
 
                 Assert.Equal("neuecc xin9le okazuki", rp.Auther);
                 Assert.Equal(
-                    "ReactiveProperty is MVVM and Asynchronous Extensions for Reactive Extensions(Rx-Main). Target is .NET 4, .NET 4.x, WP8, Windows store apps(Win8.1), Windows Phone 8.1, UWP.",
+                    "ReactiveProperty is MVVM and Asynchronous Extensions for Reactive Extensions(System.Reactive). Target is .NET 4.5, .NET 4.6, UWP ,Xamarin(Android, iOS, Forms) and .NET Standard 1.1.",
                     rp.Summry);
                 Assert.Equal("https://github.com/runceel/ReactiveProperty", rp.Url);
             }

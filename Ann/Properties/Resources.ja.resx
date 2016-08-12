@@ -186,8 +186,8 @@
   <data name="Ann_Introduction" xml:space="preserve">
     <value>シンプルなコマンドラインランチャー</value>
   </data>
-  <data name="OpenSourceLibraries" xml:space="preserve">
-    <value>オープンソースライブラリ</value>
+  <data name="UseOpenSourceLibraries" xml:space="preserve">
+    <value>利用オープンソースライブラリ</value>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>設定</value>

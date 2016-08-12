@@ -5,6 +5,7 @@
         xmlns:app="clr-namespace:Ann"
         xmlns:behavior="clr-namespace:Ann.Foundation.Control.Behavior;assembly=Ann.Foundation"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:extension="clr-namespace:Ann.Foundation.Control.Extension;assembly=Ann.Foundation"
         xmlns:general="clr-namespace:Ann.SettingWindow.SettingPage.General"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:interactivity="clr-namespace:Reactive.Bindings.Interactivity;assembly=ReactiveProperty.NET46"
@@ -14,7 +15,6 @@
         xmlns:shortcuts="clr-namespace:Ann.SettingWindow.SettingPage.Shortcuts"
         xmlns:targetFolders="clr-namespace:Ann.SettingWindow.SettingPage.TargetFolders"
         xmlns:valueConverter="clr-namespace:Ann.Foundation.Control.ValueConverter;assembly=Ann.Foundation"
-        xmlns:extension="clr-namespace:Ann.Foundation.Control.Extension;assembly=Ann.Foundation"
         Title="{Binding Source={x:Static app:CultureService.Instance},
                         Path=Resources.Settings,
                         Mode=OneWay}"
@@ -41,7 +41,7 @@
         <KeyBinding Command="{Binding CloseCommand, Mode=OneTime}" Gesture="Esc" />
     </Window.InputBindings>
 
-    <DockPanel Margin="24,16,0,0" LastChildFill="True">
+    <DockPanel Margin="0,16,0,0" LastChildFill="True">
         <DockPanel.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
@@ -74,184 +74,170 @@
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-
             </ResourceDictionary>
         </DockPanel.Resources>
 
-        <StackPanel DockPanel.Dock="Left">
-            <TextBlock Style="{StaticResource MaterialDesignHeadlineTextBlock}" Text="Ann" />
-
-            <ListBox Margin="-24,16,0,0"
-                     HorizontalContentAlignment="Stretch"
-                     Focusable="False"
-                     IsSynchronizedWithCurrentItem="True"
-                     IsTabStop="False"
-                     ItemsSource="{Binding Pages,
-                                           Mode=OneWay}"
-                     SelectedItem="{Binding SelectedPage.Value}"
-                     Style="{StaticResource MaterialDesignListBox}">
-                <ListBox.Resources>
-                    <Style x:Key="SettingListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
-                        <Setter Property="SnapsToDevicePixels" Value="True" />
-                        <Setter Property="Padding" Value="0,8" />
-                        <Setter Property="Background" Value="Transparent" />
-                        <Setter Property="Margin" Value="0" />
-                        <Setter Property="IsTabStop" Value="False" />
-                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                    <Border x:Name="Bd"
-                                            Background="{TemplateBinding Background}"
-                                            BorderBrush="#4E5764"
-                                            BorderThickness="6,0,0,0"
-                                            Padding="{TemplateBinding Padding}"
-                                            SnapsToDevicePixels="true">
-                                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                        <Border.Style>
-                                            <Style TargetType="{x:Type Border}">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type about:AboutViewModel}">
-                                                        <Setter Property="Margin" Value="0,32,0,0" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Border.Style>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <MultiTrigger>
-                                            <MultiTrigger.Conditions>
-                                                <Condition Property="IsSelected" Value="False" />
-                                            </MultiTrigger.Conditions>
-                                            <Setter TargetName="Bd" Property="BorderBrush" Value="Transparent" />
-                                            <Setter TargetName="Bd" Property="TextElement.Foreground" Value="DarkGray" />
-                                        </MultiTrigger>
-                                        <MultiTrigger>
-                                            <MultiTrigger.Conditions>
-                                                <Condition Property="IsSelected" Value="True" />
-                                            </MultiTrigger.Conditions>
-                                        </MultiTrigger>
-                                        <MultiTrigger>
-                                            <MultiTrigger.Conditions>
-                                                <Condition Property="IsMouseOver" Value="True" />
-                                                <Condition Property="IsSelected" Value="False" />
-                                            </MultiTrigger.Conditions>
-                                            <Setter Property="Cursor" Value="{x:Static Cursors.Hand}" />
-                                        </MultiTrigger>
-                                        <MultiTrigger>
-                                            <MultiTrigger.Conditions>
-                                                <Condition Property="IsMouseOver" Value="True" />
-                                                <Condition Property="IsSelected" Value="False" />
-                                            </MultiTrigger.Conditions>
-                                            <Setter TargetName="Bd" Property="TextElement.Foreground" Value="DimGray" />
-                                        </MultiTrigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ListBox.Resources>
-
-                <ListBox.ItemContainerStyle>
-                    <Style BasedOn="{StaticResource SettingListBoxItemStyle}" TargetType="{x:Type ListBoxItem}" />
-                </ListBox.ItemContainerStyle>
-
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Margin="16,0,0,0"
-                                   Padding="0"
-                                   Style="{StaticResource PageCaptionTextBlockStyle}" />
-
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </StackPanel>
-
-        <ContentControl Content="{Binding SelectedPage.Value,
+        <TabControl Margin="-2,0,0,0"
+                    HorizontalContentAlignment="Stretch"
+                    BorderThickness="0"
+                    Focusable="False"
+                    IsSynchronizedWithCurrentItem="True"
+                    IsTabStop="False"
+                    ItemsSource="{Binding Pages,
                                           Mode=OneWay}"
-                        Focusable="False"
-                        IsTabStop="False">
-            <ContentControl.Resources>
-                <Style TargetType="{x:Type materialDesign:Transitioner}">
+                    TabStripPlacement="Left">
+            <TabControl.Resources>
+                <Style TargetType="{x:Type TabItem}">
+                    <Setter Property="SnapsToDevicePixels" Value="True" />
+                    <Setter Property="Padding" Value="0,8" />
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Margin" Value="0" />
                     <Setter Property="IsTabStop" Value="False" />
-                    <Setter Property="Focusable" Value="False" />
-                </Style>
-
-                <Style x:Key="PageStyle" TargetType="{x:Type ContentControl}">
-                    <Setter Property="IsTabStop" Value="False" />
-                    <Setter Property="Focusable" Value="False" />
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                     <Setter Property="Template">
                         <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type ContentControl}">
-                                <Grid Margin="64,0,0,0">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="*" />
-                                    </Grid.RowDefinitions>
+                            <ControlTemplate TargetType="{x:Type TabItem}">
+                                <Border x:Name="Bd"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="#4E5764"
+                                        BorderThickness="6,0,0,0"
+                                        Padding="{TemplateBinding Padding}"
+                                        SnapsToDevicePixels="true">
 
-                                    <materialDesign:Transitioner Grid.Row="0" SelectedIndex="0">
-                                        <materialDesign:TransitionerSlide OpeningEffect="{materialDesign:TransitionEffect SlideInFromLeft, Duration=0:0:0.20}">
-                                            <TextBlock Style="{extension:MultiStyle PageCaptionTextBlockStyle MaterialDesignHeadlineTextBlock}" />
-                                        </materialDesign:TransitionerSlide>
-                                    </materialDesign:Transitioner>
+                                    <TextBlock Margin="16,0,0,0"
+                                               Padding="0"
+                                               Style="{StaticResource PageCaptionTextBlockStyle}" />
 
-                                    <Separator Grid.Row="1"
-                                               Height="1"
-                                               Margin="0,16,0,0"
-                                               SnapsToDevicePixels="True"
-                                               Style="{StaticResource MaterialDesignSeparator}" />
-
-                                    <materialDesign:Transitioner Grid.Row="2" SelectedIndex="0">
-                                        <materialDesign:TransitionerSlide OpeningEffect="{materialDesign:TransitionEffect SlideInFromLeft, Duration=0:0:0.25}">
-                                            <ScrollViewer FocusVisualStyle="{x:Null}"
-                                                          Focusable="False"
-                                                          HorizontalScrollBarVisibility="Disabled"
-                                                          IsTabStop="False"
-                                                          VerticalScrollBarVisibility="Auto">
-                                                <ContentPresenter Margin="0,8,8,8" />
-                                            </ScrollViewer>
-                                        </materialDesign:TransitionerSlide>
-                                    </materialDesign:Transitioner>
-                                </Grid>
+                                    <Border.Style>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type about:AboutViewModel}">
+                                                    <Setter Property="Margin" Value="0,32,0,0" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsSelected" Value="False" />
+                                        </MultiTrigger.Conditions>
+                                        <Setter TargetName="Bd" Property="BorderBrush" Value="Transparent" />
+                                        <Setter TargetName="Bd" Property="TextElement.Foreground" Value="DarkGray" />
+                                    </MultiTrigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsSelected" Value="True" />
+                                        </MultiTrigger.Conditions>
+                                    </MultiTrigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsMouseOver" Value="True" />
+                                            <Condition Property="IsSelected" Value="False" />
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Cursor" Value="{x:Static Cursors.Hand}" />
+                                    </MultiTrigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsMouseOver" Value="True" />
+                                            <Condition Property="IsSelected" Value="False" />
+                                        </MultiTrigger.Conditions>
+                                        <Setter TargetName="Bd" Property="TextElement.Foreground" Value="DimGray" />
+                                    </MultiTrigger>
+                                </ControlTemplate.Triggers>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
                 </Style>
+            </TabControl.Resources>
 
-                <DataTemplate DataType="{x:Type general:GeneralViewModel}">
-                    <ContentControl Style="{StaticResource PageStyle}">
-                        <general:GeneralView />
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <ContentControl Content="{Binding Mode=OneWay}"
+                                    Focusable="False"
+                                    IsTabStop="False">
+                        <ContentControl.Resources>
+                            <Style TargetType="{x:Type materialDesign:Transitioner}">
+                                <Setter Property="IsTabStop" Value="False" />
+                                <Setter Property="Focusable" Value="False" />
+                            </Style>
+
+                            <Style x:Key="PageStyle" TargetType="{x:Type ContentControl}">
+                                <Setter Property="IsTabStop" Value="False" />
+                                <Setter Property="Focusable" Value="False" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ContentControl}">
+                                            <Grid Margin="64,0,0,0">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="*" />
+                                                </Grid.RowDefinitions>
+
+                                                <materialDesign:Transitioner Grid.Row="0" SelectedIndex="0">
+                                                    <materialDesign:TransitionerSlide OpeningEffect="{materialDesign:TransitionEffect SlideInFromLeft, Duration=0:0:0.20}">
+                                                        <TextBlock Style="{extension:MultiStyle PageCaptionTextBlockStyle MaterialDesignHeadlineTextBlock}" />
+                                                    </materialDesign:TransitionerSlide>
+                                                </materialDesign:Transitioner>
+
+                                                <Separator Grid.Row="1"
+                                                           Height="1"
+                                                           Margin="0,16,0,0"
+                                                           SnapsToDevicePixels="True"
+                                                           Style="{StaticResource MaterialDesignSeparator}" />
+
+                                                <materialDesign:Transitioner Grid.Row="2" SelectedIndex="0">
+                                                    <materialDesign:TransitionerSlide OpeningEffect="{materialDesign:TransitionEffect SlideInFromLeft, Duration=0:0:0.25}">
+                                                        <ScrollViewer FocusVisualStyle="{x:Null}"
+                                                                      Focusable="False"
+                                                                      HorizontalScrollBarVisibility="Disabled"
+                                                                      IsTabStop="False"
+                                                                      VerticalScrollBarVisibility="Auto">
+                                                            <ContentPresenter Margin="0,8,8,8" />
+                                                        </ScrollViewer>
+                                                    </materialDesign:TransitionerSlide>
+                                                </materialDesign:Transitioner>
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+
+                            <DataTemplate DataType="{x:Type general:GeneralViewModel}">
+                                <ContentControl Style="{StaticResource PageStyle}">
+                                    <general:GeneralView />
+                                </ContentControl>
+                            </DataTemplate>
+
+                            <DataTemplate DataType="{x:Type targetFolders:TargetFoldersViewModel}">
+                                <ContentControl Style="{StaticResource PageStyle}">
+                                    <targetFolders:TargetFoldersView />
+                                </ContentControl>
+                            </DataTemplate>
+
+                            <DataTemplate DataType="{x:Type priorityFiles:PriorityFilesViewModel}">
+                                <ContentControl Style="{StaticResource PageStyle}">
+                                    <priorityFiles:PriorityFiles />
+                                </ContentControl>
+                            </DataTemplate>
+
+                            <DataTemplate DataType="{x:Type shortcuts:ShortcutsViewModel}">
+                                <ContentControl Style="{StaticResource PageStyle}">
+                                    <shortcuts:ShortcutsView />
+                                </ContentControl>
+                            </DataTemplate>
+
+                            <DataTemplate DataType="{x:Type about:AboutViewModel}">
+                                <ContentControl Style="{StaticResource PageStyle}">
+                                    <about:AboutView />
+                                </ContentControl>
+                            </DataTemplate>
+                        </ContentControl.Resources>
                     </ContentControl>
                 </DataTemplate>
-
-                <DataTemplate DataType="{x:Type targetFolders:TargetFoldersViewModel}">
-                    <ContentControl Style="{StaticResource PageStyle}">
-                        <targetFolders:TargetFoldersView />
-                    </ContentControl>
-                </DataTemplate>
-
-                <DataTemplate DataType="{x:Type priorityFiles:PriorityFilesViewModel}">
-                    <ContentControl Style="{StaticResource PageStyle}">
-                        <priorityFiles:PriorityFiles />
-                    </ContentControl>
-                </DataTemplate>
-
-                <DataTemplate DataType="{x:Type shortcuts:ShortcutsViewModel}">
-                    <ContentControl Style="{StaticResource PageStyle}">
-                        <shortcuts:ShortcutsView />
-                    </ContentControl>
-                </DataTemplate>
-
-                <DataTemplate DataType="{x:Type about:AboutViewModel}">
-                    <ContentControl Style="{StaticResource PageStyle}">
-                        <about:AboutView />
-                    </ContentControl>
-                </DataTemplate>
-            </ContentControl.Resources>
-        </ContentControl>
+            </TabControl.ContentTemplate>
+        </TabControl>
     </DockPanel>
 </Window>
-

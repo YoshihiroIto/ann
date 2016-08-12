@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
+using Ann.Foundation;
 using Ann.Foundation.Exception;
 using Ann.Foundation.Mvvm;
 using Ann.Properties;
@@ -16,6 +17,10 @@ namespace Ann
         {
             get
             {
+                if (_Instance == null)
+                    if (WpfHelper.IsDesignMode && Foundation.TestHelper.IsTestMode == false)
+                        _Instance = new CultureService(new Core.Config.App());
+                
                 if (_Instance == null)
                     throw new UninitializedException();
 
