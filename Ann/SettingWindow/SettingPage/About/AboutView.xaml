@@ -167,7 +167,12 @@
         </Button.Style>
     </Button>
 
-    <StackPanel Margin="0,32,0,0"
+    <TextBlock 
+       Margin="0,24,0,0" 
+        Text="{x:Static foundation:AssemblyConstants.Copyright}" />
+
+    <StackPanel 
+       Margin="0,8,0,0" 
                 HorizontalAlignment="Left"
                 Orientation="Horizontal">
         <Button Margin="0,0,8,0"
