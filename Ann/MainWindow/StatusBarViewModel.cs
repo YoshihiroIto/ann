@@ -48,6 +48,18 @@ namespace Ann.MainWindow
                 }
             }).AddTo(CompositeDisposable);
 
+            App.Instance.ObserveProperty(c => c.Crawling)
+                .Subscribe(c =>
+                {
+                    var item = Messages
+                        .FirstOrDefault(
+                            x => x.Key == StatusBarItemViewModel.SearchKey.IndexUpdating);
+
+                    if (item != null)
+                        item.Message.Value = Properties.Resources.Message_IndexUpdating + c;
+                })
+                .AddTo(CompositeDisposable);
+
             parent.IsEnableActivateHotKey
                 .Subscribe(i =>
                 {

@@ -40,6 +40,18 @@ namespace Ann.Core
 
         #endregion
 
+        #region CrawlingCount
+
+        private int _Crawling;
+
+        public int Crawling
+        {
+            get { return _Crawling; }
+            set { SetProperty(ref _Crawling, value); }
+        }
+
+        #endregion
+
         public Config.App Config { get; private set; }
         public Config.MostRecentUsedList MruList { get; private set; }
 
@@ -219,6 +231,10 @@ namespace Ann.Core
         {
             _dataBase = new ExecutableUnitDataBase(IndexFilePath);
             _inputControler = new InputControler().AddTo(CompositeDisposable);
+
+            _dataBase.ObserveProperty(x => x.CrawlingCount)
+                .Subscribe(c => Crawling = c)
+                .AddTo(CompositeDisposable);
 
             LoadConfig();
 

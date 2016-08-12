@@ -4,15 +4,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Ann.Foundation;
+using Ann.Foundation.Mvvm;
 using FlatBuffers;
 using IndexFile;
 using File = System.IO.File;
 
 namespace Ann.Core
 {
-    public class ExecutableUnitDataBase
+    public class ExecutableUnitDataBase : NotificationObject
     {
         private readonly string _indexFile;
 
@@ -30,6 +32,18 @@ namespace Ann.Core
         private const Versions CurrentIndexVersion = Versions.Version;
 
         public int ExecutableUnitCount => IsOpend ? _executableUnits.Length : 0;
+
+        #region CrawlingCount
+
+        private int _CrawlingCount;
+
+        public int CrawlingCount
+        {
+            get { return _CrawlingCount; }
+            set { SetProperty(ref _CrawlingCount, value); }
+        }
+
+        #endregion
 
         public IEnumerable<ExecutableUnit> Find(string input, IEnumerable<string> executableFileExts)
         {
@@ -292,7 +306,7 @@ namespace Ann.Core
             });
         }
 
-        private static async Task<ExecutableUnit[]> CrawlAsync(
+        private async Task<ExecutableUnit[]> CrawlAsync(
             string[] targetFolders,
             IEnumerable<string> executableFileExts)
         {
@@ -304,13 +318,18 @@ namespace Ann.Core
                 try
                 {
                     var stringPool = new ConcurrentDictionary<string, string>();
+                    var count = 0;
 
                     var results = targetFoldersArray
                         .AsParallel()
                         .SelectMany(targetFolder =>
                             DirectoryHelper.EnumerateAllFiles(targetFolder)
                                 .Where(f => executableExts.Contains(System.IO.Path.GetExtension(f)?.ToLower()))
-                                .Select(f => new ExecutableUnit(f, stringPool, targetFoldersArray))
+                                .Select(f =>
+                                {
+                                    CrawlingCount = Interlocked.Increment(ref count);
+                                    return new ExecutableUnit(f, stringPool, targetFoldersArray);
+                                })
                         ).ToArray();
 
                     results.ForEach((r, i) => r.SetId(i, results.Length));
