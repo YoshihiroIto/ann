@@ -116,8 +116,8 @@
     <Compile Include="MainWindow\StatusBarViewModelTest.cs" />
     <Compile Include="MainWindow\ExecutableUnitViewModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CultureServiceTest.cs" />
     <Compile Include="ViewManagerTest.cs" />
+    <Compile Include="CultureServiceTest.cs" />
     <Compile Include="SettingWindow\SettingViewModelTest.cs" />
     <Compile Include="SettingWindow\SettingPage\PathViewModelTest.cs" />
     <Compile Include="SettingWindow\SettingPage\ShortcutKeyListBoxViewModelTest.cs" />

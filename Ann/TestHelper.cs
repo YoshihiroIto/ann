@@ -4,7 +4,6 @@
     {
         public static void CleanTestEnv()
         {
-            ViewManager.Clean();
             CultureService.Clean();
 
             Core.TestHelper.CleanTestEnv();

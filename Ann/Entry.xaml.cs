@@ -26,7 +26,6 @@ namespace Ann
                 e.InitializeComponent();
                 e.Run();
 
-                ViewManager.Destory();
                 CultureService.Destory();
                 App.Destory();
             }
@@ -39,9 +38,18 @@ namespace Ann
 
             App.Initialize();
             CultureService.Initialize(App.Instance.Config);
-            ViewManager.Initialize(Dispatcher);
 
+            _viewManager = new ViewManager(Dispatcher);
             Reactive.Bindings.UIDispatcherScheduler.Initialize();
         }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
+
+            _viewManager.Dispose();
+        }
+
+        private ViewManager _viewManager;
     }
 }

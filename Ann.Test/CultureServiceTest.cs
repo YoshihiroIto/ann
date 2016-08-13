@@ -1,49 +1,34 @@
-﻿using System.Windows.Threading;
+﻿using System.Globalization;
+using Ann.Core.Config;
 using Ann.Foundation.Exception;
 using Xunit;
 
 namespace Ann.Test
 {
-    public class ViewManagerTestFixture
+    public class CultureServiceTest
     {
-        public ViewManagerTestFixture()
-        {
-            Dispatcher = Dispatcher.CurrentDispatcher;
-        }
-
-        public Dispatcher Dispatcher { get;  }
-    }
-
-    public class ViewManagerTest: IClassFixture<ViewManagerTestFixture>
-    {
-        private readonly Dispatcher _dispatcher;
-
-        public ViewManagerTest(ViewManagerTestFixture fixture)
-        {
-            _dispatcher = fixture.Dispatcher;
-        }
-
         [WpfFact]
         public void Basic()
         {
             TestHelper.CleanTestEnv();
 
-            ViewManager.Initialize(_dispatcher);
+            var config = new App();
+            CultureService.Initialize(config);
 
-            Assert.Same(_dispatcher, ViewManager.Instance.UiDispatcher);
-
-            ViewManager.Destory();
+            CultureService.Destory();
         }
+
 
         [Fact]
         public void NestingInitialize()
         {
             TestHelper.CleanTestEnv();
 
-            ViewManager.Initialize(_dispatcher);
+            var config = new App();
+            CultureService.Initialize(config);
 
             Assert.Throws<NestingException>(() =>
-                ViewManager.Initialize(_dispatcher));
+                CultureService.Initialize(config));
         }
 
         [Fact]
@@ -52,7 +37,7 @@ namespace Ann.Test
             TestHelper.CleanTestEnv();
 
             Assert.Throws<NestingException>(() =>
-                ViewManager.Destory());
+                CultureService.Destory());
         }
 
         [Fact]
@@ -61,7 +46,45 @@ namespace Ann.Test
             TestHelper.CleanTestEnv();
 
             Assert.Throws<UninitializedException>(() =>
-                ViewManager.Instance);
+                CultureService.Instance.CultureName);
+        }
+
+        [Theory]
+        [InlineData("ja")]
+        [InlineData("en")]
+        public void CultureName(string lang)
+        {
+            TestHelper.CleanTestEnv();
+
+            CultureInfo.CurrentUICulture = new CultureInfo(lang);
+
+            var config = new App();
+            CultureService.Initialize(config);
+
+            Assert.Equal(lang, CultureService.Instance.CultureName);
+
+            CultureService.Instance.CultureName = lang;
+
+            CultureService.Destory();
+        }
+
+        [Theory]
+        [InlineData("ja")]
+        [InlineData("en")]
+        public void Resources(string lang)
+        {
+            TestHelper.CleanTestEnv();
+
+            CultureInfo.CurrentUICulture = new CultureInfo(lang);
+
+            var config = new App();
+            CultureService.Initialize(config);
+
+            Assert.NotNull(CultureService.Instance.Resources);
+
+            Assert.Equal(lang, Properties.Resources.Culture.TwoLetterISOLanguageName);
+
+            CultureService.Destory();
         }
     }
 }
