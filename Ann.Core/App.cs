@@ -95,6 +95,18 @@ namespace Ann.Core
 
         #endregion
 
+        #region IsEnableActivateHotKey
+
+        private bool _IsEnableActivateHotKey;
+
+        public bool IsEnableActivateHotKey
+        {
+            get { return _IsEnableActivateHotKey; }
+            set { SetProperty(ref _IsEnableActivateHotKey, value); }
+        }
+
+        #endregion
+
         public static void Clean()
         {
             _Instance?.Dispose();

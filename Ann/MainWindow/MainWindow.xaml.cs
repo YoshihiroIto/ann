@@ -144,7 +144,7 @@ namespace Ann.MainWindow
 
             if (App.Instance.Config.ShortcutKeys.Activate.Key == Key.None)
             {
-                _DataContext.IsEnableActivateHotKey.Value = true;
+                App.Instance.IsEnableActivateHotKey = true;
                 return;
             }
 
@@ -164,9 +164,9 @@ namespace Ann.MainWindow
                     Visibility = Visibility.Hidden;
             };
 
-            _DataContext.IsEnableActivateHotKey.Value = _activateHotKey.Register();
+            App.Instance.IsEnableActivateHotKey = _activateHotKey.Register();
 
-            if (_DataContext.IsEnableActivateHotKey.Value == false)
+            if (App.Instance.IsEnableActivateHotKey == false)
             {
                 _activateHotKey.Dispose();
                 _activateHotKey = null;

@@ -50,7 +50,6 @@ namespace Ann.MainWindow
         public ReactiveProperty<bool> IsShowingSettingShow { get; }
 
         public ReadOnlyReactiveProperty<IndexOpeningResults> IndexOpeningResult { get; }
-        public ReactiveProperty<bool> IsEnableActivateHotKey { get; }
 
         public WindowMessageBroker Messenger { get; }
 
@@ -240,8 +239,6 @@ namespace Ann.MainWindow
                     .Subscribe(_ => Messenger.Publish(new WindowActionMessage(WindowAction.Close)))
                     .AddTo(CompositeDisposable);
 
-                IsEnableActivateHotKey = new ReactiveProperty<bool>(true).AddTo(CompositeDisposable);
-
                 IndexOpeningResult = App.Instance.ObserveProperty(x => x.IndexOpeningResult)
                     .ToReadOnlyReactiveProperty()
                     .AddTo(CompositeDisposable);
@@ -251,7 +248,7 @@ namespace Ann.MainWindow
                     .Subscribe(_ => Input.ForceNotify())
                     .AddTo(CompositeDisposable);
 
-                StatusBar = new StatusBarViewModel(this).AddTo(CompositeDisposable);
+                StatusBar = new StatusBarViewModel().AddTo(CompositeDisposable);
             }
         }
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows;
@@ -16,10 +15,8 @@ namespace Ann.MainWindow
         public ReactiveCollection<StatusBarItemViewModel> Messages { get; }
         public ReadOnlyReactiveProperty<Visibility> Visibility { get; }
 
-        public StatusBarViewModel(MainWindowViewModel parent)
+        public StatusBarViewModel()
         {
-            Debug.Assert(parent != null);
-
             Messages = new ReactiveCollection<StatusBarItemViewModel>().AddTo(CompositeDisposable);
 
             CompositeDisposable.Add(async () => await App.Instance.CancelUpdateIndexAsync());
@@ -68,7 +65,7 @@ namespace Ann.MainWindow
                 })
                 .AddTo(CompositeDisposable);
 
-            parent.IsEnableActivateHotKey
+            App.Instance.ObserveProperty(x => x.IsEnableActivateHotKey)
                 .Subscribe(i =>
                 {
                     if (i == false)
