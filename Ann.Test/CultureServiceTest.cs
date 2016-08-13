@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using Ann.Core.Config;
 using Xunit;
 
 namespace Ann.Test
@@ -21,6 +22,16 @@ namespace Ann.Test
             TestHelper.CleanTestEnv();
 
             Assert.NotNull(CultureService.Instance.Resources);
+        }
+
+        [Fact]
+        public void SetConfig()
+        {
+            TestHelper.CleanTestEnv();
+            
+            CultureService.Instance.SetConfig(new App());
+
+            CultureService.Instance.Destory();
         }
     }
 }
