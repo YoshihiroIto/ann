@@ -24,7 +24,7 @@ namespace Ann.SettingWindow
         public ReactiveCommand InitializeCommand { get; }
         public ReactiveCommand CloseCommand { get; }
 
-        public SettingViewModel(Core.Config.App model)
+        public SettingViewModel(Core.Config.App model, VersionUpdater versionUpdater)
         {
             Debug.Assert(model != null);
 
@@ -32,7 +32,7 @@ namespace Ann.SettingWindow
 
             InitializeCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             InitializeCommand
-                .Subscribe(async _ => await VersionUpdater.Instance.CheckAsync())
+                .Subscribe(async _ => await versionUpdater.CheckAsync())
                 .AddTo(CompositeDisposable);
 
             CloseCommand = new ReactiveCommand().AddTo(CompositeDisposable);
@@ -42,11 +42,11 @@ namespace Ann.SettingWindow
 
             Pages = new ViewModelBase[]
             {
-                new GeneralViewModel(model),
+                new GeneralViewModel(model, versionUpdater),
                 new ShortcutsViewModel(model),
                 new TargetFoldersViewModel(model),
                 new PriorityFilesViewModel(model),
-                new AboutViewModel()
+                new AboutViewModel(versionUpdater)
             };
             SelectedPage = new ReactiveProperty<ViewModelBase>(Pages[0]).AddTo(CompositeDisposable);
         }

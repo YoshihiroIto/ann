@@ -13,7 +13,6 @@ namespace Ann.Test.MainWindow
         {
             TestHelper.CleanTestEnv();
             App.Initialize();
-            VersionUpdater.Initialize();
 
             var path = Assembly.GetEntryAssembly().Location;
             var stringPool = new ConcurrentDictionary<string, string>();
@@ -29,7 +28,6 @@ namespace Ann.Test.MainWindow
                 Assert.NotNull(vm.Icon);
             }
 
-            VersionUpdater.Destory();
             App.Destory();
         }
 
@@ -39,7 +37,6 @@ namespace Ann.Test.MainWindow
             TestHelper.CleanTestEnv();
 
             App.Initialize();
-            VersionUpdater.Initialize();
 
             var path = Assembly.GetEntryAssembly().Location;
             var stringPool = new ConcurrentDictionary<string, string>();
@@ -61,7 +58,6 @@ namespace Ann.Test.MainWindow
                 Assert.False(App.Instance.IsPriorityFile(path));
             }
 
-            VersionUpdater.Destory();
             App.Destory();
         }
 
@@ -71,7 +67,6 @@ namespace Ann.Test.MainWindow
             TestHelper.CleanTestEnv();
 
             App.Initialize();
-            VersionUpdater.Initialize();
 
             var path = Assembly.GetEntryAssembly().Location;
             var stringPool = new ConcurrentDictionary<string, string>();
@@ -96,7 +91,6 @@ namespace Ann.Test.MainWindow
                 Assert.False(App.Instance.IsPriorityFile(path));
             }
 
-            VersionUpdater.Destory();
             App.Destory();
         }
     }

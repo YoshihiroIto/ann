@@ -17,7 +17,7 @@ namespace Ann.SettingWindow.SettingPage.General
         public static readonly int[] MaxCandidateLines
             = Enumerable.Range(1, 10).ToArray();
 
-        public GeneralViewModel(Core.Config.App model)
+        public GeneralViewModel(Core.Config.App model, VersionUpdater versionUpdater)
         {
             Debug.Assert(model != null);
 
@@ -31,9 +31,9 @@ namespace Ann.SettingWindow.SettingPage.General
                 .Subscribe(async i =>
                 {
                     if (i)
-                        await VersionUpdater.Instance.CreateStartupShortcut();
+                        await versionUpdater.CreateStartupShortcut();
                     else
-                        await VersionUpdater.Instance.RemoveStartupShortcut();
+                        await versionUpdater.RemoveStartupShortcut();
                 }).AddTo(CompositeDisposable);
 
             SelectedCulture =

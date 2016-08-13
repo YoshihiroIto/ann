@@ -10,53 +10,23 @@ namespace Ann.Core.Test
         {
             TestHelper.CleanTestEnv();
 
-            VersionUpdater.Initialize();
+            using (var versionUpdater = new VersionUpdater(null))
+            {
+                Assert.False(versionUpdater.IsEnableSilentUpdate);
+                Assert.False(versionUpdater.IsAvailableUpdate);
+                Assert.Equal(0, versionUpdater.UpdateProgress);
 
-            Assert.False(VersionUpdater.Instance.IsEnableSilentUpdate);
-            Assert.False(VersionUpdater.Instance.IsAvailableUpdate);
-            Assert.Equal(0, VersionUpdater.Instance.UpdateProgress);
+                Assert.Equal(VersionCheckingStates.Wait, versionUpdater.VersionCheckingState);
 
-            Assert.Equal(VersionCheckingStates.Wait, VersionUpdater.Instance.VersionCheckingState);
+                Assert.False(versionUpdater.IsRestartRequested);
+                versionUpdater.RequestRestart();
+                Assert.False(versionUpdater.IsRestartRequested);
 
-            Assert.False(VersionUpdater.Instance.IsRestartRequested);
-            VersionUpdater.Instance.RequestRestart();
-            Assert.False(VersionUpdater.Instance.IsRestartRequested);
+                versionUpdater.CheckAsync().Wait();
 
-            VersionUpdater.Instance.CheckAsync().Wait();
-
-            VersionUpdater.Instance.CreateStartupShortcut().Wait();
-            VersionUpdater.Instance.RemoveStartupShortcut().Wait();
-
-            VersionUpdater.Destory();
-        }
-
-        [Fact]
-        public void NestingInitialize()
-        {
-            TestHelper.CleanTestEnv();
-
-            VersionUpdater.Initialize();
-
-            Assert.Throws<NestingException>(() =>
-                VersionUpdater.Initialize());
-        }
-
-        [Fact]
-        public void NestingDestory()
-        {
-            TestHelper.CleanTestEnv();
-
-            Assert.Throws<NestingException>(() =>
-                VersionUpdater.Destory());
-        }
-
-        [Fact]
-        public void Uninitialized()
-        {
-            TestHelper.CleanTestEnv();
-
-            Assert.Throws<UninitializedException>(() =>
-                VersionUpdater.Instance.IsAvailableUpdate);
+                versionUpdater.CreateStartupShortcut().Wait();
+                versionUpdater.RemoveStartupShortcut().Wait();
+            }
         }
     }
 }

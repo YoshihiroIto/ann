@@ -16,7 +16,6 @@ namespace Ann.Test.SettingWindow.SettingPage
             TestHelper.CleanTestEnv();
 
             App.Initialize();
-            VersionUpdater.Initialize();
 
             var model = new ObservableCollection<ShortcutKey>();
             using (var vm = new ShortcutKeyListBoxViewModel(model))
@@ -26,7 +25,6 @@ namespace Ann.Test.SettingWindow.SettingPage
                 Assert.Equal(1, vm.Keys.Count);
             }
 
-            VersionUpdater.Destory();
             App.Destory();
         }
 
@@ -36,7 +34,6 @@ namespace Ann.Test.SettingWindow.SettingPage
             TestHelper.CleanTestEnv();
 
             App.Initialize();
-            VersionUpdater.Initialize();
 
             var model = new ObservableCollection<ShortcutKey>();
             using (var vm = new ShortcutKeyListBoxViewModel(model))
@@ -46,7 +43,6 @@ namespace Ann.Test.SettingWindow.SettingPage
                 Assert.Equal(1, model.Count);
             }
 
-            VersionUpdater.Destory();
             App.Destory();
         }
 
@@ -56,7 +52,6 @@ namespace Ann.Test.SettingWindow.SettingPage
             TestHelper.CleanTestEnv();
 
             App.Initialize();
-            VersionUpdater.Initialize();
 
             var model = new ObservableCollection<ShortcutKey>
             {
@@ -76,7 +71,6 @@ namespace Ann.Test.SettingWindow.SettingPage
                 Assert.Equal(Key.C, model[1].Key);
             }
 
-            VersionUpdater.Destory();
             App.Destory();
         }
     }

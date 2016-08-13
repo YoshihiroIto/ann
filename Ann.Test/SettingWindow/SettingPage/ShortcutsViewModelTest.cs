@@ -15,14 +15,12 @@ namespace Ann.Test.SettingWindow.SettingPage
             TestHelper.CleanTestEnv();
 
             App.Initialize();
-            VersionUpdater.Initialize();
 
             var app = new Core.Config.App();
             using (new ShortcutsViewModel(app))
             {
             }
 
-            VersionUpdater.Destory();
             App.Destory();
         }
 
@@ -32,7 +30,6 @@ namespace Ann.Test.SettingWindow.SettingPage
             TestHelper.CleanTestEnv();
 
             App.Initialize();
-            VersionUpdater.Initialize();
 
             var app = new Core.Config.App();
             using (var vm = new ShortcutsViewModel(app))
@@ -44,7 +41,6 @@ namespace Ann.Test.SettingWindow.SettingPage
                 Assert.Equal(ModifierKeys.None, vm.Activate.Modifiers);
             }
 
-            VersionUpdater.Destory();
             App.Destory();
         }
 
@@ -54,7 +50,6 @@ namespace Ann.Test.SettingWindow.SettingPage
             TestHelper.CleanTestEnv();
 
             App.Initialize();
-            VersionUpdater.Initialize();
 
             var app = new Core.Config.App();
             using (var vm = new ShortcutsViewModel(app))
@@ -64,7 +59,6 @@ namespace Ann.Test.SettingWindow.SettingPage
                 Assert.Equal(1, vm.HideShortcuts.Keys.Count);
             }
 
-            VersionUpdater.Destory();
             App.Destory();
         }
     }

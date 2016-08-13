@@ -13,14 +13,10 @@ namespace Ann.Test.SettingWindow.SettingPage
             TestHelper.CleanTestEnv();
 
             App.Initialize();
-            VersionUpdater.Initialize();
-
             var app = new Core.Config.App();
             using (new PriorityFilesViewModel(app))
             {
             }
-
-            VersionUpdater.Destory();
             App.Destory();
         }
 
@@ -30,7 +26,6 @@ namespace Ann.Test.SettingWindow.SettingPage
             TestHelper.CleanTestEnv();
 
             App.Initialize();
-            VersionUpdater.Initialize();
 
             var app = new Core.Config.App();
             using (var vm = new PriorityFilesViewModel(app))
@@ -50,8 +45,6 @@ namespace Ann.Test.SettingWindow.SettingPage
                 Assert.Equal(1, vm.Files.Count);
                 Assert.Equal("BB", vm.Files[0].Path.Value);
             }
-
-            VersionUpdater.Destory();
             App.Destory();
         }
 
@@ -61,7 +54,6 @@ namespace Ann.Test.SettingWindow.SettingPage
             TestHelper.CleanTestEnv();
 
             App.Initialize();
-            VersionUpdater.Initialize();
 
             var app = new Core.Config.App();
             using (var vm = new PriorityFilesViewModel(app))
@@ -74,8 +66,6 @@ namespace Ann.Test.SettingWindow.SettingPage
                 Assert.Equal(1, app.PriorityFiles.Count);
                 Assert.Equal(string.Empty, app.PriorityFiles[0].Value);
             }
-
-            VersionUpdater.Destory();
             App.Destory();
         }
 
@@ -85,7 +75,6 @@ namespace Ann.Test.SettingWindow.SettingPage
             TestHelper.CleanTestEnv();
 
             App.Initialize();
-            VersionUpdater.Initialize();
 
             var app = new Core.Config.App();
             using (var vm = new PriorityFilesViewModel(app))
@@ -106,8 +95,6 @@ namespace Ann.Test.SettingWindow.SettingPage
                 Assert.Equal("AA", app.PriorityFiles[0].Value);
                 Assert.Equal("CC", app.PriorityFiles[1].Value);
             }
-
-            VersionUpdater.Destory();
             App.Destory();
         }
 
@@ -117,7 +104,6 @@ namespace Ann.Test.SettingWindow.SettingPage
             TestHelper.CleanTestEnv();
 
             App.Initialize();
-            VersionUpdater.Initialize();
 
             var app = new Core.Config.App();
             using (var vm = new PriorityFilesViewModel(app))
@@ -126,7 +112,6 @@ namespace Ann.Test.SettingWindow.SettingPage
                 vm.Files[0].FolderSelectDialogOpenCommand.Execute(null);
             }
 
-            VersionUpdater.Destory();
             App.Destory();
         }
     }

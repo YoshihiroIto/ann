@@ -21,7 +21,6 @@ namespace Ann
             ProfileOptimization.StartProfile("Startup.Profile");
 
             DisposableChecker.Start(m => MessageBox.Show(m));
-            VersionUpdater.Initialize();
             {
                 var e = new Entry();
                 e.InitializeComponent();
@@ -31,7 +30,6 @@ namespace Ann
                 CultureService.Destory();
                 App.Destory();
             }
-            VersionUpdater.Destory();
             DisposableChecker.End();
         }
 

@@ -11,15 +11,12 @@ namespace Ann.Test.SettingWindow.SettingPage
         {
             TestHelper.CleanTestEnv();
 
-            VersionUpdater.Initialize();
-
-            using (var vm = new AboutViewModel())
+            using (var versionUpdater = new VersionUpdater(null))
+            using (var vm = new AboutViewModel(versionUpdater))
             {
                Assert.Equal(VersionCheckingStates.Wait, vm.VersionCheckingState.Value);
                Assert.Equal(0, vm.UpdateProgress.Value);
             }
-
-            VersionUpdater.Destory();
         }
 
         [Fact]
@@ -27,14 +24,11 @@ namespace Ann.Test.SettingWindow.SettingPage
         {
             TestHelper.CleanTestEnv();
 
-            VersionUpdater.Initialize();
-
-            using (var vm = new AboutViewModel())
+            using (var versionUpdater = new VersionUpdater(null))
+            using (var vm = new AboutViewModel(versionUpdater))
             {
                 vm.RestartCommand.Execute(null);
             }
-
-            VersionUpdater.Destory();
         }
     }
 }

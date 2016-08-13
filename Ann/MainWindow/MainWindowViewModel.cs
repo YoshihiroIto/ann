@@ -203,7 +203,7 @@ namespace Ann.MainWindow
                     {
                         App.Instance.SaveConfig();
 
-                        if (VersionUpdater.Instance.IsRestartRequested)
+                        if (App.Instance.IsRestartRequested)
                         {
                             ExitCommand.Execute(null);
                             return;
@@ -220,7 +220,10 @@ namespace Ann.MainWindow
                         App.Instance.Config.ShortcutKeys.Activate.Key = key;
 
                         IsShowingSettingShow.Value = true;
-                        await AsyncMessageBroker.Default.PublishAsync(new SettingViewModel(App.Instance.Config));
+                        await AsyncMessageBroker.Default.PublishAsync(
+                            new SettingViewModel(
+                                App.Instance.Config,
+                                App.Instance.VersionUpdater));
                     }
                 }).AddTo(CompositeDisposable);
 

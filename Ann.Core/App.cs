@@ -71,6 +71,8 @@ namespace Ann.Core
             Constants.ConfigDirPath,
             $"{(Foundation.TestHelper.IsTestMode ? "Test." : string.Empty)}index.dat");
 
+        public VersionUpdater VersionUpdater { get; }
+
         #region IndexOpeningResult
 
         private IndexOpeningResults _IndexOpeningResult;
@@ -97,7 +99,7 @@ namespace Ann.Core
 
         #region IsEnableActivateHotKey
 
-        private bool _IsEnableActivateHotKey;
+        private bool _IsEnableActivateHotKey = true;
 
         public bool IsEnableActivateHotKey
         {
@@ -125,6 +127,8 @@ namespace Ann.Core
         {
             if (_Instance == null)
                 throw new NestingException();
+
+            _Instance.VersionUpdater.Restart();
 
             Clean();
         }
@@ -290,6 +294,8 @@ namespace Ann.Core
 
             LoadConfig();
 
+            VersionUpdater = new VersionUpdater(Config.GitHubPersonalAccessToken).AddTo(CompositeDisposable);
+
             SetupAutoUpdater();
 
             CompositeDisposable.Add(() =>
@@ -301,9 +307,9 @@ namespace Ann.Core
             Task.Run(async () =>
             {
                 if (Config.IsStartOnSystemStartup)
-                    await VersionUpdater.Instance.CreateStartupShortcut();
+                    await VersionUpdater.CreateStartupShortcut();
                 else
-                    await VersionUpdater.Instance.RemoveStartupShortcut();
+                    await VersionUpdater.RemoveStartupShortcut();
             });
         }
 
@@ -327,9 +333,9 @@ namespace Ann.Core
                 .ObserveOnUIDispatcher()
                 .Subscribe(async _ =>
                 {
-                    await VersionUpdater.Instance.CheckAsync();
+                    await VersionUpdater.CheckAsync();
 
-                    if (VersionUpdater.Instance.IsAvailableUpdate)
+                    if (VersionUpdater.IsAvailableUpdate)
                     {
                         if (IsEnableAutoUpdater)
                         {
@@ -344,7 +350,7 @@ namespace Ann.Core
 
                             await Task.Delay(TimeSpan.FromSeconds(2));
 
-                            VersionUpdater.Instance.RequestRestart();
+                            VersionUpdater.RequestRestart();
                             Application.Current.MainWindow.Close();
                         }
                     }
@@ -357,6 +363,8 @@ namespace Ann.Core
             CloseAfterNSec
         }
 
+        public bool IsRestartRequested => VersionUpdater.IsRestartRequested;
+
         #region AutoUpdateState
 
         private AutoUpdateStates _AutoUpdateState;
@@ -366,6 +374,7 @@ namespace Ann.Core
             get { return _AutoUpdateState; }
             private set { SetProperty(ref _AutoUpdateState, value); }
         }
+
 
         #endregion
 

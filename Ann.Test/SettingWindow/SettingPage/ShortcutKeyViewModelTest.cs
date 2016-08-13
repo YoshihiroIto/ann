@@ -15,7 +15,6 @@ namespace Ann.Test.SettingWindow.SettingPage
             TestHelper.CleanTestEnv();
 
             App.Initialize();
-            VersionUpdater.Initialize();
 
             var model = new ShortcutKey();
             using (var vm = new ShortcutKeyViewModel(model))
@@ -46,7 +45,6 @@ namespace Ann.Test.SettingWindow.SettingPage
                 Assert.Equal(Key.A, vm.Key.Value);
             }
 
-            VersionUpdater.Destory();
             App.Destory();
         }
     }

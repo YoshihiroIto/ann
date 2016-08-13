@@ -14,7 +14,6 @@ namespace Ann.Test.SettingWindow.SettingPage
             TestHelper.CleanTestEnv();
 
             App.Initialize();
-            VersionUpdater.Initialize();
 
             var app = new Core.Config.App();
             using (var vm = new TargetFoldersViewModel(app))
@@ -53,7 +52,6 @@ namespace Ann.Test.SettingWindow.SettingPage
                 Assert.Equal("AA", vm.Folders[0].Path.Value);
             }
 
-            VersionUpdater.Destory();
             App.Destory();
         }
 
@@ -63,7 +61,6 @@ namespace Ann.Test.SettingWindow.SettingPage
             TestHelper.CleanTestEnv();
 
             App.Initialize();
-            VersionUpdater.Initialize();
 
             var app = new Core.Config.App();
             using (var vm = new TargetFoldersViewModel(app))
@@ -77,7 +74,6 @@ namespace Ann.Test.SettingWindow.SettingPage
                 Assert.Equal(string.Empty, app.TargetFolder.Folders[0].Value);
             }
 
-            VersionUpdater.Destory();
             App.Destory();
         }
 
@@ -87,7 +83,6 @@ namespace Ann.Test.SettingWindow.SettingPage
             TestHelper.CleanTestEnv();
 
             App.Initialize();
-            VersionUpdater.Initialize();
 
             var app = new Core.Config.App();
             using (var vm = new TargetFoldersViewModel(app))
@@ -110,7 +105,6 @@ namespace Ann.Test.SettingWindow.SettingPage
                 Assert.Equal("CC", app.TargetFolder.Folders[1].Value);
             }
 
-            VersionUpdater.Destory();
             App.Destory();
         }
     }

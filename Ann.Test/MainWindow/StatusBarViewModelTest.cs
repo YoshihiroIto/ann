@@ -11,14 +11,11 @@ namespace Ann.Test.MainWindow
         {
             TestHelper.CleanTestEnv();
             App.Initialize();
-            VersionUpdater.Initialize();
 
-            using (var parent = new MainWindowViewModel())
-            using (new StatusBarViewModel(parent))
+            using (new StatusBarViewModel())
             {
             }
 
-            VersionUpdater.Destory();
             App.Destory();
         }
 
@@ -37,8 +34,7 @@ namespace Ann.Test.MainWindow
 
             App.Instance.OpenIndexAsync().Wait();
 
-            using (var parent = new MainWindowViewModel())
-            using (var vm = new StatusBarViewModel(parent))
+            using (var vm = new StatusBarViewModel())
             {
                 Assert.Equal(0, vm.Messages.Count);
                 vm.Messages.Add(new ProcessingStatusBarItemViewModel("aaa"));
@@ -63,8 +59,7 @@ namespace Ann.Test.MainWindow
 
             App.Instance.OpenIndexAsync().Wait();
 
-            using (var parent = new MainWindowViewModel())
-            using (var vm = new StatusBarViewModel(parent))
+            using (var vm = new StatusBarViewModel())
             {
                 Assert.Equal(System.Windows.Visibility.Collapsed, vm.Visibility.Value);
 
