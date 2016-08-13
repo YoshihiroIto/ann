@@ -78,6 +78,8 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                     model.TargetFolder.Folders.Remove(t);
             }).AddTo(CompositeDisposable);
 
+            var isFirst = true;
+
             Observable
                 .Merge(IsIncludeSystemFolder.ToUnit())
                 .Merge(IsIncludeSystemX86Folder.ToUnit())
@@ -89,7 +91,16 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                 .Merge(_pathChanged.ToUnit())
                 .Throttle(TimeSpan.FromMilliseconds(50))
                 .ObserveOnUIDispatcher()
-                .Subscribe(async _ => await app.UpdateIndexAsync())
+                .Subscribe(async _ =>
+                {
+                    if (isFirst)
+                    {
+                        isFirst = false;
+                        return;
+                    }
+                    
+                    await app.UpdateIndexAsync();
+                })
                 .AddTo(CompositeDisposable);
         }
     }
