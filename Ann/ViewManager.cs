@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Threading;
 using Ann.Foundation.Mvvm;
 using Ann.Foundation.Mvvm.Message;
@@ -14,6 +15,8 @@ namespace Ann
 
         public ViewManager(Dispatcher uiDispatcher)
         {
+            Debug.Assert(uiDispatcher != null);
+
             _uiDispatcher = uiDispatcher;
 
             SubscribeMessages();

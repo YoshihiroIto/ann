@@ -4,8 +4,6 @@
     {
         public static void CleanTestEnv()
         {
-            CultureService.Clean();
-
             Core.TestHelper.CleanTestEnv();
         }
     }

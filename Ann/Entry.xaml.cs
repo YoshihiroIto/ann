@@ -25,8 +25,6 @@ namespace Ann
                 var e = new Entry();
                 e.InitializeComponent();
                 e.Run();
-
-                CultureService.Destory();
             }
             DisposableChecker.End();
         }
@@ -40,7 +38,7 @@ namespace Ann
 
             App = new App(ConfigHolder);
 
-            CultureService.Initialize(ConfigHolder.Config);
+            CultureService.Instance.SetConfig(ConfigHolder.Config);
             Reactive.Bindings.UIDispatcherScheduler.Initialize();
         }
 
@@ -50,6 +48,7 @@ namespace Ann
 
             App.Dispose();
             _viewManager.Dispose();
+            CultureService.Instance.Destory();
         }
 
         public static App App { get; private set; }
