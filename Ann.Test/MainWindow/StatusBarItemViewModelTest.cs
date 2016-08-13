@@ -28,6 +28,12 @@ namespace Ann.Test.MainWindow
                 Assert.Equal(StatusBarItemViewModel.SearchKey.InOpening, vm.Key);
             }
 
+            using (var vm = new WaitingStatusBarItemViewModel("XYZ"))
+            {
+                Assert.Equal("XYZ", vm.Message.Value);
+                Assert.Equal(StatusBarItemViewModel.SearchKey.NoKey, vm.Key);
+            }
+
             using (var vm = new WaitingStatusBarItemViewModel(StatusBarItemViewModel.SearchKey.InOpening, "XYZ"))
             {
                 Assert.Equal("XYZ", vm.Message.Value);

@@ -1,13 +1,46 @@
 ﻿using System;
-using System.Linq;
-using System.Threading;
 using Ann.Foundation;
-using Reactive.Bindings.Extensions;
 using Xunit;
 
 namespace Ann.Core.Test
 {
-    public class ConfigHolderTest
+    public class ConfigHolderTest: IDisposable
     {
+        private readonly DisposableFileSystem _config = new DisposableFileSystem();
+
+        public void Dispose()
+        {
+            _config.Dispose();
+        }
+
+        [Fact]
+        public void SaveConfig()
+        {
+            TestHelper.CleanTestEnv();
+
+            var configHolder = new ConfigHolder(_config.RootPath);
+
+            configHolder.SaveConfig();
+        }
+
+        [Fact]
+        public void SaveMru()
+        {
+            TestHelper.CleanTestEnv();
+
+            var configHolder = new ConfigHolder(_config.RootPath);
+
+            configHolder.SaveMru();
+        }
+
+        [Fact]
+        public void SaveMainWindow()
+        {
+            TestHelper.CleanTestEnv();
+
+            var configHolder = new ConfigHolder(_config.RootPath);
+
+            configHolder.SaveMainWindow();
+        }
     }
 }

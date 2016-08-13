@@ -23,8 +23,13 @@ namespace Ann.Core.Test
         {
             TestHelper.CleanTestEnv();
 
-            using (new App(new ConfigHolder(_config.RootPath)))
+            using (var vm = new App(new ConfigHolder(_config.RootPath)))
             {
+                Assert.True(vm.IsEnableActivateHotKey);
+                vm.IsEnableActivateHotKey = false;
+                Assert.False(vm.IsEnableActivateHotKey);
+
+                Assert.False(vm.IsRestartRequested);
             }
         }
 

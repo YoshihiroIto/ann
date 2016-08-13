@@ -7,8 +7,6 @@ namespace Ann.Foundation
 {
     public static class TestHelper
     {
-        public static bool IsTestMode => ModeDetector.InUnitTestRunner();
-
         public static void SetEntryAssembly()
         {
             // http://dejanstojanovic.net/aspnet/2015/january/set-entry-assembly-in-unit-testing-methods/
