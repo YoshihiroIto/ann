@@ -16,7 +16,7 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
         public ReactiveCommand FileAddCommand { get; }
         public ReactiveCommand<PathViewModel> FileRemoveCommand { get; }
 
-        public PriorityFilesViewModel(Core.Config.App model)
+        public PriorityFilesViewModel(Core.Config.App model, App app)
         {
             Debug.Assert(model != null);
 
@@ -32,8 +32,8 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
 
                 pvm.Path.Subscribe(_ =>
                 {
-                    App.Instance.RefreshPriorityFiles();
-                    App.Instance.InvokePriorityFilesChanged();
+                    app.RefreshPriorityFiles();
+                    app.InvokePriorityFilesChanged();
                 }).AddTo(pvm.CompositeDisposable);
 
                 return pvm;

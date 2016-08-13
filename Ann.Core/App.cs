@@ -8,7 +8,6 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Ann.Foundation;
-using Ann.Foundation.Exception;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings.Extensions;
 using System.Threading;
@@ -17,19 +16,6 @@ namespace Ann.Core
 {
     public class App : DisposableModelBase
     {
-        private static App _Instance;
-
-        public static App Instance
-        {
-            get
-            {
-                if (_Instance == null)
-                    throw new UninitializedException();
-
-                return _Instance;
-            }
-        }
-
         #region Candidates
 
         private IEnumerable<ExecutableUnit> _Candidates = Enumerable.Empty<ExecutableUnit>();
@@ -108,30 +94,6 @@ namespace Ann.Core
         }
 
         #endregion
-
-        public static void Clean()
-        {
-            _Instance?.Dispose();
-            _Instance = null;
-        }
-
-        public static void Initialize()
-        {
-            if (_Instance != null)
-                throw new NestingException();
-
-            _Instance = new App();
-        }
-
-        public static void Destory()
-        {
-            if (_Instance == null)
-                throw new NestingException();
-
-            _Instance.VersionUpdater.Restart();
-
-            Clean();
-        }
 
         public static void RemoveIndexFile()
         {
@@ -283,7 +245,7 @@ namespace Ann.Core
             return i;
         }
 
-        private App()
+        public App()
         {
             _dataBase = new ExecutableUnitDataBase(IndexFilePath);
             _inputControler = new InputControler().AddTo(CompositeDisposable);

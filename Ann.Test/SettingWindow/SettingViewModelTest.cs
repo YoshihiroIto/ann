@@ -12,10 +12,11 @@ namespace Ann.Test.SettingWindow
         {
             TestHelper.CleanTestEnv();
 
-            var app = new Core.Config.App();
+            var model = new Core.Config.App();
 
+            using (var app = new App())
             using (var versionUpdater = new VersionUpdater(null))
-            using (var vm = new SettingViewModel(app, versionUpdater))
+            using (var vm = new SettingViewModel(model, versionUpdater, app))
             {
                 Assert.Equal(5, vm.Pages.Length);
                 Assert.IsType<GeneralViewModel>(vm.SelectedPage.Value);
@@ -27,10 +28,11 @@ namespace Ann.Test.SettingWindow
         {
             TestHelper.CleanTestEnv();
 
-            var app = new Core.Config.App();
+            var model = new Core.Config.App();
 
+            using (var app = new App())
             using (var versionUpdater = new VersionUpdater(null))
-            using (var vm = new SettingViewModel(app, versionUpdater))
+            using (var vm = new SettingViewModel(model, versionUpdater, app))
             {
                 vm.InitializeCommand.Execute(null);
             }
@@ -41,10 +43,11 @@ namespace Ann.Test.SettingWindow
         {
             TestHelper.CleanTestEnv();
 
-            var app = new Core.Config.App();
+            var model = new Core.Config.App();
 
+            using (var app = new App())
             using (var versionUpdater = new VersionUpdater(null))
-            using (var vm = new SettingViewModel(app, versionUpdater))
+            using (var vm = new SettingViewModel(model, versionUpdater, app))
             {
                 vm.CloseCommand.Execute(null);
             }

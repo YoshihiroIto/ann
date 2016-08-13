@@ -10,68 +10,66 @@ namespace Ann.Test.MainWindow
         public void Basic()
         {
             TestHelper.CleanTestEnv();
-            App.Initialize();
 
-            using (new StatusBarViewModel())
+            using (var app = new App())
+            using (new StatusBarViewModel(app))
             {
             }
-
-            App.Destory();
         }
 
         [WpfFact]
         public void Messages()
         {
             TestHelper.CleanTestEnv();
-            App.Initialize();
 
-            App.Instance.Config.TargetFolder.IsIncludeSystemFolder = false;
-            App.Instance.Config.TargetFolder.IsIncludeSystemX86Folder = false;
-            App.Instance.Config.TargetFolder.IsIncludeProgramsFolder = false;
-            App.Instance.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
-            App.Instance.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
-            App.Instance.Config.TargetFolder.IsIncludeCommonStartMenu = false;
-
-            App.Instance.OpenIndexAsync().Wait();
-
-            using (var vm = new StatusBarViewModel())
+            using (var app = new App())
             {
-                Assert.Equal(0, vm.Messages.Count);
-                vm.Messages.Add(new ProcessingStatusBarItemViewModel("aaa"));
-                Assert.Equal(1, vm.Messages.Count);
-            }
+                app.Config.TargetFolder.IsIncludeSystemFolder = false;
+                app.Config.TargetFolder.IsIncludeSystemX86Folder = false;
+                app.Config.TargetFolder.IsIncludeProgramsFolder = false;
+                app.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
+                app.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
+                app.Config.TargetFolder.IsIncludeCommonStartMenu = false;
 
-            App.Destory();
+                app.OpenIndexAsync().Wait();
+
+                using (var vm = new StatusBarViewModel(app))
+                {
+                    Assert.Equal(0, vm.Messages.Count);
+                    vm.Messages.Add(new ProcessingStatusBarItemViewModel("aaa"));
+                    Assert.Equal(1, vm.Messages.Count);
+                }
+            }
         }
 
         [WpfFact]
         public void Visibility()
         {
             TestHelper.CleanTestEnv();
-            App.Initialize();
 
-            App.Instance.Config.TargetFolder.IsIncludeSystemFolder = false;
-            App.Instance.Config.TargetFolder.IsIncludeSystemX86Folder = false;
-            App.Instance.Config.TargetFolder.IsIncludeProgramsFolder = false;
-            App.Instance.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
-            App.Instance.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
-            App.Instance.Config.TargetFolder.IsIncludeCommonStartMenu = false;
-
-            App.Instance.OpenIndexAsync().Wait();
-
-            using (var vm = new StatusBarViewModel())
+            using (var app = new App())
             {
-                Assert.Equal(System.Windows.Visibility.Collapsed, vm.Visibility.Value);
+                app.Config.TargetFolder.IsIncludeSystemFolder = false;
+                app.Config.TargetFolder.IsIncludeSystemX86Folder = false;
+                app.Config.TargetFolder.IsIncludeProgramsFolder = false;
+                app.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
+                app.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
+                app.Config.TargetFolder.IsIncludeCommonStartMenu = false;
 
-                var i = new ProcessingStatusBarItemViewModel("aaa");
-                vm.Messages.Add(i);
-                Assert.Equal(System.Windows.Visibility.Visible, vm.Visibility.Value);
+                app.OpenIndexAsync().Wait();
 
-                vm.Messages.Remove(i);
-                Assert.Equal(System.Windows.Visibility.Collapsed, vm.Visibility.Value);
+                using (var vm = new StatusBarViewModel(app))
+                {
+                    Assert.Equal(System.Windows.Visibility.Collapsed, vm.Visibility.Value);
+
+                    var i = new ProcessingStatusBarItemViewModel("aaa");
+                    vm.Messages.Add(i);
+                    Assert.Equal(System.Windows.Visibility.Visible, vm.Visibility.Value);
+
+                    vm.Messages.Remove(i);
+                    Assert.Equal(System.Windows.Visibility.Collapsed, vm.Visibility.Value);
+                }
             }
-
-            App.Destory();
         }
     }
 }

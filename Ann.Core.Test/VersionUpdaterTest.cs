@@ -1,5 +1,4 @@
-﻿using Ann.Foundation.Exception;
-using Xunit;
+﻿using Xunit;
 
 namespace Ann.Core.Test
 {

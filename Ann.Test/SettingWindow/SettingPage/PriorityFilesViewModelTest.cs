@@ -12,12 +12,12 @@ namespace Ann.Test.SettingWindow.SettingPage
         {
             TestHelper.CleanTestEnv();
 
-            App.Initialize();
-            var app = new Core.Config.App();
-            using (new PriorityFilesViewModel(app))
+            var model = new Core.Config.App();
+
+            using (var app = new App())
+            using (new PriorityFilesViewModel(model, app))
             {
             }
-            App.Destory();
         }
 
         [Fact]
@@ -25,27 +25,26 @@ namespace Ann.Test.SettingWindow.SettingPage
         {
             TestHelper.CleanTestEnv();
 
-            App.Initialize();
+            var model = new Core.Config.App();
 
-            var app = new Core.Config.App();
-            using (var vm = new PriorityFilesViewModel(app))
+            using (var app = new App())
+            using (var vm = new PriorityFilesViewModel(model, app))
             {
                 Assert.Equal(0, vm.Files.Count);
 
-                app.PriorityFiles.Add(new Path("AA"));
+                model.PriorityFiles.Add(new Path("AA"));
                 Assert.Equal(1, vm.Files.Count);
                 Assert.Equal("AA", vm.Files[0].Path.Value);
 
-                app.PriorityFiles.Add(new Path("BB"));
+                model.PriorityFiles.Add(new Path("BB"));
                 Assert.Equal(2, vm.Files.Count);
                 Assert.Equal("AA", vm.Files[0].Path.Value);
                 Assert.Equal("BB", vm.Files[1].Path.Value);
 
-                app.PriorityFiles.RemoveAt(0);
+                model.PriorityFiles.RemoveAt(0);
                 Assert.Equal(1, vm.Files.Count);
                 Assert.Equal("BB", vm.Files[0].Path.Value);
             }
-            App.Destory();
         }
 
         [Fact]
@@ -53,20 +52,19 @@ namespace Ann.Test.SettingWindow.SettingPage
         {
             TestHelper.CleanTestEnv();
 
-            App.Initialize();
+            var model = new Core.Config.App();
 
-            var app = new Core.Config.App();
-            using (var vm = new PriorityFilesViewModel(app))
+            using (var app = new App())
+            using (var vm = new PriorityFilesViewModel(model, app))
             {
                 vm.FileAddCommand.Execute(null);
 
                 Assert.Equal(1, vm.Files.Count);
                 Assert.Equal(string.Empty, vm.Files[0].Path.Value);
 
-                Assert.Equal(1, app.PriorityFiles.Count);
-                Assert.Equal(string.Empty, app.PriorityFiles[0].Value);
+                Assert.Equal(1, model.PriorityFiles.Count);
+                Assert.Equal(string.Empty, model.PriorityFiles[0].Value);
             }
-            App.Destory();
         }
 
         [Fact]
@@ -74,16 +72,16 @@ namespace Ann.Test.SettingWindow.SettingPage
         {
             TestHelper.CleanTestEnv();
 
-            App.Initialize();
+            var model = new Core.Config.App();
 
-            var app = new Core.Config.App();
-            using (var vm = new PriorityFilesViewModel(app))
+            using (var app = new App())
+            using (var vm = new PriorityFilesViewModel(model, app))
             {
                 Assert.Equal(0, vm.Files.Count);
 
-                app.PriorityFiles.Add(new Path("AA"));
-                app.PriorityFiles.Add(new Path("BB"));
-                app.PriorityFiles.Add(new Path("CC"));
+                model.PriorityFiles.Add(new Path("AA"));
+                model.PriorityFiles.Add(new Path("BB"));
+                model.PriorityFiles.Add(new Path("CC"));
 
                 vm.FileRemoveCommand.Execute(new PathViewModel(new Path("BB"), false));
 
@@ -91,11 +89,10 @@ namespace Ann.Test.SettingWindow.SettingPage
                 Assert.Equal("AA", vm.Files[0].Path.Value);
                 Assert.Equal("CC", vm.Files[1].Path.Value);
 
-                Assert.Equal(2, app.PriorityFiles.Count);
-                Assert.Equal("AA", app.PriorityFiles[0].Value);
-                Assert.Equal("CC", app.PriorityFiles[1].Value);
+                Assert.Equal(2, model.PriorityFiles.Count);
+                Assert.Equal("AA", model.PriorityFiles[0].Value);
+                Assert.Equal("CC", model.PriorityFiles[1].Value);
             }
-            App.Destory();
         }
 
         [Fact]
@@ -103,16 +100,14 @@ namespace Ann.Test.SettingWindow.SettingPage
         {
             TestHelper.CleanTestEnv();
 
-            App.Initialize();
+            var model = new Core.Config.App();
 
-            var app = new Core.Config.App();
-            using (var vm = new PriorityFilesViewModel(app))
+            using (var app = new App())
+            using (var vm = new PriorityFilesViewModel(model, app))
             {
-                app.PriorityFiles.Add(new Path("AA"));
+                model.PriorityFiles.Add(new Path("AA"));
                 vm.Files[0].FolderSelectDialogOpenCommand.Execute(null);
             }
-
-            App.Destory();
         }
     }
 }

@@ -27,7 +27,6 @@ namespace Ann
                 e.Run();
 
                 CultureService.Destory();
-                App.Destory();
             }
             DisposableChecker.End();
         }
@@ -36,10 +35,10 @@ namespace Ann
         {
             base.OnStartup(e);
 
-            App.Initialize();
-            CultureService.Initialize(App.Instance.Config);
-
+            App = new App();
             _viewManager = new ViewManager(Dispatcher);
+
+            CultureService.Initialize(App.Config);
             Reactive.Bindings.UIDispatcherScheduler.Initialize();
         }
 
@@ -47,8 +46,11 @@ namespace Ann
         {
             base.OnExit(e);
 
+            App.Dispose();
             _viewManager.Dispose();
         }
+
+        public static App App { get; private set; }
 
         private ViewManager _viewManager;
     }

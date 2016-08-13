@@ -1,9 +1,7 @@
 ﻿using System.Windows.Input;
-using Ann.Core;
 using Ann.Core.Config;
 using Ann.SettingWindow.SettingPage.Shortcuts;
 using Xunit;
-using App = Ann.Core.App;
 
 namespace Ann.Test.SettingWindow.SettingPage
 {
@@ -13,8 +11,6 @@ namespace Ann.Test.SettingWindow.SettingPage
         public void Basic()
         {
             TestHelper.CleanTestEnv();
-
-            App.Initialize();
 
             var model = new ShortcutKey();
             using (var vm = new ShortcutKeyViewModel(model))
@@ -44,8 +40,6 @@ namespace Ann.Test.SettingWindow.SettingPage
                 Assert.Equal(Key.A, model.Key);
                 Assert.Equal(Key.A, vm.Key.Value);
             }
-
-            App.Destory();
         }
     }
 }

@@ -47,19 +47,19 @@ namespace Ann.MainWindow
                     _isSubscribedPriorityFilesChanged = true;
                 }
 
-                return App.Instance.IsPriorityFile(Path);
+                return _app.IsPriorityFile(Path);
             }
 
             set
             {
                 if (value)
                 {
-                    if (App.Instance.AddPriorityFile(Path))
+                    if (_app.AddPriorityFile(Path))
                         RaisePropertyChanged();
                 }
                 else
                 {
-                    if (App.Instance.RemovePriorityFile(Path))
+                    if (_app.RemovePriorityFile(Path))
                         RaisePropertyChanged();
                 }
             }
@@ -79,16 +79,19 @@ namespace Ann.MainWindow
         }
 
         private readonly MainWindowViewModel _parent;
+        private readonly App _app;
 
-        public ExecutableUnitViewModel(MainWindowViewModel parent, ExecutableUnit model)
+        public ExecutableUnitViewModel(MainWindowViewModel parent, ExecutableUnit model, App app)
         {
             Debug.Assert(parent != null);
+            Debug.Assert(model != null);
+            Debug.Assert(app != null);
 
             _parent = parent;
+            _app = app;
 
             Name = string.IsNullOrWhiteSpace(model.Name) == false ? model.Name : System.IO.Path.GetFileName(model.Path);
             Path = model.Path;
-
         }
 
         private bool _isSubscribedPriorityFilesChanged;
@@ -96,8 +99,8 @@ namespace Ann.MainWindow
         private void SubscribPriorityFilesChanged()
         {
             Observable.FromEventPattern(
-                h => App.Instance.PriorityFilesChanged += h,
-                h => App.Instance.PriorityFilesChanged -= h)
+                h => _app.PriorityFilesChanged += h,
+                h => _app.PriorityFilesChanged -= h)
                 .Subscribe(_ =>
                     // ReSharper disable once ExplicitCallerInfoArgument
                     RaisePropertyChanged(nameof(IsPriorityFile))

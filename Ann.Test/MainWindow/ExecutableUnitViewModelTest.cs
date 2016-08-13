@@ -12,7 +12,6 @@ namespace Ann.Test.MainWindow
         public void Basic()
         {
             TestHelper.CleanTestEnv();
-            App.Initialize();
 
             var path = Assembly.GetEntryAssembly().Location;
             var stringPool = new ConcurrentDictionary<string, string>();
@@ -20,15 +19,14 @@ namespace Ann.Test.MainWindow
 
             var model = new ExecutableUnit(path, stringPool, targetFolders);
 
-            using (var parent = new MainWindowViewModel())
-            using (var vm = new ExecutableUnitViewModel(parent, model))
+            using (var app = new App())
+            using (var parent = new MainWindowViewModel(app))
+            using (var vm = new ExecutableUnitViewModel(parent, model, app))
             {
                 Assert.Equal("Ann", vm.Name);
                 Assert.Equal(path, vm.Path);
                 Assert.NotNull(vm.Icon);
             }
-
-            App.Destory();
         }
 
         [WpfFact]
@@ -36,29 +34,26 @@ namespace Ann.Test.MainWindow
         {
             TestHelper.CleanTestEnv();
 
-            App.Initialize();
-
             var path = Assembly.GetEntryAssembly().Location;
             var stringPool = new ConcurrentDictionary<string, string>();
             var targetFolders = new string[0];
 
             var model = new ExecutableUnit(path, stringPool, targetFolders);
 
-            using (var parent = new MainWindowViewModel())
-            using (var vm = new ExecutableUnitViewModel(parent, model))
+            using (var app = new App())
+            using (var parent = new MainWindowViewModel(app))
+            using (var vm = new ExecutableUnitViewModel(parent, model, app))
             {
                 Assert.False(vm.IsPriorityFile);
 
                 vm.IsPriorityFile = true;
                 Assert.True(vm.IsPriorityFile);
-                Assert.True(App.Instance.IsPriorityFile(path));
+                Assert.True(app.IsPriorityFile(path));
 
                 vm.IsPriorityFile = false;
                 Assert.False(vm.IsPriorityFile);
-                Assert.False(App.Instance.IsPriorityFile(path));
+                Assert.False(app.IsPriorityFile(path));
             }
-
-            App.Destory();
         }
 
         [WpfFact]
@@ -66,32 +61,29 @@ namespace Ann.Test.MainWindow
         {
             TestHelper.CleanTestEnv();
 
-            App.Initialize();
-
             var path = Assembly.GetEntryAssembly().Location;
             var stringPool = new ConcurrentDictionary<string, string>();
             var targetFolders = new string[0];
 
             var model = new ExecutableUnit(path, stringPool, targetFolders);
 
-            using (var parent = new MainWindowViewModel())
-            using (var vm = new ExecutableUnitViewModel(parent, model))
+            using (var app = new App())
+            using (var parent = new MainWindowViewModel(app))
+            using (var vm = new ExecutableUnitViewModel(parent, model, app))
             {
                 Assert.False(vm.IsPriorityFile);
-                Assert.False(App.Instance.IsPriorityFile(path));
+                Assert.False(app.IsPriorityFile(path));
 
                 vm.IsPriorityFileFlipCommand.Execute(null);
 
                 Assert.True(vm.IsPriorityFile);
-                Assert.True(App.Instance.IsPriorityFile(path));
+                Assert.True(app.IsPriorityFile(path));
 
                 vm.IsPriorityFileFlipCommand.Execute(null);
 
                 Assert.False(vm.IsPriorityFile);
-                Assert.False(App.Instance.IsPriorityFile(path));
+                Assert.False(app.IsPriorityFile(path));
             }
-
-            App.Destory();
         }
     }
 }

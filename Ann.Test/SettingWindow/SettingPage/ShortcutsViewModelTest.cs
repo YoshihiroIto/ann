@@ -1,9 +1,7 @@
 ﻿using System.Windows.Input;
-using Ann.Core;
 using Ann.Core.Config;
 using Ann.SettingWindow.SettingPage.Shortcuts;
 using Xunit;
-using App = Ann.Core.App;
 
 namespace Ann.Test.SettingWindow.SettingPage
 {
@@ -14,14 +12,10 @@ namespace Ann.Test.SettingWindow.SettingPage
         {
             TestHelper.CleanTestEnv();
 
-            App.Initialize();
-
-            var app = new Core.Config.App();
-            using (new ShortcutsViewModel(app))
+            var model = new App();
+            using (new ShortcutsViewModel(model))
             {
             }
-
-            App.Destory();
         }
 
         [Fact]
@@ -29,10 +23,8 @@ namespace Ann.Test.SettingWindow.SettingPage
         {
             TestHelper.CleanTestEnv();
 
-            App.Initialize();
-
-            var app = new Core.Config.App();
-            using (var vm = new ShortcutsViewModel(app))
+            var model = new App();
+            using (var vm = new ShortcutsViewModel(model))
             {
                 Assert.False(vm.Activate.IsControl.Value);
                 Assert.False(vm.Activate.IsAlt.Value);
@@ -40,8 +32,6 @@ namespace Ann.Test.SettingWindow.SettingPage
                 Assert.Equal(Key.None, vm.Activate.Key.Value);
                 Assert.Equal(ModifierKeys.None, vm.Activate.Modifiers);
             }
-
-            App.Destory();
         }
 
         [Fact]
@@ -49,17 +39,13 @@ namespace Ann.Test.SettingWindow.SettingPage
         {
             TestHelper.CleanTestEnv();
 
-            App.Initialize();
-
-            var app = new Core.Config.App();
-            using (var vm = new ShortcutsViewModel(app))
+            var model = new App();
+            using (var vm = new ShortcutsViewModel(model))
             {
                 Assert.Equal(0, vm.HideShortcuts.Keys.Count);
-                app.ShortcutKeys.Hide.Add(new ShortcutKey());
+                model.ShortcutKeys.Hide.Add(new ShortcutKey());
                 Assert.Equal(1, vm.HideShortcuts.Keys.Count);
             }
-
-            App.Destory();
         }
     }
 }

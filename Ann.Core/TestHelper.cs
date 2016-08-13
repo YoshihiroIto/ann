@@ -16,7 +16,6 @@ namespace Ann.Core
             if (Assembly.GetEntryAssembly() == null)
                 Foundation.TestHelper.SetEntryAssembly();
 
-            App.Clean();
             ReactivePropertyScheduler.SetDefault(ImmediateScheduler.Instance);
             App.RemoveIndexFile();
             DeleteTestConfigs();

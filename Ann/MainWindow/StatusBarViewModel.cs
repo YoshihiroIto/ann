@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows;
@@ -15,11 +16,17 @@ namespace Ann.MainWindow
         public ReactiveCollection<StatusBarItemViewModel> Messages { get; }
         public ReadOnlyReactiveProperty<Visibility> Visibility { get; }
 
-        public StatusBarViewModel()
+        private readonly App _app;
+
+        public StatusBarViewModel(App app)
         {
+            Debug.Assert(app != null);
+
+            _app = app;
+
             Messages = new ReactiveCollection<StatusBarItemViewModel>().AddTo(CompositeDisposable);
 
-            CompositeDisposable.Add(async () => await App.Instance.CancelUpdateIndexAsync());
+            CompositeDisposable.Add(async () => await app.CancelUpdateIndexAsync());
             CompositeDisposable.Add(() => Messages.ForEach(x => x.Dispose()));
 
             Visibility = Messages.CollectionChangedAsObservable()
@@ -27,7 +34,7 @@ namespace Ann.MainWindow
                 .ToReadOnlyReactiveProperty(System.Windows.Visibility.Collapsed)
                 .AddTo(CompositeDisposable);
 
-            App.Instance.ObserveProperty(x => x.IsIndexUpdating)
+            app.ObserveProperty(x => x.IsIndexUpdating)
                 .SubscribeOnUIDispatcher()
                 .Subscribe(i =>
                 {
@@ -52,7 +59,7 @@ namespace Ann.MainWindow
                     }
                 }).AddTo(CompositeDisposable);
 
-            App.Instance.ObserveProperty(c => c.Crawling)
+            app.ObserveProperty(c => c.Crawling)
                 .SubscribeOnUIDispatcher()
                 .Subscribe(c =>
                 {
@@ -65,7 +72,7 @@ namespace Ann.MainWindow
                 })
                 .AddTo(CompositeDisposable);
 
-            App.Instance.ObserveProperty(x => x.IsEnableActivateHotKey)
+            app.ObserveProperty(x => x.IsEnableActivateHotKey)
                 .Subscribe(i =>
                 {
                     if (i == false)
@@ -86,7 +93,7 @@ namespace Ann.MainWindow
                     }
                 }).AddTo(CompositeDisposable);
 
-            App.Instance.ObserveProperty(x => x.IndexOpeningResult)
+            app.ObserveProperty(x => x.IndexOpeningResult)
                 .Subscribe(r =>
                 {
                     if (r == IndexOpeningResults.InOpening)
@@ -116,7 +123,7 @@ namespace Ann.MainWindow
         {
             CompositeDisposable.Add(() => _autoUpdaterItem?.Dispose());
 
-            App.Instance.ObserveProperty(x => x.AutoUpdateState)
+            _app.ObserveProperty(x => x.AutoUpdateState)
                 .Subscribe(s =>
                 {
                     if (_autoUpdaterItem != null)
@@ -138,10 +145,10 @@ namespace Ann.MainWindow
                         Messages.Add(_autoUpdaterItem);
                 }).AddTo(CompositeDisposable);
 
-            App.Instance.ObserveProperty(x => x.AutoUpdateRemainingSeconds)
+            _app.ObserveProperty(x => x.AutoUpdateRemainingSeconds)
                 .Subscribe(p =>
                 {
-                    if (App.Instance.AutoUpdateState == App.AutoUpdateStates.CloseAfterNSec)
+                    if (_app.AutoUpdateState == App.AutoUpdateStates.CloseAfterNSec)
                         _autoUpdaterItem.Message.Value =
                             p == 0
                                 ? Properties.Resources.AutoUpdateStates_CloseAfter0Sec_Restart

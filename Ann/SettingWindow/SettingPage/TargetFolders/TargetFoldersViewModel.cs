@@ -26,7 +26,7 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
 
         private readonly Subject<int> _pathChanged;
 
-        public TargetFoldersViewModel(Core.Config.App model)
+        public TargetFoldersViewModel(Core.Config.App model, App app)
         {
             Debug.Assert(model != null);
 
@@ -89,7 +89,7 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                 .Merge(_pathChanged.ToUnit())
                 .Throttle(TimeSpan.FromMilliseconds(50))
                 .ObserveOnUIDispatcher()
-                .Subscribe(async _ => await App.Instance.UpdateIndexAsync())
+                .Subscribe(async _ => await app.UpdateIndexAsync())
                 .AddTo(CompositeDisposable);
         }
     }
