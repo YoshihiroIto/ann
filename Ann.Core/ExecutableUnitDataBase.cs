@@ -148,20 +148,20 @@ namespace Ann.Core
             {
                 var score = MakeScoreSub(u.LowerFileName, u.LowerFileNameParts, input);
                 if (score != int.MaxValue)
-                    return ((score + 4*0)* extScores.Count + extScore)*maxPathLength + pathLength;
+                    return ((score + 4*0)*extScores.Count + extScore)*maxPathLength + pathLength;
             }
 
             {
                 var score = MakeScoreSub(u.LowerName, u.LowerNameParts, input);
                 if (score != int.MaxValue)
-                    return ((score + 4*1) * extScores.Count + extScore)*maxPathLength + pathLength;
+                    return ((score + 4*1)*extScores.Count + extScore)*maxPathLength + pathLength;
             }
 
             {
                 // ReSharper disable once RedundantAssignment
                 var score = MakeScoreSub(u.LowerDirectory, u.LowerDirectoryParts, input);
                 if (score != int.MaxValue)
-                    return ((score + 4*2)* extScores.Count + extScore)*maxPathLength + pathLength;
+                    return ((score + 4*2)*extScores.Count + extScore)*maxPathLength + pathLength;
             }
 
             return int.MaxValue;
@@ -185,14 +185,33 @@ namespace Ann.Core
             return int.MaxValue;
         }
 
-        public async Task<IndexOpeningResults> UpdateIndexAsync(IEnumerable<string> targetFolders,
+        public async Task CancelUpdateIndexAsync()
+        {
+            if (_crawlingTokenSource == null)
+                return;
+
+            await Task.Run(() =>
+            {
+                _crawlingTokenSource?.Cancel();
+                _crawlingResetEvent?.Wait();
+            });
+        }
+
+        public async Task<IndexOpeningResults> UpdateIndexAsync(
+            IEnumerable<string> targetFolders,
             IEnumerable<string> executableFileExts)
         {
             var targetFoldersArray = NormalizeTargetFolders(targetFolders);
             var executableFileExtsArray = NormalizeExecutableFileExts(executableFileExts);
 
             using (new TimeMeasure("Index Crawlering"))
-                _executableUnits = await CrawlAsync(targetFoldersArray, executableFileExtsArray);
+            {
+                var result = await CrawlAsync(targetFoldersArray, executableFileExtsArray);
+                if (result.IsCanceled)
+                    return IndexOpeningResults.Ok;
+
+                _executableUnits = result.Units;
+            }
 
             if (_executableUnits == null)
                 return IndexOpeningResults.CanNotOpen;
@@ -247,7 +266,6 @@ namespace Ann.Core
 
             return await Task.Run(() =>
             {
-
                 try
                 {
                     using (new TimeMeasure("Index Deserializing"))
@@ -306,7 +324,17 @@ namespace Ann.Core
             });
         }
 
-        private async Task<ExecutableUnit[]> CrawlAsync(
+        private CancellationTokenSource _crawlingTokenSource;
+        private ManualResetEventSlim _crawlingResetEvent;
+        private readonly object _crawlingLock = new object();
+
+        private class CrawlingResult
+        {
+            public ExecutableUnit[] Units { get; set; }
+            public bool IsCanceled { get; set; }
+        }
+
+        private async Task<CrawlingResult> CrawlAsync(
             string[] targetFolders,
             IEnumerable<string> executableFileExts)
         {
@@ -317,11 +345,18 @@ namespace Ann.Core
             {
                 try
                 {
+                    lock (_crawlingLock)
+                    {
+                        _crawlingTokenSource = new CancellationTokenSource();
+                        _crawlingResetEvent = new ManualResetEventSlim();
+                    }
+
                     var stringPool = new ConcurrentDictionary<string, string>();
                     var count = 0;
 
                     var results = targetFoldersArray
                         .AsParallel()
+                        .WithCancellation(_crawlingTokenSource.Token)
                         .SelectMany(targetFolder =>
                             DirectoryHelper.EnumerateAllFiles(targetFolder)
                                 .Where(f => executableExts.Contains(System.IO.Path.GetExtension(f)?.ToLower()))
@@ -334,11 +369,37 @@ namespace Ann.Core
 
                     results.ForEach((r, i) => r.SetId(i, results.Length));
 
-                    return results;
+                    return new CrawlingResult
+                    {
+                        Units = results,
+                        IsCanceled = false,
+                    };
+                }
+                catch (OperationCanceledException)
+                {
+                    return new CrawlingResult
+                    {
+                        IsCanceled = true
+                    };
                 }
                 catch
                 {
-                    return null;
+                    return new CrawlingResult
+                    {
+                        IsCanceled = false
+                    };
+                }
+                finally
+                {
+                    lock (_crawlingLock)
+                    {
+                        _crawlingTokenSource.Dispose();
+                        _crawlingTokenSource = null;
+
+                        _crawlingResetEvent.Set();
+                        _crawlingResetEvent.Dispose();
+                        _crawlingResetEvent = null;
+                    }
                 }
             });
         }

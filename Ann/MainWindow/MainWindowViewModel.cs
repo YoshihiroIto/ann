@@ -23,7 +23,6 @@ namespace Ann.MainWindow
     {
         public ReactiveProperty<string> Input { get; }
 
-        public ReactiveProperty<bool> IsIndexUpdating { get; }
         public ReactiveCommand IndexUpdateCommand { get; }
 
         public ReactiveCommand InitializeCommand { get; }
@@ -80,7 +79,6 @@ namespace Ann.MainWindow
                 Top = Config.ToReactivePropertyAsSynchronized(x => x.Top).AddTo(CompositeDisposable);
 
                 Input = new ReactiveProperty<string>().AddTo(CompositeDisposable);
-                IsIndexUpdating = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
 
                 MaxCandidatesLinesCount = App.Instance.Config
                     .ToReactivePropertyAsSynchronized(x => x.MaxCandidateLinesCount)
@@ -95,12 +93,13 @@ namespace Ann.MainWindow
                         .ToReadOnlyReactiveProperty()
                         .AddTo(CompositeDisposable);
 
-                IndexUpdateCommand = IsIndexUpdating.Select(i => i == false)
+                IndexUpdateCommand = App.Instance.ObserveProperty(x => x.IsIndexUpdating)
+                    .Select(i => i == false)
                     .ToReactiveCommand()
                     .AddTo(CompositeDisposable);
 
                 IndexUpdateCommand
-                    .Subscribe(async _ => await UpdateIndexAsync())
+                    .Subscribe(async _ => await App.Instance.UpdateIndexAsync())
                     .AddTo(CompositeDisposable);
 
                 Observable
@@ -275,17 +274,7 @@ namespace Ann.MainWindow
 
             if ((IndexOpeningResult.Value == IndexOpeningResults.NotFound) ||
                 (IndexOpeningResult.Value == IndexOpeningResults.OldIndex))
-                await UpdateIndexAsync();
-        }
-
-        private async Task UpdateIndexAsync()
-        {
-            using (Disposable.Create(() => IsIndexUpdating.Value = false))
-            {
-                IsIndexUpdating.Value = true;
                 await App.Instance.UpdateIndexAsync();
-                Input.ForceNotify();
-            }
         }
 
         private void DisposeCandidates()

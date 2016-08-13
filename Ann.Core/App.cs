@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -10,6 +11,7 @@ using Ann.Foundation;
 using Ann.Foundation.Exception;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings.Extensions;
+using System.Threading;
 
 namespace Ann.Core
 {
@@ -77,6 +79,18 @@ namespace Ann.Core
         {
             get { return _IndexOpeningResult; }
             set { SetProperty(ref _IndexOpeningResult, value); }
+        }
+
+        #endregion
+
+        #region IsIndexUpdating
+
+        private bool _IsIndexUpdating;
+
+        public bool IsIndexUpdating
+        {
+            get { return _IsIndexUpdating; }
+            set { SetProperty(ref _IsIndexUpdating, value); }
         }
 
         #endregion
@@ -166,9 +180,35 @@ namespace Ann.Core
             IndexOpeningResult = await _dataBase.OpenIndexAsync(TagetFolders);
         }
 
+        private readonly SemaphoreSlim _CancelUpdateIndexAsyncSema = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _UpdateIndexAsyncSema = new SemaphoreSlim(1, 1);
+
+        public async Task CancelUpdateIndexAsync()
+        {
+            using(Disposable.Create(() =>_CancelUpdateIndexAsyncSema.Release()))
+            {
+                await _CancelUpdateIndexAsyncSema.WaitAsync();
+                await _dataBase.CancelUpdateIndexAsync();
+
+                while (IsIndexUpdating)
+                    await Task.Delay(TimeSpan.FromMilliseconds(20));
+            }
+        }
+
         public async Task UpdateIndexAsync()
         {
-            IndexOpeningResult = await _dataBase.UpdateIndexAsync(TagetFolders, Config.ExecutableFileExts);
+            await CancelUpdateIndexAsync();
+
+            using (Disposable.Create(() => _UpdateIndexAsyncSema.Release()))
+            {
+                await _UpdateIndexAsyncSema.WaitAsync();
+
+                using (Disposable.Create(() => IsIndexUpdating = false))
+                {
+                    IsIndexUpdating = true;
+                    IndexOpeningResult = await _dataBase.UpdateIndexAsync(TagetFolders, Config.ExecutableFileExts);
+                }
+            }
         }
 
         public void Find(string input, int maxCandidates)
@@ -239,6 +279,12 @@ namespace Ann.Core
             LoadConfig();
 
             SetupAutoUpdater();
+
+            CompositeDisposable.Add(() =>
+            {
+                _UpdateIndexAsyncSema?.Dispose();
+                _CancelUpdateIndexAsyncSema?.Dispose();
+            }); 
 
             Task.Run(async () =>
             {

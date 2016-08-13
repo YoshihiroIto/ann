@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive.Linq;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings;
@@ -64,6 +65,18 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                 if (t != null)
                     model.TargetFolder.Folders.Remove(t);
             }).AddTo(CompositeDisposable);
+
+            Observable
+                .Merge(IsIncludeSystemFolder.ToUnit())
+                .Merge(IsIncludeSystemX86Folder.ToUnit())
+                .Merge(IsIncludeProgramsFolder.ToUnit())
+                .Merge(IsIncludeProgramFilesFolder.ToUnit())
+                .Merge(IsIncludeProgramFilesX86Folder.ToUnit())
+                .Merge(IsIncludeCommonStartMenuFolder.ToUnit())
+                .Throttle(TimeSpan.FromMilliseconds(50))
+                .ObserveOnUIDispatcher()
+                .Subscribe(async _ => await App.Instance.UpdateIndexAsync())
+                .AddTo(CompositeDisposable);
         }
     }
 }

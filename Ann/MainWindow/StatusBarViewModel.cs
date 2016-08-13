@@ -21,6 +21,8 @@ namespace Ann.MainWindow
             Debug.Assert(parent != null);
 
             Messages = new ReactiveCollection<StatusBarItemViewModel>().AddTo(CompositeDisposable);
+
+            CompositeDisposable.Add(async () => await App.Instance.CancelUpdateIndexAsync());
             CompositeDisposable.Add(() => Messages.ForEach(x => x.Dispose()));
 
             Visibility = Messages.CollectionChangedAsObservable()
@@ -28,27 +30,33 @@ namespace Ann.MainWindow
                 .ToReadOnlyReactiveProperty(System.Windows.Visibility.Collapsed)
                 .AddTo(CompositeDisposable);
 
-            parent.IsIndexUpdating.Subscribe(i =>
-            {
-                if (i)
+            App.Instance.ObserveProperty(x => x.IsIndexUpdating)
+                .SubscribeOnUIDispatcher()
+                .Subscribe(i =>
                 {
-                    var item = new ProcessingStatusBarItemViewModel(
-                        StatusBarItemViewModel.SearchKey.IndexUpdating,
-                        Properties.Resources.Message_IndexUpdating);
-                    Messages.AddOnScheduler(item);
-                }
-                else
-                {
-                    var item = Messages
-                        .FirstOrDefault(
-                            x => x.Key == StatusBarItemViewModel.SearchKey.IndexUpdating);
+                    if (i)
+                    {
+                        var item = new ProcessingStatusBarItemViewModel(
+                            StatusBarItemViewModel.SearchKey.IndexUpdating,
+                            Properties.Resources.Message_IndexUpdating);
+                        Messages.Add(item);
+                    }
+                    else
+                    {
+                        var item = Messages
+                            .FirstOrDefault(
+                                x => x.Key == StatusBarItemViewModel.SearchKey.IndexUpdating);
 
-                    Messages.RemoveOnScheduler(item);
-                    item?.Dispose();
-                }
-            }).AddTo(CompositeDisposable);
+                        if (item == null)
+                            return;
+
+                        Messages.Remove(item);
+                        item.Dispose();
+                    }
+                }).AddTo(CompositeDisposable);
 
             App.Instance.ObserveProperty(c => c.Crawling)
+                .SubscribeOnUIDispatcher()
                 .Subscribe(c =>
                 {
                     var item = Messages
