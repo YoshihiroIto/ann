@@ -27,5 +27,16 @@ namespace Ann.Core.Test
                 versionUpdater.RemoveStartupShortcut().Wait();
             }
         }
+
+        [Fact]
+        public void Restart()
+        {
+            TestHelper.CleanTestEnv();
+
+            using (var versionUpdater = new VersionUpdater(null))
+            {
+                versionUpdater.Restart();
+            }
+        }
     }
 }
