@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings;
@@ -23,9 +24,13 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
         public ReactiveCommand FolderAddCommand { get; }
         public ReactiveCommand<PathViewModel> FolderRemoveCommand { get; }
 
+        private readonly Subject<int> _pathChanged;
+
         public TargetFoldersViewModel(Core.Config.App model)
         {
             Debug.Assert(model != null);
+
+            _pathChanged = new Subject<int>().AddTo(CompositeDisposable);
 
             IsIncludeSystemFolder =
                 model.TargetFolder.ToReactivePropertyAsSynchronized(x => x.IsIncludeSystemFolder)
@@ -51,8 +56,15 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                 model.TargetFolder.ToReactivePropertyAsSynchronized(x => x.IsIncludeCommonStartMenu)
                     .AddTo(CompositeDisposable);
 
-            Folders = model.TargetFolder.Folders.ToReadOnlyReactiveCollection(p => new PathViewModel(p, true))
-                .AddTo(CompositeDisposable);
+            Folders = model.TargetFolder.Folders.ToReadOnlyReactiveCollection(p =>
+            {
+                var path = new PathViewModel(p, true);
+                path.Path
+                    .Subscribe(_ => _pathChanged.OnNext(0))
+                    .AddTo(path.CompositeDisposable);
+
+                return path;
+            }).AddTo(CompositeDisposable);
 
             FolderAddCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             FolderAddCommand.Subscribe(_ => model.TargetFolder.Folders.Add(new Path(string.Empty)))
@@ -73,6 +85,8 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                 .Merge(IsIncludeProgramFilesFolder.ToUnit())
                 .Merge(IsIncludeProgramFilesX86Folder.ToUnit())
                 .Merge(IsIncludeCommonStartMenuFolder.ToUnit())
+                .Merge(Folders.CollectionChangedAsObservable().ToUnit())
+                .Merge(_pathChanged.ToUnit())
                 .Throttle(TimeSpan.FromMilliseconds(50))
                 .ObserveOnUIDispatcher()
                 .Subscribe(async _ => await App.Instance.UpdateIndexAsync())

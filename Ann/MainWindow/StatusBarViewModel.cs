@@ -89,7 +89,7 @@ namespace Ann.MainWindow
                     }
                 }).AddTo(CompositeDisposable);
 
-            parent.IndexOpeningResult
+            App.Instance.ObserveProperty(x => x.IndexOpeningResult)
                 .Subscribe(r =>
                 {
                     if (r == IndexOpeningResults.InOpening)
