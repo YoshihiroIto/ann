@@ -1,12 +1,21 @@
-﻿using Ann.Core;
+﻿using System;
+using Ann.Core;
+using Ann.Foundation;
 using Ann.SettingWindow.SettingPage;
 using Ann.SettingWindow.SettingPage.PriorityFiles;
 using Xunit;
 
 namespace Ann.Test.SettingWindow.SettingPage
 {
-    public class PriorityFilesViewModelTest
+    public class PriorityFilesViewModelTest : IDisposable
     {
+        private readonly DisposableFileSystem _config = new DisposableFileSystem();
+
+        public void Dispose()
+        {
+            _config.Dispose();
+        }
+
         [Fact]
         public void Basic()
         {
@@ -14,7 +23,7 @@ namespace Ann.Test.SettingWindow.SettingPage
 
             var model = new Core.Config.App();
 
-            using (var app = new App())
+            using (var app = new App(new ConfigHolder(_config.RootPath)))
             using (new PriorityFilesViewModel(model, app))
             {
             }
@@ -27,7 +36,7 @@ namespace Ann.Test.SettingWindow.SettingPage
 
             var model = new Core.Config.App();
 
-            using (var app = new App())
+            using (var app = new App(new ConfigHolder(_config.RootPath)))
             using (var vm = new PriorityFilesViewModel(model, app))
             {
                 Assert.Equal(0, vm.Files.Count);
@@ -54,7 +63,7 @@ namespace Ann.Test.SettingWindow.SettingPage
 
             var model = new Core.Config.App();
 
-            using (var app = new App())
+            using (var app = new App(new ConfigHolder(_config.RootPath)))
             using (var vm = new PriorityFilesViewModel(model, app))
             {
                 vm.FileAddCommand.Execute(null);
@@ -74,7 +83,7 @@ namespace Ann.Test.SettingWindow.SettingPage
 
             var model = new Core.Config.App();
 
-            using (var app = new App())
+            using (var app = new App(new ConfigHolder(_config.RootPath)))
             using (var vm = new PriorityFilesViewModel(model, app))
             {
                 Assert.Equal(0, vm.Files.Count);
@@ -102,7 +111,7 @@ namespace Ann.Test.SettingWindow.SettingPage
 
             var model = new Core.Config.App();
 
-            using (var app = new App())
+            using (var app = new App(new ConfigHolder(_config.RootPath)))
             using (var vm = new PriorityFilesViewModel(model, app))
             {
                 model.PriorityFiles.Add(new Path("AA"));

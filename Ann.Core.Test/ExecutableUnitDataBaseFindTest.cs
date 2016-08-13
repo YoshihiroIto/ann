@@ -7,9 +7,12 @@ namespace Ann.Core.Test
 {
     public class ExecutableUnitDataBaseFindTest : IDisposable
     {
-        private DisposableFileSystem _context;
+        private readonly DisposableFileSystem _context = new DisposableFileSystem();
 
-        public void Dispose() => _context?.Dispose();
+        public void Dispose()
+        {
+            _context?.Dispose();
+        }
 
         [Theory]
         [InlineData("bbb", new[] {"target1/aaa.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
@@ -18,7 +21,6 @@ namespace Ann.Core.Test
         {
             TestHelper.CleanTestEnv();
 
-            _context = new DisposableFileSystem();
             _context.CreateFiles(targetFiles);
 
             var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
@@ -48,7 +50,6 @@ namespace Ann.Core.Test
         {
             TestHelper.CleanTestEnv();
 
-            _context = new DisposableFileSystem();
             _context.CreateFiles(targetFiles);
 
             var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
@@ -121,7 +122,6 @@ namespace Ann.Core.Test
         {
             TestHelper.CleanTestEnv();
 
-            _context = new DisposableFileSystem();
             _context.CreateFiles(targetFiles);
 
             var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
@@ -173,7 +173,6 @@ namespace Ann.Core.Test
         {
             TestHelper.CleanTestEnv();
 
-            _context = new DisposableFileSystem();
             _context.CreateFiles(targetFiles);
 
             var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
@@ -216,7 +215,6 @@ namespace Ann.Core.Test
         {
             TestHelper.CleanTestEnv();
 
-            _context = new DisposableFileSystem();
             _context.CreateFiles(targetFiles);
 
             var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");

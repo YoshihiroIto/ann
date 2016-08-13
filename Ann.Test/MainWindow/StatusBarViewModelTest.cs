@@ -1,17 +1,27 @@
-﻿using Ann.Core;
+﻿using System;
+using Ann.Core;
+using Ann.Foundation;
 using Ann.MainWindow;
 using Xunit;
 
 namespace Ann.Test.MainWindow
 {
-    public class StatusBarViewModelTest
+    public class StatusBarViewModelTest : IDisposable
     {
+        private readonly DisposableFileSystem _config = new DisposableFileSystem();
+
+        public void Dispose()
+        {
+            _config.Dispose();
+        }
+
         [WpfFact]
         public void Basic()
         {
             TestHelper.CleanTestEnv();
 
-            using (var app = new App())
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var app = new App(configHolder))
             using (new StatusBarViewModel(app))
             {
             }
@@ -22,14 +32,15 @@ namespace Ann.Test.MainWindow
         {
             TestHelper.CleanTestEnv();
 
-            using (var app = new App())
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var app = new App(configHolder))
             {
-                app.Config.TargetFolder.IsIncludeSystemFolder = false;
-                app.Config.TargetFolder.IsIncludeSystemX86Folder = false;
-                app.Config.TargetFolder.IsIncludeProgramsFolder = false;
-                app.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
-                app.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
-                app.Config.TargetFolder.IsIncludeCommonStartMenu = false;
+                configHolder.Config.TargetFolder.IsIncludeSystemFolder = false;
+                configHolder.Config.TargetFolder.IsIncludeSystemX86Folder = false;
+                configHolder.Config.TargetFolder.IsIncludeProgramsFolder = false;
+                configHolder.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
+                configHolder.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
+                configHolder.Config.TargetFolder.IsIncludeCommonStartMenu = false;
 
                 app.OpenIndexAsync().Wait();
 
@@ -47,14 +58,15 @@ namespace Ann.Test.MainWindow
         {
             TestHelper.CleanTestEnv();
 
-            using (var app = new App())
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var app = new App(configHolder))
             {
-                app.Config.TargetFolder.IsIncludeSystemFolder = false;
-                app.Config.TargetFolder.IsIncludeSystemX86Folder = false;
-                app.Config.TargetFolder.IsIncludeProgramsFolder = false;
-                app.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
-                app.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
-                app.Config.TargetFolder.IsIncludeCommonStartMenu = false;
+                configHolder.Config.TargetFolder.IsIncludeSystemFolder = false;
+                configHolder.Config.TargetFolder.IsIncludeSystemX86Folder = false;
+                configHolder.Config.TargetFolder.IsIncludeProgramsFolder = false;
+                configHolder.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
+                configHolder.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
+                configHolder.Config.TargetFolder.IsIncludeCommonStartMenu = false;
 
                 app.OpenIndexAsync().Wait();
 

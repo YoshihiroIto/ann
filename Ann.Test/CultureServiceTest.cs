@@ -18,7 +18,6 @@ namespace Ann.Test
             CultureService.Destory();
         }
 
-
         [Fact]
         public void NestingInitialize()
         {

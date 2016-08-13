@@ -9,7 +9,10 @@ namespace Ann.Core.Test
     {
         private readonly DisposableFileSystem _context = new DisposableFileSystem();
 
-        public void Dispose() => _context?.Dispose();
+        public void Dispose()
+        {
+            _context.Dispose();
+        }
 
         [WpfFact]
         public void Basic()

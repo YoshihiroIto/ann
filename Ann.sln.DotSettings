@@ -65,4 +65,5 @@
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/UserRules/=GETTER/@EntryIndexedValue">&lt;Policy Inspect="True" Prefix="" Suffix="" Style="aa_bb" /&gt;</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/UserRules/=SETTER/@EntryIndexedValue">&lt;Policy Inspect="True" Prefix="set_" Suffix="" Style="aa_bb" /&gt;</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/UserRules/=DECLSPEC_005FPROPERTY/@EntryIndexedValue">&lt;Policy Inspect="True" Prefix="" Suffix="" Style="AaBb" /&gt;</s:String>
+	<s:Int64 x:Key="/Default/Environment/UnitTesting/ParallelProcessesCount/@EntryValue">4</s:Int64>
 	</wpf:ResourceDictionary>

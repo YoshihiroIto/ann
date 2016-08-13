@@ -1,13 +1,22 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Reflection;
 using Ann.Core;
+using Ann.Foundation;
 using Ann.MainWindow;
 using Xunit;
 
 namespace Ann.Test.MainWindow
 {
-    public class ExecutableUnitViewModelTest
-    {
+    public class ExecutableUnitViewModelTest : IDisposable
+    { 
+        private readonly DisposableFileSystem _config = new DisposableFileSystem();
+
+        public void Dispose()
+        {
+            _config.Dispose();
+        }
+
         [WpfFact]
         public void Basic()
         {
@@ -19,8 +28,9 @@ namespace Ann.Test.MainWindow
 
             var model = new ExecutableUnit(path, stringPool, targetFolders);
 
-            using (var app = new App())
-            using (var parent = new MainWindowViewModel(app))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var app = new App(configHolder))
+            using (var parent = new MainWindowViewModel(app, configHolder))
             using (var vm = new ExecutableUnitViewModel(parent, model, app))
             {
                 Assert.Equal("Ann", vm.Name);
@@ -40,8 +50,9 @@ namespace Ann.Test.MainWindow
 
             var model = new ExecutableUnit(path, stringPool, targetFolders);
 
-            using (var app = new App())
-            using (var parent = new MainWindowViewModel(app))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var app = new App(configHolder))
+            using (var parent = new MainWindowViewModel(app, configHolder))
             using (var vm = new ExecutableUnitViewModel(parent, model, app))
             {
                 Assert.False(vm.IsPriorityFile);
@@ -67,8 +78,9 @@ namespace Ann.Test.MainWindow
 
             var model = new ExecutableUnit(path, stringPool, targetFolders);
 
-            using (var app = new App())
-            using (var parent = new MainWindowViewModel(app))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var app = new App(configHolder))
+            using (var parent = new MainWindowViewModel(app, configHolder))
             using (var vm = new ExecutableUnitViewModel(parent, model, app))
             {
                 Assert.False(vm.IsPriorityFile);

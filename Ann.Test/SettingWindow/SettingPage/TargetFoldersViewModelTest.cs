@@ -1,4 +1,6 @@
-﻿using Ann.Core;
+﻿using System;
+using Ann.Core;
+using Ann.Foundation;
 using Ann.SettingWindow.SettingPage;
 using Ann.SettingWindow.SettingPage.TargetFolders;
 using Xunit;
@@ -6,8 +8,15 @@ using App = Ann.Core.App;
 
 namespace Ann.Test.SettingWindow.SettingPage
 {
-    public class TargetFoldersViewModelTest
+    public class TargetFoldersViewModelTest : IDisposable
     {
+        private readonly DisposableFileSystem _config = new DisposableFileSystem();
+
+        public void Dispose()
+        {
+            _config.Dispose();
+        }
+
         [Fact]
         public void Basic()
         {
@@ -15,7 +24,7 @@ namespace Ann.Test.SettingWindow.SettingPage
 
             var model = new Core.Config.App();
 
-            using (var app = new App())
+            using (var app = new App(new ConfigHolder(_config.RootPath)))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
                 Assert.True(vm.IsIncludeSystemFolder.Value);
@@ -60,7 +69,7 @@ namespace Ann.Test.SettingWindow.SettingPage
 
             var model = new Core.Config.App();
 
-            using (var app = new App())
+            using (var app = new App(new ConfigHolder(_config.RootPath)))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
                 vm.FolderAddCommand.Execute();
@@ -80,7 +89,7 @@ namespace Ann.Test.SettingWindow.SettingPage
 
             var model = new Core.Config.App();
 
-            using (var app = new App())
+            using (var app = new App(new ConfigHolder(_config.RootPath)))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
                 model.TargetFolder.Folders.Add(new Path("AA"));

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -40,8 +39,9 @@ namespace Ann.Core
 
         #endregion
 
-        public Config.App Config { get; private set; }
-        public Config.MostRecentUsedList MruList { get; private set; }
+        private readonly ConfigHolder _configHolder;
+        private Config.App Config => _configHolder.Config;
+        private Config.MostRecentUsedList MruList => _configHolder.MruList;
 
         public event EventHandler PriorityFilesChanged;
         public event EventHandler ShortcutKeyChanged;
@@ -53,9 +53,7 @@ namespace Ann.Core
         private readonly ExecutableUnitDataBase _dataBase;
         private readonly InputControler _inputControler;
 
-        private static string IndexFilePath => System.IO.Path.Combine(
-            Constants.ConfigDirPath,
-            $"{(Foundation.TestHelper.IsTestMode ? "Test." : string.Empty)}index.dat");
+        private string IndexFilePath => System.IO.Path.Combine(_configHolder.ConfigDirPath, "index.dat");
 
         public VersionUpdater VersionUpdater { get; }
 
@@ -94,12 +92,6 @@ namespace Ann.Core
         }
 
         #endregion
-
-        public static void RemoveIndexFile()
-        {
-            if (File.Exists(IndexFilePath))
-                File.Delete(IndexFilePath);
-        }
 
         public bool IsPriorityFile(string path) => _priorityFiles.Contains(path.ToLower());
 
@@ -235,7 +227,7 @@ namespace Ann.Core
                     while (MruList.AppPath.Count > MaxMruCount)
                         MruList.AppPath.RemoveAt(MruList.AppPath.Count - 1);
 
-                    SaveMru();
+                    _configHolder.SaveMru();
 
                     _mruOrders.Clear();
                     MruList.AppPath.ForEach((path, index) => _mruOrders[path] = index);
@@ -245,16 +237,20 @@ namespace Ann.Core
             return i;
         }
 
-        public App()
+
+        public App(ConfigHolder configHolder)
         {
+            Debug.Assert(configHolder != null);
+            _configHolder = configHolder;
+
             _dataBase = new ExecutableUnitDataBase(IndexFilePath);
             _inputControler = new InputControler().AddTo(CompositeDisposable);
+
+            UpdateFromConfig();
 
             _dataBase.ObserveProperty(x => x.CrawlingCount)
                 .Subscribe(c => Crawling = c)
                 .AddTo(CompositeDisposable);
-
-            LoadConfig();
 
             VersionUpdater = new VersionUpdater(Config.GitHubPersonalAccessToken).AddTo(CompositeDisposable);
 
@@ -273,6 +269,35 @@ namespace Ann.Core
                 else
                     await VersionUpdater.RemoveStartupShortcut();
             });
+        }
+
+        private void UpdateFromConfig()
+        {
+            {
+                RefreshPriorityFiles();
+
+                Config.PriorityFiles.ObserveAddChanged()
+                    .Subscribe(p =>
+                    {
+                        _priorityFiles.Add(p.Value.ToLower());
+                        _configHolder.SaveConfig();
+                        InvokePriorityFilesChanged();
+                    })
+                    .AddTo(CompositeDisposable);
+
+                Config.PriorityFiles.ObserveRemoveChanged()
+                    .Subscribe(p =>
+                    {
+                        _priorityFiles.Remove(p.Value.ToLower());
+                        _configHolder.SaveConfig();
+                        InvokePriorityFilesChanged();
+                    })
+                    .AddTo(CompositeDisposable);
+            }
+
+            {
+                MruList.AppPath.ForEach((p, index) => _mruOrders[p] = index);
+            }
         }
 
         public bool IsEnableAutoUpdater { get; set; }
@@ -336,58 +361,6 @@ namespace Ann.Core
             get { return _AutoUpdateState; }
             private set { SetProperty(ref _AutoUpdateState, value); }
         }
-
-
-        #endregion
-
-        #region config
-
-        private void LoadConfig()
-        {
-            Debug.Assert(Config == null);
-            Debug.Assert(MruList == null);
-
-            {
-                Config = ConfigHelper.ReadConfig<Config.App>(ConfigHelper.Category.App, Constants.ConfigDirPath);
-
-                RefreshPriorityFiles();
-
-                Config.PriorityFiles.ObserveAddChanged()
-                    .Subscribe(p =>
-                    {
-                        _priorityFiles.Add(p.Value.ToLower());
-                        SaveConfig();
-                        InvokePriorityFilesChanged();
-                    })
-                    .AddTo(CompositeDisposable);
-
-                Config.PriorityFiles.ObserveRemoveChanged()
-                    .Subscribe(p =>
-                    {
-                        _priorityFiles.Remove(p.Value.ToLower());
-                        SaveConfig();
-                        InvokePriorityFilesChanged();
-                    })
-                    .AddTo(CompositeDisposable);
-            }
-
-            {
-                MruList = ConfigHelper.ReadConfig<Config.MostRecentUsedList>(ConfigHelper.Category.MostRecentUsedList,
-                    Constants.ConfigDirPath);
-                MruList.AppPath.ForEach((p, index) => _mruOrders[p] = index);
-            }
-        }
-
-        public void SaveConfig()
-        {
-            ConfigHelper.WriteConfig(ConfigHelper.Category.App, Constants.ConfigDirPath, Config);
-        }
-
-        public void SaveMru()
-        {
-            ConfigHelper.WriteConfig(ConfigHelper.Category.MostRecentUsedList, Constants.ConfigDirPath, MruList);
-        }
-
         #endregion
     }
 }

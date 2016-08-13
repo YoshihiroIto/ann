@@ -121,6 +121,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="ConfigHolderTest.cs" />
     <Compile Include="Config\MostRecentUsedListTest.cs" />
     <Compile Include="Config\MainWindowTest.cs" />
     <Compile Include="Config\AppTest.cs" />

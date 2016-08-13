@@ -53,8 +53,6 @@ namespace Ann.MainWindow
 
         public WindowMessageBroker Messenger { get; }
 
-        public Core.Config.MainWindow Config { get; private set; }
-
         public string Caption { get; } = $"{AssemblyConstants.Product} {AssemblyConstants.Version}";
 
         private readonly IconDecoder _iconDecoder = new IconDecoder();
@@ -63,29 +61,28 @@ namespace Ann.MainWindow
 
         private readonly App _app;
 
-        public MainWindowViewModel(App app)
+        public MainWindowViewModel(App app, ConfigHolder configHolder)
         {
             Debug.Assert(app != null);
+            Debug.Assert(configHolder != null);
 
             _app = app;
 
             using (new TimeMeasure("MainWindowViewModel.ctor"))
             {
-                LoadConfig();
-
                 Messenger = new WindowMessageBroker().AddTo(CompositeDisposable);
 
                 InitializeCommand = new ReactiveCommand().AddTo(CompositeDisposable);
                 InitializeCommand
-                    .Subscribe(async _ => await InitializeAsync())
+                    .Subscribe(async _ => await InitializeAsync(configHolder))
                     .AddTo(CompositeDisposable);
 
-                Left = Config.ToReactivePropertyAsSynchronized(x => x.Left).AddTo(CompositeDisposable);
-                Top = Config.ToReactivePropertyAsSynchronized(x => x.Top).AddTo(CompositeDisposable);
+                Left = configHolder.MainWindow.ToReactivePropertyAsSynchronized(x => x.Left).AddTo(CompositeDisposable);
+                Top = configHolder.MainWindow.ToReactivePropertyAsSynchronized(x => x.Top).AddTo(CompositeDisposable);
 
                 Input = new ReactiveProperty<string>().AddTo(CompositeDisposable);
 
-                MaxCandidatesLinesCount = _app.Config
+                MaxCandidatesLinesCount = configHolder.Config
                     .ToReactivePropertyAsSynchronized(x => x.MaxCandidateLinesCount)
                     .AddTo(CompositeDisposable);
 
@@ -115,9 +112,9 @@ namespace Ann.MainWindow
 
                 Observable
                     .Merge(Input.ToUnit())
-                    .Merge(_app.Config.ObserveProperty(x => x.CandidatesCensoringSize).ToUnit())
+                    .Merge(configHolder.Config.ObserveProperty(x => x.CandidatesCensoringSize).ToUnit())
                     .Throttle(TimeSpan.FromMilliseconds(50))
-                    .Subscribe(_ => _app.Find(Input.Value, _app.Config.CandidatesCensoringSize))
+                    .Subscribe(_ => _app.Find(Input.Value, configHolder.Config.CandidatesCensoringSize))
                     .AddTo(CompositeDisposable);
 
                 Candidates = new ReactiveProperty<ExecutableUnitViewModel[]>().AddTo(CompositeDisposable);
@@ -207,7 +204,7 @@ namespace Ann.MainWindow
                 {
                     using (Disposable.Create(() =>
                     {
-                        _app.SaveConfig();
+                        configHolder.SaveConfig();
 
                         if (_app.IsRestartRequested)
                         {
@@ -220,15 +217,15 @@ namespace Ann.MainWindow
                         _app.InvokeShortcutKeyChanged();
                     }))
                     {
-                        var key = _app.Config.ShortcutKeys.Activate.Key;
-                        _app.Config.ShortcutKeys.Activate.Key = Key.None;
+                        var key = configHolder.Config.ShortcutKeys.Activate.Key;
+                        configHolder.Config.ShortcutKeys.Activate.Key = Key.None;
                         _app.InvokeShortcutKeyChanged();
-                        _app.Config.ShortcutKeys.Activate.Key = key;
+                        configHolder.Config.ShortcutKeys.Activate.Key = key;
 
                         IsShowingSettingShow.Value = true;
                         await AsyncMessageBroker.Default.PublishAsync(
                             new SettingViewModel(
-                                _app.Config,
+                                configHolder.Config,
                                 _app.VersionUpdater,
                                 _app));
                     }
@@ -268,16 +265,16 @@ namespace Ann.MainWindow
             }
         }
 
-        private async Task InitializeAsync()
+        private async Task InitializeAsync(ConfigHolder configHolder)
         {
             Observable
                 .Merge(Left)
                 .Merge(Top)
                 .Throttle(TimeSpan.FromSeconds(2))
-                .Subscribe(_ => SaveConfig())
+                .Subscribe(_ => configHolder.SaveMainWindow())
                 .AddTo(CompositeDisposable);
 
-            _app.Config.ObserveProperty(x => x.IconCacheSize)
+            configHolder.Config.ObserveProperty(x => x.IconCacheSize)
                 .Subscribe(x => _iconDecoder.IconCacheSize = x)
                 .AddTo(CompositeDisposable);
 
@@ -313,19 +310,6 @@ namespace Ann.MainWindow
             }
 
             return -1;
-        }
-
-        private void LoadConfig()
-        {
-            Debug.Assert(Config == null);
-
-            Config = ConfigHelper.ReadConfig<Core.Config.MainWindow>(ConfigHelper.Category.MainWindow,
-                Constants.ConfigDirPath);
-        }
-
-        private void SaveConfig()
-        {
-            ConfigHelper.WriteConfig(ConfigHelper.Category.MainWindow, Constants.ConfigDirPath, Config);
         }
 
         private static async Task OpenByExplorer(string path)

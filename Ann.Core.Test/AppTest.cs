@@ -10,10 +10,12 @@ namespace Ann.Core.Test
     public class AppTest : IDisposable
     {
         private readonly DisposableFileSystem _context = new DisposableFileSystem();
+        private readonly DisposableFileSystem _config = new DisposableFileSystem();
 
         public void Dispose()
         {
-            _context?.Dispose();
+            _context.Dispose();
+            _config.Dispose();
         }
 
         [Fact]
@@ -21,7 +23,7 @@ namespace Ann.Core.Test
         {
             TestHelper.CleanTestEnv();
 
-            using (new App())
+            using (new App(new ConfigHolder(_config.RootPath)))
             {
             }
         }
@@ -31,7 +33,7 @@ namespace Ann.Core.Test
         {
             TestHelper.CleanTestEnv();
 
-            using (var app = new App())
+            using (var app = new App(new ConfigHolder(_config.RootPath)))
             {
                 Assert.False(app.IsPriorityFile("AAA"));
 
@@ -52,16 +54,17 @@ namespace Ann.Core.Test
         {
             TestHelper.CleanTestEnv();
 
-            using (var app = new App())
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var app = new App(configHolder))
             {
                 Assert.Equal(6, app.TagetFolders.Count());
 
-                app.Config.TargetFolder.IsIncludeSystemFolder = false;
-                app.Config.TargetFolder.IsIncludeSystemX86Folder = false;
-                app.Config.TargetFolder.IsIncludeProgramsFolder = false;
-                app.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
-                app.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
-                app.Config.TargetFolder.IsIncludeCommonStartMenu = false;
+                configHolder.Config.TargetFolder.IsIncludeSystemFolder = false;
+                configHolder.Config.TargetFolder.IsIncludeSystemX86Folder = false;
+                configHolder.Config.TargetFolder.IsIncludeProgramsFolder = false;
+                configHolder.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
+                configHolder.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
+                configHolder.Config.TargetFolder.IsIncludeCommonStartMenu = false;
 
                 Assert.Equal(0, app.TagetFolders.Count());
             }
@@ -72,14 +75,15 @@ namespace Ann.Core.Test
         {
             TestHelper.CleanTestEnv();
 
-            using (var app = new App())
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var app = new App(configHolder))
             {
-                app.Config.TargetFolder.IsIncludeSystemFolder = false;
-                app.Config.TargetFolder.IsIncludeSystemX86Folder = false;
-                app.Config.TargetFolder.IsIncludeProgramsFolder = false;
-                app.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
-                app.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
-                app.Config.TargetFolder.IsIncludeCommonStartMenu = false;
+                configHolder.Config.TargetFolder.IsIncludeSystemFolder = false;
+                configHolder.Config.TargetFolder.IsIncludeSystemX86Folder = false;
+                configHolder.Config.TargetFolder.IsIncludeProgramsFolder = false;
+                configHolder.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
+                configHolder.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
+                configHolder.Config.TargetFolder.IsIncludeCommonStartMenu = false;
 
                 app.OpenIndexAsync().Wait();
 
@@ -92,33 +96,39 @@ namespace Ann.Core.Test
         {
             TestHelper.CleanTestEnv();
 
-            using (var app = new App())
             {
-                app.Config.TargetFolder.IsIncludeSystemFolder = false;
-                app.Config.TargetFolder.IsIncludeSystemX86Folder = false;
-                app.Config.TargetFolder.IsIncludeProgramsFolder = false;
-                app.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
-                app.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
-                app.Config.TargetFolder.IsIncludeCommonStartMenu = false;
+                var configHolder = new ConfigHolder(_config.RootPath);
+                using (var app = new App(configHolder))
+                {
+                    configHolder.Config.TargetFolder.IsIncludeSystemFolder = false;
+                    configHolder.Config.TargetFolder.IsIncludeSystemX86Folder = false;
+                    configHolder.Config.TargetFolder.IsIncludeProgramsFolder = false;
+                    configHolder.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
+                    configHolder.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
+                    configHolder.Config.TargetFolder.IsIncludeCommonStartMenu = false;
 
-                app.OpenIndexAsync().Wait();
-                Assert.Equal(IndexOpeningResults.NotFound, app.IndexOpeningResult);
+                    app.OpenIndexAsync().Wait();
+                    Assert.Equal(IndexOpeningResults.NotFound, app.IndexOpeningResult);
 
-                app.UpdateIndexAsync().Wait();
-                Assert.Equal(IndexOpeningResults.Ok, app.IndexOpeningResult);
+                    app.UpdateIndexAsync().Wait();
+                    Assert.Equal(IndexOpeningResults.Ok, app.IndexOpeningResult);
+                }
             }
 
-            using (var app = new App())
             {
-                app.Config.TargetFolder.IsIncludeSystemFolder = false;
-                app.Config.TargetFolder.IsIncludeSystemX86Folder = false;
-                app.Config.TargetFolder.IsIncludeProgramsFolder = false;
-                app.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
-                app.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
-                app.Config.TargetFolder.IsIncludeCommonStartMenu = false;
+                var configHolder = new ConfigHolder(_config.RootPath);
+                using (var app = new App(configHolder))
+                {
+                    configHolder.Config.TargetFolder.IsIncludeSystemFolder = false;
+                    configHolder.Config.TargetFolder.IsIncludeSystemX86Folder = false;
+                    configHolder.Config.TargetFolder.IsIncludeProgramsFolder = false;
+                    configHolder.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
+                    configHolder.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
+                    configHolder.Config.TargetFolder.IsIncludeCommonStartMenu = false;
 
-                app.OpenIndexAsync().Wait();
-                Assert.Equal(IndexOpeningResults.Ok, app.IndexOpeningResult);
+                    app.OpenIndexAsync().Wait();
+                    Assert.Equal(IndexOpeningResults.Ok, app.IndexOpeningResult);
+                }
             }
         }
 
@@ -127,14 +137,15 @@ namespace Ann.Core.Test
         {
             TestHelper.CleanTestEnv();
 
-            using (var app = new App())
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var app = new App(configHolder))
             {
-                app.Config.TargetFolder.IsIncludeSystemFolder = false;
-                app.Config.TargetFolder.IsIncludeSystemX86Folder = false;
-                app.Config.TargetFolder.IsIncludeProgramsFolder = false;
-                app.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
-                app.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
-                app.Config.TargetFolder.IsIncludeCommonStartMenu = false;
+                configHolder.Config.TargetFolder.IsIncludeSystemFolder = false;
+                configHolder.Config.TargetFolder.IsIncludeSystemX86Folder = false;
+                configHolder.Config.TargetFolder.IsIncludeProgramsFolder = false;
+                configHolder.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
+                configHolder.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
+                configHolder.Config.TargetFolder.IsIncludeCommonStartMenu = false;
 
                 app.UpdateIndexAsync().Wait();
 
@@ -147,16 +158,17 @@ namespace Ann.Core.Test
         {
             TestHelper.CleanTestEnv();
 
-            using (var app = new App())
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var app = new App(configHolder))
             {
-                app.Config.TargetFolder.Folders.Add(new Path(_context.RootPath));
+                configHolder.Config.TargetFolder.Folders.Add(new Path(_context.RootPath));
 
-                app.Config.TargetFolder.IsIncludeSystemFolder = false;
-                app.Config.TargetFolder.IsIncludeSystemX86Folder = false;
-                app.Config.TargetFolder.IsIncludeProgramsFolder = false;
-                app.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
-                app.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
-                app.Config.TargetFolder.IsIncludeCommonStartMenu = false;
+                configHolder.Config.TargetFolder.IsIncludeSystemFolder = false;
+                configHolder.Config.TargetFolder.IsIncludeSystemX86Folder = false;
+                configHolder.Config.TargetFolder.IsIncludeProgramsFolder = false;
+                configHolder.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
+                configHolder.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
+                configHolder.Config.TargetFolder.IsIncludeCommonStartMenu = false;
 
                 _context.CreateFiles(
                     "aa.exe",
@@ -198,22 +210,11 @@ namespace Ann.Core.Test
         }
 
         [Fact]
-        public void Mru()
-        {
-            TestHelper.CleanTestEnv();
-
-            using (var app = new App())
-            {
-                app.SaveMru();
-            }
-        }
-
-        [Fact]
         public void AutoUpdater()
         {
             TestHelper.CleanTestEnv();
 
-            using (var app = new App())
+            using (var app = new App(new ConfigHolder(_config.RootPath)))
             {
                 Assert.Equal(0, app.AutoUpdateRemainingSeconds);
                 Assert.Equal(App.AutoUpdateStates.Wait, app.AutoUpdateState);

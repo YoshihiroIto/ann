@@ -55,6 +55,6 @@ namespace Ann.Foundation
         public static string MakeFilePath(Category category, string dirPath) =>
             Path.Combine(
                 dirPath,
-                $"{(TestHelper.IsTestMode ? "test." : string.Empty)}{AssemblyConstants.Product}.{category}.yaml");
+                $"{AssemblyConstants.Product}.{category}.yaml");
     }
 }

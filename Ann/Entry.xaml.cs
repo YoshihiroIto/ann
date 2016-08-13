@@ -35,10 +35,12 @@ namespace Ann
         {
             base.OnStartup(e);
 
-            App = new App();
             _viewManager = new ViewManager(Dispatcher);
+            ConfigHolder = new ConfigHolder(Constants.ConfigDirPath);
 
-            CultureService.Initialize(App.Config);
+            App = new App(ConfigHolder);
+
+            CultureService.Initialize(ConfigHolder.Config);
             Reactive.Bindings.UIDispatcherScheduler.Initialize();
         }
 
@@ -51,6 +53,7 @@ namespace Ann
         }
 
         public static App App { get; private set; }
+        public static ConfigHolder ConfigHolder { get; private set; }
 
         private ViewManager _viewManager;
     }
