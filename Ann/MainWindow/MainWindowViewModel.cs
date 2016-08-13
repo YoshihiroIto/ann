@@ -92,10 +92,16 @@ namespace Ann.MainWindow
                         .ToReadOnlyReactiveProperty()
                         .AddTo(CompositeDisposable);
 
-                IndexUpdateCommand = App.Instance.ObserveProperty(x => x.IsIndexUpdating)
-                    .Select(i => i == false)
-                    .ToReactiveCommand()
-                    .AddTo(CompositeDisposable);
+                IndexUpdateCommand =
+                    Observable
+                        .Merge(App.Instance.ObserveProperty(x => x.IsIndexUpdating).ToUnit())
+                        .Merge(App.Instance.ObserveProperty(x => x.IndexOpeningResult).ToUnit())
+                        .Select(_ =>
+                            App.Instance.IsIndexUpdating == false &&
+                            App.Instance.IndexOpeningResult != IndexOpeningResults.InOpening
+                        )
+                        .ToReactiveCommand()
+                        .AddTo(CompositeDisposable);
 
                 IndexUpdateCommand
                     .Subscribe(async _ => await App.Instance.UpdateIndexAsync())
