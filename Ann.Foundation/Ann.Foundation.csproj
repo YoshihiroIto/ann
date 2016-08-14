@@ -104,7 +104,6 @@
     <Compile Include="WindowsHelper.cs" />
     <Compile Include="Control\Behavior\WindowTaskTrayIconBehavior.cs" />
     <Compile Include="HotKeyRegister.cs" />
-    <Compile Include="Control\Extension\MultiStyleExtension.cs" />
     <Compile Include="Control\ShortcutKeyInputBox.cs" />
     <Compile Include="Control\ValueConverter\TypeofConverter.cs" />
     <Compile Include="WindowHelper.cs" />
