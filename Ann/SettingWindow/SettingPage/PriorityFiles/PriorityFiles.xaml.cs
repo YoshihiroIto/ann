@@ -1,11 +1,11 @@
 ﻿namespace Ann.SettingWindow.SettingPage.PriorityFiles
 {
     /// <summary>
-    /// PriorityFilesView.xaml の相互作用ロジック
+    /// TargetFoldersView.xaml の相互作用ロジック
     /// </summary>
-    public partial class PriorityFilesView
+    public partial class PriorityFiles
     {
-        public PriorityFilesView()
+        public PriorityFiles()
         {
             InitializeComponent();
         }
