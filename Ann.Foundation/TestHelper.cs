@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using System.Windows.Threading;
 
 namespace Ann.Foundation
 {
@@ -44,6 +45,11 @@ namespace Ann.Foundation
             var testDomain = AppDomain.CreateDomain("TestDomain" + i, AppDomain.CurrentDomain.Evidence, AppDomain.CurrentDomain.SetupInformation);
 
             testDomain.DoCallBack(action);
+            testDomain.DoCallBack(() =>
+            {
+                // for appveyor 
+                Dispatcher.CurrentDispatcher.InvokeShutdown();
+            });
 
             AppDomain.Unload(testDomain);
         }
