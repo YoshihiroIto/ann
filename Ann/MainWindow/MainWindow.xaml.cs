@@ -20,12 +20,21 @@ namespace Ann.MainWindow
     {
         private readonly MainWindowViewModel _DataContext;
 
-        private readonly App _app = Entry.App;
-        private readonly ConfigHolder _configHolder = Entry.ConfigHolder;
+        private readonly App _app;
+        private readonly ConfigHolder _configHolder;
 
         public MainWindow()
+            : this(Entry.App, Entry.ConfigHolder)
         {
-            Debug.Assert(_app != null);
+        }
+
+        public MainWindow(App app, ConfigHolder configHelper)
+        {
+            Debug.Assert(app != null);
+            Debug.Assert(configHelper != null);
+
+            _app = app;
+            _configHolder = configHelper;
             
             _DataContext = new MainWindowViewModel(_app, _configHolder);
             DataContext = _DataContext;
@@ -37,6 +46,7 @@ namespace Ann.MainWindow
 
             InitializeComponent();
         }
+
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {

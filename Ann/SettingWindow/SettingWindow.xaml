@@ -227,7 +227,7 @@
 
                             <DataTemplate DataType="{x:Type priorityFiles:PriorityFilesViewModel}">
                                 <ContentControl Style="{StaticResource PageStyle}">
-                                    <priorityFiles:PriorityFiles />
+                                    <priorityFiles:PriorityFilesView />
                                 </ContentControl>
                             </DataTemplate>
 
