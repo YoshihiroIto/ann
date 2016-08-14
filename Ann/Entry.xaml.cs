@@ -33,27 +33,29 @@ namespace Ann
         {
             base.OnStartup(e);
 
+            _configHolder = new ConfigHolder(Constants.ConfigDirPath);
+            _app = new App(_configHolder);
             _viewManager = new ViewManager(Dispatcher);
-            ConfigHolder = new ConfigHolder(Constants.ConfigDirPath);
 
-            App = new App(ConfigHolder);
-
-            CultureService.Instance.SetConfig(ConfigHolder.Config);
+            CultureService.Instance.SetConfig(_configHolder.Config);
             Reactive.Bindings.UIDispatcherScheduler.Initialize();
+
+            MainWindow = new MainWindow.MainWindow(_app, _configHolder);
+            MainWindow.Show();
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
             base.OnExit(e);
 
-            App.Dispose();
+            _app.Dispose();
             _viewManager.Dispose();
+
             CultureService.Instance.Destory();
         }
 
-        public static App App { get; private set; }
-        public static ConfigHolder ConfigHolder { get; private set; }
-
+        private ConfigHolder _configHolder;
+        private App _app;
         private ViewManager _viewManager;
     }
 }

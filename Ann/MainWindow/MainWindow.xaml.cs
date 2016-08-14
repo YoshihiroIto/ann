@@ -19,14 +19,17 @@ namespace Ann.MainWindow
     public partial class MainWindow
     {
         private readonly MainWindowViewModel _DataContext;
+        private readonly App _app;
+        private readonly ConfigHolder _configHolder;
 
-        private readonly App _app = Entry.App;
-        private readonly ConfigHolder _configHolder = Entry.ConfigHolder;
-
-        public MainWindow()
+        public MainWindow(App app, ConfigHolder configHolder)
         {
-            Debug.Assert(_app != null);
-            
+            Debug.Assert(app != null);
+            Debug.Assert(configHolder != null);
+
+            _app = app;
+            _configHolder = configHolder;
+
             _DataContext = new MainWindowViewModel(_app, _configHolder);
             DataContext = _DataContext;
 
