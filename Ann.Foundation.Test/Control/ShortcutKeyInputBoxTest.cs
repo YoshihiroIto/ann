@@ -42,7 +42,7 @@ namespace Ann.Foundation.Test.Control
 
             c.RaiseEvent(
                 new KeyEventArgs(
-                    Keyboard.PrimaryDevice,
+                    new MockKeyboardDevice(),
                     new HwndSource(0, 0, 0, 0, 0, string.Empty, IntPtr.Zero),
                     0,
                     Key.B) {RoutedEvent = Keyboard.PreviewKeyDownEvent});
@@ -51,12 +51,30 @@ namespace Ann.Foundation.Test.Control
 
             c.RaiseEvent(
                 new KeyEventArgs(
-                    Keyboard.PrimaryDevice,
+                    new MockKeyboardDevice { Modifiers = ModifierKeys.Control},
+                    new HwndSource(0, 0, 0, 0, 0, string.Empty, IntPtr.Zero),
+                    0,
+                    Key.Space) {RoutedEvent = Keyboard.PreviewKeyDownEvent});
+
+            Assert.Equal("Ctrl + Space", c.Text);
+
+            c.RaiseEvent(
+                new KeyEventArgs(
+                    new MockKeyboardDevice(),
                     new HwndSource(0, 0, 0, 0, 0, string.Empty, IntPtr.Zero),
                     0,
                     Key.LeftCtrl) {RoutedEvent = Keyboard.PreviewKeyDownEvent});
 
             Assert.Equal(string.Empty, c.Text);
+
+            c.RaiseEvent(
+                new KeyEventArgs(
+                    new MockKeyboardDevice {Modifiers = ModifierKeys.Control | ModifierKeys.Alt},
+                    new HwndSource(0, 0, 0, 0, 0, string.Empty, IntPtr.Zero),
+                    0,
+                    Key.X) {RoutedEvent = Keyboard.PreviewKeyDownEvent});
+
+            Assert.Equal("Ctrl + Alt + X", c.Text);
         }
     }
 }
