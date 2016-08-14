@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using Splat;
+using System.Threading;
 
 namespace Ann.Foundation
 {
@@ -30,6 +30,22 @@ namespace Ann.Foundation
             var domainManagerField = domain.GetType().GetField("_domainManager", BindingFlags.Instance | BindingFlags.NonPublic);  
             // ReSharper disable once PossibleNullReferenceException
             domainManagerField.SetValue(domain, manager);
+        }
+    }
+
+    public class RunOnTestDomain : MarshalByRefObject
+    {
+        private static int _testDomainCounter;
+
+        public static void Do(CrossAppDomainDelegate action)
+        {
+            var i = Interlocked.Increment(ref _testDomainCounter);
+
+            var testDomain = AppDomain.CreateDomain("TestDomain" + i, AppDomain.CurrentDomain.Evidence, AppDomain.CurrentDomain.SetupInformation);
+
+            testDomain.DoCallBack(action);
+
+            AppDomain.Unload(testDomain);
         }
     }
 }
