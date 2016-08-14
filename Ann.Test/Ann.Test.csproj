@@ -118,18 +118,17 @@
     <Compile Include="MainWindow\ExecutableUnitViewModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourcesTest.cs" />
-    <Compile Include="SettingWindow\SettingPage\FileOrFolderListBoxTest.cs" />
     <Compile Include="ViewManagerTest.cs" />
     <Compile Include="CultureServiceTest.cs" />
     <Compile Include="SettingWindow\SettingViewModelTest.cs" />
     <Compile Include="SettingWindow\SettingPage\PathViewModelTest.cs" />
-    <Compile Include="SettingWindow\SettingPage\ShortcutKeyListBoxViewModelTest.cs" />
-    <Compile Include="SettingWindow\SettingPage\ShortcutKeyViewModelTest.cs" />
-    <Compile Include="SettingWindow\SettingPage\TargetFoldersViewModelTest.cs" />
-    <Compile Include="SettingWindow\SettingPage\ShortcutsViewModelTest.cs" />
-    <Compile Include="SettingWindow\SettingPage\PriorityFilesViewModelTest.cs" />
-    <Compile Include="SettingWindow\SettingPage\GeneralViewModelTest.cs" />
-    <Compile Include="SettingWindow\SettingPage\AboutViewModelTest.cs" />
+    <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutKeyListBoxViewModelTest.cs" />
+    <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutKeyViewModelTest.cs" />
+    <Compile Include="SettingWindow\SettingPage\TargetFolders\TargetFoldersViewModelTest.cs" />
+    <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutsViewModelTest.cs" />
+    <Compile Include="SettingWindow\SettingPage\PriorityFiles\PriorityFilesViewModelTest.cs" />
+    <Compile Include="SettingWindow\SettingPage\General\GeneralViewModelTest.cs" />
+    <Compile Include="SettingWindow\SettingPage\About\AboutViewModelTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

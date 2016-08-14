@@ -3,7 +3,7 @@ using Ann.Core.Config;
 using Ann.SettingWindow.SettingPage.Shortcuts;
 using Xunit;
 
-namespace Ann.Test.SettingWindow.SettingPage
+namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
 {
     public class ShortcutsViewModelTest
     {

@@ -5,7 +5,7 @@ using Ann.SettingWindow.SettingPage;
 using Ann.SettingWindow.SettingPage.PriorityFiles;
 using Xunit;
 
-namespace Ann.Test.SettingWindow.SettingPage
+namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
 {
     public class PriorityFilesViewModelTest : IDisposable
     {

@@ -2,7 +2,7 @@
 using Ann.SettingWindow.SettingPage.About;
 using Xunit;
 
-namespace Ann.Test.SettingWindow.SettingPage
+namespace Ann.Test.SettingWindow.SettingPage.About
 {
     public class AboutViewModelTest
     {

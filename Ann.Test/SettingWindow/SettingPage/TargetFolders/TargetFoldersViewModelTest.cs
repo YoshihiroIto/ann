@@ -6,7 +6,7 @@ using Ann.SettingWindow.SettingPage.TargetFolders;
 using Xunit;
 using App = Ann.Core.App;
 
-namespace Ann.Test.SettingWindow.SettingPage
+namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
 {
     public class TargetFoldersViewModelTest : IDisposable
     {

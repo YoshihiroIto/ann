@@ -3,7 +3,7 @@ using Ann.Core;
 using Ann.SettingWindow.SettingPage.General;
 using Xunit;
 
-namespace Ann.Test.SettingWindow.SettingPage
+namespace Ann.Test.SettingWindow.SettingPage.General
 {
     public class GeneralViewModelTest
     {
