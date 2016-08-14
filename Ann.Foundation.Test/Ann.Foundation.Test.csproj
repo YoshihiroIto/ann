@@ -116,6 +116,7 @@
     <Compile Include="AssemblyConstantsTest.cs" />
     <Compile Include="ConfigHelperTest.cs" />
     <Compile Include="CompositDisposableExtensionTest.cs" />
+    <Compile Include="Control\Behavior\WindowDisableMinMaxBoxBehaviorTest.cs" />
     <Compile Include="Control\Behavior\WindowTaskTrayIconBehaviorTest.cs" />
     <Compile Include="Control\Behavior\WindowDisposeDataContextOnClosedBehaviorTest.cs" />
     <Compile Include="Control\ShortcutKeyInputBoxTest.cs" />

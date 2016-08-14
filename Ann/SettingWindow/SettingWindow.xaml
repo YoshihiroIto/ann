@@ -29,6 +29,7 @@
         mc:Ignorable="d">
     <i:Interaction.Behaviors>
         <behavior:WindowDisposeDataContextOnClosedBehavior />
+        <behavior:WindowDisableMinMaxBoxBehavior />
     </i:Interaction.Behaviors>
 
     <i:Interaction.Triggers>
