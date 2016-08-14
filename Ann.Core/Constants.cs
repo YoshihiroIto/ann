@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using Ann.Core.Properties;
 using Ann.Foundation;
 using YamlDotNet.Serialization;
@@ -73,7 +72,7 @@ namespace Ann.Core
 
         static Constants()
         {
-            var dir = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) ?? string.Empty;
+            var dir = System.IO.Path.GetDirectoryName(AssemblyConstants.EntryAssemblyLocation) ?? string.Empty;
             var resFiles = Directory.EnumerateFiles(dir, "Ann.resources.dll", SearchOption.AllDirectories);
 
             SupportedCultures = resFiles.Select(f =>

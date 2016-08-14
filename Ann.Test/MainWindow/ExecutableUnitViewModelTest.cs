@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Reflection;
 using Ann.Core;
 using Ann.Foundation;
 using Ann.MainWindow;
@@ -22,7 +21,7 @@ namespace Ann.Test.MainWindow
         {
             TestHelper.CleanTestEnv();
 
-            var path = Assembly.GetEntryAssembly().Location;
+            var path = AssemblyConstants.EntryAssemblyLocation;
             var stringPool = new ConcurrentDictionary<string, string>();
             var targetFolders = new string[0];
 
@@ -44,7 +43,7 @@ namespace Ann.Test.MainWindow
         {
             TestHelper.CleanTestEnv();
 
-            var path = Assembly.GetEntryAssembly().Location;
+            var path = AssemblyConstants.EntryAssemblyLocation;
             var stringPool = new ConcurrentDictionary<string, string>();
             var targetFolders = new string[0];
 
@@ -72,7 +71,7 @@ namespace Ann.Test.MainWindow
         {
             TestHelper.CleanTestEnv();
 
-            var path = Assembly.GetEntryAssembly().Location;
+            var path = AssemblyConstants.EntryAssemblyLocation;
             var stringPool = new ConcurrentDictionary<string, string>();
             var targetFolders = new string[0];
 

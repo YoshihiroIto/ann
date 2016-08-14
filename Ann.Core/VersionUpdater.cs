@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings.Extensions;
 using Squirrel;
 using System.Reactive.Disposables;
+using Ann.Foundation;
 
 namespace Ann.Core
 {
@@ -21,7 +21,7 @@ namespace Ann.Core
         {
             _gitHubPersonalAccessToken = gitHubPersonalAccessToken ?? string.Empty;
 
-            var dir = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            var dir = System.IO.Path.GetDirectoryName(AssemblyConstants.EntryAssemblyLocation);
             var parentDir = System.IO.Path.GetDirectoryName(dir) ?? string.Empty;
             var updaterExe = System.IO.Path.Combine(parentDir, "Update.exe");
 

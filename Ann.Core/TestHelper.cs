@@ -1,5 +1,4 @@
 ﻿using System.Reactive.Concurrency;
-using System.Reflection;
 using System.Threading;
 using Reactive.Bindings;
 
@@ -13,9 +12,6 @@ namespace Ann.Core
         {
             if (Interlocked.Increment(ref _isCleaned) != 1)
                 return;
-
-            if (Assembly.GetEntryAssembly() == null)
-                Foundation.TestHelper.SetEntryAssembly();
 
             ReactivePropertyScheduler.SetDefault(ImmediateScheduler.Instance);
         }

@@ -8,8 +8,6 @@ namespace Ann.Foundation.Test
         [Fact]
         public void Version()
         {
-            TestHelper.SetEntryAssembly();
-
             var r = new Regex(@"\d+.\d+.\d+.\d+");
             Assert.True(r.IsMatch(AssemblyConstants.Version));
         }
