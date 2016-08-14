@@ -35,32 +35,6 @@ namespace Ann.Foundation
         }
 
         //http://stackoverflow.com/questions/19523139/find-control-in-the-visual-tree 
-        public static DependencyObject FindChild(DependencyObject parent, string name)
-        {
-            if (parent == null || string.IsNullOrEmpty(name))
-                return null;
-
-            var element = parent as FrameworkElement;
-            if (element != null && element.Name == name)
-                return parent;
-
-            DependencyObject result = null;
-
-            (parent as FrameworkElement)?.ApplyTemplate();
-
-            var childrenCount = VisualTreeHelper.GetChildrenCount(parent);
-            for (var i = 0; i != childrenCount; ++i)
-            {
-                var child = VisualTreeHelper.GetChild(parent, i);
-                result = FindChild(child, name);
-
-                if (result != null)
-                    break;
-            }
-
-            return result;
-        }
-
         public static T FindChild<T>(DependencyObject parent) where T : DependencyObject
         {
             if (parent == null)

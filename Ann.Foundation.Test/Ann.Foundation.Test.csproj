@@ -115,6 +115,7 @@
     <Compile Include="AssemblyConstantsTest.cs" />
     <Compile Include="ConfigHelperTest.cs" />
     <Compile Include="CompositDisposableExtensionTest.cs" />
+    <Compile Include="Control\ShortcutKeyInputBoxTest.cs" />
     <Compile Include="Control\ValueConverter\TypeofConverterTest.cs" />
     <Compile Include="Mvvm\Message\FileOrFolderSelectMessageTest.cs" />
     <Compile Include="Mvvm\Message\WindowActionActionTest.cs" />
