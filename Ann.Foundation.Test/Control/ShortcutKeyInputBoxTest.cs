@@ -1,4 +1,6 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
+using System.Windows.Interop;
 using Ann.Foundation.Control;
 using Xunit;
 
@@ -31,6 +33,30 @@ namespace Ann.Foundation.Test.Control
 
             c.Key = Key.Z;
             Assert.Equal("Ctrl + Alt + Shift + Z", c.Text);
+        }
+
+        [WpfFact]
+        public void KeyInput()
+        {
+            var c = new ShortcutKeyInputBox();
+
+            c.RaiseEvent(
+                new KeyEventArgs(
+                    Keyboard.PrimaryDevice,
+                    new HwndSource(0, 0, 0, 0, 0, string.Empty, IntPtr.Zero),
+                    0,
+                    Key.B) {RoutedEvent = Keyboard.PreviewKeyDownEvent});
+
+            Assert.Equal("B", c.Text);
+
+            c.RaiseEvent(
+                new KeyEventArgs(
+                    Keyboard.PrimaryDevice,
+                    new HwndSource(0, 0, 0, 0, 0, string.Empty, IntPtr.Zero),
+                    0,
+                    Key.LeftCtrl) {RoutedEvent = Keyboard.PreviewKeyDownEvent});
+
+            Assert.Equal(string.Empty, c.Text);
         }
     }
 }
