@@ -2,14 +2,21 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Ann.Foundation.Control.Behavior;
 using Reactive.Bindings;
 using Xunit;
 
 namespace Ann.Foundation.Test.Control.Behavior
 {
-    public class WindowTaskTrayIconBehaviorTest
+    public class WindowTaskTrayIconBehaviorTest : IDisposable
     {
+        public void Dispose()
+        {
+            // for appveyor 
+            Dispatcher.CurrentDispatcher.InvokeShutdown();
+        }
+
         [WpfFact]
         public void Basic()
         {
