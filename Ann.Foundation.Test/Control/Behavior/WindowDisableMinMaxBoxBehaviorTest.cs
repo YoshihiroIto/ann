@@ -12,9 +12,9 @@ namespace Ann.Foundation.Test.Control.Behavior
             var w = new Window();
 
             var b = new WindowDisableMinMaxBoxBehavior();
-
             b.Attach(w);
 
+            w.Show();
             w.Close();
 
             b.Detach();
