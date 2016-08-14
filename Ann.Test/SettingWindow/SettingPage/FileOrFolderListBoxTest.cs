@@ -1,13 +1,21 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Windows;
+using System.Windows.Threading;
 using Ann.Foundation;
 using Ann.SettingWindow.SettingPage;
 using Xunit;
 
 namespace Ann.Test.SettingWindow.SettingPage
 {
-    public class FileOrFolderListBoxTest
+    public class FileOrFolderListBoxTest: IDisposable
     {
+        public void Dispose()
+        {
+            // for appveyor 
+            Dispatcher.CurrentDispatcher.InvokeShutdown();
+        }
+
         [WpfFact]
         public void Basic()
         {
