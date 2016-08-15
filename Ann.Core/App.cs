@@ -140,7 +140,8 @@ namespace Ann.Core
                 }
 
                 return Config.TargetFolder.Folders.Select(x => x.Value)
-                    .Concat(folders);
+                    .Concat(folders)
+                    .Distinct();
             }
         }
 
