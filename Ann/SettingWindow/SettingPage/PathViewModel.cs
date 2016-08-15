@@ -15,6 +15,8 @@ namespace Ann.SettingWindow.SettingPage
     {
         public ReactiveProperty<string> Path { get; }
 
+        public ReactiveProperty<bool> IsFocused  { get; }
+
         public ReactiveCommand FolderSelectDialogOpenCommand { get; }
         
         public PathViewModel(Path model, bool isFolder, Func<IEnumerable<CommonFileDialogFilter>> makeFilters = null)
@@ -22,6 +24,8 @@ namespace Ann.SettingWindow.SettingPage
             Debug.Assert(model != null);
             
             Path = model.ToReactivePropertyAsSynchronized(x => x.Value).AddTo(CompositeDisposable);
+            
+            IsFocused = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
 
             FolderSelectDialogOpenCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             FolderSelectDialogOpenCommand.Subscribe(_ =>

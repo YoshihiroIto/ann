@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Ann.Core;
@@ -58,12 +59,24 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
 
             Folders = model.TargetFolder.Folders.ToReadOnlyReactiveCollection(p =>
             {
-                var path = new PathViewModel(p, true);
-                path.Path
-                    .Subscribe(_ => _pathChanged.OnNext(0))
-                    .AddTo(path.CompositeDisposable);
+                var isInitializing = true;
+                using (Disposable.Create(() => isInitializing = false))
+                {
+                    var path = new PathViewModel(p, true);
+                    path.Path
+                        .Subscribe(_ => _pathChanged.OnNext(0))
+                        .AddTo(path.CompositeDisposable);
 
-                return path;
+                    // 未入力状態でフォーカスが外れたら削除する
+                    path.IsFocused
+                        .Where(i => i == false)
+                        .Where(_ => isInitializing == false)
+                        .Where(_ => string.IsNullOrEmpty(path.Path.Value))
+                        .Subscribe(_ => model.TargetFolder.Folders.Remove(p))
+                        .AddTo(path.CompositeDisposable);
+
+                    return path;
+                }
             }).AddTo(CompositeDisposable);
 
             FolderAddCommand = new ReactiveCommand().AddTo(CompositeDisposable);

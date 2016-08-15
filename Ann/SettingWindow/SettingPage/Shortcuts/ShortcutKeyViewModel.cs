@@ -40,9 +40,9 @@ namespace Ann.SettingWindow.SettingPage.Shortcuts
 
             Key = model.ToReactivePropertyAsSynchronized(x => x.Key).AddTo(CompositeDisposable);
 
-            IsControl = new ReactiveProperty<bool>() .AddTo(CompositeDisposable);
-            IsAlt = new ReactiveProperty<bool>() .AddTo(CompositeDisposable);
-            IsShift = new ReactiveProperty<bool>() .AddTo(CompositeDisposable);
+            IsControl = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
+            IsAlt = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
+            IsShift = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
 
             IsFocused = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
 
