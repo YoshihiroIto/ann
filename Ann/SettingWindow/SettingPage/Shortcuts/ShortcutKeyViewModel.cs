@@ -15,6 +15,8 @@ namespace Ann.SettingWindow.SettingPage.Shortcuts
         public ReactiveProperty<bool> IsAlt { get; }
         public ReactiveProperty<bool> IsShift { get; }
 
+        public ReactiveProperty<bool> IsFocused  { get; }
+
         public ModifierKeys Modifiers
         {
             get
@@ -41,6 +43,8 @@ namespace Ann.SettingWindow.SettingPage.Shortcuts
             IsControl = new ReactiveProperty<bool>() .AddTo(CompositeDisposable);
             IsAlt = new ReactiveProperty<bool>() .AddTo(CompositeDisposable);
             IsShift = new ReactiveProperty<bool>() .AddTo(CompositeDisposable);
+
+            IsFocused = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
 
             model.ObserveProperty(x => x.Modifiers).Subscribe(m =>
             {

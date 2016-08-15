@@ -40,6 +40,7 @@
                                                  IsAlt="{Binding IsAlt.Value}"
                                                  IsControl="{Binding IsControl.Value}"
                                                  IsShift="{Binding IsShift.Value}"
+                                                 IsFocused="{Binding IsFocused.Value}"
                                                  Style="{StaticResource MaterialDesignTextBox}" />
 
                     <!--  位置合わせ  -->
@@ -92,6 +93,8 @@
 
     <Button HorizontalAlignment="Left"
             HorizontalContentAlignment="Left"
+            Focusable="False"
+            IsTabStop="False"
             Command="{Binding AddCommand,
                               RelativeSource={RelativeSource FindAncestor,
                                                              AncestorType={x:Type shortcuts:ShortcutkeyListBox}}}"

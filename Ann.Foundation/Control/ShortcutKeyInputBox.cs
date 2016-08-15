@@ -119,9 +119,37 @@ namespace Ann.Foundation.Control
 
         #endregion
 
+        #region IsFocused
+
+        public new bool IsFocused
+        {
+            get { return (bool)GetValue(IsFocusedProperty); }
+            set { SetValue(IsFocusedProperty, value); }
+        }
+
+        public new static readonly DependencyProperty IsFocusedProperty =
+            DependencyProperty.Register(
+                nameof (IsFocused),
+                typeof (bool),
+                typeof (ShortcutKeyInputBox),
+                new FrameworkPropertyMetadata
+                {
+                    DefaultValue            = default(bool),
+                    BindsTwoWayByDefault    = true
+                }
+            );
+
+        #endregion
+
         public ShortcutKeyInputBox()
         {
             IsReadOnly = true;
+
+            IsVisibleChanged += (_, __) =>
+            {
+                if (IsVisible == false)
+                    IsFocused = false;
+            };
         }
 
         protected override void OnPreviewKeyDown(KeyEventArgs e)
@@ -179,6 +207,21 @@ namespace Ann.Foundation.Control
             sb.Append(Key);
 
             Text = sb.ToString();
+        }
+
+        protected override void OnGotFocus(RoutedEventArgs e)
+        {
+            IsFocused = true;
+
+            base.OnGotFocus(e);
+
+        }
+
+        protected override void OnLostFocus(RoutedEventArgs e)
+        {
+            IsFocused = false;
+
+            base.OnLostFocus(e);
         }
     }
 }
