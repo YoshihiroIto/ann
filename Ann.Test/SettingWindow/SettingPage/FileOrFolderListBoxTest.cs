@@ -24,39 +24,40 @@ namespace Ann.Test.SettingWindow.SettingPage
         {
             RunOnTestDomain.Do(() =>
             {
-                Application.ResourceAssembly = Assembly.GetAssembly(typeof(Entry));
-
-                var entry = new Entry();
-                entry.InitializeComponent();
-
                 try
                 {
-                    var c = new FileOrFolderListBox();
+                    Application.ResourceAssembly = Assembly.GetAssembly(typeof(Entry));
+                    var entry = new Entry();
+                    entry.InitializeComponent();
+                    {
+                        var c = new FileOrFolderListBox();
 
-                    var dummyCmd = new ReactiveCommand();
+                        var dummyCmd = new ReactiveCommand();
 
-                    Assert.Null(c.AddCommand);
-                    c.AddCommand = dummyCmd;
-                    Assert.Same(dummyCmd, c.AddCommand);
+                        Assert.Null(c.AddCommand);
+                        c.AddCommand = dummyCmd;
+                        Assert.Same(dummyCmd, c.AddCommand);
 
-                    Assert.Null(c.RemoveCommand);
-                    c.RemoveCommand = dummyCmd;
-                    Assert.Same(dummyCmd, c.RemoveCommand);
+                        Assert.Null(c.RemoveCommand);
+                        c.RemoveCommand = dummyCmd;
+                        Assert.Same(dummyCmd, c.RemoveCommand);
 
-                    var l = new List<string>();
-                    Assert.Null(c.Items);
-                    c.Items = l;
-                    Assert.Same(l, c.Items);
+                        var l = new List<string>();
+                        Assert.Null(c.Items);
+                        c.Items = l;
+                        Assert.Same(l, c.Items);
 
-                    Assert.Null(c.AddButtonText);
-                    c.AddButtonText = "AAA";
-                    Assert.Equal("AAA", c.AddButtonText);
+                        Assert.Null(c.AddButtonText);
+                        c.AddButtonText = "AAA";
+                        Assert.Equal("AAA", c.AddButtonText);
 
-                    Assert.False(c.IsFolderPicker);
-                    c.IsFolderPicker = true;
-                    Assert.True(c.IsFolderPicker);
+                        Assert.False(c.IsFolderPicker);
+                        c.IsFolderPicker = true;
+                        Assert.True(c.IsFolderPicker);
 
-                    dummyCmd.Dispose();
+                        dummyCmd.Dispose();
+                    }
+                    entry.Shutdown();
                 }
                 catch (Exception e)
                 {
@@ -70,22 +71,23 @@ namespace Ann.Test.SettingWindow.SettingPage
         {
             RunOnTestDomain.Do(() =>
             {
-                Application.ResourceAssembly = Assembly.GetAssembly(typeof(Entry));
-
-                var entry = new Entry();
-                entry.InitializeComponent();
-
                 try
                 {
-                    var c = new FileOrFolderListBox();
+                    Application.ResourceAssembly = Assembly.GetAssembly(typeof(Entry));
+                    var entry = new Entry();
+                    entry.InitializeComponent();
+                    {
+                        var c = new FileOrFolderListBox();
 
-                    var l = new ObservableCollection<string>();
+                        var l = new ObservableCollection<string>();
 
-                    c.Items = l;
+                        c.Items = l;
 
-                    l.Add("AAA");
-                    l.Add("BBB");
-                    l.Add("CCC");
+                        l.Add("AAA");
+                        l.Add("BBB");
+                        l.Add("CCC");
+                    }
+                    entry.Shutdown();
                 }
                 catch (Exception e)
                 {
