@@ -16,10 +16,7 @@ namespace Ann.Test.SettingWindow.SettingPage
         public void Dispose()
         {
             // for appveyor 
-        //    Dispatcher.CurrentDispatcher.InvokeShutdown();
-
-            Dispatcher.CurrentDispatcher.BeginInvokeShutdown(DispatcherPriority.SystemIdle);
-            Dispatcher.Run();
+            //Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
 
         [WpfFact]
