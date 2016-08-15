@@ -63,8 +63,8 @@ namespace Ann.Foundation.Control.Behavior
                         .ItemContainerGenerator
                         .ContainerFromIndex(e.NewStartingIndex);
 
-                    var inputBox = WpfHelper.FindChild(item, ItemType) as UIElement;
-                    inputBox?.Focus();
+                    var itemConrol = WpfHelper.FindChild(item, ItemType) as UIElement;
+                    itemConrol?.Focus();
                 });
         }
     }
