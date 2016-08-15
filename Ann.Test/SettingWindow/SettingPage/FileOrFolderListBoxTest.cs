@@ -79,8 +79,6 @@ namespace Ann.Test.SettingWindow.SettingPage
                 {
                     var c = new FileOrFolderListBox();
 
-                    // todo:テストを実装する
-
                     var l = new ObservableCollection<string>();
 
                     c.Items = l;
