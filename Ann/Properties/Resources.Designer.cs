@@ -196,6 +196,15 @@ namespace Ann.Properties {
         }
         
         /// <summary>
+        ///   Already set same key stroke. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Message_AlreadySetSameKeyStroke {
+            get {
+                return ResourceManager.GetString("Message_AlreadySetSameKeyStroke", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Failed to start. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string Message_FailedToStart {

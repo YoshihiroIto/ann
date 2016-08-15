@@ -255,4 +255,7 @@
   <data name="Message_AlreadySetSameFolder" xml:space="preserve">
     <value>Already set same folder.</value>
   </data>
+  <data name="Message_AlreadySetSameKeyStroke" xml:space="preserve">
+    <value>Already set same key stroke.</value>
+  </data>
 </root>

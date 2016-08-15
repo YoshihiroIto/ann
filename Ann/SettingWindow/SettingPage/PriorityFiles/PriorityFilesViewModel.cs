@@ -65,10 +65,6 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
                 }
             }).AddTo(CompositeDisposable);
 
-            Files.CollectionChangedAsObservable()
-                .Subscribe(_ => ValidateAll())
-                .AddTo(CompositeDisposable);
-
             FileAddCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             FileAddCommand.Subscribe(_ => model.PriorityFiles.Add(new Path(string.Empty)))
                 .AddTo(CompositeDisposable);
@@ -80,6 +76,10 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
                 if (t != null)
                     model.PriorityFiles.Remove(t);
             }).AddTo(CompositeDisposable);
+
+            Files.CollectionChangedAsObservable()
+                .Subscribe(_ => ValidateAll())
+                .AddTo(CompositeDisposable);
 
             _pathChanged
                 .Subscribe(_ =>

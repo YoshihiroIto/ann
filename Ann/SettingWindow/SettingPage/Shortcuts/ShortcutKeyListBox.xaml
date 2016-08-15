@@ -39,17 +39,13 @@
                                              DataContext="{Binding}"
                                              Foreground="DodgerBlue"
                                              Kind="InformationOutline"
-                                             Validation.ErrorTemplate="{x:Null}">
+                                             ToolTip="{Binding ValidationMessage.Value}">
                         <materialDesign:PackIcon.Style>
                             <Style TargetType="{x:Type materialDesign:PackIcon}">
                                 <Style.Triggers>
-                                    <Trigger Property="Validation.HasError" Value="True">
-                                        <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)[0].ErrorContent}" />
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </Trigger>
-                                    <Trigger Property="Validation.HasError" Value="False">
+                                    <DataTrigger Binding="{Binding ValidationMessage.Value}" Value="{x:Null}">
                                         <Setter Property="Visibility" Value="Collapsed" />
-                                    </Trigger>
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </materialDesign:PackIcon.Style>

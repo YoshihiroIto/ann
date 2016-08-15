@@ -255,4 +255,7 @@
   <data name="Message_AlreadySetSameFolder" xml:space="preserve">
     <value>すでに同じフォルダーが設定済みです。</value>
   </data>
+  <data name="Message_AlreadySetSameKeyStroke" xml:space="preserve">
+    <value>すでに同じキーストロークが設定済みです。</value>
+  </data>
 </root>
