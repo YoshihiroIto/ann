@@ -23,6 +23,8 @@ namespace Ann.Foundation
             {
                 // for appveyor 
                 Dispatcher.CurrentDispatcher.InvokeShutdown();
+
+                GC.Collect();
             });
 
             AppDomain.Unload(testDomain);
