@@ -19,12 +19,6 @@ namespace Ann.Foundation
 
             testDomain.DoCallBack(action.Invoke);
 
-            testDomain.DoCallBack(() =>
-            {
-                // for appveyor 
-                Dispatcher.CurrentDispatcher.InvokeShutdown();
-            });
-
             AppDomain.Unload(testDomain);
         }
     }
