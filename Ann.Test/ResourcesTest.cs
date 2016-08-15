@@ -6,9 +6,17 @@ namespace Ann.Test
     public class ResourcesTest
     {
         [Fact]
+        public void Culture()
+        {
+            var c = Resources.Culture;
+            Resources.Culture = c;
+        }
+
+        [Fact]
         public void Text()
         {
             Assert.NotEmpty(Resources.AllFiles);
+            Assert.NotEmpty(Resources.Message_AlreadySetSameKeyStroke);
             Assert.NotEmpty(Resources.Ann_Introduction);
             Assert.NotEmpty(Resources.AutoUpdateStates_CloseAfter0Sec_Restart);
             Assert.NotEmpty(Resources.AutoUpdateStates_CloseAfterNSec);
