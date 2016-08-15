@@ -96,6 +96,7 @@
     <Compile Include="ConfigHelper.cs" />
     <Compile Include="Control\Behavior\WindowDisableMinMaxBoxBehavior.cs" />
     <Compile Include="Control\Behavior\ListBoxLastItemFocusOnItemAddedBehavior.cs" />
+    <Compile Include="Control\Behavior\UIElementFocusBehavior.cs" />
     <Compile Include="Control\Behavior\WindowDisposeDataContextOnClosedBehavior.cs" />
     <Compile Include="DirectoryHelper.cs" />
     <Compile Include="DisposableFileSystem.cs" />

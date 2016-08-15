@@ -40,8 +40,11 @@
                                                  IsAlt="{Binding IsAlt.Value}"
                                                  IsControl="{Binding IsControl.Value}"
                                                  IsShift="{Binding IsShift.Value}"
-                                                 IsFocused="{Binding IsFocused.Value}"
-                                                 Style="{StaticResource MaterialDesignTextBox}" />
+                                                 Style="{StaticResource MaterialDesignTextBox}">
+                        <i:Interaction.Behaviors>
+                            <behavior:UIElementFocusBehavior IsFocused="{Binding IsFocused.Value}" />
+                        </i:Interaction.Behaviors>
+                    </control:ShortcutKeyInputBox>
 
                     <!--  位置合わせ  -->
                     <Button Grid.Column="0"
@@ -93,13 +96,13 @@
 
     <Button HorizontalAlignment="Left"
             HorizontalContentAlignment="Left"
-            Focusable="False"
-            IsTabStop="False"
             Command="{Binding AddCommand,
                               RelativeSource={RelativeSource FindAncestor,
                                                              AncestorType={x:Type shortcuts:ShortcutkeyListBox}}}"
             Content="{Binding Source={x:Static app:CultureService.Instance},
                               Path=Resources.Settings_AddKey,
                               Mode=OneWay}"
+            Focusable="False"
+            IsTabStop="False"
             Style="{StaticResource FlatButtonStyle}" />
 </StackPanel>
