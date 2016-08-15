@@ -6,6 +6,8 @@
             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             xmlns:settingPage="clr-namespace:Ann.SettingWindow.SettingPage"
+            xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+            xmlns:behavior="clr-namespace:Ann.Foundation.Control.Behavior;assembly=Ann.Foundation"
             d:DesignHeight="300"
             d:DesignWidth="300"
             Grid.IsSharedSizeScope="True"
@@ -16,6 +18,10 @@
                                    Mode=OneWay,
                                    RelativeSource={RelativeSource FindAncestor,
                                                                   AncestorType={x:Type settingPage:FileOrFolderListBox}}}">
+        <i:Interaction.Behaviors>
+            <behavior:ListBoxLastItemFocusOnItemAddedBehavior ItemType="{x:Type TextBox}" />
+        </i:Interaction.Behaviors>
+
         <ListBox.ItemTemplate>
             <DataTemplate DataType="settingPage:PathViewModel">
                 <Grid Margin="0,0,0,4">

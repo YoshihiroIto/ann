@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -34,15 +35,19 @@ namespace Ann.Foundation
             return null;
         }
 
-        //http://stackoverflow.com/questions/19523139/find-control-in-the-visual-tree 
         public static T FindChild<T>(DependencyObject parent) where T : DependencyObject
+        {
+            return (T)FindChild(parent, typeof(T));
+        }
+
+        // http://stackoverflow.com/questions/19523139/find-control-in-the-visual-tree 
+        public static DependencyObject FindChild(DependencyObject parent, Type childType)
         {
             if (parent == null)
                 return null;
 
-            var findChild = parent as T;
-            if (findChild != null)
-                return findChild;
+            if (parent.GetType() == childType)
+                return parent;
 
             DependencyObject foundChild = null;
 
@@ -53,13 +58,13 @@ namespace Ann.Foundation
             for (var i = 0; i != childrenCount; ++i)
             {
                 var child = VisualTreeHelper.GetChild(parent, i);
-                foundChild = FindChild<T>(child);
+                foundChild = FindChild(child, childType);
 
                 if (foundChild != null)
                     break;
             }
 
-            return (T) foundChild;
+            return foundChild;
         }
     }
 }
