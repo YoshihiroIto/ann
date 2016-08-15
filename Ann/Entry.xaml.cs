@@ -48,8 +48,8 @@ namespace Ann
         {
             base.OnExit(e);
 
-            _app.Dispose();
-            _viewManager.Dispose();
+            _app?.Dispose();
+            _viewManager?.Dispose();
 
             CultureService.Instance.Destory();
         }
