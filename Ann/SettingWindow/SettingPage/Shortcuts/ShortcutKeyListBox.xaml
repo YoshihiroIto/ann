@@ -27,13 +27,46 @@
             <DataTemplate DataType="shortcuts:ShortcutKeyViewModel">
                 <Grid Margin="0,0,0,4">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
+                    <materialDesign:PackIcon Grid.Column="0"
+                                             Margin="4,0,0,0"
+                                             VerticalAlignment="Center"
+                                             Background="Transparent"
+                                             DataContext="{Binding}"
+                                             Foreground="DodgerBlue"
+                                             Kind="InformationOutline"
+                                             Validation.ErrorTemplate="{x:Null}">
+                        <materialDesign:PackIcon.Style>
+                            <Style TargetType="{x:Type materialDesign:PackIcon}">
+                                <Style.Triggers>
+                                    <Trigger Property="Validation.HasError" Value="True">
+                                        <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)[0].ErrorContent}" />
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </Trigger>
+                                    <Trigger Property="Validation.HasError" Value="False">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </materialDesign:PackIcon.Style>
+                    </materialDesign:PackIcon>
+
+                    <!--  位置合わせ  -->
+                    <Button Grid.Column="1"
+                            Width="24"
+                            Height="24"
+                            Style="{StaticResource FlatIconButtonStyle}"
+                            Visibility="Hidden">
+                        <materialDesign:PackIcon Kind="Delete" />
+                    </Button>
+                    
                     <control:ShortcutKeyInputBox Key="{Binding Key.Value}"
-                                                 Grid.Column="0"
-                                                 Margin="0"
+                                                 Grid.Column="1"
+                                                 Margin="1"
                                                  materialDesign:HintAssist.Hint="{Binding Source={x:Static app:CultureService.Instance},
                                                                                           Path=Resources.Settings_KeyStroke,
                                                                                           Mode=OneWay}"
@@ -46,16 +79,7 @@
                         </i:Interaction.Behaviors>
                     </control:ShortcutKeyInputBox>
 
-                    <!--  位置合わせ  -->
-                    <Button Grid.Column="0"
-                            Width="24"
-                            Height="24"
-                            Style="{StaticResource FlatIconButtonStyle}"
-                            Visibility="Hidden">
-                        <materialDesign:PackIcon Kind="Delete" />
-                    </Button>
-
-                    <Button Grid.Column="1"
+                    <Button Grid.Column="2"
                             Width="24"
                             Height="24"
                             Command="{Binding RemoveCommand,

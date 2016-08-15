@@ -178,6 +178,24 @@ namespace Ann.Properties {
         }
         
         /// <summary>
+        ///   Already set same file. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Message_AlreadySetSameFile {
+            get {
+                return ResourceManager.GetString("Message_AlreadySetSameFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Already set same folder. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Message_AlreadySetSameFolder {
+            get {
+                return ResourceManager.GetString("Message_AlreadySetSameFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Failed to start. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string Message_FailedToStart {
@@ -192,6 +210,15 @@ namespace Ann.Properties {
         public static string Message_FileNotFound {
             get {
                 return ResourceManager.GetString("Message_FileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Folder not found. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Message_FolderNotFound {
+            get {
+                return ResourceManager.GetString("Message_FolderNotFound", resourceCulture);
             }
         }
         

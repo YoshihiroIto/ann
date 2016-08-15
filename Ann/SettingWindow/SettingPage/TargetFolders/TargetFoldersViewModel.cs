@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
+using Ann.Properties;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using Path = Ann.Core.Path;
 
 namespace Ann.SettingWindow.SettingPage.TargetFolders
 {
@@ -27,9 +31,13 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
 
         private readonly Subject<int> _pathChanged;
 
+        private readonly Core.Config.App _model;
+
         public TargetFoldersViewModel(Core.Config.App model, App app)
         {
             Debug.Assert(model != null);
+
+            _model = model;
 
             _pathChanged = new Subject<int>().AddTo(CompositeDisposable);
 
@@ -64,6 +72,7 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                 {
                     var path = new PathViewModel(p, true);
                     path.Path
+                        .Where(_ => isInitializing == false)
                         .Subscribe(_ => _pathChanged.OnNext(0))
                         .AddTo(path.CompositeDisposable);
 
@@ -78,6 +87,10 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                     return path;
                 }
             }).AddTo(CompositeDisposable);
+
+            Folders.CollectionChangedAsObservable()
+                .Subscribe(_ => ValidateAll())
+                .AddTo(CompositeDisposable);
 
             FolderAddCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             FolderAddCommand.Subscribe(_ => model.TargetFolder.Folders.Add(new Path(string.Empty)))
@@ -112,9 +125,32 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                         return;
                     }
                     
+                    ValidateAll();
                     await app.UpdateIndexAsync();
                 })
                 .AddTo(CompositeDisposable);
+
+            ValidateAll();
+        }
+
+        private void ValidateAll()
+        {
+            foreach (var pvm in Folders)
+                pvm.ValidationMessage.Value = Validate(pvm, _model.TargetFolder.Folders);
+        }
+
+        private string Validate(PathViewModel item, IEnumerable<Path> parentCollection)
+        {
+            if (string.IsNullOrEmpty(item.Path.Value) == false)
+                if (Directory.Exists(item.Path.Value) == false)
+                    return Resources.Message_FolderNotFound;
+
+            if (parentCollection
+                .Where(p => item.Model != p)
+                .Any(p => p.Value == item.Path.Value))
+                return Resources.Message_AlreadySetSameFolder;
+
+            return null;
         }
     }
 }

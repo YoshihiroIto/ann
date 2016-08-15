@@ -21,13 +21,16 @@ namespace Ann.Test
             Assert.NotEmpty(Resources.MenuItem_Settings);
             Assert.NotEmpty(Resources.MenuItem_UpdateIndex);
             Assert.NotEmpty(Resources.Message_ActivationShortcutKeyIsAlreadyInUse);
+            Assert.NotEmpty(Resources.Message_AlreadySetSameFile);
+            Assert.NotEmpty(Resources.Message_AlreadySetSameFolder);
             Assert.NotEmpty(Resources.Message_FailedToStart);
             Assert.NotEmpty(Resources.Message_FileNotFound);
+            Assert.NotEmpty(Resources.Message_FolderNotFound);
+            Assert.NotEmpty(Resources.Message_InOpening);
             Assert.NotEmpty(Resources.Message_IndexIsNotOpened);
             Assert.NotEmpty(Resources.Message_IndexIsOld);
             Assert.NotEmpty(Resources.Message_IndexNotFound);
             Assert.NotEmpty(Resources.Message_IndexUpdating);
-            Assert.NotEmpty(Resources.Message_InOpening);
             Assert.NotEmpty(Resources.Restart);
             Assert.NotEmpty(Resources.Settings);
             Assert.NotEmpty(Resources.Settings_About);

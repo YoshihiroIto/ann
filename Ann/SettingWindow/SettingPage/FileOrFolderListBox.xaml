@@ -27,12 +27,31 @@
                 <Grid Margin="0,0,0,4">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
+                    <materialDesign:PackIcon Grid.Column="0"
+                                             Margin="4,0,0,0"
+                                             VerticalAlignment="Center"
+                                             Background="Transparent"
+                                             Foreground="DodgerBlue"
+                                             Kind="InformationOutline"
+                                             ToolTip="{Binding ValidationMessage.Value}">
+                        <materialDesign:PackIcon.Style>
+                            <Style TargetType="{x:Type materialDesign:PackIcon}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ValidationMessage.Value}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </materialDesign:PackIcon.Style>
+                    </materialDesign:PackIcon>
+
                     <!--  位置合わせ  -->
-                    <Button Grid.Column="0"
+                    <Button Grid.Column="1"
                             Width="24"
                             Height="24"
                             Style="{StaticResource FlatIconButtonStyle}"
@@ -40,7 +59,7 @@
                         <materialDesign:PackIcon Kind="Delete" />
                     </Button>
 
-                    <Button Grid.Column="0"
+                    <Button Grid.Column="1"
                             Width="24"
                             Height="24"
                             Command="{Binding FolderSelectDialogOpenCommand,
@@ -62,7 +81,7 @@
                         </materialDesign:PackIcon>
                     </Button>
 
-                    <TextBox Grid.Column="1" Text="{Binding Path.Value, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox Grid.Column="2" Text="{Binding Path.Value, UpdateSourceTrigger=PropertyChanged}">
                         <i:Interaction.Behaviors>
                             <behavior:UIElementFocusBehavior IsFocused="{Binding IsFocused.Value}" />
                         </i:Interaction.Behaviors>
@@ -81,7 +100,7 @@
                         </TextBox.Style>
                     </TextBox>
 
-                    <Button Grid.Column="2"
+                    <Button Grid.Column="3"
                             Width="24"
                             Height="24"
                             Command="{Binding RemoveCommand,
