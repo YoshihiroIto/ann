@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -17,15 +18,24 @@ namespace Ann.MainWindow
     /// </summary>
     public partial class MainWindow
     {
-        private readonly MainWindowViewModel _DataContext = new MainWindowViewModel();
+        private readonly MainWindowViewModel _DataContext;
+        private readonly App _app;
+        private readonly ConfigHolder _configHolder;
 
-        public MainWindow()
+        public MainWindow(App app, ConfigHolder configHolder)
         {
+            Debug.Assert(app != null);
+            Debug.Assert(configHolder != null);
+
+            _app = app;
+            _configHolder = configHolder;
+
+            _DataContext = new MainWindowViewModel(_app, _configHolder);
             DataContext = _DataContext;
 
             SetupMessenger();
 
-            if (double.IsNaN(_DataContext.Config.Left))
+            if (double.IsNaN(_configHolder.MainWindow.Left))
                 WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             InitializeComponent();
@@ -118,8 +128,8 @@ namespace Ann.MainWindow
             _DataContext.CompositeDisposable.Add(() => _activateHotKey?.Dispose());
 
             Observable.FromEventPattern(
-                h => App.Instance.ShortcutKeyChanged += h,
-                h => App.Instance.ShortcutKeyChanged -= h)
+                h => _app.ShortcutKeyChanged += h,
+                h => _app.ShortcutKeyChanged -= h)
                 .Subscribe(_ => SetupHotKey())
                 .AddTo(_DataContext.CompositeDisposable);
         }
@@ -129,8 +139,8 @@ namespace Ann.MainWindow
             SetupShortcutKey();
 
             Observable.FromEventPattern(
-                h => App.Instance.ShortcutKeyChanged += h,
-                h => App.Instance.ShortcutKeyChanged -= h)
+                h => _app.ShortcutKeyChanged += h,
+                h => _app.ShortcutKeyChanged -= h)
                 .Subscribe(_ => SetupShortcutKey())
                 .AddTo(_DataContext.CompositeDisposable);
         }
@@ -142,15 +152,15 @@ namespace Ann.MainWindow
             _activateHotKey?.Dispose();
             _activateHotKey = null;
 
-            if (App.Instance.Config.ShortcutKeys.Activate.Key == Key.None)
+            if (_configHolder.Config.ShortcutKeys.Activate.Key == Key.None)
             {
-                _DataContext.IsEnableActivateHotKey.Value = true;
+                _app.IsEnableActivateHotKey = true;
                 return;
             }
 
             _activateHotKey = new HotKeyRegister(
-                App.Instance.Config.ShortcutKeys.Activate.Modifiers,
-                App.Instance.Config.ShortcutKeys.Activate.Key,
+                _configHolder.Config.ShortcutKeys.Activate.Modifiers,
+                _configHolder.Config.ShortcutKeys.Activate.Key,
                 Application.Current.MainWindow);
 
             _activateHotKey.HotKeyPressed += (_, __) =>
@@ -164,9 +174,9 @@ namespace Ann.MainWindow
                     Visibility = Visibility.Hidden;
             };
 
-            _DataContext.IsEnableActivateHotKey.Value = _activateHotKey.Register();
+            _app.IsEnableActivateHotKey = _activateHotKey.Register();
 
-            if (_DataContext.IsEnableActivateHotKey.Value == false)
+            if (_app.IsEnableActivateHotKey == false)
             {
                 _activateHotKey.Dispose();
                 _activateHotKey = null;
@@ -182,7 +192,7 @@ namespace Ann.MainWindow
             InputBindings.Add(new KeyBinding {Key = Key.Escape, Command = _DataContext.HideCommand});
 
             // コンフィグから指定されたもの
-            InputBindings.AddRange(App.Instance.Config.ShortcutKeys.Hide
+            InputBindings.AddRange(_configHolder.Config.ShortcutKeys.Hide
                 .Select(k =>
                     new KeyBinding
                     {

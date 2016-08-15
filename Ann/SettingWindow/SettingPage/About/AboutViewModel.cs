@@ -19,7 +19,7 @@ namespace Ann.SettingWindow.SettingPage.About
 
         public ReactiveCommand RestartCommand { get; }
 
-        public AboutViewModel()
+        public AboutViewModel(VersionUpdater versionUpdater)
         {
             OpenUrlCommand = new ReactiveCommand<string>().AddTo(CompositeDisposable);
             OpenUrlCommand.Subscribe(async o => await ProcessHelper.RunAsync(o, string.Empty, false))
@@ -29,18 +29,18 @@ namespace Ann.SettingWindow.SettingPage.About
             OpenSourceOpenCommand.Subscribe(async o => await ProcessHelper.RunAsync(o.Url, string.Empty, false))
                 .AddTo(CompositeDisposable);
 
-            VersionCheckingState = VersionUpdater.Instance.ObserveProperty(x => x.VersionCheckingState)
+            VersionCheckingState = versionUpdater.ObserveProperty(x => x.VersionCheckingState)
                 .ToReadOnlyReactiveProperty()
                 .AddTo(CompositeDisposable);
 
-            UpdateProgress = VersionUpdater.Instance.ObserveProperty(x => x.UpdateProgress)
+            UpdateProgress = versionUpdater.ObserveProperty(x => x.UpdateProgress)
                 .ToReadOnlyReactiveProperty()
                 .AddTo(CompositeDisposable);
 
             RestartCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             RestartCommand.Subscribe(_ =>
             {
-                VersionUpdater.Instance.RequestRestart();
+                versionUpdater.RequestRestart();
                 MessageBroker.Default.Publish(new WindowActionMessage(WindowAction.Close));
             }).AddTo(CompositeDisposable);
         }

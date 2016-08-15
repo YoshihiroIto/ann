@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -34,41 +35,19 @@ namespace Ann.Foundation
             return null;
         }
 
-        //http://stackoverflow.com/questions/19523139/find-control-in-the-visual-tree 
-        public static DependencyObject FindChild(DependencyObject parent, string name)
+        public static T FindChild<T>(DependencyObject parent) where T : DependencyObject
         {
-            if (parent == null || string.IsNullOrEmpty(name))
-                return null;
-
-            var element = parent as FrameworkElement;
-            if (element != null && element.Name == name)
-                return parent;
-
-            DependencyObject result = null;
-
-            (parent as FrameworkElement)?.ApplyTemplate();
-
-            var childrenCount = VisualTreeHelper.GetChildrenCount(parent);
-            for (var i = 0; i != childrenCount; ++i)
-            {
-                var child = VisualTreeHelper.GetChild(parent, i);
-                result = FindChild(child, name);
-
-                if (result != null)
-                    break;
-            }
-
-            return result;
+            return (T)FindChild(parent, typeof(T));
         }
 
-        public static T FindChild<T>(DependencyObject parent) where T : DependencyObject
+        // http://stackoverflow.com/questions/19523139/find-control-in-the-visual-tree 
+        public static DependencyObject FindChild(DependencyObject parent, Type childType)
         {
             if (parent == null)
                 return null;
 
-            var findChild = parent as T;
-            if (findChild != null)
-                return findChild;
+            if (parent.GetType() == childType)
+                return parent;
 
             DependencyObject foundChild = null;
 
@@ -79,13 +58,13 @@ namespace Ann.Foundation
             for (var i = 0; i != childrenCount; ++i)
             {
                 var child = VisualTreeHelper.GetChild(parent, i);
-                foundChild = FindChild<T>(child);
+                foundChild = FindChild(child, childType);
 
                 if (foundChild != null)
                     break;
             }
 
-            return (T) foundChild;
+            return foundChild;
         }
     }
 }

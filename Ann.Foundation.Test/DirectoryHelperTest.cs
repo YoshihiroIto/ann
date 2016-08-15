@@ -7,7 +7,11 @@ namespace Ann.Foundation.Test
     public class DirectoryHelperTest : IDisposable
     {
         private readonly DisposableFileSystem _context = new DisposableFileSystem();
-        public void Dispose() => _context.Dispose();
+
+        public void Dispose()
+        {
+            _context.Dispose();
+        }
 
         [Fact]
         public void Basic()

@@ -3,7 +3,7 @@ using Ann.Core;
 using Ann.SettingWindow.SettingPage.General;
 using Xunit;
 
-namespace Ann.Test.SettingWindow.SettingPage
+namespace Ann.Test.SettingWindow.SettingPage.General
 {
     public class GeneralViewModelTest
     {
@@ -12,14 +12,12 @@ namespace Ann.Test.SettingWindow.SettingPage
         {
             TestHelper.CleanTestEnv();
 
-            VersionUpdater.Initialize();
-
             var app = new Core.Config.App();
-            using (new GeneralViewModel(app))
+
+            using (var versionUpdater = new VersionUpdater(null))
+            using (new GeneralViewModel(app, versionUpdater))
             {
             }
-
-            VersionUpdater.Destory();
         }
 
         [Fact]
@@ -27,10 +25,10 @@ namespace Ann.Test.SettingWindow.SettingPage
         {
             TestHelper.CleanTestEnv();
 
-            VersionUpdater.Initialize();
-
             var app = new Core.Config.App();
-            using (var vm = new GeneralViewModel(app))
+
+            using (var versionUpdater = new VersionUpdater(null))
+            using (var vm = new GeneralViewModel(app, versionUpdater))
             {
                 Assert.Equal(8, vm.MaxCandidateLinesCount.Value);
 
@@ -41,8 +39,6 @@ namespace Ann.Test.SettingWindow.SettingPage
                 app.MaxCandidateLinesCount = 6;
                 Assert.Equal(6, vm.MaxCandidateLinesCount.Value);
             }
-
-            VersionUpdater.Destory();
         }
 
         [Fact]
@@ -50,17 +46,16 @@ namespace Ann.Test.SettingWindow.SettingPage
         {
             TestHelper.CleanTestEnv();
 
-            VersionUpdater.Initialize();
             CultureInfo.CurrentUICulture = new CultureInfo("ja");
 
             var app = new Core.Config.App();
-            using (var vm = new GeneralViewModel(app))
+
+            using (var versionUpdater = new VersionUpdater(null))
+            using (var vm = new GeneralViewModel(app, versionUpdater))
             {
                 Assert.Equal("ja", vm.SelectedCulture.Value.CultureName);
                 Assert.Equal("日本語", vm.SelectedCulture.Value.Caption);
             }
-
-            VersionUpdater.Destory();
         }
 
         [Theory]
@@ -70,17 +65,16 @@ namespace Ann.Test.SettingWindow.SettingPage
         {
             TestHelper.CleanTestEnv();
 
-            VersionUpdater.Initialize();
             CultureInfo.CurrentUICulture = new CultureInfo(cultureName);
 
             var app = new Core.Config.App();
-            using (var vm = new GeneralViewModel(app))
+
+            using (var versionUpdater = new VersionUpdater(null))
+            using (var vm = new GeneralViewModel(app, versionUpdater))
             {
                 Assert.Equal(cultureName, vm.SelectedCulture.Value.CultureName);
                 Assert.Equal(caption, vm.SelectedCulture.Value.Caption);
             }
-
-            VersionUpdater.Destory();
         }
 
         [Fact]

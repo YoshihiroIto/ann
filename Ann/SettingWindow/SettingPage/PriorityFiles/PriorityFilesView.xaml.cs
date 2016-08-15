@@ -3,9 +3,9 @@
     /// <summary>
     /// TargetFoldersView.xaml の相互作用ロジック
     /// </summary>
-    public partial class PriorityFiles
+    public partial class PriorityFilesView
     {
-        public PriorityFiles()
+        public PriorityFilesView()
         {
             InitializeComponent();
         }

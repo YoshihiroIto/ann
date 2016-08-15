@@ -1,12 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
-using Ann.Core;
 using Ann.Core.Config;
 using Ann.SettingWindow.SettingPage.Shortcuts;
 using Xunit;
-using App = Ann.Core.App;
 
-namespace Ann.Test.SettingWindow.SettingPage
+namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
 {
     public class ShortcutKeyListBoxViewModelTest
     {
@@ -15,28 +13,20 @@ namespace Ann.Test.SettingWindow.SettingPage
         {
             TestHelper.CleanTestEnv();
 
-            App.Initialize();
-            VersionUpdater.Initialize();
-
             var model = new ObservableCollection<ShortcutKey>();
+
             using (var vm = new ShortcutKeyListBoxViewModel(model))
             {
                 Assert.Equal(0, vm.Keys.Count);
                 model.Add(new ShortcutKey());
                 Assert.Equal(1, vm.Keys.Count);
             }
-
-            VersionUpdater.Destory();
-            App.Destory();
         }
 
         [Fact]
         public void KeyAddCommand()
         {
             TestHelper.CleanTestEnv();
-
-            App.Initialize();
-            VersionUpdater.Initialize();
 
             var model = new ObservableCollection<ShortcutKey>();
             using (var vm = new ShortcutKeyListBoxViewModel(model))
@@ -45,18 +35,12 @@ namespace Ann.Test.SettingWindow.SettingPage
                 Assert.Equal(1, vm.Keys.Count);
                 Assert.Equal(1, model.Count);
             }
-
-            VersionUpdater.Destory();
-            App.Destory();
         }
 
         [Fact]
         public void KeyRemoveCommand()
         {
             TestHelper.CleanTestEnv();
-
-            App.Initialize();
-            VersionUpdater.Initialize();
 
             var model = new ObservableCollection<ShortcutKey>
             {
@@ -75,9 +59,6 @@ namespace Ann.Test.SettingWindow.SettingPage
                 Assert.Equal(Key.A, model[0].Key);
                 Assert.Equal(Key.C, model[1].Key);
             }
-
-            VersionUpdater.Destory();
-            App.Destory();
         }
     }
 }

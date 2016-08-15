@@ -246,4 +246,16 @@
   <data name="AutoUpdateStates_CloseAfterNSec" xml:space="preserve">
     <value>更新の準備が整いました。{0}秒後に再起動します。</value>
   </data>
+  <data name="Message_FolderNotFound" xml:space="preserve">
+    <value>フォルダーが見つかりません。</value>
+  </data>
+  <data name="Message_AlreadySetSameFile" xml:space="preserve">
+    <value>すでに同じファイルが設定済みです。</value>
+  </data>
+  <data name="Message_AlreadySetSameFolder" xml:space="preserve">
+    <value>すでに同じフォルダーが設定済みです。</value>
+  </data>
+  <data name="Message_AlreadySetSameKeyStroke" xml:space="preserve">
+    <value>すでに同じキーストロークが設定済みです。</value>
+  </data>
 </root>

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Specialized;
+﻿using System.Collections;
 using System.Windows;
 using System.Windows.Input;
-using Ann.Foundation;
-using Ann.Foundation.Control;
-using Reactive.Bindings.Extensions;
 
 namespace Ann.SettingWindow.SettingPage.Shortcuts
 {
@@ -83,24 +78,6 @@ namespace Ann.SettingWindow.SettingPage.Shortcuts
         public ShortcutkeyListBox()
         {
             InitializeComponent();
-
-            var o = ListBox.Items.CollectionChangedAsObservable()
-                .Subscribe(e =>
-                {
-                    if (e.Action != NotifyCollectionChangedAction.Add)
-                        return;
-
-                    ListBox.UpdateLayout();
-
-                    var item = ListBox
-                        .ItemContainerGenerator
-                        .ContainerFromIndex(e.NewStartingIndex);
-
-                    var inputBox = WpfHelper.FindChild<ShortcutKeyInputBox>(item);
-                    inputBox.Focus();
-                });
-
-            Unloaded += (_, __) => o.Dispose();
         }
     }
 }

@@ -80,6 +80,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
@@ -115,6 +116,12 @@
     <Compile Include="AssemblyConstantsTest.cs" />
     <Compile Include="ConfigHelperTest.cs" />
     <Compile Include="CompositDisposableExtensionTest.cs" />
+    <Compile Include="Control\Behavior\ListBoxLastItemFocusOnItemAddedBehaviorTest.cs" />
+    <Compile Include="Control\Behavior\WindowDisableMinMaxBoxBehaviorTest.cs" />
+    <Compile Include="Control\Behavior\UIElementFocusBehaviorTest.cs" />
+    <Compile Include="Control\Behavior\WindowTaskTrayIconBehaviorTest.cs" />
+    <Compile Include="Control\Behavior\WindowDisposeDataContextOnClosedBehaviorTest.cs" />
+    <Compile Include="Control\ShortcutKeyInputBoxTest.cs" />
     <Compile Include="Control\ValueConverter\TypeofConverterTest.cs" />
     <Compile Include="Mvvm\Message\FileOrFolderSelectMessageTest.cs" />
     <Compile Include="Mvvm\Message\WindowActionActionTest.cs" />

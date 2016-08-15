@@ -66,11 +66,11 @@
                                          DockPanel.Dock="Right"
                                          Foreground="Gainsboro"
                                          PlacementMode="BottomAndAlignRightEdges">
-                    <StackPanel>
-                        <Button Command="{Binding IndexUpdateCommand, Mode=OneTime}" Content="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_UpdateIndex, Mode=OneWay}" />
-                        <Button Command="{Binding SettingShowCommand, Mode=OneTime}" Content="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Settings, Mode=OneWay}" />
+                    <StackPanel Margin="0,8">
+                        <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_UpdateIndex, Mode=OneWay}" />
+                        <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Settings, Mode=OneWay}" />
                         <Separator />
-                        <Button Command="{Binding ExitCommand, Mode=OneTime}" Content="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Exit, Mode=OneWay}" />
+                        <MenuItem Command="{Binding ExitCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Exit, Mode=OneWay}" />
                     </StackPanel>
                 </materialDesign:PopupBox>
 

@@ -1,10 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
+using Ann.Properties;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using Path = Ann.Core.Path;
 
 namespace Ann.SettingWindow.SettingPage.TargetFolders
 {
@@ -22,9 +29,17 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
         public ReactiveCommand FolderAddCommand { get; }
         public ReactiveCommand<PathViewModel> FolderRemoveCommand { get; }
 
-        public TargetFoldersViewModel(Core.Config.App model)
+        private readonly Subject<int> _pathChanged;
+
+        private readonly Core.Config.App _model;
+
+        public TargetFoldersViewModel(Core.Config.App model, App app)
         {
             Debug.Assert(model != null);
+
+            _model = model;
+
+            _pathChanged = new Subject<int>().AddTo(CompositeDisposable);
 
             IsIncludeSystemFolder =
                 model.TargetFolder.ToReactivePropertyAsSynchronized(x => x.IsIncludeSystemFolder)
@@ -50,7 +65,31 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                 model.TargetFolder.ToReactivePropertyAsSynchronized(x => x.IsIncludeCommonStartMenu)
                     .AddTo(CompositeDisposable);
 
-            Folders = model.TargetFolder.Folders.ToReadOnlyReactiveCollection(p => new PathViewModel(p, true))
+            Folders = model.TargetFolder.Folders.ToReadOnlyReactiveCollection(p =>
+            {
+                var isInitializing = true;
+                using (Disposable.Create(() => isInitializing = false))
+                {
+                    var path = new PathViewModel(p, true);
+                    path.Path
+                        .Where(_ => isInitializing == false)
+                        .Subscribe(_ => _pathChanged.OnNext(0))
+                        .AddTo(path.CompositeDisposable);
+
+                    // 未入力状態でフォーカスが外れたら削除する
+                    path.IsFocused
+                        .Where(i => i == false)
+                        .Where(_ => isInitializing == false)
+                        .Where(_ => string.IsNullOrEmpty(path.Path.Value))
+                        .Subscribe(_ => model.TargetFolder.Folders.Remove(p))
+                        .AddTo(path.CompositeDisposable);
+
+                    return path;
+                }
+            }).AddTo(CompositeDisposable);
+
+            Folders.CollectionChangedAsObservable()
+                .Subscribe(_ => ValidateAll())
                 .AddTo(CompositeDisposable);
 
             FolderAddCommand = new ReactiveCommand().AddTo(CompositeDisposable);
@@ -64,6 +103,54 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                 if (t != null)
                     model.TargetFolder.Folders.Remove(t);
             }).AddTo(CompositeDisposable);
+
+            var isFirst = true;
+
+            Observable
+                .Merge(IsIncludeSystemFolder.ToUnit())
+                .Merge(IsIncludeSystemX86Folder.ToUnit())
+                .Merge(IsIncludeProgramsFolder.ToUnit())
+                .Merge(IsIncludeProgramFilesFolder.ToUnit())
+                .Merge(IsIncludeProgramFilesX86Folder.ToUnit())
+                .Merge(IsIncludeCommonStartMenuFolder.ToUnit())
+                .Merge(Folders.CollectionChangedAsObservable().ToUnit())
+                .Merge(_pathChanged.ToUnit())
+                .Throttle(TimeSpan.FromMilliseconds(50))
+                .ObserveOnUIDispatcher()
+                .Subscribe(async _ =>
+                {
+                    if (isFirst)
+                    {
+                        isFirst = false;
+                        return;
+                    }
+                    
+                    ValidateAll();
+                    await app.UpdateIndexAsync();
+                })
+                .AddTo(CompositeDisposable);
+
+            ValidateAll();
+        }
+
+        private void ValidateAll()
+        {
+            foreach (var pvm in Folders)
+                pvm.ValidationMessage.Value = Validate(pvm, _model.TargetFolder.Folders);
+        }
+
+        private string Validate(PathViewModel item, IEnumerable<Path> parentCollection)
+        {
+            if (string.IsNullOrEmpty(item.Path.Value) == false)
+                if (Directory.Exists(item.Path.Value) == false)
+                    return Resources.Message_FolderNotFound;
+
+            if (parentCollection
+                .Where(p => item.Model != p)
+                .Any(p => p.Value == item.Path.Value))
+                return Resources.Message_AlreadySetSameFolder;
+
+            return null;
         }
     }
 }

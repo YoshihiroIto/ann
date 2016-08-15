@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using Ann.Foundation.Exception;
 using Ann.Foundation.Mvvm;
 using Ann.Foundation.Mvvm.Message;
 using Ann.SettingWindow;
@@ -12,50 +11,15 @@ namespace Ann
 {
     public class ViewManager : DisposableModelBase
     {
-        private static ViewManager _Instance;
-        public static ViewManager Instance
-        {
-            get
-            {
-                if (_Instance == null)
-                    throw new UninitializedException();
+        private readonly Dispatcher _uiDispatcher;
 
-                return _Instance;
-            }
-        }
-
-        public Dispatcher UiDispatcher { get; private set; }
-
-        public static void Clean()
-        {
-            _Instance?.Dispose();
-            _Instance = null;
-        }
-
-        public static void Initialize(Dispatcher uiDispatcher)
+        public ViewManager(Dispatcher uiDispatcher)
         {
             Debug.Assert(uiDispatcher != null);
 
-            if (_Instance != null)
-                throw new NestingException();
+            _uiDispatcher = uiDispatcher;
 
-            _Instance = new ViewManager();
-
-            Instance.UiDispatcher = uiDispatcher;
-
-            Instance.SubscribeMessages();
-        }
-
-        public static void Destory()
-        {
-            if (_Instance == null)
-                throw new NestingException();
-
-            Clean();
-        }
-
-        private ViewManager()
-        {
+            SubscribeMessages();
         }
 
         private void SubscribeMessages()
@@ -70,7 +34,7 @@ namespace Ann
 
             AsyncMessageBroker.Default
                 .Subscribe<SettingViewModel>(
-                    vm => Task.Run(() => UiDispatcher.Invoke(() => new SettingWindow.SettingWindow {DataContext = vm}.ShowDialog()))
+                    vm => Task.Run(() => _uiDispatcher.Invoke(() => new SettingWindow.SettingWindow {DataContext = vm}.ShowDialog()))
                 ).AddTo(CompositeDisposable);
         }
     }

@@ -1,27 +1,35 @@
-﻿using Ann.Core;
+﻿using System;
+using Ann.Core;
+using Ann.Foundation;
 using Ann.SettingWindow;
 using Ann.SettingWindow.SettingPage.General;
 using Xunit;
 
 namespace Ann.Test.SettingWindow
 {
-    public class SettingViewModelTest
+    public class SettingViewModelTest : IDisposable
     {
+        private readonly DisposableFileSystem _config = new DisposableFileSystem();
+
+        public void Dispose()
+        {
+            _config.Dispose();
+        }
+
         [Fact]
         public void Basic()
         {
             TestHelper.CleanTestEnv();
 
-            VersionUpdater.Initialize();
+            var model = new Core.Config.App();
 
-            var app = new Core.Config.App();
-            using (var vm = new SettingViewModel(app))
+            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            using (var versionUpdater = new VersionUpdater(null))
+            using (var vm = new SettingViewModel(model, versionUpdater, app))
             {
                 Assert.Equal(5, vm.Pages.Length);
                 Assert.IsType<GeneralViewModel>(vm.SelectedPage.Value);
             }
-
-            VersionUpdater.Destory();
         }
 
         [Fact]
@@ -29,15 +37,14 @@ namespace Ann.Test.SettingWindow
         {
             TestHelper.CleanTestEnv();
 
-            VersionUpdater.Initialize();
+            var model = new Core.Config.App();
 
-            var app = new Core.Config.App();
-            using (var vm = new SettingViewModel(app))
+            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            using (var versionUpdater = new VersionUpdater(null))
+            using (var vm = new SettingViewModel(model, versionUpdater, app))
             {
                 vm.InitializeCommand.Execute(null);
             }
-
-            VersionUpdater.Destory();
         }
 
         [Fact]
@@ -45,15 +52,14 @@ namespace Ann.Test.SettingWindow
         {
             TestHelper.CleanTestEnv();
 
-            VersionUpdater.Initialize();
+            var model = new Core.Config.App();
 
-            var app = new Core.Config.App();
-            using (var vm = new SettingViewModel(app))
+            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            using (var versionUpdater = new VersionUpdater(null))
+            using (var vm = new SettingViewModel(model, versionUpdater, app))
             {
                 vm.CloseCommand.Execute(null);
             }
-
-            VersionUpdater.Destory();
         }
     }
 }

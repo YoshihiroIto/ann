@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using Ann.Foundation;
 using Xunit;
 
@@ -9,7 +8,10 @@ namespace Ann.Core.Test
     {
         private readonly DisposableFileSystem _context = new DisposableFileSystem();
 
-        public void Dispose() => _context?.Dispose();
+        public void Dispose()
+        {
+            _context.Dispose();
+        }
 
         [WpfFact]
         public void Basic()
@@ -17,7 +19,7 @@ namespace Ann.Core.Test
             TestHelper.CleanTestEnv();
 
             var decoder = new IconDecoder();
-            var ann = Assembly.GetEntryAssembly();
+            var ann = AssemblyConstants.EntryAssembly;
 
             var icon1 = decoder.GetIcon(ann.Location);
             Assert.NotNull(icon1);
@@ -35,7 +37,7 @@ namespace Ann.Core.Test
 
             var decoder = new IconDecoder {IconCacheSize = 10};
 
-            var ann = Assembly.GetEntryAssembly();
+            var ann = AssemblyConstants.EntryAssembly;
 
             var icon1 = decoder.GetIcon(ann.Location);
             Assert.NotNull(icon1);

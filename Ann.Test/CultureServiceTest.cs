@@ -1,67 +1,37 @@
-﻿using System.Windows.Threading;
-using Ann.Foundation.Exception;
+﻿using System.Globalization;
+using Ann.Core.Config;
 using Xunit;
 
 namespace Ann.Test
 {
-    public class ViewManagerTestFixture
+    public class CultureServiceTest
     {
-        public ViewManagerTestFixture()
-        {
-            Dispatcher = Dispatcher.CurrentDispatcher;
-        }
-
-        public Dispatcher Dispatcher { get;  }
-    }
-
-    public class ViewManagerTest: IClassFixture<ViewManagerTestFixture>
-    {
-        private readonly Dispatcher _dispatcher;
-
-        public ViewManagerTest(ViewManagerTestFixture fixture)
-        {
-            _dispatcher = fixture.Dispatcher;
-        }
-
-        [WpfFact]
-        public void Basic()
+        [Fact]
+        public void CultureName()
         {
             TestHelper.CleanTestEnv();
 
-            ViewManager.Initialize(_dispatcher);
+            Assert.Equal(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName, CultureService.Instance.CultureName);
 
-            Assert.Same(_dispatcher, ViewManager.Instance.UiDispatcher);
-
-            ViewManager.Destory();
+            CultureService.Instance.CultureName = "en";
         }
 
         [Fact]
-        public void NestingInitialize()
+        public void Resources()
         {
             TestHelper.CleanTestEnv();
 
-            ViewManager.Initialize(_dispatcher);
-
-            Assert.Throws<NestingException>(() =>
-                ViewManager.Initialize(_dispatcher));
+            Assert.NotNull(CultureService.Instance.Resources);
         }
 
         [Fact]
-        public void NestingDestory()
+        public void SetConfig()
         {
             TestHelper.CleanTestEnv();
+            
+            CultureService.Instance.SetConfig(new App());
 
-            Assert.Throws<NestingException>(() =>
-                ViewManager.Destory());
-        }
-
-        [Fact]
-        public void Uninitialized()
-        {
-            TestHelper.CleanTestEnv();
-
-            Assert.Throws<UninitializedException>(() =>
-                ViewManager.Instance);
+            CultureService.Instance.Destory();
         }
     }
 }

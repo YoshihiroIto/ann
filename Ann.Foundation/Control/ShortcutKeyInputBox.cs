@@ -126,7 +126,7 @@ namespace Ann.Foundation.Control
 
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
-            var modifierKeys = Keyboard.Modifiers;
+            var modifierKeys = e.KeyboardDevice.Modifiers;
 
             var isControl = (modifierKeys & ModifierKeys.Control) != 0;
             var isAlt = (modifierKeys & ModifierKeys.Alt) != 0;
@@ -134,7 +134,7 @@ namespace Ann.Foundation.Control
 
             Key key;
             {
-                if (isControl && IsAlt)
+                if (isControl && isAlt)
                     key = e.Key;
                 else
                     key = isAlt ? e.SystemKey : e.Key;

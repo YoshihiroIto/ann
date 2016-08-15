@@ -168,8 +168,8 @@
       <DependentUpon>GeneralView.xaml</DependentUpon>
     </Compile>
     <Compile Include="SettingWindow\SettingPage\General\GeneralViewModel.cs" />
-    <Compile Include="SettingWindow\SettingPage\PriorityFiles\PriorityFiles.xaml.cs">
-      <DependentUpon>PriorityFiles.xaml</DependentUpon>
+    <Compile Include="SettingWindow\SettingPage\PriorityFiles\PriorityFilesView.xaml.cs">
+      <DependentUpon>PriorityFilesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="SettingWindow\SettingPage\PriorityFiles\PriorityFilesViewModel.cs" />
     <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutkeyListBox.xaml.cs">
@@ -224,7 +224,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SettingWindow\SettingPage\PriorityFiles\PriorityFiles.xaml">
+    <Page Include="SettingWindow\SettingPage\PriorityFiles\PriorityFilesView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -13,16 +13,16 @@ namespace Ann.Foundation.Control.Behavior
             AssociatedObject.Closed += AssociatedObjectOnClosed;
         }
 
-        private void AssociatedObjectOnClosed(object sender, EventArgs eventArgs)
-        {
-            (AssociatedObject.DataContext as IDisposable)?.Dispose();
-        }
-
         protected override void OnDetaching()
         {
             AssociatedObject.Closed += AssociatedObjectOnClosed;
 
             base.OnDetaching();
+        }
+
+        private void AssociatedObjectOnClosed(object sender, EventArgs eventArgs)
+        {
+            (AssociatedObject.DataContext as IDisposable)?.Dispose();
         }
     }
 }

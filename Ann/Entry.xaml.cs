@@ -21,17 +21,11 @@ namespace Ann
             ProfileOptimization.StartProfile("Startup.Profile");
 
             DisposableChecker.Start(m => MessageBox.Show(m));
-            VersionUpdater.Initialize();
             {
                 var e = new Entry();
                 e.InitializeComponent();
                 e.Run();
-
-                ViewManager.Destory();
-                CultureService.Destory();
-                App.Destory();
             }
-            VersionUpdater.Destory();
             DisposableChecker.End();
         }
 
@@ -39,11 +33,29 @@ namespace Ann
         {
             base.OnStartup(e);
 
-            App.Initialize();
-            CultureService.Initialize(App.Instance.Config);
-            ViewManager.Initialize(Dispatcher);
+            _configHolder = new ConfigHolder(Constants.ConfigDirPath);
+            _app = new App(_configHolder);
+            _viewManager = new ViewManager(Dispatcher);
 
+            CultureService.Instance.SetConfig(_configHolder.Config);
             Reactive.Bindings.UIDispatcherScheduler.Initialize();
+
+            MainWindow = new MainWindow.MainWindow(_app, _configHolder);
+            MainWindow.Show();
         }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
+
+            _app.Dispose();
+            _viewManager.Dispose();
+
+            CultureService.Instance.Destory();
+        }
+
+        private ConfigHolder _configHolder;
+        private App _app;
+        private ViewManager _viewManager;
     }
 }

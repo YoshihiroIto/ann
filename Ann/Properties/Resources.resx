@@ -246,4 +246,16 @@
   <data name="AutoUpdateStates_CloseAfterNSec" xml:space="preserve">
     <value>Update is now ready. Restart after {0} seconds.</value>
   </data>
+  <data name="Message_FolderNotFound" xml:space="preserve">
+    <value>Folder not found.</value>
+  </data>
+  <data name="Message_AlreadySetSameFile" xml:space="preserve">
+    <value>Already set same file.</value>
+  </data>
+  <data name="Message_AlreadySetSameFolder" xml:space="preserve">
+    <value>Already set same folder.</value>
+  </data>
+  <data name="Message_AlreadySetSameKeyStroke" xml:space="preserve">
+    <value>Already set same key stroke.</value>
+  </data>
 </root>

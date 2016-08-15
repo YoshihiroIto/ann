@@ -1,8 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows.Input;
 using Ann.Foundation.Mvvm;
+using YamlDotNet.Serialization;
 
 namespace Ann.Core.Config
 {
@@ -271,6 +273,29 @@ namespace Ann.Core.Config
         }
 
         #endregion
+
+        [YamlIgnore]
+        public string Text
+        {
+            get
+            {
+                if (Key == Key.None)
+                    return string.Empty;
+
+                var sb = new StringBuilder();
+
+                if ((Modifiers & ModifierKeys.Control) != 0)
+                    sb.Append("Ctrl + ");
+                if ((Modifiers & ModifierKeys.Alt) != 0)
+                    sb.Append("Alt + ");
+                if ((Modifiers & ModifierKeys.Shift) != 0)
+                    sb.Append("Shift + ");
+
+                sb.Append(Key);
+
+                return sb.ToString();
+            }
+        }
     }
 
     public class ShortcutKeys : ModelBase

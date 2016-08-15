@@ -1,33 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Ann.Foundation;
-using Ann.Foundation.Exception;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings.Extensions;
+using System.Threading;
 
 namespace Ann.Core
 {
     public class App : DisposableModelBase
     {
-        private static App _Instance;
-
-        public static App Instance
-        {
-            get
-            {
-                if (_Instance == null)
-                    throw new UninitializedException();
-
-                return _Instance;
-            }
-        }
-
         #region Candidates
 
         private IEnumerable<ExecutableUnit> _Candidates = Enumerable.Empty<ExecutableUnit>();
@@ -52,8 +39,9 @@ namespace Ann.Core
 
         #endregion
 
-        public Config.App Config { get; private set; }
-        public Config.MostRecentUsedList MruList { get; private set; }
+        private readonly ConfigHolder _configHolder;
+        private Config.App Config => _configHolder.Config;
+        private Config.MostRecentUsedList MruList => _configHolder.MruList;
 
         public event EventHandler PriorityFilesChanged;
         public event EventHandler ShortcutKeyChanged;
@@ -65,9 +53,9 @@ namespace Ann.Core
         private readonly ExecutableUnitDataBase _dataBase;
         private readonly InputControler _inputControler;
 
-        private static string IndexFilePath => System.IO.Path.Combine(
-            Constants.ConfigDirPath,
-            $"{(Foundation.TestHelper.IsTestMode ? "Test." : string.Empty)}index.dat");
+        private string IndexFilePath => System.IO.Path.Combine(_configHolder.ConfigDirPath, "index.dat");
+
+        public VersionUpdater VersionUpdater { get; }
 
         #region IndexOpeningResult
 
@@ -81,33 +69,29 @@ namespace Ann.Core
 
         #endregion
 
-        public static void Clean()
+        #region IsIndexUpdating
+
+        private bool _IsIndexUpdating;
+
+        public bool IsIndexUpdating
         {
-            _Instance?.Dispose();
-            _Instance = null;
+            get { return _IsIndexUpdating; }
+            set { SetProperty(ref _IsIndexUpdating, value); }
         }
 
-        public static void Initialize()
-        {
-            if (_Instance != null)
-                throw new NestingException();
+        #endregion
 
-            _Instance = new App();
+        #region IsEnableActivateHotKey
+
+        private bool _IsEnableActivateHotKey = true;
+
+        public bool IsEnableActivateHotKey
+        {
+            get { return _IsEnableActivateHotKey; }
+            set { SetProperty(ref _IsEnableActivateHotKey, value); }
         }
 
-        public static void Destory()
-        {
-            if (_Instance == null)
-                throw new NestingException();
-
-            Clean();
-        }
-
-        public static void RemoveIndexFile()
-        {
-            if (File.Exists(IndexFilePath))
-                File.Delete(IndexFilePath);
-        }
+        #endregion
 
         public bool IsPriorityFile(string path) => _priorityFiles.Contains(path.ToLower());
 
@@ -156,7 +140,8 @@ namespace Ann.Core
                 }
 
                 return Config.TargetFolder.Folders.Select(x => x.Value)
-                    .Concat(folders);
+                    .Concat(folders)
+                    .Distinct();
             }
         }
 
@@ -166,9 +151,35 @@ namespace Ann.Core
             IndexOpeningResult = await _dataBase.OpenIndexAsync(TagetFolders);
         }
 
+        private readonly SemaphoreSlim _CancelUpdateIndexAsyncSema = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _UpdateIndexAsyncSema = new SemaphoreSlim(1, 1);
+
+        public async Task CancelUpdateIndexAsync()
+        {
+            using(Disposable.Create(() =>_CancelUpdateIndexAsyncSema.Release()))
+            {
+                await _CancelUpdateIndexAsyncSema.WaitAsync();
+                await _dataBase.CancelUpdateIndexAsync();
+
+                while (IsIndexUpdating)
+                    await Task.Delay(TimeSpan.FromMilliseconds(20));
+            }
+        }
+
         public async Task UpdateIndexAsync()
         {
-            IndexOpeningResult = await _dataBase.UpdateIndexAsync(TagetFolders, Config.ExecutableFileExts);
+            await CancelUpdateIndexAsync();
+
+            using (Disposable.Create(() => _UpdateIndexAsyncSema.Release()))
+            {
+                await _UpdateIndexAsyncSema.WaitAsync();
+
+                using (Disposable.Create(() => IsIndexUpdating = false))
+                {
+                    IsIndexUpdating = true;
+                    IndexOpeningResult = await _dataBase.UpdateIndexAsync(TagetFolders, Config.ExecutableFileExts);
+                }
+            }
         }
 
         public void Find(string input, int maxCandidates)
@@ -217,7 +228,7 @@ namespace Ann.Core
                     while (MruList.AppPath.Count > MaxMruCount)
                         MruList.AppPath.RemoveAt(MruList.AppPath.Count - 1);
 
-                    SaveMru();
+                    _configHolder.SaveMru();
 
                     _mruOrders.Clear();
                     MruList.AppPath.ForEach((path, index) => _mruOrders[path] = index);
@@ -227,26 +238,67 @@ namespace Ann.Core
             return i;
         }
 
-        private App()
+
+        public App(ConfigHolder configHolder)
         {
+            Debug.Assert(configHolder != null);
+            _configHolder = configHolder;
+
             _dataBase = new ExecutableUnitDataBase(IndexFilePath);
             _inputControler = new InputControler().AddTo(CompositeDisposable);
+
+            UpdateFromConfig();
 
             _dataBase.ObserveProperty(x => x.CrawlingCount)
                 .Subscribe(c => Crawling = c)
                 .AddTo(CompositeDisposable);
 
-            LoadConfig();
+            VersionUpdater = new VersionUpdater(Config.GitHubPersonalAccessToken).AddTo(CompositeDisposable);
 
             SetupAutoUpdater();
+
+            CompositeDisposable.Add(() =>
+            {
+                _UpdateIndexAsyncSema?.Dispose();
+                _CancelUpdateIndexAsyncSema?.Dispose();
+            }); 
 
             Task.Run(async () =>
             {
                 if (Config.IsStartOnSystemStartup)
-                    await VersionUpdater.Instance.CreateStartupShortcut();
+                    await VersionUpdater.CreateStartupShortcut();
                 else
-                    await VersionUpdater.Instance.RemoveStartupShortcut();
+                    await VersionUpdater.RemoveStartupShortcut();
             });
+        }
+
+        private void UpdateFromConfig()
+        {
+            {
+                RefreshPriorityFiles();
+
+                Config.PriorityFiles.ObserveAddChanged()
+                    .Subscribe(p =>
+                    {
+                        _priorityFiles.Add(p.Value.ToLower());
+                        _configHolder.SaveConfig();
+                        InvokePriorityFilesChanged();
+                    })
+                    .AddTo(CompositeDisposable);
+
+                Config.PriorityFiles.ObserveRemoveChanged()
+                    .Subscribe(p =>
+                    {
+                        _priorityFiles.Remove(p.Value.ToLower());
+                        _configHolder.SaveConfig();
+                        InvokePriorityFilesChanged();
+                    })
+                    .AddTo(CompositeDisposable);
+            }
+
+            {
+                MruList.AppPath.ForEach((p, index) => _mruOrders[p] = index);
+            }
         }
 
         public bool IsEnableAutoUpdater { get; set; }
@@ -269,9 +321,9 @@ namespace Ann.Core
                 .ObserveOnUIDispatcher()
                 .Subscribe(async _ =>
                 {
-                    await VersionUpdater.Instance.CheckAsync();
+                    await VersionUpdater.CheckAsync();
 
-                    if (VersionUpdater.Instance.IsAvailableUpdate)
+                    if (VersionUpdater.IsAvailableUpdate)
                     {
                         if (IsEnableAutoUpdater)
                         {
@@ -286,7 +338,7 @@ namespace Ann.Core
 
                             await Task.Delay(TimeSpan.FromSeconds(2));
 
-                            VersionUpdater.Instance.RequestRestart();
+                            VersionUpdater.RequestRestart();
                             Application.Current.MainWindow.Close();
                         }
                     }
@@ -299,6 +351,8 @@ namespace Ann.Core
             CloseAfterNSec
         }
 
+        public bool IsRestartRequested => VersionUpdater.IsRestartRequested;
+
         #region AutoUpdateState
 
         private AutoUpdateStates _AutoUpdateState;
@@ -308,57 +362,6 @@ namespace Ann.Core
             get { return _AutoUpdateState; }
             private set { SetProperty(ref _AutoUpdateState, value); }
         }
-
-        #endregion
-
-        #region config
-
-        private void LoadConfig()
-        {
-            Debug.Assert(Config == null);
-            Debug.Assert(MruList == null);
-
-            {
-                Config = ConfigHelper.ReadConfig<Config.App>(ConfigHelper.Category.App, Constants.ConfigDirPath);
-
-                RefreshPriorityFiles();
-
-                Config.PriorityFiles.ObserveAddChanged()
-                    .Subscribe(p =>
-                    {
-                        _priorityFiles.Add(p.Value.ToLower());
-                        SaveConfig();
-                        InvokePriorityFilesChanged();
-                    })
-                    .AddTo(CompositeDisposable);
-
-                Config.PriorityFiles.ObserveRemoveChanged()
-                    .Subscribe(p =>
-                    {
-                        _priorityFiles.Remove(p.Value.ToLower());
-                        SaveConfig();
-                        InvokePriorityFilesChanged();
-                    })
-                    .AddTo(CompositeDisposable);
-            }
-
-            {
-                MruList = ConfigHelper.ReadConfig<Config.MostRecentUsedList>(ConfigHelper.Category.MostRecentUsedList,
-                    Constants.ConfigDirPath);
-                MruList.AppPath.ForEach((p, index) => _mruOrders[p] = index);
-            }
-        }
-
-        public void SaveConfig()
-        {
-            ConfigHelper.WriteConfig(ConfigHelper.Category.App, Constants.ConfigDirPath, Config);
-        }
-
-        public void SaveMru()
-        {
-            ConfigHelper.WriteConfig(ConfigHelper.Category.MostRecentUsedList, Constants.ConfigDirPath, MruList);
-        }
-
         #endregion
     }
 }

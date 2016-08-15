@@ -73,11 +73,17 @@ namespace Ann.Foundation.Control.Behavior
             if (WpfHelper.IsDesignMode)
                 return;
 
-            var resourceStream = System.Windows.Application.GetResourceStream(new Uri(self.IconSource.ToString()));
-            if (resourceStream == null)
-                return;
-
-            self._notifyIcon.Icon = new Icon(resourceStream.Stream);
+            try
+            {
+                var resourceStream = System.Windows.Application.GetResourceStream(new Uri(self.IconSource.ToString()));
+                if (resourceStream == null)
+                    return;
+                self._notifyIcon.Icon = new Icon(resourceStream.Stream);
+            }
+            catch
+            {
+                // ignored
+            }
         }
 
         #endregion
@@ -149,12 +155,15 @@ namespace Ann.Foundation.Control.Behavior
             _notifyIcon.Visible = true;
 
             AssociatedObject.Closed += AssociatedObject_Closed;
-            System.Windows.Application.Current.Deactivated += Application_Deactivated;
+
+            if (System.Windows.Application.Current != null)
+                System.Windows.Application.Current.Deactivated += Application_Deactivated;
         }
 
         protected override void OnDetaching()
         {
-            System.Windows.Application.Current.Deactivated -= Application_Deactivated;
+            if (System.Windows.Application.Current != null)
+                System.Windows.Application.Current.Deactivated -= Application_Deactivated;
             AssociatedObject.Closed -= AssociatedObject_Closed;
 
             base.OnDetaching();

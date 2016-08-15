@@ -13,22 +13,16 @@ namespace Ann.Test.SettingWindow.SettingPage
         {
             TestHelper.CleanTestEnv();
 
-            VersionUpdater.Initialize();
-
             using (var vm = new PathViewModel(new Path("AA"), false))
             {
                 Assert.Equal("AA", vm.Path.Value);
             }
-
-            VersionUpdater.Destory();
         }
 
         [Fact]
         public void FolderSelectDialogOpenCommand()
         {
             TestHelper.CleanTestEnv();
-
-            VersionUpdater.Initialize();
 
             using (MessageBroker.Default
                 .Subscribe<FileOrFolderSelectMessage>(_ => _.Response = "123"))
@@ -49,8 +43,6 @@ namespace Ann.Test.SettingWindow.SettingPage
                     Assert.Equal("AA", vm.Path.Value);
                 }
             }
-
-            VersionUpdater.Destory();
         }
     }
 }

@@ -8,16 +8,17 @@ namespace Ann.Core.Test
 {
     public class ExecutableUnitDataBaseBasicTest : IDisposable
     {
-        private DisposableFileSystem _context;
-
-        public void Dispose() => _context?.Dispose();
+        private readonly DisposableFileSystem _context = new DisposableFileSystem();
+        
+        public void Dispose()
+        {
+            _context.Dispose();
+        }
 
         [Fact]
         public void NotFoundOpenIndex()
         {
             TestHelper.CleanTestEnv();
-
-            _context = new DisposableFileSystem();
 
             var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
             var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
@@ -35,7 +36,6 @@ namespace Ann.Core.Test
         {
             TestHelper.CleanTestEnv();
 
-            _context = new DisposableFileSystem();
             _context.CreateFiles(targetFiles);
 
             var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
@@ -54,7 +54,6 @@ namespace Ann.Core.Test
         {
             TestHelper.CleanTestEnv();
 
-            _context = new DisposableFileSystem();
             _context.CreateFiles(targetFiles);
 
             {
@@ -85,7 +84,6 @@ namespace Ann.Core.Test
         {
             TestHelper.CleanTestEnv();
 
-            _context = new DisposableFileSystem();
             _context.CreateFiles(targetFiles);
 
             {
@@ -123,7 +121,6 @@ namespace Ann.Core.Test
         {
             TestHelper.CleanTestEnv();
 
-            _context = new DisposableFileSystem();
             _context.CreateFiles(targetFiles);
 
             var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
@@ -142,7 +139,6 @@ namespace Ann.Core.Test
         {
             TestHelper.CleanTestEnv();
 
-            _context = new DisposableFileSystem();
             _context.CreateFiles(targetFiles);
 
             var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
@@ -175,7 +171,6 @@ namespace Ann.Core.Test
         {
             TestHelper.CleanTestEnv();
 
-            _context = new DisposableFileSystem();
             _context.CreateFiles(targetFiles);
 
             var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");

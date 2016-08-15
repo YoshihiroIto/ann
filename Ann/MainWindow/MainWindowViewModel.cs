@@ -23,7 +23,6 @@ namespace Ann.MainWindow
     {
         public ReactiveProperty<string> Input { get; }
 
-        public ReactiveProperty<bool> IsIndexUpdating { get; }
         public ReactiveCommand IndexUpdateCommand { get; }
 
         public ReactiveCommand InitializeCommand { get; }
@@ -51,11 +50,8 @@ namespace Ann.MainWindow
         public ReactiveProperty<bool> IsShowingSettingShow { get; }
 
         public ReadOnlyReactiveProperty<IndexOpeningResults> IndexOpeningResult { get; }
-        public ReactiveProperty<bool> IsEnableActivateHotKey { get; }
 
         public WindowMessageBroker Messenger { get; }
-
-        public Core.Config.MainWindow Config { get; private set; }
 
         public string Caption { get; } = $"{AssemblyConstants.Product} {AssemblyConstants.Version}";
 
@@ -63,26 +59,30 @@ namespace Ann.MainWindow
 
         public StatusBarViewModel StatusBar { get; }
 
-        public MainWindowViewModel()
+        private readonly App _app;
+
+        public MainWindowViewModel(App app, ConfigHolder configHolder)
         {
+            Debug.Assert(app != null);
+            Debug.Assert(configHolder != null);
+
+            _app = app;
+
             using (new TimeMeasure("MainWindowViewModel.ctor"))
             {
-                LoadConfig();
-
                 Messenger = new WindowMessageBroker().AddTo(CompositeDisposable);
 
                 InitializeCommand = new ReactiveCommand().AddTo(CompositeDisposable);
                 InitializeCommand
-                    .Subscribe(async _ => await InitializeAsync())
+                    .Subscribe(async _ => await InitializeAsync(configHolder))
                     .AddTo(CompositeDisposable);
 
-                Left = Config.ToReactivePropertyAsSynchronized(x => x.Left).AddTo(CompositeDisposable);
-                Top = Config.ToReactivePropertyAsSynchronized(x => x.Top).AddTo(CompositeDisposable);
+                Left = configHolder.MainWindow.ToReactivePropertyAsSynchronized(x => x.Left).AddTo(CompositeDisposable);
+                Top = configHolder.MainWindow.ToReactivePropertyAsSynchronized(x => x.Top).AddTo(CompositeDisposable);
 
                 Input = new ReactiveProperty<string>().AddTo(CompositeDisposable);
-                IsIndexUpdating = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
 
-                MaxCandidatesLinesCount = App.Instance.Config
+                MaxCandidatesLinesCount = configHolder.Config
                     .ToReactivePropertyAsSynchronized(x => x.MaxCandidateLinesCount)
                     .AddTo(CompositeDisposable);
 
@@ -95,30 +95,37 @@ namespace Ann.MainWindow
                         .ToReadOnlyReactiveProperty()
                         .AddTo(CompositeDisposable);
 
-                IndexUpdateCommand = IsIndexUpdating.Select(i => i == false)
-                    .ToReactiveCommand()
-                    .AddTo(CompositeDisposable);
+                IndexUpdateCommand =
+                    Observable
+                        .Merge(_app.ObserveProperty(x => x.IsIndexUpdating).ToUnit())
+                        .Merge(_app.ObserveProperty(x => x.IndexOpeningResult).ToUnit())
+                        .Select(_ =>
+                            _app.IsIndexUpdating == false &&
+                            _app.IndexOpeningResult != IndexOpeningResults.InOpening
+                        )
+                        .ToReactiveCommand()
+                        .AddTo(CompositeDisposable);
 
                 IndexUpdateCommand
-                    .Subscribe(async _ => await UpdateIndexAsync())
+                    .Subscribe(async _ => await _app.UpdateIndexAsync())
                     .AddTo(CompositeDisposable);
 
                 Observable
                     .Merge(Input.ToUnit())
-                    .Merge(App.Instance.Config.ObserveProperty(x => x.CandidatesCensoringSize).ToUnit())
+                    .Merge(configHolder.Config.ObserveProperty(x => x.CandidatesCensoringSize).ToUnit())
                     .Throttle(TimeSpan.FromMilliseconds(50))
-                    .Subscribe(_ => App.Instance.Find(Input.Value, App.Instance.Config.CandidatesCensoringSize))
+                    .Subscribe(_ => _app.Find(Input.Value, configHolder.Config.CandidatesCensoringSize))
                     .AddTo(CompositeDisposable);
 
                 Candidates = new ReactiveProperty<ExecutableUnitViewModel[]>().AddTo(CompositeDisposable);
-                App.Instance.ObserveProperty(x => x.Candidates)
+                _app.ObserveProperty(x => x.Candidates)
                     .ObserveOn(ThreadPoolScheduler.Instance)
                     .Subscribe(c =>
                     {
                         var old = Candidates.Value;
 
                         Candidates.Value =
-                            c.Select(u => new ExecutableUnitViewModel(this, u)).ToArray();
+                            c.Select(u => new ExecutableUnitViewModel(this, u, _app)).ToArray();
 
                         if (old == null)
                             return;
@@ -166,7 +173,7 @@ namespace Ann.MainWindow
                     .ObserveOnUIDispatcher()
                     .Subscribe(async p =>
                     {
-                        var i = await App.Instance.RunAsync(path, p == "admin");
+                        var i = await _app.RunAsync(path, p == "admin");
                         if (i)
                         {
                             Messenger.Publish(new WindowActionMessage(WindowAction.Hidden));
@@ -197,9 +204,9 @@ namespace Ann.MainWindow
                 {
                     using (Disposable.Create(() =>
                     {
-                        App.Instance.SaveConfig();
+                        configHolder.SaveConfig();
 
-                        if (VersionUpdater.Instance.IsRestartRequested)
+                        if (_app.IsRestartRequested)
                         {
                             ExitCommand.Execute(null);
                             return;
@@ -207,23 +214,27 @@ namespace Ann.MainWindow
 
                         IsShowingSettingShow.Value = false;
                         Messenger.Publish(new WindowActionMessage(WindowAction.VisibleActive));
-                        App.Instance.InvokeShortcutKeyChanged();
+                        _app.InvokeShortcutKeyChanged();
                     }))
                     {
-                        var key = App.Instance.Config.ShortcutKeys.Activate.Key;
-                        App.Instance.Config.ShortcutKeys.Activate.Key = Key.None;
-                        App.Instance.InvokeShortcutKeyChanged();
-                        App.Instance.Config.ShortcutKeys.Activate.Key = key;
+                        var key = configHolder.Config.ShortcutKeys.Activate.Key;
+                        configHolder.Config.ShortcutKeys.Activate.Key = Key.None;
+                        _app.InvokeShortcutKeyChanged();
+                        configHolder.Config.ShortcutKeys.Activate.Key = key;
 
                         IsShowingSettingShow.Value = true;
-                        await AsyncMessageBroker.Default.PublishAsync(new SettingViewModel(App.Instance.Config));
+                        await AsyncMessageBroker.Default.PublishAsync(
+                            new SettingViewModel(
+                                configHolder.Config,
+                                _app.VersionUpdater,
+                                _app));
                     }
                 }).AddTo(CompositeDisposable);
 
                 IsShowingSettingShow = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
 
                 IsShowingSettingShow
-                    .Subscribe(i => App.Instance.IsEnableAutoUpdater = i == false)
+                    .Subscribe(i => _app.IsEnableAutoUpdater = i == false)
                     .AddTo(CompositeDisposable);
 
                 ShowCommand = IsShowingSettingShow.Inverse().ToReactiveCommand().AddTo(CompositeDisposable);
@@ -241,9 +252,7 @@ namespace Ann.MainWindow
                     .Subscribe(_ => Messenger.Publish(new WindowActionMessage(WindowAction.Close)))
                     .AddTo(CompositeDisposable);
 
-                IsEnableActivateHotKey = new ReactiveProperty<bool>(true).AddTo(CompositeDisposable);
-
-                IndexOpeningResult = App.Instance.ObserveProperty(x => x.IndexOpeningResult)
+                IndexOpeningResult = _app.ObserveProperty(x => x.IndexOpeningResult)
                     .ToReadOnlyReactiveProperty()
                     .AddTo(CompositeDisposable);
 
@@ -252,40 +261,30 @@ namespace Ann.MainWindow
                     .Subscribe(_ => Input.ForceNotify())
                     .AddTo(CompositeDisposable);
 
-                StatusBar = new StatusBarViewModel(this).AddTo(CompositeDisposable);
+                StatusBar = new StatusBarViewModel(_app).AddTo(CompositeDisposable);
             }
         }
 
-        private async Task InitializeAsync()
+        private async Task InitializeAsync(ConfigHolder configHolder)
         {
             Observable
                 .Merge(Left)
                 .Merge(Top)
                 .Throttle(TimeSpan.FromSeconds(2))
-                .Subscribe(_ => SaveConfig())
+                .Subscribe(_ => configHolder.SaveMainWindow())
                 .AddTo(CompositeDisposable);
 
-            App.Instance.Config.ObserveProperty(x => x.IconCacheSize)
+            configHolder.Config.ObserveProperty(x => x.IconCacheSize)
                 .Subscribe(x => _iconDecoder.IconCacheSize = x)
                 .AddTo(CompositeDisposable);
 
             CompositeDisposable.Add(DisposeCandidates);
 
-            await App.Instance.OpenIndexAsync();
+            await _app.OpenIndexAsync();
 
             if ((IndexOpeningResult.Value == IndexOpeningResults.NotFound) ||
                 (IndexOpeningResult.Value == IndexOpeningResults.OldIndex))
-                await UpdateIndexAsync();
-        }
-
-        private async Task UpdateIndexAsync()
-        {
-            using (Disposable.Create(() => IsIndexUpdating.Value = false))
-            {
-                IsIndexUpdating.Value = true;
-                await App.Instance.UpdateIndexAsync();
-                Input.ForceNotify();
-            }
+                await _app.UpdateIndexAsync();
         }
 
         private void DisposeCandidates()
@@ -311,19 +310,6 @@ namespace Ann.MainWindow
             }
 
             return -1;
-        }
-
-        private void LoadConfig()
-        {
-            Debug.Assert(Config == null);
-
-            Config = ConfigHelper.ReadConfig<Core.Config.MainWindow>(ConfigHelper.Category.MainWindow,
-                Constants.ConfigDirPath);
-        }
-
-        private void SaveConfig()
-        {
-            ConfigHelper.WriteConfig(ConfigHelper.Category.MainWindow, Constants.ConfigDirPath, Config);
         }
 
         private static async Task OpenByExplorer(string path)

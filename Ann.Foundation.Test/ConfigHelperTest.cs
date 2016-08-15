@@ -8,7 +8,11 @@ namespace Ann.Foundation.Test
     public class ConfigHelperTest : IDisposable
     {
         private readonly DisposableFileSystem _context = new DisposableFileSystem();
-        public void Dispose() => _context.Dispose();
+
+        public void Dispose()
+        {
+            _context.Dispose();
+        }
 
         public class Data
         {
@@ -23,7 +27,7 @@ namespace Ann.Foundation.Test
         {
             var src = new Data {Param0 = 123, Param1 = 456, Param2 = category.ToString()};
 
-            var filePath = Path.Combine(_context.RootPath, $"{(TestHelper.IsTestMode ? "test." : string.Empty)}Ann.{category}.yaml");
+            var filePath = Path.Combine(_context.RootPath, $"Ann.{category}.yaml");
 
             ConfigHelper.WriteConfig(category, _context.RootPath, src);
             Assert.True(File.Exists(filePath));

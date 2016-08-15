@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Specialized;
+﻿using System.Collections;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using Ann.Foundation;
-using Reactive.Bindings.Extensions;
 
 namespace Ann.SettingWindow.SettingPage
 {
@@ -127,24 +122,6 @@ namespace Ann.SettingWindow.SettingPage
         public FileOrFolderListBox()
         {
             InitializeComponent();
-
-            var o = ListBox.Items.CollectionChangedAsObservable()
-                .Subscribe(e =>
-                {
-                    if (e.Action != NotifyCollectionChangedAction.Add)
-                        return;
-
-                    ListBox.UpdateLayout();
-
-                    var item = ListBox
-                        .ItemContainerGenerator
-                        .ContainerFromIndex(e.NewStartingIndex);
-
-                    var inputBox = WpfHelper.FindChild<TextBox>(item);
-                    inputBox.Focus();
-                });
-
-            Unloaded += (_, __) => o.Dispose();
         }
     }
 }

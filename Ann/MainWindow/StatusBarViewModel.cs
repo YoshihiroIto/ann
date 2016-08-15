@@ -16,11 +16,17 @@ namespace Ann.MainWindow
         public ReactiveCollection<StatusBarItemViewModel> Messages { get; }
         public ReadOnlyReactiveProperty<Visibility> Visibility { get; }
 
-        public StatusBarViewModel(MainWindowViewModel parent)
+        private readonly App _app;
+
+        public StatusBarViewModel(App app)
         {
-            Debug.Assert(parent != null);
+            Debug.Assert(app != null);
+
+            _app = app;
 
             Messages = new ReactiveCollection<StatusBarItemViewModel>().AddTo(CompositeDisposable);
+
+            CompositeDisposable.Add(async () => await app.CancelUpdateIndexAsync());
             CompositeDisposable.Add(() => Messages.ForEach(x => x.Dispose()));
 
             Visibility = Messages.CollectionChangedAsObservable()
@@ -28,27 +34,33 @@ namespace Ann.MainWindow
                 .ToReadOnlyReactiveProperty(System.Windows.Visibility.Collapsed)
                 .AddTo(CompositeDisposable);
 
-            parent.IsIndexUpdating.Subscribe(i =>
-            {
-                if (i)
+            app.ObserveProperty(x => x.IsIndexUpdating)
+                .SubscribeOnUIDispatcher()
+                .Subscribe(i =>
                 {
-                    var item = new ProcessingStatusBarItemViewModel(
-                        StatusBarItemViewModel.SearchKey.IndexUpdating,
-                        Properties.Resources.Message_IndexUpdating);
-                    Messages.AddOnScheduler(item);
-                }
-                else
-                {
-                    var item = Messages
-                        .FirstOrDefault(
-                            x => x.Key == StatusBarItemViewModel.SearchKey.IndexUpdating);
+                    if (i)
+                    {
+                        var item = new ProcessingStatusBarItemViewModel(
+                            StatusBarItemViewModel.SearchKey.IndexUpdating,
+                            Properties.Resources.Message_IndexUpdating);
+                        Messages.Add(item);
+                    }
+                    else
+                    {
+                        var item = Messages
+                            .FirstOrDefault(
+                                x => x.Key == StatusBarItemViewModel.SearchKey.IndexUpdating);
 
-                    Messages.RemoveOnScheduler(item);
-                    item?.Dispose();
-                }
-            }).AddTo(CompositeDisposable);
+                        if (item == null)
+                            return;
 
-            App.Instance.ObserveProperty(c => c.Crawling)
+                        Messages.Remove(item);
+                        item.Dispose();
+                    }
+                }).AddTo(CompositeDisposable);
+
+            app.ObserveProperty(c => c.Crawling)
+                .SubscribeOnUIDispatcher()
                 .Subscribe(c =>
                 {
                     var item = Messages
@@ -60,7 +72,7 @@ namespace Ann.MainWindow
                 })
                 .AddTo(CompositeDisposable);
 
-            parent.IsEnableActivateHotKey
+            app.ObserveProperty(x => x.IsEnableActivateHotKey)
                 .Subscribe(i =>
                 {
                     if (i == false)
@@ -81,7 +93,7 @@ namespace Ann.MainWindow
                     }
                 }).AddTo(CompositeDisposable);
 
-            parent.IndexOpeningResult
+            app.ObserveProperty(x => x.IndexOpeningResult)
                 .Subscribe(r =>
                 {
                     if (r == IndexOpeningResults.InOpening)
@@ -111,7 +123,7 @@ namespace Ann.MainWindow
         {
             CompositeDisposable.Add(() => _autoUpdaterItem?.Dispose());
 
-            App.Instance.ObserveProperty(x => x.AutoUpdateState)
+            _app.ObserveProperty(x => x.AutoUpdateState)
                 .Subscribe(s =>
                 {
                     if (_autoUpdaterItem != null)
@@ -133,10 +145,10 @@ namespace Ann.MainWindow
                         Messages.Add(_autoUpdaterItem);
                 }).AddTo(CompositeDisposable);
 
-            App.Instance.ObserveProperty(x => x.AutoUpdateRemainingSeconds)
+            _app.ObserveProperty(x => x.AutoUpdateRemainingSeconds)
                 .Subscribe(p =>
                 {
-                    if (App.Instance.AutoUpdateState == App.AutoUpdateStates.CloseAfterNSec)
+                    if (_app.AutoUpdateState == App.AutoUpdateStates.CloseAfterNSec)
                         _autoUpdaterItem.Message.Value =
                             p == 0
                                 ? Properties.Resources.AutoUpdateStates_CloseAfter0Sec_Restart
