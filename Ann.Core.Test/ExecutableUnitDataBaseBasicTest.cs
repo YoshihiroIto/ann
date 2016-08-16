@@ -21,21 +21,21 @@ namespace Ann.Core.Test
         }
 
         [Fact]
-        public void NotFoundOpenIndex()
+        public async void NotFoundOpenIndex()
         {
             var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
             var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
 
             var db = new ExecutableUnitDataBase(dbFilePath);
 
-            var r = db.OpenIndexAsync(targetPaths);
+            var r = await db.OpenIndexAsync(targetPaths);
 
-            Assert.Equal(IndexOpeningResults.NotFound, r.Result);
+            Assert.Equal(IndexOpeningResults.NotFound, r);
         }
 
         [Theory]
         [InlineData(new[] {"exe"}, new[] {"target1/aaa.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
-        public void OpenIndex(string[] executableFileExts, string[] targetFiles)
+        public async void OpenIndex(string[] executableFileExts, string[] targetFiles)
         {
             _context.CreateFiles(targetFiles);
 
@@ -43,15 +43,15 @@ namespace Ann.Core.Test
             var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
 
             var db = new ExecutableUnitDataBase(dbFilePath);
-            var r = db.UpdateIndexAsync(targetPaths, executableFileExts);
+            var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
-            Assert.Equal(IndexOpeningResults.Ok, r.Result);
+            Assert.Equal(IndexOpeningResults.Ok, r);
             Assert.Equal(3, db.ExecutableUnitCount);
         }
 
         [Theory]
         [InlineData(new[] {"exe"}, new[] {"target1/aaa.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
-        public void ReopenIndex(string[] executableFileExts, string[] targetFiles)
+        public async void ReopenIndex(string[] executableFileExts, string[] targetFiles)
         {
             _context.CreateFiles(targetFiles);
 
@@ -60,9 +60,9 @@ namespace Ann.Core.Test
                 var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
 
                 var db = new ExecutableUnitDataBase(dbFilePath);
-                var r = db.UpdateIndexAsync(targetPaths, executableFileExts);
+                var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
-                Assert.Equal(IndexOpeningResults.Ok, r.Result);
+                Assert.Equal(IndexOpeningResults.Ok, r);
                 Assert.Equal(3, db.ExecutableUnitCount);
             }
 
@@ -71,15 +71,15 @@ namespace Ann.Core.Test
                 var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
 
                 var db = new ExecutableUnitDataBase(dbFilePath);
-                var r = db.OpenIndexAsync(targetPaths);
+                var r = await db.OpenIndexAsync(targetPaths);
 
-                Assert.Equal(IndexOpeningResults.Ok, r.Result);
+                Assert.Equal(IndexOpeningResults.Ok, r);
             }
         }
 
         [Theory]
         [InlineData(new[] {"exe"}, new[] {"target1/aaa.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
-        public void ReopenIndexNotFound(string[] executableFileExts, string[] targetFiles)
+        public async void ReopenIndexNotFound(string[] executableFileExts, string[] targetFiles)
         {
             _context.CreateFiles(targetFiles);
 
@@ -88,9 +88,9 @@ namespace Ann.Core.Test
                 var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
 
                 var db = new ExecutableUnitDataBase(dbFilePath);
-                var r = db.UpdateIndexAsync(targetPaths, executableFileExts);
+                var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
-                Assert.Equal(IndexOpeningResults.Ok, r.Result);
+                Assert.Equal(IndexOpeningResults.Ok, r);
                 Assert.Equal(3, db.ExecutableUnitCount);
             }
 
@@ -102,9 +102,9 @@ namespace Ann.Core.Test
                 var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
 
                 var db = new ExecutableUnitDataBase(dbFilePath);
-                var r = db.OpenIndexAsync(targetPaths);
+                var r = await db.OpenIndexAsync(targetPaths);
 
-                Assert.Equal(IndexOpeningResults.Ok, r.Result);
+                Assert.Equal(IndexOpeningResults.Ok, r);
 
                 var f = db.Find("aaa", executableFileExts);
                 Assert.Equal(0, f.Count());
@@ -114,7 +114,7 @@ namespace Ann.Core.Test
         [Theory]
         [InlineData(new[] {"exe"}, new[] {"target1/aaa.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
         [InlineData(new[] {".exe"}, new[] {"target1/aaa.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
-        public void UpdateIndex(string[] executableFileExts, string[] targetFiles)
+        public async void UpdateIndex(string[] executableFileExts, string[] targetFiles)
         {
             _context.CreateFiles(targetFiles);
 
@@ -122,15 +122,15 @@ namespace Ann.Core.Test
             var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
 
             var db = new ExecutableUnitDataBase(dbFilePath);
-            var r = db.UpdateIndexAsync(targetPaths, executableFileExts);
+            var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
-            Assert.Equal(IndexOpeningResults.Ok, r.Result);
+            Assert.Equal(IndexOpeningResults.Ok, r);
             Assert.Equal(3, db.ExecutableUnitCount);
         }
 
         [Theory]
         [InlineData(new[] {"exe"}, new[] {"target1/aAa.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
-        public void CrawingData1(string[] executableFileExts, string[] targetFiles)
+        public async void CrawingData1(string[] executableFileExts, string[] targetFiles)
         {
             _context.CreateFiles(targetFiles);
 
@@ -138,9 +138,9 @@ namespace Ann.Core.Test
             var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
 
             var db = new ExecutableUnitDataBase(dbFilePath);
-            var r = db.UpdateIndexAsync(targetPaths, executableFileExts);
+            var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
-            Assert.Equal(IndexOpeningResults.Ok, r.Result);
+            Assert.Equal(IndexOpeningResults.Ok, r);
             Assert.Equal(3, db.ExecutableUnitCount);
 
             var f = db.Find("aaa", executableFileExts).ToArray();
@@ -160,7 +160,7 @@ namespace Ann.Core.Test
 
         [Theory]
         [InlineData(new[] {"exe"}, new[] {"target1/xxx/YYY/zzz/aAa 123.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
-        public void CrawingData2(string[] executableFileExts, string[] targetFiles)
+        public async void CrawingData2(string[] executableFileExts, string[] targetFiles)
         {
             _context.CreateFiles(targetFiles);
 
@@ -168,9 +168,9 @@ namespace Ann.Core.Test
             var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
 
             var db = new ExecutableUnitDataBase(dbFilePath);
-            var r = db.UpdateIndexAsync(targetPaths, executableFileExts);
+            var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
-            Assert.Equal(IndexOpeningResults.Ok, r.Result);
+            Assert.Equal(IndexOpeningResults.Ok, r);
             Assert.Equal(3, db.ExecutableUnitCount);
 
             var f = db.Find("aaa", executableFileExts).ToArray();
