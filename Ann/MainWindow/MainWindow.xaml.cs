@@ -101,7 +101,7 @@ namespace Ann.MainWindow
         {
             InputTextBox.Text = string.Empty;
 
-            await WpfHelper.DoEventsAsync();
+            WpfHelper.DoEvents();
             await FocusInputTextBlockIfVisibledAsync();
         }
 

@@ -20,11 +20,11 @@ namespace Ann.Foundation.Test
             Assert.False(WpfHelper.IsDesignMode);
         }
 
-        [StaFact]
-        public void DoEventsAsync()
+        [WpfFact]
+        public void DoEvents()
         {
             // 例外にならない
-            WpfHelper.DoEventsAsync().Wait();
+            WpfHelper.DoEvents();
         }
 
         [WpfFact]

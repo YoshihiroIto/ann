@@ -13,12 +13,7 @@ namespace Ann.Foundation
             = (bool) DependencyPropertyDescriptor.FromProperty(
                 DesignerProperties.IsInDesignModeProperty, typeof(FrameworkElement)).Metadata.DefaultValue;
 
-        public static async Task DoEventsAsync()
-        {
-            await Task.Run(() => DoEvents());
-        }
-
-        private static void DoEvents()
+        public static void DoEvents()
         {
             var frame = new DispatcherFrame();
 
