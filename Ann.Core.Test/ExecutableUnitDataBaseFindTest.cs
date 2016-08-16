@@ -22,7 +22,7 @@ namespace Ann.Core.Test
         [Theory]
         [InlineData("bbb", new[] {"target1/aaa.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
         [InlineData("BBB", new[] {"target1/aaa.exe", @"target1\BBB.exe", "target1/ccc.exe", "target1/ddd.bin"})]
-        public void Basic(string name, string[] targetFiles)
+        public async void Basic(string name, string[] targetFiles)
         {
             _context.CreateFiles(targetFiles);
 
@@ -31,9 +31,9 @@ namespace Ann.Core.Test
             var executableFileExts = new[] {"exe"};
 
             var db = new ExecutableUnitDataBase(dbFilePath);
-            var r = db.UpdateIndexAsync(targetPaths, executableFileExts);
+            var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
-            Assert.Equal(IndexOpeningResults.Ok, r.Result);
+            Assert.Equal(IndexOpeningResults.Ok, r);
             Assert.Equal(3, db.ExecutableUnitCount);
 
             var f = db.Find("bb", executableFileExts).ToArray();
@@ -49,7 +49,7 @@ namespace Ann.Core.Test
         [InlineData("", new[] {"target1/aaa.exe", @"target1\BBB.exe", "target1/ccc.exe", "target1/ddd.bin"})]
         [InlineData(" ", new[] {"target1/aaa.exe", @"target1\BBB.exe", "target1/ccc.exe", "target1/ddd.bin"})]
         [InlineData(null, new[] {"target1/aaa.exe", @"target1\BBB.exe", "target1/ccc.exe", "target1/ddd.bin"})]
-        public void InputEmpty(string input, string[] targetFiles)
+        public async void InputEmpty(string input, string[] targetFiles)
         {
             _context.CreateFiles(targetFiles);
 
@@ -58,9 +58,9 @@ namespace Ann.Core.Test
             var executableFileExts = new[] {"exe"};
 
             var db = new ExecutableUnitDataBase(dbFilePath);
-            var r = db.UpdateIndexAsync(targetPaths, executableFileExts);
+            var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
-            Assert.Equal(IndexOpeningResults.Ok, r.Result);
+            Assert.Equal(IndexOpeningResults.Ok, r);
             Assert.Equal(3, db.ExecutableUnitCount);
 
             var f = db.Find(input, executableFileExts).ToArray();
@@ -119,7 +119,7 @@ namespace Ann.Core.Test
             new[] {@"target3\aaa.exe", @"target1\zzz\aaa.exe", @"target2\aaa\zzz.exe"},
             new[] {@"target1\zzz\aaa.exe", @"target2\aaa\zzz.exe", @"target3\aaa.exe"},
             "aaa")]
-        public void InputScore(string[] expected, string[] targetFiles, string input)
+        public async void InputScore(string[] expected, string[] targetFiles, string input)
         {
             _context.CreateFiles(targetFiles);
 
@@ -133,9 +133,9 @@ namespace Ann.Core.Test
             var executableFileExts = new[] {"exe"};
 
             var db = new ExecutableUnitDataBase(dbFilePath);
-            var r = db.UpdateIndexAsync(targetPaths, executableFileExts);
+            var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
-            Assert.Equal(IndexOpeningResults.Ok, r.Result);
+            Assert.Equal(IndexOpeningResults.Ok, r);
             Assert.Equal(3, db.ExecutableUnitCount);
 
             var baseLength = _context.RootPath.Length + 1;
@@ -168,7 +168,7 @@ namespace Ann.Core.Test
             new[] {@"target1\abc.exe", @"target1\abc.bat"},
             new[] {@"target1\abc.txt", @"target1\abc.bat", @"target1\abc.exe"},
             new[] {".exe", ".bat", ".lnk"})]
-        public void ExtScore(string[] expected, string[] targetFiles, string[] exts)
+        public async void ExtScore(string[] expected, string[] targetFiles, string[] exts)
         {
             _context.CreateFiles(targetFiles);
 
@@ -177,9 +177,9 @@ namespace Ann.Core.Test
             var executableFileExts = exts;
 
             var db = new ExecutableUnitDataBase(dbFilePath);
-            var r = db.UpdateIndexAsync(targetPaths, executableFileExts);
+            var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
-            Assert.Equal(IndexOpeningResults.Ok, r.Result);
+            Assert.Equal(IndexOpeningResults.Ok, r);
 
             var baseLength = _context.RootPath.Length + 1;
             var candidates = db.Find("abc", executableFileExts).ToArray();
@@ -208,7 +208,7 @@ namespace Ann.Core.Test
             new[] {@"target1\qqq xxx\abc.exe"},
             new[] {@"target1\eee xxx\abc.exe",@"target1\qqq xxx\abc.exe",  @"target1\ggg xxx\abc.exe"},
             "xxx qqq")]
-        public void InputDirectory(string[] expected, string[] targetFiles, string input)
+        public async void InputDirectory(string[] expected, string[] targetFiles, string input)
         {
             _context.CreateFiles(targetFiles);
 
@@ -217,9 +217,9 @@ namespace Ann.Core.Test
             var executableFileExts = new[] {"exe"};
 
             var db = new ExecutableUnitDataBase(dbFilePath);
-            var r = db.UpdateIndexAsync(targetPaths, executableFileExts);
+            var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
-            Assert.Equal(IndexOpeningResults.Ok, r.Result);
+            Assert.Equal(IndexOpeningResults.Ok, r);
 
             var baseLength = _context.RootPath.Length + 1;
             var candidates = db.Find(input, executableFileExts).ToArray();
