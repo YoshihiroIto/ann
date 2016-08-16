@@ -1,33 +1,26 @@
-﻿using System.Windows.Threading;
+﻿using System;
+using System.Windows.Threading;
 using Xunit;
 
 namespace Ann.Test
 {
-    public class ViewManagerTestFixture
+    public class ViewManagerTest :  IDisposable
     {
-        public ViewManagerTestFixture()
+        public ViewManagerTest()
         {
-            Dispatcher = Dispatcher.CurrentDispatcher;
+            TestHelper.CleanTestEnv();
         }
 
-        public Dispatcher Dispatcher { get;  }
-    }
-
-    public class ViewManagerTest: IClassFixture<ViewManagerTestFixture>
-    {
-        private readonly Dispatcher _dispatcher;
-
-        public ViewManagerTest(ViewManagerTestFixture fixture)
+        public void Dispose()
         {
-            _dispatcher = fixture.Dispatcher;
+            // for appveyor 
+            Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
 
         [WpfFact]
         public void Basic()
         {
-            TestHelper.CleanTestEnv();
-
-            using ( new ViewManager(_dispatcher))
+            using (new ViewManager(Dispatcher.CurrentDispatcher))
             {
             }
         }

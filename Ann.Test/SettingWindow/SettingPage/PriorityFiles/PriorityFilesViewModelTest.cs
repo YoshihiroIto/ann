@@ -11,6 +11,11 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
     {
         private readonly DisposableFileSystem _config = new DisposableFileSystem();
 
+        public PriorityFilesViewModelTest()
+        {
+            TestHelper.CleanTestEnv();
+        }
+
         public void Dispose()
         {
             _config.Dispose();
@@ -19,8 +24,6 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
         [Fact]
         public void Basic()
         {
-            TestHelper.CleanTestEnv();
-
             var model = new Core.Config.App();
 
             using (var app = new App(new ConfigHolder(_config.RootPath)))
@@ -32,8 +35,6 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
         [Fact]
         public void Files()
         {
-            TestHelper.CleanTestEnv();
-
             var model = new Core.Config.App();
 
             using (var app = new App(new ConfigHolder(_config.RootPath)))
@@ -59,8 +60,6 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
         [Fact]
         public void FileAddCommand()
         {
-            TestHelper.CleanTestEnv();
-
             var model = new Core.Config.App();
 
             using (var app = new App(new ConfigHolder(_config.RootPath)))
@@ -79,8 +78,6 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
         [Fact]
         public void FileRemoveCommand()
         {
-            TestHelper.CleanTestEnv();
-
             var model = new Core.Config.App();
 
             using (var app = new App(new ConfigHolder(_config.RootPath)))
@@ -107,8 +104,6 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
         [Fact]
         public void PathFolderSelect()
         {
-            TestHelper.CleanTestEnv();
-
             var model = new Core.Config.App();
 
             using (var app = new App(new ConfigHolder(_config.RootPath)))

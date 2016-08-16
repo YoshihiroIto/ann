@@ -7,11 +7,14 @@ namespace Ann.Core.Test
 {
     public class ConstantsTest
     {
+        public ConstantsTest()
+        {
+            TestHelper.CleanTestEnv();
+        }
+
         [Fact]
         public void Basic()
         {
-            TestHelper.CleanTestEnv();
-
             Assert.Contains("github.com", Constants.AnnGitHubUrl);
             Assert.Contains("twitter.com", Constants.AnnTwitterUrl);
 

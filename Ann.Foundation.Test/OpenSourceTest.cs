@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System.Windows.Threading;
+using Xunit;
 
 namespace Ann.Foundation.Test
 {
@@ -19,6 +20,17 @@ namespace Ann.Foundation.Test
             Assert.Equal("B", o.Name);
             Assert.Equal("C", o.Summry);
             Assert.Equal("D", o.Url);
+        }
+
+        [Fact]
+        public void Ctor()
+        {
+            var o = new OpenSource();
+
+            Assert.Null(o.Auther);
+            Assert.Null(o.Name);
+            Assert.Null(o.Summry);
+            Assert.Null(o.Url);
         }
     }
 }

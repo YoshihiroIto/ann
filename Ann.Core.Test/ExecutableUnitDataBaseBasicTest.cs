@@ -9,6 +9,11 @@ namespace Ann.Core.Test
     public class ExecutableUnitDataBaseBasicTest : IDisposable
     {
         private readonly DisposableFileSystem _context = new DisposableFileSystem();
+
+        public ExecutableUnitDataBaseBasicTest()
+        {
+            TestHelper.CleanTestEnv();
+        }
         
         public void Dispose()
         {
@@ -18,8 +23,6 @@ namespace Ann.Core.Test
         [Fact]
         public void NotFoundOpenIndex()
         {
-            TestHelper.CleanTestEnv();
-
             var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
             var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
 
@@ -34,8 +37,6 @@ namespace Ann.Core.Test
         [InlineData(new[] {"exe"}, new[] {"target1/aaa.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
         public void OpenIndex(string[] executableFileExts, string[] targetFiles)
         {
-            TestHelper.CleanTestEnv();
-
             _context.CreateFiles(targetFiles);
 
             var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
@@ -52,8 +53,6 @@ namespace Ann.Core.Test
         [InlineData(new[] {"exe"}, new[] {"target1/aaa.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
         public void ReopenIndex(string[] executableFileExts, string[] targetFiles)
         {
-            TestHelper.CleanTestEnv();
-
             _context.CreateFiles(targetFiles);
 
             {
@@ -82,8 +81,6 @@ namespace Ann.Core.Test
         [InlineData(new[] {"exe"}, new[] {"target1/aaa.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
         public void ReopenIndexNotFound(string[] executableFileExts, string[] targetFiles)
         {
-            TestHelper.CleanTestEnv();
-
             _context.CreateFiles(targetFiles);
 
             {
@@ -119,8 +116,6 @@ namespace Ann.Core.Test
         [InlineData(new[] {".exe"}, new[] {"target1/aaa.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
         public void UpdateIndex(string[] executableFileExts, string[] targetFiles)
         {
-            TestHelper.CleanTestEnv();
-
             _context.CreateFiles(targetFiles);
 
             var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
@@ -137,8 +132,6 @@ namespace Ann.Core.Test
         [InlineData(new[] {"exe"}, new[] {"target1/aAa.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
         public void CrawingData1(string[] executableFileExts, string[] targetFiles)
         {
-            TestHelper.CleanTestEnv();
-
             _context.CreateFiles(targetFiles);
 
             var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
@@ -169,8 +162,6 @@ namespace Ann.Core.Test
         [InlineData(new[] {"exe"}, new[] {"target1/xxx/YYY/zzz/aAa 123.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
         public void CrawingData2(string[] executableFileExts, string[] targetFiles)
         {
-            TestHelper.CleanTestEnv();
-
             _context.CreateFiles(targetFiles);
 
             var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");

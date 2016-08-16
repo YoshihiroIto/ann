@@ -7,11 +7,14 @@ namespace Ann.Test.SettingWindow.SettingPage.General
 {
     public class GeneralViewModelTest
     {
+        public GeneralViewModelTest()
+        {
+            TestHelper.CleanTestEnv();
+        }
+
         [Fact]
         public void Basic()
         {
-            TestHelper.CleanTestEnv();
-
             var app = new Core.Config.App();
 
             using (var versionUpdater = new VersionUpdater(null))
@@ -23,8 +26,6 @@ namespace Ann.Test.SettingWindow.SettingPage.General
         [Fact]
         public void MaxCandidateLinesCount()
         {
-            TestHelper.CleanTestEnv();
-
             var app = new Core.Config.App();
 
             using (var versionUpdater = new VersionUpdater(null))
@@ -44,8 +45,6 @@ namespace Ann.Test.SettingWindow.SettingPage.General
         [Fact]
         public void SelectedCulture_ja()
         {
-            TestHelper.CleanTestEnv();
-
             CultureInfo.CurrentUICulture = new CultureInfo("ja");
 
             var app = new Core.Config.App();
@@ -63,8 +62,6 @@ namespace Ann.Test.SettingWindow.SettingPage.General
         [InlineData("English","en")]
         public void SelectedCulture(string caption, string cultureName)
         {
-            TestHelper.CleanTestEnv();
-
             CultureInfo.CurrentUICulture = new CultureInfo(cultureName);
 
             var app = new Core.Config.App();
@@ -80,8 +77,6 @@ namespace Ann.Test.SettingWindow.SettingPage.General
         [Fact]
         public void SelectableCulture()
         {
-            TestHelper.CleanTestEnv();
-
             var sc = new SelectableCulture();
 
             Assert.Null(sc.CultureName);

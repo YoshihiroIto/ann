@@ -8,11 +8,14 @@ namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
 {
     public class ShortcutKeyListBoxViewModelTest
     {
+        public ShortcutKeyListBoxViewModelTest()
+        {
+            TestHelper.CleanTestEnv();
+        }
+
         [Fact]
         public void Basic()
         {
-            TestHelper.CleanTestEnv();
-
             var model = new ObservableCollection<ShortcutKey>();
 
             using (var vm = new ShortcutKeyListBoxViewModel(model))
@@ -26,8 +29,6 @@ namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
         [Fact]
         public void KeyAddCommand()
         {
-            TestHelper.CleanTestEnv();
-
             var model = new ObservableCollection<ShortcutKey>();
             using (var vm = new ShortcutKeyListBoxViewModel(model))
             {
@@ -40,8 +41,6 @@ namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
         [Fact]
         public void KeyRemoveCommand()
         {
-            TestHelper.CleanTestEnv();
-
             var model = new ObservableCollection<ShortcutKey>
             {
                 new ShortcutKey {Key = Key.A},

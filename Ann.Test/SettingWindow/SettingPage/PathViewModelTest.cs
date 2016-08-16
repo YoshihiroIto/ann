@@ -8,11 +8,14 @@ namespace Ann.Test.SettingWindow.SettingPage
 {
     public class PathViewModelTest
     {
+        public PathViewModelTest()
+        {
+            TestHelper.CleanTestEnv();
+        }
+
         [Fact]
         public void Basic()
         {
-            TestHelper.CleanTestEnv();
-
             using (var vm = new PathViewModel(new Path("AA"), false))
             {
                 Assert.Equal("AA", vm.Path.Value);
@@ -22,8 +25,6 @@ namespace Ann.Test.SettingWindow.SettingPage
         [Fact]
         public void FolderSelectDialogOpenCommand()
         {
-            TestHelper.CleanTestEnv();
-
             using (MessageBroker.Default
                 .Subscribe<FileOrFolderSelectMessage>(_ => _.Response = "123"))
             {

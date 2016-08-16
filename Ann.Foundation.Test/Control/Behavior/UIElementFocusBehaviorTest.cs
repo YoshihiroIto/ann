@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Ann.Foundation.Control.Behavior;
-using Reactive.Bindings;
 using Xunit;
 
 namespace Ann.Foundation.Test.Control.Behavior

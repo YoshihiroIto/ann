@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Threading;
 using Ann.Core;
 using Ann.Foundation;
 using Ann.MainWindow;
@@ -10,16 +11,22 @@ namespace Ann.Test.MainWindow
     {
         private readonly DisposableFileSystem _config = new DisposableFileSystem();
 
+        public MainWindowViewModelTest()
+        {
+            TestHelper.CleanTestEnv();
+        }
+
         public void Dispose()
         {
             _config.Dispose();
+
+            // for appveyor 
+            Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
 
         [Fact]
         public void Basic()
         {
-            TestHelper.CleanTestEnv();
-
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var app = new App(configHolder))
             using (var vm = new MainWindowViewModel(app, configHolder))
@@ -36,8 +43,6 @@ namespace Ann.Test.MainWindow
         [Fact]
         public void SettingShowCommand()
         {
-            TestHelper.CleanTestEnv();
-
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var app = new App(configHolder))
             using (var vm = new MainWindowViewModel(app, configHolder))
@@ -49,8 +54,6 @@ namespace Ann.Test.MainWindow
         [Fact]
         public void ShowCommand()
         {
-            TestHelper.CleanTestEnv();
-
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var app = new App(configHolder))
             using (var vm = new MainWindowViewModel(app, configHolder))
@@ -62,8 +65,6 @@ namespace Ann.Test.MainWindow
         [Fact]
         public void HideCommand()
         {
-            TestHelper.CleanTestEnv();
-
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var app = new App(configHolder))
             using (var vm = new MainWindowViewModel(app, configHolder))
@@ -75,8 +76,6 @@ namespace Ann.Test.MainWindow
         [Fact]
         public void ExitCommand()
         {
-            TestHelper.CleanTestEnv();
-
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var app = new App(configHolder))
             using (var vm = new MainWindowViewModel(app, configHolder))
@@ -88,8 +87,6 @@ namespace Ann.Test.MainWindow
         [Fact]
         public void Candidates()
         {
-            TestHelper.CleanTestEnv();
-
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var app = new App(configHolder))
             using (var vm = new MainWindowViewModel(app, configHolder))

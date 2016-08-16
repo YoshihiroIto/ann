@@ -11,6 +11,11 @@ namespace Ann.Test.SettingWindow
     {
         private readonly DisposableFileSystem _config = new DisposableFileSystem();
 
+        public SettingViewModelTest()
+        {
+            TestHelper.CleanTestEnv();
+        }
+
         public void Dispose()
         {
             _config.Dispose();
@@ -19,8 +24,6 @@ namespace Ann.Test.SettingWindow
         [Fact]
         public void Basic()
         {
-            TestHelper.CleanTestEnv();
-
             var model = new Core.Config.App();
 
             using (var app = new App(new ConfigHolder(_config.RootPath)))
@@ -35,8 +38,6 @@ namespace Ann.Test.SettingWindow
         [Fact]
         public void InitializeCommand()
         {
-            TestHelper.CleanTestEnv();
-
             var model = new Core.Config.App();
 
             using (var app = new App(new ConfigHolder(_config.RootPath)))
@@ -50,8 +51,6 @@ namespace Ann.Test.SettingWindow
         [Fact]
         public void CloseCommand()
         {
-            TestHelper.CleanTestEnv();
-
             var model = new Core.Config.App();
 
             using (var app = new App(new ConfigHolder(_config.RootPath)))

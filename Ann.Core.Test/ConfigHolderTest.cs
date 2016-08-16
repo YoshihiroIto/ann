@@ -8,6 +8,11 @@ namespace Ann.Core.Test
     {
         private readonly DisposableFileSystem _config = new DisposableFileSystem();
 
+        public ConfigHolderTest()
+        {
+            TestHelper.CleanTestEnv();
+        }
+
         public void Dispose()
         {
             _config.Dispose();
@@ -16,8 +21,6 @@ namespace Ann.Core.Test
         [Fact]
         public void SaveConfig()
         {
-            TestHelper.CleanTestEnv();
-
             var configHolder = new ConfigHolder(_config.RootPath);
 
             configHolder.SaveConfig();
@@ -26,8 +29,6 @@ namespace Ann.Core.Test
         [Fact]
         public void SaveMru()
         {
-            TestHelper.CleanTestEnv();
-
             var configHolder = new ConfigHolder(_config.RootPath);
 
             configHolder.SaveMru();
@@ -36,8 +37,6 @@ namespace Ann.Core.Test
         [Fact]
         public void SaveMainWindow()
         {
-            TestHelper.CleanTestEnv();
-
             var configHolder = new ConfigHolder(_config.RootPath);
 
             configHolder.SaveMainWindow();

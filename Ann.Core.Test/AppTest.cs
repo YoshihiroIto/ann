@@ -12,6 +12,11 @@ namespace Ann.Core.Test
         private readonly DisposableFileSystem _context = new DisposableFileSystem();
         private readonly DisposableFileSystem _config = new DisposableFileSystem();
 
+        public AppTest()
+        {
+            TestHelper.CleanTestEnv();
+        }
+
         public void Dispose()
         {
             _context.Dispose();
@@ -21,8 +26,6 @@ namespace Ann.Core.Test
         [Fact]
         public void Basic()
         {
-            TestHelper.CleanTestEnv();
-
             using (var vm = new App(new ConfigHolder(_config.RootPath)))
             {
                 Assert.True(vm.IsEnableActivateHotKey);
@@ -36,8 +39,6 @@ namespace Ann.Core.Test
         [Fact]
         public void PriorityFile()
         {
-            TestHelper.CleanTestEnv();
-
             using (var app = new App(new ConfigHolder(_config.RootPath)))
             {
                 Assert.False(app.IsPriorityFile("AAA"));
@@ -57,8 +58,6 @@ namespace Ann.Core.Test
         [Fact]
         public void TagetFolders()
         {
-            TestHelper.CleanTestEnv();
-
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var app = new App(configHolder))
             {
@@ -78,8 +77,6 @@ namespace Ann.Core.Test
         [Fact]
         public void OpenIndexAsync()
         {
-            TestHelper.CleanTestEnv();
-
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var app = new App(configHolder))
             {
@@ -99,8 +96,6 @@ namespace Ann.Core.Test
         [Fact]
         public void ReopenIndexAsync()
         {
-            TestHelper.CleanTestEnv();
-
             {
                 var configHolder = new ConfigHolder(_config.RootPath);
                 using (var app = new App(configHolder))
@@ -140,8 +135,6 @@ namespace Ann.Core.Test
         [Fact]
         public void UpdateIndexAsync()
         {
-            TestHelper.CleanTestEnv();
-
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var app = new App(configHolder))
             {
@@ -161,8 +154,6 @@ namespace Ann.Core.Test
         [Fact]
         public void FindExecutableUnit()
         {
-            TestHelper.CleanTestEnv();
-
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var app = new App(configHolder))
             {
@@ -217,8 +208,6 @@ namespace Ann.Core.Test
         [Fact]
         public void AutoUpdater()
         {
-            TestHelper.CleanTestEnv();
-
             using (var app = new App(new ConfigHolder(_config.RootPath)))
             {
                 Assert.Equal(0, app.AutoUpdateRemainingSeconds);
