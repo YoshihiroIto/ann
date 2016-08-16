@@ -48,7 +48,7 @@ namespace Ann.Test.MainWindow
         [WpfFact]
         public void PriorityFile()
         {
-            var path = AssemblyConstants.EntryAssemblyLocation;
+            var path = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\Explorer.exe");
             var stringPool = new ConcurrentDictionary<string, string>();
             var targetFolders = new string[0];
 
@@ -74,7 +74,7 @@ namespace Ann.Test.MainWindow
         [WpfFact]
         public void IsPriorityFileFlipCommand()
         {
-            var path = AssemblyConstants.EntryAssemblyLocation;
+            var path = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\Explorer.exe");
             var stringPool = new ConcurrentDictionary<string, string>();
             var targetFolders = new string[0];
 
