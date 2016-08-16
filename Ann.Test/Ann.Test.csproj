@@ -122,6 +122,7 @@
     <Compile Include="SettingWindow\SettingPage\About\AboutViewTest.cs" />
     <Compile Include="SettingWindow\SettingPage\FileOrFolderListBoxTest.cs" />
     <Compile Include="SettingWindow\SettingPage\General\GeneralViewTest.cs" />
+    <Compile Include="SettingWindow\SettingPage\SettingViewTest.cs" />
     <Compile Include="SettingWindow\SettingPage\PriorityFiles\PriorityFilesViewTest.cs" />
     <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutsViewTest.cs" />
     <Compile Include="SettingWindow\SettingPage\TargetFolders\TargetFoldersViewTest.cs" />
