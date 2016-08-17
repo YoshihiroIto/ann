@@ -20,6 +20,14 @@ namespace Ann.Core.Test
         }
 
         [Fact]
+        public void DefaultCtor()
+        {
+            var path = new Path();
+
+            Assert.Equal(string.Empty, path.Value);
+        }
+
+        [Fact]
         public void Serialize()
         {
             var path = new Path("AAA");
