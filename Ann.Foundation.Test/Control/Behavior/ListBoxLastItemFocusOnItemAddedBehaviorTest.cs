@@ -26,7 +26,6 @@ namespace Ann.Foundation.Test.Control.Behavior
 
             var b = new ListBoxLastItemFocusOnItemAddedBehavior {ItemType = typeof(TextBox)};
 
-
             b.Attach(listBox);
 
             w.Show();

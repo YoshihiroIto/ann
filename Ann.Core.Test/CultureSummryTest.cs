@@ -4,11 +4,14 @@ namespace Ann.Core.Test
 {
     public class CultureSummryTest
     {
+        public CultureSummryTest()
+        {
+            TestHelper.CleanTestEnv();
+        }
+    
         [Fact]
         public void Basic()
         {
-            TestHelper.CleanTestEnv();
-
             var c = new CultureSummry
             {
                 Caption = "A",

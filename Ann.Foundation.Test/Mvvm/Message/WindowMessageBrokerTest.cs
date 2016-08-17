@@ -1,11 +1,19 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using System.Windows.Threading;
 using Ann.Foundation.Mvvm.Message;
 using Xunit;
 
 namespace Ann.Foundation.Test.Mvvm.Message
 {
-    public class WindowMessageBrokerTest
+    public class WindowMessageBrokerTest : IDisposable
     {
+        public void Dispose()
+        {
+            // for appveyor 
+            Dispatcher.CurrentDispatcher.InvokeShutdown();
+        }
+
         public class TestMessage
         {
             public int Param0 { get; set; }

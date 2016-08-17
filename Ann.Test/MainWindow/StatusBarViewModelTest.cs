@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Threading;
 using Ann.Core;
 using Ann.Foundation;
 using Ann.MainWindow;
@@ -10,16 +11,22 @@ namespace Ann.Test.MainWindow
     {
         private readonly DisposableFileSystem _config = new DisposableFileSystem();
 
+        public StatusBarViewModelTest()
+        {
+            TestHelper.CleanTestEnv();
+        }
+
         public void Dispose()
         {
             _config.Dispose();
+
+            // for appveyor 
+            Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
 
         [WpfFact]
         public void Basic()
         {
-            TestHelper.CleanTestEnv();
-
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var app = new App(configHolder))
             using (new StatusBarViewModel(app))
@@ -30,8 +37,6 @@ namespace Ann.Test.MainWindow
         [WpfFact]
         public void Messages()
         {
-            TestHelper.CleanTestEnv();
-
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var app = new App(configHolder))
             {
@@ -56,8 +61,6 @@ namespace Ann.Test.MainWindow
         [WpfFact]
         public void Visibility()
         {
-            TestHelper.CleanTestEnv();
-
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var app = new App(configHolder))
             {

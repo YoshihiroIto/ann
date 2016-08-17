@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Windows.Threading;
 using Ann.Core;
 using Ann.Foundation;
 using Ann.MainWindow;
@@ -11,16 +12,22 @@ namespace Ann.Test.MainWindow
     { 
         private readonly DisposableFileSystem _config = new DisposableFileSystem();
 
+        public ExecutableUnitViewModelTest()
+        {
+            TestHelper.CleanTestEnv();
+        }
+
         public void Dispose()
         {
             _config.Dispose();
+
+            // for appveyor 
+            Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
 
         [WpfFact]
         public void Basic()
         {
-            TestHelper.CleanTestEnv();
-
             var path = AssemblyConstants.EntryAssemblyLocation;
             var stringPool = new ConcurrentDictionary<string, string>();
             var targetFolders = new string[0];
@@ -41,9 +48,7 @@ namespace Ann.Test.MainWindow
         [WpfFact]
         public void PriorityFile()
         {
-            TestHelper.CleanTestEnv();
-
-            var path = AssemblyConstants.EntryAssemblyLocation;
+            var path = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\Explorer.exe");
             var stringPool = new ConcurrentDictionary<string, string>();
             var targetFolders = new string[0];
 
@@ -69,9 +74,7 @@ namespace Ann.Test.MainWindow
         [WpfFact]
         public void IsPriorityFileFlipCommand()
         {
-            TestHelper.CleanTestEnv();
-
-            var path = AssemblyConstants.EntryAssemblyLocation;
+            var path = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\Explorer.exe");
             var stringPool = new ConcurrentDictionary<string, string>();
             var targetFolders = new string[0];
 

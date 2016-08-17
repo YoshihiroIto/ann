@@ -1,13 +1,20 @@
 ﻿using System;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Threading;
 using Ann.Foundation.Control;
 using Xunit;
 
 namespace Ann.Foundation.Test.Control
 {
-    public class ShortcutKeyInputBoxTest
+    public class ShortcutKeyInputBoxTest : IDisposable
     {
+        public void Dispose()
+        {
+            // for appveyor 
+            Dispatcher.CurrentDispatcher.InvokeShutdown();
+        }
+
         [WpfFact]
         public void Basic()
         {

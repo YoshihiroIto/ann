@@ -1,22 +1,30 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using Xunit;
 
 namespace Ann.Foundation.Test
 {
-    public class WpfHelperTest
+    public class WpfHelperTest : IDisposable
     {
+        public void Dispose()
+        {
+            // for appveyor 
+            Dispatcher.CurrentDispatcher.InvokeShutdown();
+        }
+
         [WpfFact]
         public void IsDesignMode()
         {
             Assert.False(WpfHelper.IsDesignMode);
         }
 
-        [StaFact]
-        public void DoEventsAsync()
+        [WpfFact]
+        public void DoEvents()
         {
             // 例外にならない
-            WpfHelper.DoEventsAsync().Wait();
+            WpfHelper.DoEvents();
         }
 
         [WpfFact]

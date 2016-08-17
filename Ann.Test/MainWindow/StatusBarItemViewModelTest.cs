@@ -5,11 +5,14 @@ namespace Ann.Test.MainWindow
 {
     public class StatusBarItemViewModelTest
     {
+        public StatusBarItemViewModelTest()
+        {
+            TestHelper.CleanTestEnv();
+        }
+
         [Fact]
         public void Basic()
         {
-            TestHelper.CleanTestEnv();
-
             using (var vm = new StatusBarItemViewModel("ABC"))
             {
                 Assert.Equal("ABC", vm.Message.Value);

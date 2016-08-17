@@ -6,11 +6,14 @@ namespace Ann.Core.Test
 {
     public class PathTest
     {
+        public PathTest()
+        {
+            TestHelper.CleanTestEnv();
+        }
+
         [Fact]
         public void Basic()
         {
-            TestHelper.CleanTestEnv();
-
             var path = new Path("AAA");
 
             Assert.Equal("AAA", path.Value);
@@ -19,8 +22,6 @@ namespace Ann.Core.Test
         [Fact]
         public void Serialize()
         {
-            TestHelper.CleanTestEnv();
-
             var path = new Path("AAA");
 
             using (var writer = new StringWriter())

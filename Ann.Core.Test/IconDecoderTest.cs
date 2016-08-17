@@ -8,6 +8,11 @@ namespace Ann.Core.Test
     {
         private readonly DisposableFileSystem _context = new DisposableFileSystem();
 
+        public IconDecoderTest()
+        {
+            TestHelper.CleanTestEnv();
+        }
+
         public void Dispose()
         {
             _context.Dispose();
@@ -16,8 +21,6 @@ namespace Ann.Core.Test
         [WpfFact]
         public void Basic()
         {
-            TestHelper.CleanTestEnv();
-
             var decoder = new IconDecoder();
             var ann = AssemblyConstants.EntryAssembly;
 
@@ -33,8 +36,6 @@ namespace Ann.Core.Test
         [WpfFact]
         public void Cache()
         {
-            TestHelper.CleanTestEnv();
-
             var decoder = new IconDecoder {IconCacheSize = 10};
 
             var ann = AssemblyConstants.EntryAssembly;
@@ -51,8 +52,6 @@ namespace Ann.Core.Test
         [WpfFact]
         public void NotFound()
         {
-            TestHelper.CleanTestEnv();
-
             var decoder = new IconDecoder();
 
             var icon = decoder.GetIcon("XXXXX");
@@ -63,8 +62,6 @@ namespace Ann.Core.Test
         [WpfFact]
         public void IconCacheSize()
         {
-            TestHelper.CleanTestEnv();
-
             var decoder = new IconDecoder();
 
             Assert.Equal(0, decoder.IconCacheSize);
@@ -75,8 +72,6 @@ namespace Ann.Core.Test
         [WpfFact]
         public void IconShareFileExt()
         {
-            TestHelper.CleanTestEnv();
-
             var decoder = new IconDecoder();
 
             _context.CreateFile("test1.js");
@@ -87,22 +82,16 @@ namespace Ann.Core.Test
 
             var icon2 = decoder.GetIcon(System.IO.Path.Combine(_context.RootPath, "test2.js"));
             Assert.NotNull(icon2);
-
-            _context.Dispose();
         }
 
         [WpfFact]
         public void NoExt()
         {
-            TestHelper.CleanTestEnv();
-
             var decoder = new IconDecoder();
             _context.CreateFile("AAAA");
 
             var icon = decoder.GetIcon(System.IO.Path.Combine(_context.RootPath, "AAAA"));
             Assert.Null(icon);
-
-            _context.Dispose();
         }
     }
 }

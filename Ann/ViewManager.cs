@@ -15,8 +15,6 @@ namespace Ann
 
         public ViewManager(Dispatcher uiDispatcher)
         {
-            Debug.Assert(uiDispatcher != null);
-
             _uiDispatcher = uiDispatcher;
 
             SubscribeMessages();
@@ -34,7 +32,7 @@ namespace Ann
 
             AsyncMessageBroker.Default
                 .Subscribe<SettingViewModel>(
-                    vm => Task.Run(() => _uiDispatcher.Invoke(() => new SettingWindow.SettingWindow {DataContext = vm}.ShowDialog()))
+                    vm => Task.Run(() => _uiDispatcher?.Invoke(() => new SettingWindow.SettingWindow {DataContext = vm}.ShowDialog()))
                 ).AddTo(CompositeDisposable);
         }
     }

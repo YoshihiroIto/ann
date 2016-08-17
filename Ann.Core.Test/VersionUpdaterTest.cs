@@ -4,11 +4,14 @@ namespace Ann.Core.Test
 {
     public class VersionUpdaterTest
     {
+        public VersionUpdaterTest()
+        {
+            TestHelper.CleanTestEnv();
+        }
+
         [Fact]
         public void BasicOnDisabledSilentUpdate()
         {
-            TestHelper.CleanTestEnv();
-
             using (var versionUpdater = new VersionUpdater(null))
             {
                 Assert.False(versionUpdater.IsEnableSilentUpdate);
@@ -31,8 +34,6 @@ namespace Ann.Core.Test
         [Fact]
         public void Restart()
         {
-            TestHelper.CleanTestEnv();
-
             using (var versionUpdater = new VersionUpdater(null))
             {
                 versionUpdater.Restart();

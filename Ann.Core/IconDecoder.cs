@@ -91,8 +91,27 @@ namespace Ann.Core
             {
                 LazyInitializer.EnsureInitialized(ref _IconRefSize, () =>
                 {
-                    var source = PresentationSource.FromVisual(Application.Current?.MainWindow ?? new Window());
+                    Window w = null;
+                    try
+                    {
+                        w = Application.Current?.MainWindow;
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
 
+                    if (w == null)
+                        return new RefSize
+                        {
+                            Size =
+                            {
+                                Width = Constants.IconSize,
+                                Height = Constants.IconSize
+                            }
+                        };
+
+                    var source = PresentationSource.FromVisual(w);
                     if (source?.CompositionTarget == null)
                         return new RefSize
                         {
@@ -122,7 +141,15 @@ namespace Ann.Core
 
         private readonly HashSet<string> _IconShareFileExt = new HashSet<string>
         {
-            ".bat", ".cmd", ".com", ".vbs", ".vbe", ".js", ".jse", ".wsf", ".wsh"
+            ".bat",
+            ".cmd",
+            ".com",
+            ".vbs",
+            ".vbe",
+            ".js",
+            ".jse",
+            ".wsf",
+            ".wsh"
         };
     }
 }

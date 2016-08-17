@@ -70,11 +70,13 @@ namespace Ann.SettingWindow.SettingPage.Shortcuts
                     model.Remove(t);
             }).AddTo(CompositeDisposable);
 
-            Keys.CollectionChangedAsObservable()
+            _keyStrokeChanged
                 .Subscribe(_ => ValidateAll())
                 .AddTo(CompositeDisposable);
 
-            _keyStrokeChanged
+            Observable
+                .Merge(Keys.CollectionChangedAsObservable().ToUnit())
+                .Merge(CultureService.Instance.ObserveProperty(x => x.Resources).ToUnit())
                 .Subscribe(_ => ValidateAll())
                 .AddTo(CompositeDisposable);
 

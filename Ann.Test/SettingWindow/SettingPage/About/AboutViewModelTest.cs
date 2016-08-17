@@ -6,11 +6,14 @@ namespace Ann.Test.SettingWindow.SettingPage.About
 {
     public class AboutViewModelTest
     {
+        public AboutViewModelTest()
+        {
+            TestHelper.CleanTestEnv();
+        }
+
         [Fact]
         public void Basic()
         {
-            TestHelper.CleanTestEnv();
-
             using (var versionUpdater = new VersionUpdater(null))
             using (var vm = new AboutViewModel(versionUpdater))
             {
@@ -22,8 +25,6 @@ namespace Ann.Test.SettingWindow.SettingPage.About
         [Fact]
         public void RestartCommand()
         {
-            TestHelper.CleanTestEnv();
-
             using (var versionUpdater = new VersionUpdater(null))
             using (var vm = new AboutViewModel(versionUpdater))
             {

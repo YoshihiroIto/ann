@@ -16,7 +16,7 @@ namespace Ann.Foundation.Test.Mvvm.Message
                 };
 
 
-            // 例外にならな：い
+            // 例外にならない
             var m = new FileOrFolderSelectMessage
             {
                 IsFolderPicker = true,

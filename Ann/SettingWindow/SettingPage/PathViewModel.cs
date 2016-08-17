@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using Ann.Foundation.Mvvm;
 using Ann.Foundation.Mvvm.Message;
-using Ann.Properties;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -31,10 +29,6 @@ namespace Ann.SettingWindow.SettingPage
 
             Path = model
                 .ToReactivePropertyAsSynchronized(x => x.Value)
-                .AddTo(CompositeDisposable);
-
-            CultureService.Instance.ObserveProperty(x => x.Resources)
-                .Subscribe(_ => Path.ForceNotify())
                 .AddTo(CompositeDisposable);
 
             IsFocused = new ReactiveProperty<bool>().AddTo(CompositeDisposable);

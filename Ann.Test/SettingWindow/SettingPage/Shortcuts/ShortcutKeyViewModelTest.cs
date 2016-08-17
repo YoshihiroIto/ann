@@ -7,11 +7,14 @@ namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
 {
     public class ShortcutKeyViewModelTest
     {
+        public ShortcutKeyViewModelTest()
+        {
+            TestHelper.CleanTestEnv();
+        }
+
         [Fact]
         public void Basic()
         {
-            TestHelper.CleanTestEnv();
-
             var model = new ShortcutKey();
             using (var vm = new ShortcutKeyViewModel(model))
             {

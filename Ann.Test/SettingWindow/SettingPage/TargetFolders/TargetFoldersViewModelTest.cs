@@ -12,6 +12,11 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
     {
         private readonly DisposableFileSystem _config = new DisposableFileSystem();
 
+        public TargetFoldersViewModelTest()
+        {
+            TestHelper.CleanTestEnv();
+        }
+        
         public void Dispose()
         {
             _config.Dispose();
@@ -20,8 +25,6 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         [Fact]
         public void Basic()
         {
-            TestHelper.CleanTestEnv();
-
             var model = new Core.Config.App();
 
             using (var app = new App(new ConfigHolder(_config.RootPath)))
@@ -65,8 +68,6 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         [Fact]
         public void FolderAddCommand()
         {
-            TestHelper.CleanTestEnv();
-
             var model = new Core.Config.App();
 
             using (var app = new App(new ConfigHolder(_config.RootPath)))
@@ -85,8 +86,6 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         [Fact]
         public void FolderRemoveCommand()
         {
-            TestHelper.CleanTestEnv();
-
             var model = new Core.Config.App();
 
             using (var app = new App(new ConfigHolder(_config.RootPath)))

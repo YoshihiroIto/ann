@@ -7,11 +7,14 @@ namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
 {
     public class ShortcutsViewModelTest
     {
+        public ShortcutsViewModelTest()
+        {
+            TestHelper.CleanTestEnv();
+        }
+        
         [Fact]
         public void Basic()
         {
-            TestHelper.CleanTestEnv();
-
             var model = new App();
             using (new ShortcutsViewModel(model))
             {
@@ -21,8 +24,6 @@ namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
         [Fact]
         public void Activate()
         {
-            TestHelper.CleanTestEnv();
-
             var model = new App();
             using (var vm = new ShortcutsViewModel(model))
             {
@@ -37,8 +38,6 @@ namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
         [Fact]
         public void HideShortcutside()
         {
-            TestHelper.CleanTestEnv();
-
             var model = new App();
             using (var vm = new ShortcutsViewModel(model))
             {
