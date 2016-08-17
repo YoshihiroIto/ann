@@ -27,6 +27,9 @@ namespace Ann
                 e.Run();
             }
             DisposableChecker.End();
+
+            if (_isRestartRequested)
+                VersionUpdater.Restart();
         }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -48,6 +51,8 @@ namespace Ann
         {
             base.OnExit(e);
 
+            _isRestartRequested = _app.VersionUpdater.IsRestartRequested;
+
             _app.Dispose();
             _viewManager.Dispose();
 
@@ -57,5 +62,7 @@ namespace Ann
         private ConfigHolder _configHolder;
         private App _app;
         private ViewManager _viewManager;
+
+        private static bool _isRestartRequested;
     }
 }

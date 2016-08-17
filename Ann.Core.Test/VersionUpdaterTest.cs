@@ -36,7 +36,8 @@ namespace Ann.Core.Test
         {
             using (var versionUpdater = new VersionUpdater(null))
             {
-                versionUpdater.Restart();
+                if (versionUpdater.IsRestartRequested)
+                    VersionUpdater.Restart();
             }
         }
     }
