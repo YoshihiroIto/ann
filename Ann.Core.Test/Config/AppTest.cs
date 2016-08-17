@@ -6,6 +6,7 @@ using Ann.Core.Config;
 
 namespace Ann.Core.Test.Config
 {
+    [Collection("CultureInfo.CurrentUICulture")]
     public class AppTest
     {
         [Fact]

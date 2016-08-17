@@ -4,6 +4,7 @@ using Xunit;
 
 namespace Ann.Test
 {
+    [Collection("CultureInfo.CurrentUICulture")]
     public class CultureServiceTest
     {
         public CultureServiceTest()

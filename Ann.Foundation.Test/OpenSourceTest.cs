@@ -23,7 +23,7 @@ namespace Ann.Foundation.Test
         }
 
         [Fact]
-        public void Ctor()
+        public void DefaultCtor()
         {
             var o = new OpenSource();
 
