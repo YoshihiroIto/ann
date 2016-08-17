@@ -5,6 +5,7 @@ using Xunit;
 
 namespace Ann.Test.SettingWindow.SettingPage.General
 {
+    [Collection("CultureInfo.CurrentUICulture")]
     public class GeneralViewModelTest
     {
         public GeneralViewModelTest()
