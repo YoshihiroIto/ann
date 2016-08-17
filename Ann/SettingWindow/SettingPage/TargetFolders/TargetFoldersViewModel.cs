@@ -88,10 +88,6 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                 }
             }).AddTo(CompositeDisposable);
 
-            Folders.CollectionChangedAsObservable()
-                .Subscribe(_ => ValidateAll())
-                .AddTo(CompositeDisposable);
-
             FolderAddCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             FolderAddCommand.Subscribe(_ => model.TargetFolder.Folders.Add(new Path(string.Empty)))
                 .AddTo(CompositeDisposable);
@@ -128,6 +124,12 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                     ValidateAll();
                     await app.UpdateIndexAsync();
                 })
+                .AddTo(CompositeDisposable);
+
+            Observable
+                .Merge(Folders.CollectionChangedAsObservable().ToUnit())
+                .Merge(CultureService.Instance.ObserveProperty(x => x.Resources).ToUnit())
+                .Subscribe(_ => ValidateAll())
                 .AddTo(CompositeDisposable);
 
             ValidateAll();

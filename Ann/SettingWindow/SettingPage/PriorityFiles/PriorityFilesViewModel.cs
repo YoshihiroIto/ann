@@ -77,10 +77,6 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
                     model.PriorityFiles.Remove(t);
             }).AddTo(CompositeDisposable);
 
-            Files.CollectionChangedAsObservable()
-                .Subscribe(_ => ValidateAll())
-                .AddTo(CompositeDisposable);
-
             _pathChanged
                 .Subscribe(_ =>
                 {
@@ -88,6 +84,12 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
                     app.RefreshPriorityFiles();
                     app.InvokePriorityFilesChanged();
                 }).AddTo(CompositeDisposable);
+
+            Observable
+                .Merge(Files.CollectionChangedAsObservable().ToUnit())
+                .Merge(CultureService.Instance.ObserveProperty(x => x.Resources).ToUnit())
+                .Subscribe(_ => ValidateAll())
+                .AddTo(CompositeDisposable);
 
             ValidateAll();
         }
