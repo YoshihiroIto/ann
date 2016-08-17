@@ -37,12 +37,9 @@ namespace Ann.Core
                     }).AddTo(CompositeDisposable);
         }
 
-        public void Restart()
+        public static void Restart()
         {
-            var isRestart = IsEnableSilentUpdate && IsRestartRequested;
-
-            if (isRestart)
-                UpdateManager.RestartApp();
+            UpdateManager.RestartApp();
         }
 
         #region UpdatingStates
