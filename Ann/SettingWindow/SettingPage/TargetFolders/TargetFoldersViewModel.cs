@@ -125,8 +125,6 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                 .Subscribe(_ => ValidateAll())
                 .AddTo(CompositeDisposable);
 
-            CompositeDisposable.Add(app.CancelUpdateIndex);
-
             ValidateAll();
         }
 
