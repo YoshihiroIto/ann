@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
 using System.Threading;
 using Ann.Core;
 using Ann.Foundation;
@@ -20,7 +18,7 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         {
             TestHelper.CleanTestEnv();
         }
-        
+
         public void Dispose()
         {
             _config.Dispose();
@@ -143,22 +141,12 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
                 vm.IsIncludeProgramFilesX86Folder.Value = false;
                 vm.IsIncludeCommonStartMenuFolder.Value = false;
 
-                using (var mre = new ManualResetEventSlim())
-                {
-                    model.TargetFolder.Folders.Add(new Path("XYZ"));
+                model.TargetFolder.Folders.Add(new Path("XYZ"));
 
-                    // ReSharper disable once AccessToDisposedClosure
-                    var o = vm.Folders[0].ValidationMessage
-                        .ObserveOn(ThreadPoolScheduler.Instance)
-                        .Where(x => string.IsNullOrEmpty(x) == false)
-                        .Subscribe(_ => mre.Set());
+                while (string.IsNullOrEmpty(vm.Folders[0].ValidationMessage.Value))
+                    Thread.Sleep(TimeSpan.FromMilliseconds(20));
 
-                    mre.Wait();
-
-                    Assert.Equal(Resources.Message_FolderNotFound, vm.Folders[0].ValidationMessage.Value);
-
-                    o.Dispose();
-                }
+                Assert.Equal(Resources.Message_FolderNotFound, vm.Folders[0].ValidationMessage.Value);
             }
         }
 
@@ -177,22 +165,12 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
                 vm.IsIncludeProgramFilesX86Folder.Value = false;
                 vm.IsIncludeCommonStartMenuFolder.Value = false;
 
-                using (var mre = new ManualResetEventSlim())
-                {
-                    model.TargetFolder.Folders.Add(new Path(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)));
+                model.TargetFolder.Folders.Add(new Path(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)));
 
-                    // ReSharper disable once AccessToDisposedClosure
-                    var o = vm.Folders[0].ValidationMessage
-                        .ObserveOn(ThreadPoolScheduler.Instance)
-                        .Where(string.IsNullOrEmpty)
-                        .Subscribe(_ => mre.Set());
+                while (string.IsNullOrEmpty(vm.Folders[0].ValidationMessage.Value) == false)
+                    Thread.Sleep(TimeSpan.FromMilliseconds(20));
 
-                    mre.Wait();
-
-                    Assert.Null(vm.Folders[0].ValidationMessage.Value);
-
-                    o.Dispose();
-                }
+                Assert.Null(vm.Folders[0].ValidationMessage.Value);
             }
         }
 
@@ -211,38 +189,22 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
                 vm.IsIncludeProgramFilesX86Folder.Value = false;
                 vm.IsIncludeCommonStartMenuFolder.Value = false;
 
-                using (var mre = new ManualResetEventSlim())
                 {
                     model.TargetFolder.Folders.Add(new Path("XYZ"));
 
-                    // ReSharper disable once AccessToDisposedClosure
-                    var o = vm.Folders[0].ValidationMessage
-                        .ObserveOn(ThreadPoolScheduler.Instance)
-                        .Where(x => string.IsNullOrEmpty(x) == false)
-                        .Subscribe(_ => mre.Set());
-
-                    mre.Wait();
+                    while (string.IsNullOrEmpty(vm.Folders[0].ValidationMessage.Value))
+                        Thread.Sleep(TimeSpan.FromMilliseconds(20));
 
                     Assert.Equal(Resources.Message_FolderNotFound, vm.Folders[0].ValidationMessage.Value);
-
-                    o.Dispose();
                 }
 
-                using (var mre = new ManualResetEventSlim())
                 {
                     model.TargetFolder.Folders[0].Value = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-                    // ReSharper disable once AccessToDisposedClosure
-                    var o = vm.Folders[0].ValidationMessage
-                        .ObserveOn(ThreadPoolScheduler.Instance)
-                        .Where(string.IsNullOrEmpty)
-                        .Subscribe(_ => mre.Set());
-
-                    mre.Wait();
+                    while (string.IsNullOrEmpty(vm.Folders[0].ValidationMessage.Value) == false)
+                        Thread.Sleep(TimeSpan.FromMilliseconds(20));
 
                     Assert.Null(vm.Folders[0].ValidationMessage.Value);
-
-                    o.Dispose();
                 }
             }
         }
@@ -262,38 +224,22 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
                 vm.IsIncludeProgramFilesX86Folder.Value = false;
                 vm.IsIncludeCommonStartMenuFolder.Value = false;
 
-                using (var mre = new ManualResetEventSlim())
                 {
                     model.TargetFolder.Folders.Add(new Path(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)));
 
-                    // ReSharper disable once AccessToDisposedClosure
-                    var o = vm.Folders[0].ValidationMessage
-                        .ObserveOn(ThreadPoolScheduler.Instance)
-                        .Where(string.IsNullOrEmpty)
-                        .Subscribe(_ => mre.Set());
-
-                    mre.Wait();
+                    while (string.IsNullOrEmpty(vm.Folders[0].ValidationMessage.Value) == false)
+                        Thread.Sleep(TimeSpan.FromMilliseconds(20));
 
                     Assert.Null(vm.Folders[0].ValidationMessage.Value);
-
-                    o.Dispose();
                 }
 
-                using (var mre = new ManualResetEventSlim())
                 {
                     model.TargetFolder.Folders[0].Value = "XYZ";
 
-                    // ReSharper disable once AccessToDisposedClosure
-                    var o = vm.Folders[0].ValidationMessage
-                        .ObserveOn(ThreadPoolScheduler.Instance)
-                        .Where(x => string.IsNullOrEmpty(x) == false)
-                        .Subscribe(_ => mre.Set());
-
-                    mre.Wait();
+                    while (string.IsNullOrEmpty(vm.Folders[0].ValidationMessage.Value))
+                        Thread.Sleep(TimeSpan.FromMilliseconds(20));
 
                     Assert.Equal(Resources.Message_FolderNotFound, vm.Folders[0].ValidationMessage.Value);
-
-                    o.Dispose();
                 }
             }
         }

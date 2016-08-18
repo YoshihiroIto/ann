@@ -35,7 +35,7 @@ namespace Ann.MainWindow
                 .AddTo(CompositeDisposable);
 
             app.ObserveProperty(x => x.IsIndexUpdating)
-                .SubscribeOnUIDispatcher()
+                .SubscribeOn(ReactivePropertyScheduler.Default)
                 .Subscribe(i =>
                 {
                     if (i)
@@ -60,7 +60,7 @@ namespace Ann.MainWindow
                 }).AddTo(CompositeDisposable);
 
             app.ObserveProperty(c => c.Crawling)
-                .SubscribeOnUIDispatcher()
+                .SubscribeOn(ReactivePropertyScheduler.Default)
                 .Subscribe(c =>
                 {
                     var item = Messages
