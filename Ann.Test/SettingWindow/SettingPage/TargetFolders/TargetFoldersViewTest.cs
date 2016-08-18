@@ -10,8 +10,12 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
 {
     public class TargetFoldersViewTest : MarshalByRefObject, IDisposable
     {
+        private readonly DisposableFileSystem _config = new DisposableFileSystem();
+
         public void Dispose()
         {
+            _config.Dispose();
+
             // for appveyor 
             Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
@@ -28,7 +32,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
 
                 try
                 {
-                    var c = new TargetFoldersView();
+                    // ReSharper disable once ObjectCreationAsStatement
+                    new TargetFoldersView();
                 }
                 catch (Exception e)
                 {

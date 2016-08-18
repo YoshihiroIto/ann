@@ -11,6 +11,7 @@ using Ann.Foundation.Mvvm;
 using Ann.Properties;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using Ann.Foundation;
 using Path = Ann.Core.Path;
 
 namespace Ann.SettingWindow.SettingPage.TargetFolders
@@ -42,27 +43,27 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
             _pathChanged = new Subject<int>().AddTo(CompositeDisposable);
 
             IsIncludeSystemFolder =
-                model.TargetFolder.ToReactivePropertyAsSynchronized(x => x.IsIncludeSystemFolder)
+                model.TargetFolder.ToReactivePropertyAsSynchronized(x => x.IsIncludeSystemFolder, ReactivePropertyMode.DistinctUntilChanged)
                     .AddTo(CompositeDisposable);
 
             IsIncludeSystemX86Folder =
-                model.TargetFolder.ToReactivePropertyAsSynchronized(x => x.IsIncludeSystemX86Folder)
+                model.TargetFolder.ToReactivePropertyAsSynchronized(x => x.IsIncludeSystemX86Folder, ReactivePropertyMode.DistinctUntilChanged)
                     .AddTo(CompositeDisposable);
 
             IsIncludeProgramsFolder =
-                model.TargetFolder.ToReactivePropertyAsSynchronized(x => x.IsIncludeProgramsFolder)
+                model.TargetFolder.ToReactivePropertyAsSynchronized(x => x.IsIncludeProgramsFolder, ReactivePropertyMode.DistinctUntilChanged)
                     .AddTo(CompositeDisposable);
 
             IsIncludeProgramFilesFolder =
-                model.TargetFolder.ToReactivePropertyAsSynchronized(x => x.IsIncludeProgramFilesFolder)
+                model.TargetFolder.ToReactivePropertyAsSynchronized(x => x.IsIncludeProgramFilesFolder, ReactivePropertyMode.DistinctUntilChanged)
                     .AddTo(CompositeDisposable);
 
             IsIncludeProgramFilesX86Folder =
-                model.TargetFolder.ToReactivePropertyAsSynchronized(x => x.IsIncludeProgramFilesX86Folder)
+                model.TargetFolder.ToReactivePropertyAsSynchronized(x => x.IsIncludeProgramFilesX86Folder, ReactivePropertyMode.DistinctUntilChanged)
                     .AddTo(CompositeDisposable);
 
             IsIncludeCommonStartMenuFolder =
-                model.TargetFolder.ToReactivePropertyAsSynchronized(x => x.IsIncludeCommonStartMenu)
+                model.TargetFolder.ToReactivePropertyAsSynchronized(x => x.IsIncludeCommonStartMenu, ReactivePropertyMode.DistinctUntilChanged)
                     .AddTo(CompositeDisposable);
 
             Folders = model.TargetFolder.Folders.ToReadOnlyReactiveCollection(p =>
@@ -100,8 +101,6 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                     model.TargetFolder.Folders.Remove(t);
             }).AddTo(CompositeDisposable);
 
-            var isFirst = true;
-
             Observable
                 .Merge(IsIncludeSystemFolder.ToUnit())
                 .Merge(IsIncludeSystemX86Folder.ToUnit())
@@ -112,15 +111,9 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                 .Merge(Folders.CollectionChangedAsObservable().ToUnit())
                 .Merge(_pathChanged.ToUnit())
                 .Throttle(TimeSpan.FromMilliseconds(50))
-                .ObserveOnUIDispatcher()
+                .ObserveOn(ReactivePropertyScheduler.Default)
                 .Subscribe(async _ =>
                 {
-                    if (isFirst)
-                    {
-                        isFirst = false;
-                        return;
-                    }
-                    
                     ValidateAll();
                     await app.UpdateIndexAsync();
                 })
@@ -131,6 +124,8 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                 .Merge(CultureService.Instance.ObserveProperty(x => x.Resources).ToUnit())
                 .Subscribe(_ => ValidateAll())
                 .AddTo(CompositeDisposable);
+
+            CompositeDisposable.Add(app.CancelUpdateIndex);
 
             ValidateAll();
         }

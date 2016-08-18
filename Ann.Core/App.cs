@@ -10,6 +10,7 @@ using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings.Extensions;
 using System.Threading;
+using Reactive.Bindings;
 
 namespace Ann.Core
 {
@@ -166,6 +167,16 @@ namespace Ann.Core
             }
         }
 
+        public void CancelUpdateIndex()
+        {
+            using(Disposable.Create(() =>_CancelUpdateIndexAsyncSema.Release()))
+            {
+                _CancelUpdateIndexAsyncSema.Wait();
+
+                _dataBase.CancelUpdateIndexAsync().Wait();
+            }
+        }
+
         public async Task UpdateIndexAsync()
         {
             await CancelUpdateIndexAsync();
@@ -257,12 +268,6 @@ namespace Ann.Core
 
             SetupAutoUpdater();
 
-            CompositeDisposable.Add(() =>
-            {
-                _UpdateIndexAsyncSema?.Dispose();
-                _CancelUpdateIndexAsyncSema?.Dispose();
-            }); 
-
             Task.Run(async () =>
             {
                 if (Config.IsStartOnSystemStartup)
@@ -270,6 +275,8 @@ namespace Ann.Core
                 else
                     await VersionUpdater.RemoveStartupShortcut();
             });
+
+            CompositeDisposable.Add(CancelUpdateIndex);
         }
 
         private void UpdateFromConfig()
@@ -303,7 +310,7 @@ namespace Ann.Core
 
         public bool IsEnableAutoUpdater { get; set; }
 
-        #region AutoUpdateRemainingSeconds
+#region AutoUpdateRemainingSeconds
 
         private int _AutoUpdateRemainingSeconds;
 
@@ -313,12 +320,15 @@ namespace Ann.Core
             private set { SetProperty(ref _AutoUpdateRemainingSeconds, value); }
         }
 
-        #endregion
+#endregion
 
         private void SetupAutoUpdater()
         {
+            if (VersionUpdater.IsEnableSilentUpdate == false)
+                return;
+
             Observable.Timer(TimeSpan.FromSeconds(5), TimeSpan.FromHours(8))
-                .ObserveOnUIDispatcher()
+                .ObserveOn(ReactivePropertyScheduler.Default)
                 .Subscribe(async _ =>
                 {
                     await VersionUpdater.CheckAsync();
@@ -353,7 +363,7 @@ namespace Ann.Core
 
         public bool IsRestartRequested => VersionUpdater.IsRestartRequested;
 
-        #region AutoUpdateState
+#region AutoUpdateState
 
         private AutoUpdateStates _AutoUpdateState;
 
@@ -362,6 +372,6 @@ namespace Ann.Core
             get { return _AutoUpdateState; }
             private set { SetProperty(ref _AutoUpdateState, value); }
         }
-        #endregion
+#endregion
     }
 }

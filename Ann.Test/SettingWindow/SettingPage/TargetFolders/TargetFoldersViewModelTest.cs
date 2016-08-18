@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
+using System.Threading;
 using Ann.Core;
 using Ann.Foundation;
+using Ann.Properties;
 using Ann.SettingWindow.SettingPage;
 using Ann.SettingWindow.SettingPage.TargetFolders;
 using Xunit;
@@ -73,6 +77,13 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
             using (var app = new App(new ConfigHolder(_config.RootPath)))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
+                vm.IsIncludeSystemFolder.Value = false;
+                vm.IsIncludeSystemX86Folder.Value = false;
+                vm.IsIncludeProgramsFolder.Value = false;
+                vm.IsIncludeProgramFilesFolder.Value = false;
+                vm.IsIncludeProgramFilesX86Folder.Value = false;
+                vm.IsIncludeCommonStartMenuFolder.Value = false;
+
                 vm.FolderAddCommand.Execute();
 
                 Assert.Equal(1, vm.Folders.Count);
@@ -91,6 +102,13 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
             using (var app = new App(new ConfigHolder(_config.RootPath)))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
+                vm.IsIncludeSystemFolder.Value = false;
+                vm.IsIncludeSystemX86Folder.Value = false;
+                vm.IsIncludeProgramsFolder.Value = false;
+                vm.IsIncludeProgramFilesFolder.Value = false;
+                vm.IsIncludeProgramFilesX86Folder.Value = false;
+                vm.IsIncludeCommonStartMenuFolder.Value = false;
+
                 model.TargetFolder.Folders.Add(new Path("AA"));
                 model.TargetFolder.Folders.Add(new Path("BB"));
                 model.TargetFolder.Folders.Add(new Path("CC"));
@@ -107,6 +125,176 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
                 Assert.Equal("CC", vm.Folders[1].Path.Value);
                 Assert.Equal("AA", model.TargetFolder.Folders[0].Value);
                 Assert.Equal("CC", model.TargetFolder.Folders[1].Value);
+            }
+        }
+
+        [Fact]
+        public void FoldersValidate_FolderNotFound()
+        {
+            var model = new Core.Config.App();
+
+            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            using (var vm = new TargetFoldersViewModel(model, app))
+            {
+                vm.IsIncludeSystemFolder.Value = false;
+                vm.IsIncludeSystemX86Folder.Value = false;
+                vm.IsIncludeProgramsFolder.Value = false;
+                vm.IsIncludeProgramFilesFolder.Value = false;
+                vm.IsIncludeProgramFilesX86Folder.Value = false;
+                vm.IsIncludeCommonStartMenuFolder.Value = false;
+
+                using (var mre = new ManualResetEventSlim())
+                {
+                    model.TargetFolder.Folders.Add(new Path("XYZ"));
+
+                    // ReSharper disable once AccessToDisposedClosure
+                    var o = vm.Folders[0].ValidationMessage
+                        .ObserveOn(ThreadPoolScheduler.Instance)
+                        .Where(x => string.IsNullOrEmpty(x) == false)
+                        .Subscribe(_ => mre.Set());
+
+                    mre.Wait();
+
+                    Assert.Equal(Resources.Message_FolderNotFound, vm.Folders[0].ValidationMessage.Value);
+
+                    o.Dispose();
+                }
+            }
+        }
+
+        [Fact]
+        public void FoldersValidate_FolderFound()
+        {
+            var model = new Core.Config.App();
+
+            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            using (var vm = new TargetFoldersViewModel(model, app))
+            {
+                vm.IsIncludeSystemFolder.Value = false;
+                vm.IsIncludeSystemX86Folder.Value = false;
+                vm.IsIncludeProgramsFolder.Value = false;
+                vm.IsIncludeProgramFilesFolder.Value = false;
+                vm.IsIncludeProgramFilesX86Folder.Value = false;
+                vm.IsIncludeCommonStartMenuFolder.Value = false;
+
+                using (var mre = new ManualResetEventSlim())
+                {
+                    model.TargetFolder.Folders.Add(new Path(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)));
+
+                    // ReSharper disable once AccessToDisposedClosure
+                    var o = vm.Folders[0].ValidationMessage
+                        .ObserveOn(ThreadPoolScheduler.Instance)
+                        .Where(string.IsNullOrEmpty)
+                        .Subscribe(_ => mre.Set());
+
+                    mre.Wait();
+
+                    Assert.Null(vm.Folders[0].ValidationMessage.Value);
+
+                    o.Dispose();
+                }
+            }
+        }
+
+        [Fact]
+        public void FoldersValidate_FolderNotFoundToFound()
+        {
+            var model = new Core.Config.App();
+
+            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            using (var vm = new TargetFoldersViewModel(model, app))
+            {
+                vm.IsIncludeSystemFolder.Value = false;
+                vm.IsIncludeSystemX86Folder.Value = false;
+                vm.IsIncludeProgramsFolder.Value = false;
+                vm.IsIncludeProgramFilesFolder.Value = false;
+                vm.IsIncludeProgramFilesX86Folder.Value = false;
+                vm.IsIncludeCommonStartMenuFolder.Value = false;
+
+                using (var mre = new ManualResetEventSlim())
+                {
+                    model.TargetFolder.Folders.Add(new Path("XYZ"));
+
+                    // ReSharper disable once AccessToDisposedClosure
+                    var o = vm.Folders[0].ValidationMessage
+                        .ObserveOn(ThreadPoolScheduler.Instance)
+                        .Where(x => string.IsNullOrEmpty(x) == false)
+                        .Subscribe(_ => mre.Set());
+
+                    mre.Wait();
+
+                    Assert.Equal(Resources.Message_FolderNotFound, vm.Folders[0].ValidationMessage.Value);
+
+                    o.Dispose();
+                }
+
+                using (var mre = new ManualResetEventSlim())
+                {
+                    model.TargetFolder.Folders[0].Value = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+                    // ReSharper disable once AccessToDisposedClosure
+                    var o = vm.Folders[0].ValidationMessage
+                        .ObserveOn(ThreadPoolScheduler.Instance)
+                        .Where(string.IsNullOrEmpty)
+                        .Subscribe(_ => mre.Set());
+
+                    mre.Wait();
+
+                    Assert.Null(vm.Folders[0].ValidationMessage.Value);
+
+                    o.Dispose();
+                }
+            }
+        }
+
+        [Fact]
+        public void FoldersValidate_FolderFoundToNotFound()
+        {
+            var model = new Core.Config.App();
+
+            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            using (var vm = new TargetFoldersViewModel(model, app))
+            {
+                vm.IsIncludeSystemFolder.Value = false;
+                vm.IsIncludeSystemX86Folder.Value = false;
+                vm.IsIncludeProgramsFolder.Value = false;
+                vm.IsIncludeProgramFilesFolder.Value = false;
+                vm.IsIncludeProgramFilesX86Folder.Value = false;
+                vm.IsIncludeCommonStartMenuFolder.Value = false;
+
+                using (var mre = new ManualResetEventSlim())
+                {
+                    model.TargetFolder.Folders.Add(new Path(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)));
+
+                    // ReSharper disable once AccessToDisposedClosure
+                    var o = vm.Folders[0].ValidationMessage
+                        .ObserveOn(ThreadPoolScheduler.Instance)
+                        .Where(string.IsNullOrEmpty)
+                        .Subscribe(_ => mre.Set());
+
+                    mre.Wait();
+
+                    Assert.Null(vm.Folders[0].ValidationMessage.Value);
+
+                    o.Dispose();
+                }
+
+                using (var mre = new ManualResetEventSlim())
+                {
+                    model.TargetFolder.Folders[0].Value = "XYZ";
+
+                    // ReSharper disable once AccessToDisposedClosure
+                    var o = vm.Folders[0].ValidationMessage
+                        .ObserveOn(ThreadPoolScheduler.Instance)
+                        .Where(x => string.IsNullOrEmpty(x) == false)
+                        .Subscribe(_ => mre.Set());
+
+                    mre.Wait();
+
+                    Assert.Equal(Resources.Message_FolderNotFound, vm.Folders[0].ValidationMessage.Value);
+
+                    o.Dispose();
+                }
             }
         }
     }

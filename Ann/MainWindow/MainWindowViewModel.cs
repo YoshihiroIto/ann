@@ -170,7 +170,7 @@ namespace Ann.MainWindow
                         Input.Value = string.Empty;
                     })
                     .Delay(TimeSpan.FromMilliseconds(20))
-                    .ObserveOnUIDispatcher()
+                    .ObserveOn(ReactivePropertyScheduler.Default)
                     .Subscribe(async p =>
                     {
                         var i = await _app.RunAsync(path, p == "admin");
