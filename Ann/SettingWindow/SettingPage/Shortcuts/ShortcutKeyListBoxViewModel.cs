@@ -65,9 +65,9 @@ namespace Ann.SettingWindow.SettingPage.Shortcuts
             KeyRemoveCommand = new ReactiveCommand<ShortcutKeyViewModel>().AddTo(CompositeDisposable);
             KeyRemoveCommand.Subscribe(p =>
             {
-                var t = model.FirstOrDefault(f => (f.Key == p.Key.Value) &&  (f.Modifiers == p.Modifiers));
+                var t = Keys.FirstOrDefault(k => ReferenceEquals(p, k));
                 if (t != null)
-                    model.Remove(t);
+                    model.Remove(t.Model);
             }).AddTo(CompositeDisposable);
 
             _keyStrokeChanged

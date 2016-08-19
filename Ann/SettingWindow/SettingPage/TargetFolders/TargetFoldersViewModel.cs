@@ -11,7 +11,6 @@ using Ann.Foundation.Mvvm;
 using Ann.Properties;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using Ann.Foundation;
 using Path = Ann.Core.Path;
 
 namespace Ann.SettingWindow.SettingPage.TargetFolders
@@ -96,9 +95,9 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
             FolderRemoveCommand = new ReactiveCommand<PathViewModel>().AddTo(CompositeDisposable);
             FolderRemoveCommand.Subscribe(p =>
             {
-                var t = model.TargetFolder.Folders.FirstOrDefault(f => f.Value == p.Path.Value);
+                var t = Folders.FirstOrDefault(f => ReferenceEquals(p, f));
                 if (t != null)
-                    model.TargetFolder.Folders.Remove(t);
+                    model.TargetFolder.Folders.Remove(t.Model);
             }).AddTo(CompositeDisposable);
 
             Observable

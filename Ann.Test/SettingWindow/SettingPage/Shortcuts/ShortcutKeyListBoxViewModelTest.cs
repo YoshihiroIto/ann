@@ -52,7 +52,7 @@ namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
             {
                 Assert.Equal(3, model.Count);
 
-                vm.KeyRemoveCommand.Execute(new ShortcutKeyViewModel(new ShortcutKey {Key = Key.B}));
+                vm.KeyRemoveCommand.Execute(vm.Keys[1]);
 
                 Assert.Equal(2, model.Count);
                 Assert.Equal(Key.A, model[0].Key);

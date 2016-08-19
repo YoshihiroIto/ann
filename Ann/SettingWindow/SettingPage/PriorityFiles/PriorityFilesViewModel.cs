@@ -72,9 +72,9 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
             FileRemoveCommand = new ReactiveCommand<PathViewModel>().AddTo(CompositeDisposable);
             FileRemoveCommand.Subscribe(p =>
             {
-                var t = model.PriorityFiles.FirstOrDefault(f => f.Value == p.Path.Value);
+                var t = Files.FirstOrDefault(f => ReferenceEquals(p, f));
                 if (t != null)
-                    model.PriorityFiles.Remove(t);
+                    model.PriorityFiles.Remove(t.Model);
             }).AddTo(CompositeDisposable);
 
             _pathChanged

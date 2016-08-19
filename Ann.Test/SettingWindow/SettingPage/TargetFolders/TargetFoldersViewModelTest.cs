@@ -114,7 +114,7 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
                 Assert.Equal(3, vm.Folders.Count);
                 Assert.Equal(3, model.TargetFolder.Folders.Count);
 
-                vm.FolderRemoveCommand.Execute(new PathViewModel(new Path("BB"), false));
+                vm.FolderRemoveCommand.Execute(vm.Folders[1]);
 
                 Assert.Equal(2, vm.Folders.Count);
                 Assert.Equal(2, model.TargetFolder.Folders.Count);

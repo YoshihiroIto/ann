@@ -85,11 +85,15 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
             {
                 Assert.Equal(0, vm.Files.Count);
 
-                model.PriorityFiles.Add(new Path("AA"));
-                model.PriorityFiles.Add(new Path("BB"));
-                model.PriorityFiles.Add(new Path("CC"));
+                var aa = new Path("AA");
+                var bb = new Path("BB");
+                var cc = new Path("CC");
 
-                vm.FileRemoveCommand.Execute(new PathViewModel(new Path("BB"), false));
+                model.PriorityFiles.Add(aa);
+                model.PriorityFiles.Add(bb);
+                model.PriorityFiles.Add(cc);
+
+                vm.FileRemoveCommand.Execute(vm.Files[1]);
 
                 Assert.Equal(2, vm.Files.Count);
                 Assert.Equal("AA", vm.Files[0].Path.Value);
