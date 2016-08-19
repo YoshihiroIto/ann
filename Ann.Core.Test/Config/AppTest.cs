@@ -1,12 +1,12 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Threading;
 using Xunit;
 using System.Windows.Input;
 using Ann.Core.Config;
 
 namespace Ann.Core.Test.Config
 {
-    [Collection("CultureInfo.CurrentUICulture")]
     public class AppTest
     {
         [Fact]
@@ -134,13 +134,21 @@ namespace Ann.Core.Test.Config
         [InlineData("en")]
         public void DefaultCulture(string lang)
         {
-            TestHelper.CleanTestEnv();
+            var culture = default(string);
 
-            CultureInfo.CurrentUICulture = new CultureInfo(lang);
+            var th = new Thread(() =>
+            {
+                CultureInfo.CurrentUICulture = new CultureInfo(lang);
 
-            var c = new Core.Config.App();
+                var c = new Core.Config.App();
 
-            Assert.Equal(lang, c.Culture);
+                culture = c.Culture;
+            });
+
+            th.Start();
+            th.Join();
+
+            Assert.Equal(lang, culture);
         }
     }
 }

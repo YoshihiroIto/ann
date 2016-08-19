@@ -1,11 +1,11 @@
 ﻿using System.Globalization;
+using System.Threading;
 using Ann.Core;
 using Ann.SettingWindow.SettingPage.General;
 using Xunit;
 
 namespace Ann.Test.SettingWindow.SettingPage.General
 {
-    [Collection("CultureInfo.CurrentUICulture")]
     public class GeneralViewModelTest
     {
         public GeneralViewModelTest()
@@ -46,16 +46,29 @@ namespace Ann.Test.SettingWindow.SettingPage.General
         [Fact]
         public void SelectedCulture_ja()
         {
-            CultureInfo.CurrentUICulture = new CultureInfo("ja");
+            var cultureName = default(string);
+            var caption = default(string);
 
-            var app = new Core.Config.App();
-
-            using (var versionUpdater = new VersionUpdater(null))
-            using (var vm = new GeneralViewModel(app, versionUpdater))
+            var th = new Thread(() =>
             {
-                Assert.Equal("ja", vm.SelectedCulture.Value.CultureName);
-                Assert.Equal("日本語", vm.SelectedCulture.Value.Caption);
-            }
+                CultureInfo.CurrentUICulture = new CultureInfo("ja");
+
+                var app = new Core.Config.App();
+
+                using (var versionUpdater = new VersionUpdater(null))
+                using (var vm = new GeneralViewModel(app, versionUpdater))
+                {
+                    cultureName = vm.SelectedCulture.Value.CultureName;
+                    caption = vm.SelectedCulture.Value.Caption;
+                }
+
+                CultureService.Instance.CultureName = "en";
+            });
+            th.Start();
+            th.Join();
+
+            Assert.Equal("ja", cultureName);
+            Assert.Equal("日本語", caption);
         }
 
         [Theory]
@@ -63,16 +76,27 @@ namespace Ann.Test.SettingWindow.SettingPage.General
         [InlineData("English","en")]
         public void SelectedCulture(string caption, string cultureName)
         {
-            CultureInfo.CurrentUICulture = new CultureInfo(cultureName);
+            var expectedCultureName = default(string);
+            var expectedCaption = default(string);
 
-            var app = new Core.Config.App();
-
-            using (var versionUpdater = new VersionUpdater(null))
-            using (var vm = new GeneralViewModel(app, versionUpdater))
+            var th = new Thread(() =>
             {
-                Assert.Equal(cultureName, vm.SelectedCulture.Value.CultureName);
-                Assert.Equal(caption, vm.SelectedCulture.Value.Caption);
-            }
+                CultureInfo.CurrentUICulture = new CultureInfo(cultureName);
+
+                var app = new Core.Config.App();
+
+                using (var versionUpdater = new VersionUpdater(null))
+                using (var vm = new GeneralViewModel(app, versionUpdater))
+                {
+                    expectedCultureName = vm.SelectedCulture.Value.CultureName;
+                    expectedCaption = vm.SelectedCulture.Value.Caption;
+                }
+            });
+            th.Start();
+            th.Join();
+
+            Assert.Equal(cultureName, expectedCultureName);
+            Assert.Equal(caption, expectedCaption);
         }
 
         [Fact]
