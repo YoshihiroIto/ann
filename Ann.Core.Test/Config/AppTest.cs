@@ -1,16 +1,16 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Threading;
 using Xunit;
 using System.Windows.Input;
 using Ann.Core.Config;
 
 namespace Ann.Core.Test.Config
 {
-    [Collection("CultureInfo.CurrentUICulture")]
     public class AppTest
     {
         [Fact]
-        public void Basic()
+        public void App_Basic()
         {
             TestHelper.CleanTestEnv();
 
@@ -134,13 +134,80 @@ namespace Ann.Core.Test.Config
         [InlineData("en")]
         public void DefaultCulture(string lang)
         {
-            TestHelper.CleanTestEnv();
+            var culture = default(string);
 
-            CultureInfo.CurrentUICulture = new CultureInfo(lang);
+            var th = new Thread(() =>
+            {
+                CultureInfo.CurrentUICulture = new CultureInfo(lang);
 
-            var c = new Core.Config.App();
+                var c = new Core.Config.App();
 
-            Assert.Equal(lang, c.Culture);
+                culture = c.Culture;
+            });
+
+            th.Start();
+            th.Join();
+
+            Assert.Equal(lang, culture);
+        }
+
+        [Fact]
+        public void ShortcutKey_DefaultCtor()
+        {
+            var s = new ShortcutKey();
+
+            Assert.Equal(Key.None, s.Key);
+            Assert.Equal(ModifierKeys.None, s.Modifiers);
+            Assert.Equal(string.Empty, s.Text);
+        }
+
+        [Fact]
+        public void ShortcutKey_Basic()
+        {
+            var s = new ShortcutKey
+            {
+                Key = Key.Space,
+                Modifiers = ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift
+            };
+
+            Assert.Equal(Key.Space, s.Key);
+            Assert.Equal(ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift, s.Modifiers);
+            Assert.Equal("Ctrl + Alt + Shift + Space", s.Text);
+        }
+
+        [Fact]
+        public void ShortcutKeys_DefaultCtor()
+        {
+            var s = new ShortcutKeys();
+
+            Assert.NotNull(s.Activate);
+            Assert.Equal(Key.None, s.Activate.Key);
+            Assert.Equal(ModifierKeys.None, s.Activate.Modifiers);
+            Assert.Equal(string.Empty, s.Activate.Text);
+
+            Assert.NotNull(s.Hide);
+            Assert.Equal(0, s.Hide.Count);
+        }
+
+        [Fact]
+        public void ShortcutKeys_Basic()
+        {
+            var s = new ShortcutKeys
+            {
+                Activate = new ShortcutKey { Key = Key.Y, Modifiers = ModifierKeys.Alt},
+                Hide = new ObservableCollection<ShortcutKey>
+                {
+                    new ShortcutKey {Key = Key.B, Modifiers = ModifierKeys.Control}
+                }
+            };
+
+            Assert.Equal(Key.Y, s.Activate.Key);
+            Assert.Equal(ModifierKeys.Alt, s.Activate.Modifiers);
+            Assert.Equal("Alt + Y", s.Activate.Text);
+
+            Assert.Equal(Key.B, s.Hide[0].Key);
+            Assert.Equal(ModifierKeys.Control, s.Hide[0].Modifiers);
+            Assert.Equal("Ctrl + B", s.Hide[0].Text);
         }
     }
 }

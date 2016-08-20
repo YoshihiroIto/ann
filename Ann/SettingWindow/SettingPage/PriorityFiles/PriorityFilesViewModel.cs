@@ -6,17 +6,20 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Windows;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
 using Ann.Properties;
+using GongSolutions.Wpf.DragDrop;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using DragDrop = GongSolutions.Wpf.DragDrop.DragDrop;
 using Path = Ann.Core.Path;
 
 namespace Ann.SettingWindow.SettingPage.PriorityFiles
 {
-    public class PriorityFilesViewModel : ViewModelBase
+    public class PriorityFilesViewModel : ViewModelBase, IDropTarget
     {
         public ReadOnlyReactiveCollection<PathViewModel> Files { get; set; }
 
@@ -72,9 +75,9 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
             FileRemoveCommand = new ReactiveCommand<PathViewModel>().AddTo(CompositeDisposable);
             FileRemoveCommand.Subscribe(p =>
             {
-                var t = model.PriorityFiles.FirstOrDefault(f => f.Value == p.Path.Value);
+                var t = Files.FirstOrDefault(f => ReferenceEquals(p, f));
                 if (t != null)
-                    model.PriorityFiles.Remove(t);
+                    model.PriorityFiles.Remove(t.Model);
             }).AddTo(CompositeDisposable);
 
             _pathChanged
@@ -112,6 +115,43 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
                 return Resources.Message_AlreadySetSameFile;
 
             return null;
+        }
+
+        public void DragOver(IDropInfo dropInfo)
+        {
+            var dataObject = dropInfo.Data as DataObject;
+            if (dataObject != null)
+            {
+                var paths = (IEnumerable<string>)dataObject.GetData(DataFormats.FileDrop, false);
+                if (paths != null && paths.Any(x => File.Exists(x) && IsEnableExt(x)))
+                    dropInfo.Effects = DragDropEffects.Move;
+            }
+            else
+                DragDrop.DefaultDropHandler.DragOver(dropInfo);
+        }
+
+        public void Drop(IDropInfo dropInfo)
+        {
+            var dataObject = dropInfo.Data as DataObject;
+            if (dataObject != null)
+            {
+                var paths = (IEnumerable<string>)dataObject.GetData(DataFormats.FileDrop, false);
+
+                foreach (var path in paths.Where(x => File.Exists(x) && IsEnableExt(x)))
+                   _model.PriorityFiles.Add(new Path(path));
+            }
+            else
+            {
+                var vm = (PathViewModel)dropInfo.Data;
+                ModelHelper.MovoTo(_model.PriorityFiles, vm.Model, dropInfo.InsertIndex);
+            }
+        }
+
+        private bool IsEnableExt(string filePath)
+        {
+            var ext = System.IO.Path.GetExtension(filePath)?.ToLower();
+
+            return _model.ExecutableFileExts.Any(e => ext == "." + e);
         }
     }
 }

@@ -2,6 +2,10 @@
   Auther: ta.speot.is
   Summry: A managed wrapper around Microsoft's delta compression application programming interfaces.
   Url: 
+- Name: Jewelry.Collections
+  Auther: YoshihiroIto
+  Summry: Jewelry.Collections
+  Url: https://github.com/YoshihiroIto/Jewelry/
 - Name: Json.NET
   Auther: James Newton-King
   Summry: Json.NET is a popular high-performance JSON framework for .NET

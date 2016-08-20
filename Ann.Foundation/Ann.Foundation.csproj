@@ -103,6 +103,7 @@
     <Compile Include="Exception\UninitializedException.cs" />
     <Compile Include="Exception\NestingException.cs" />
     <Compile Include="MockKeyboardDevice.cs" />
+    <Compile Include="Mvvm\ModelHelper.cs" />
     <Compile Include="RunOnTestDomain.cs" />
     <Compile Include="WindowsHelper.cs" />
     <Compile Include="Control\Behavior\WindowTaskTrayIconBehavior.cs" />
@@ -118,7 +119,6 @@
     <Compile Include="FlatBuffers\Offset.cs" />
     <Compile Include="FlatBuffers\Struct.cs" />
     <Compile Include="FlatBuffers\Table.cs" />
-    <Compile Include="LruCache.cs" />
     <Compile Include="Mvvm\DisposableNotificationObject.cs" />
     <Compile Include="Mvvm\DisposableModelBase.cs" />
     <Compile Include="Mvvm\Message\FileOrFolderSelectAction.cs" />

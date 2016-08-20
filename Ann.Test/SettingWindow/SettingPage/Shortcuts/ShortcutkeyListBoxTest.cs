@@ -1,21 +1,20 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Threading;
-using Ann.Core;
 using Ann.Foundation;
+using Ann.SettingWindow.SettingPage.Shortcuts;
+using Reactive.Bindings;
 using Xunit;
 
-namespace Ann.Test.MainWindow
+namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
 {
-    public class MainWindowTest : MarshalByRefObject, IDisposable
+    public class ShortcutkeyListBoxTest : MarshalByRefObject, IDisposable
     {
-        private readonly DisposableFileSystem _config = new DisposableFileSystem();
-
         public void Dispose()
         {
-            _config.Dispose();
-
             // for appveyor 
             Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
@@ -32,12 +31,21 @@ namespace Ann.Test.MainWindow
 
                 try
                 {
-                    var configHolder = new ConfigHolder(_config.RootPath);
-                    using (var app = new App(configHolder))
+                    var c = new ShortcutkeyListBox();
+
+                    using (var command = new ReactiveCommand())
                     {
-                        // ReSharper disable once ObjectCreationAsStatement
-                        new Ann.MainWindow.MainWindow(app, configHolder);
+                        c.AddCommand = command;
+                        c.RemoveCommand = command;
+
+                        Assert.Same(command, c.AddCommand);
+                        Assert.Same(command, c.RemoveCommand);
                     }
+
+                    var l = new ObservableCollection<int>();
+                    c.Items = l;
+
+                    Assert.Same(l, c.Items);
                 }
                 catch (Exception e)
                 {

@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using Ann.Core;
 using Ann.Core.Config;
 using Ann.SettingWindow.SettingPage.Shortcuts;
 using Xunit;

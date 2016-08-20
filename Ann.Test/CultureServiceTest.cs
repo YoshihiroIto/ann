@@ -1,10 +1,11 @@
 ﻿using System.Globalization;
-using Ann.Core.Config;
+using System.Threading;
+using Ann.Core;
 using Xunit;
+using App = Ann.Core.Config.App;
 
 namespace Ann.Test
 {
-    [Collection("CultureInfo.CurrentUICulture")]
     public class CultureServiceTest
     {
         public CultureServiceTest()
@@ -15,9 +16,20 @@ namespace Ann.Test
         [Fact]
         public void CultureName()
         {
-            Assert.Equal(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName, CultureService.Instance.CultureName);
+            var expected = default(string);
+            var actual = default(string);
 
-            CultureService.Instance.CultureName = "en";
+            var th = new Thread(() =>
+            {
+                expected = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+                actual = CultureService.Instance.CultureName;
+
+                CultureService.Instance.CultureName = "en";
+            });
+            th.Start();
+            th.Join();
+
+            Assert.Equal(expected, actual);
         }
 
         [Fact]

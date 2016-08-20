@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Windows;
 using System.Windows.Input;
+using GongSolutions.Wpf.DragDrop;
 
 namespace Ann.SettingWindow.SettingPage
 {
@@ -113,6 +114,28 @@ namespace Ann.SettingWindow.SettingPage
                 new FrameworkPropertyMetadata
                 {
                     DefaultValue            = default(bool),
+                    BindsTwoWayByDefault    = true
+                }
+            );
+
+        #endregion
+
+        #region DropTarget
+
+        public IDropTarget DropTarget
+        {
+            get { return (IDropTarget)GetValue(DropTargetProperty); }
+            set { SetValue(DropTargetProperty, value); }
+        }
+
+        public static readonly DependencyProperty DropTargetProperty =
+            DependencyProperty.Register(
+                nameof (DropTarget),
+                typeof (IDropTarget),
+                typeof (FileOrFolderListBox),
+                new FrameworkPropertyMetadata
+                {
+                    DefaultValue            = default(IDropTarget),
                     BindsTwoWayByDefault    = true
                 }
             );
