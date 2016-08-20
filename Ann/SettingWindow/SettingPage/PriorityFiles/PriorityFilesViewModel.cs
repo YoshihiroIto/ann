@@ -122,19 +122,9 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
 
         public void Drop(IDropInfo dropInfo)
         {
-            var vm = dropInfo.Data as PathViewModel;
-            if (vm == null)
-                return;
+            var vm = (PathViewModel)dropInfo.Data;
 
-            var oldIndex = _model.PriorityFiles.IndexOf(vm.Model);
-            Debug.Assert(oldIndex != -1);
-
-            var newIndex = Math.Min(dropInfo.InsertIndex, _model.PriorityFiles.Count);
-
-            if (oldIndex < newIndex)
-                -- newIndex;
-
-            _model.PriorityFiles.Move(oldIndex, newIndex);
+            ModelHelper.MovoTo(_model.PriorityFiles, vm.Model, dropInfo.InsertIndex);
         }
     }
 }

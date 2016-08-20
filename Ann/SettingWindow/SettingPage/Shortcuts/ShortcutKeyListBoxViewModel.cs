@@ -107,19 +107,9 @@ namespace Ann.SettingWindow.SettingPage.Shortcuts
 
         public void Drop(IDropInfo dropInfo)
         {
-            var vm = dropInfo.Data as ShortcutKeyViewModel;
-            if (vm == null)
-                return;
+            var vm = (ShortcutKeyViewModel)dropInfo.Data;
 
-            var oldIndex = _model.IndexOf(vm.Model);
-            Debug.Assert(oldIndex != -1);
-
-            var newIndex = Math.Min(dropInfo.InsertIndex, _model.Count);
-
-            if (oldIndex < newIndex)
-                -- newIndex;
-
-            _model.Move(oldIndex, newIndex);
+            ModelHelper.MovoTo(_model, vm.Model, dropInfo.InsertIndex);
         }
     }
 }

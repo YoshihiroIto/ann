@@ -103,6 +103,7 @@
     <Compile Include="Exception\UninitializedException.cs" />
     <Compile Include="Exception\NestingException.cs" />
     <Compile Include="MockKeyboardDevice.cs" />
+    <Compile Include="Mvvm\ModelHelper.cs" />
     <Compile Include="RunOnTestDomain.cs" />
     <Compile Include="WindowsHelper.cs" />
     <Compile Include="Control\Behavior\WindowTaskTrayIconBehavior.cs" />

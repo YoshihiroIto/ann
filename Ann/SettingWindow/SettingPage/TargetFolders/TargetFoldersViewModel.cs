@@ -156,19 +156,9 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
 
         public void Drop(IDropInfo dropInfo)
         {
-            var vm = dropInfo.Data as PathViewModel;
-            if (vm == null)
-                return;
+            var vm = (PathViewModel)dropInfo.Data;
 
-            var oldIndex = _model.TargetFolder.Folders.IndexOf(vm.Model);
-            Debug.Assert(oldIndex != -1);
-
-            var newIndex = Math.Min(dropInfo.InsertIndex, _model.TargetFolder.Folders.Count);
-
-            if (oldIndex < newIndex)
-                -- newIndex;
-
-            _model.TargetFolder.Folders.Move(oldIndex, newIndex);
+            ModelHelper.MovoTo(_model.TargetFolder.Folders, vm.Model, dropInfo.InsertIndex);
         }
     }
 }
