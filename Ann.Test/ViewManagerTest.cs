@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Threading;
+using Ann.Core;
 using Xunit;
 
 namespace Ann.Test

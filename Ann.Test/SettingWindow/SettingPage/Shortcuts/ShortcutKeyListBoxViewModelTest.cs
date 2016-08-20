@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using Ann.Core;
 using Ann.Core.Config;
 using Ann.Properties;
 using Ann.SettingWindow.SettingPage.Shortcuts;

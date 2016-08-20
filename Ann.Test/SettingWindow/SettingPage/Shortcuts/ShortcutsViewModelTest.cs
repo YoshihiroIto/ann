@@ -1,7 +1,9 @@
 ﻿using System.Windows.Input;
+using Ann.Core;
 using Ann.Core.Config;
 using Ann.SettingWindow.SettingPage.Shortcuts;
 using Xunit;
+using App = Ann.Core.Config.App;
 
 namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
 {

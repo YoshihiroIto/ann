@@ -1,4 +1,5 @@
-﻿using Ann.MainWindow;
+﻿using Ann.Core;
+using Ann.MainWindow;
 using Xunit;
 
 namespace Ann.Test.MainWindow

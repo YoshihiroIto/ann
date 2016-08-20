@@ -1,7 +1,8 @@
 ﻿using System.Globalization;
 using System.Threading;
-using Ann.Core.Config;
+using Ann.Core;
 using Xunit;
+using App = Ann.Core.Config.App;
 
 namespace Ann.Test
 {
