@@ -2,7 +2,3 @@
   Auther: Google
   Summry: Memory Efficient Serialization Library
   Url: https://github.com/google/flatbuffers
-- Name: LRU Cache
-  Auther: Yoshihiro Ito
-  Summry: Simple Implementation C# LRU Cache
-  Url: https://github.com/YoshihiroIto/Jewelry
