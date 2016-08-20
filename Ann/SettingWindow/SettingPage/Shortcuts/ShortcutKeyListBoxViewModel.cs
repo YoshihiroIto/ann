@@ -10,12 +10,13 @@ using System.Windows.Input;
 using Ann.Core.Config;
 using Ann.Foundation.Mvvm;
 using Ann.Properties;
+using GongSolutions.Wpf.DragDrop;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 
 namespace Ann.SettingWindow.SettingPage.Shortcuts
 {
-    public class ShortcutKeyListBoxViewModel : ViewModelBase
+    public class ShortcutKeyListBoxViewModel : ViewModelBase, IDropTarget
     {
         public ReadOnlyReactiveCollection<ShortcutKeyViewModel> Keys { get; set; }
 
@@ -97,6 +98,28 @@ namespace Ann.SettingWindow.SettingPage.Shortcuts
                 return Resources.Message_AlreadySetSameKeyStroke;
 
             return null;
+        }
+
+        public void DragOver(IDropInfo dropInfo)
+        {
+            DragDrop.DefaultDropHandler.DragOver(dropInfo);
+        }
+
+        public void Drop(IDropInfo dropInfo)
+        {
+            var vm = dropInfo.Data as ShortcutKeyViewModel;
+            if (vm == null)
+                return;
+
+            var oldIndex = _model.IndexOf(vm.Model);
+            Debug.Assert(oldIndex != -1);
+
+            var newIndex = Math.Min(dropInfo.InsertIndex, _model.Count);
+
+            if (oldIndex < newIndex)
+                -- newIndex;
+
+            _model.Move(oldIndex, newIndex);
         }
     }
 }

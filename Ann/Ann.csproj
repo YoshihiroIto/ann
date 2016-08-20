@@ -58,6 +58,10 @@
       <HintPath>..\packages\DeltaCompressionDotNet.1.1.0\lib\net20\DeltaCompressionDotNet.PatchApi.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="GongSolutions.Wpf.DragDrop, Version=0.1.4.3, Culture=neutral, PublicKeyToken=d19974ea350ccea1, processorArchitecture=MSIL">
+      <HintPath>..\packages\gong-wpf-dragdrop.0.1.4.3\lib\net40\GongSolutions.Wpf.DragDrop.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\squirrel.windows.1.4.4\lib\Net45\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>

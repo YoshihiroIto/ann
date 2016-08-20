@@ -9,13 +9,15 @@ using System.Reactive.Subjects;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
 using Ann.Properties;
+using GongSolutions.Wpf.DragDrop;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using DragDrop = GongSolutions.Wpf.DragDrop.DragDrop;
 using Path = Ann.Core.Path;
 
 namespace Ann.SettingWindow.SettingPage.TargetFolders
 {
-    public class TargetFoldersViewModel : ViewModelBase
+    public class TargetFoldersViewModel : ViewModelBase, IDropTarget
     {
         public ReactiveProperty<bool> IsIncludeSystemFolder { get; }
         public ReactiveProperty<bool> IsIncludeSystemX86Folder { get; }
@@ -145,6 +147,28 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                 return Resources.Message_AlreadySetSameFolder;
 
             return null;
+        }
+
+        public void DragOver(IDropInfo dropInfo)
+        {
+            DragDrop.DefaultDropHandler.DragOver(dropInfo);
+        }
+
+        public void Drop(IDropInfo dropInfo)
+        {
+            var vm = dropInfo.Data as PathViewModel;
+            if (vm == null)
+                return;
+
+            var oldIndex = _model.TargetFolder.Folders.IndexOf(vm.Model);
+            Debug.Assert(oldIndex != -1);
+
+            var newIndex = Math.Min(dropInfo.InsertIndex, _model.TargetFolder.Folders.Count);
+
+            if (oldIndex < newIndex)
+                -- newIndex;
+
+            _model.TargetFolder.Folders.Move(oldIndex, newIndex);
         }
     }
 }

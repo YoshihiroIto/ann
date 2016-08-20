@@ -9,6 +9,7 @@ using System.Reactive.Subjects;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
 using Ann.Properties;
+using GongSolutions.Wpf.DragDrop;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -16,7 +17,7 @@ using Path = Ann.Core.Path;
 
 namespace Ann.SettingWindow.SettingPage.PriorityFiles
 {
-    public class PriorityFilesViewModel : ViewModelBase
+    public class PriorityFilesViewModel : ViewModelBase, IDropTarget
     {
         public ReadOnlyReactiveCollection<PathViewModel> Files { get; set; }
 
@@ -112,6 +113,28 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
                 return Resources.Message_AlreadySetSameFile;
 
             return null;
+        }
+
+        public void DragOver(IDropInfo dropInfo)
+        {
+            DragDrop.DefaultDropHandler.DragOver(dropInfo);
+        }
+
+        public void Drop(IDropInfo dropInfo)
+        {
+            var vm = dropInfo.Data as PathViewModel;
+            if (vm == null)
+                return;
+
+            var oldIndex = _model.PriorityFiles.IndexOf(vm.Model);
+            Debug.Assert(oldIndex != -1);
+
+            var newIndex = Math.Min(dropInfo.InsertIndex, _model.PriorityFiles.Count);
+
+            if (oldIndex < newIndex)
+                -- newIndex;
+
+            _model.PriorityFiles.Move(oldIndex, newIndex);
         }
     }
 }

@@ -1,25 +1,29 @@
 ﻿<StackPanel x:Class="Ann.SettingWindow.SettingPage.Shortcuts.ShortcutsView"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:app="clr-namespace:Ann"
             xmlns:control="clr-namespace:Ann.Foundation.Control;assembly=Ann.Foundation"
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             xmlns:shortcuts="clr-namespace:Ann.SettingWindow.SettingPage.Shortcuts"
-            xmlns:app="clr-namespace:Ann"
             d:DataContext="{d:DesignData ShortcutsViewModel}"
             d:DesignHeight="300"
             d:DesignWidth="300"
             mc:Ignorable="d">
     <TextBlock Margin="0,0,0,8"
                Style="{StaticResource SubheadingTextBlockStyle}"
-               Text="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Settings_Activate, Mode=OneWay}" />
+               Text="{Binding Source={x:Static app:CultureService.Instance},
+                              Path=Resources.Settings_Activate,
+                              Mode=OneWay}" />
 
     <control:ShortcutKeyInputBox Key="{Binding Key.Value}"
                                  Width="240"
                                  Margin="16,0,0,0"
                                  HorizontalAlignment="Left"
-                                 materialDesign:HintAssist.Hint="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Settings_KeyStroke, Mode=OneWay}"
+                                 materialDesign:HintAssist.Hint="{Binding Source={x:Static app:CultureService.Instance},
+                                                                          Path=Resources.Settings_KeyStroke,
+                                                                          Mode=OneWay}"
                                  DataContext="{Binding Activate}"
                                  IsAlt="{Binding IsAlt.Value}"
                                  IsControl="{Binding IsControl.Value}"
@@ -28,7 +32,9 @@
 
     <TextBlock Margin="0,32,0,8"
                Style="{StaticResource SubheadingTextBlockStyle}"
-               Text="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Settings_Hide, Mode=OneWay}" />
+               Text="{Binding Source={x:Static app:CultureService.Instance},
+                              Path=Resources.Settings_Hide,
+                              Mode=OneWay}" />
 
     <shortcuts:ShortcutkeyListBox Width="240"
                                   Margin="16,0,0,8"
@@ -36,6 +42,7 @@
                                   AddCommand="{Binding KeyAddCommand,
                                                        Mode=OneWay}"
                                   DataContext="{Binding HideShortcuts}"
+                                  DropTarget="{Binding Mode=OneWay}"
                                   Items="{Binding Keys}"
                                   RemoveCommand="{Binding KeyRemoveCommand,
                                                           Mode=OneWay}" />

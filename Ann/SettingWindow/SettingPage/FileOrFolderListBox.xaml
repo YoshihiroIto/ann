@@ -4,6 +4,7 @@
             xmlns:app="clr-namespace:Ann"
             xmlns:behavior="clr-namespace:Ann.Foundation.Control.Behavior;assembly=Ann.Foundation"
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:dragDrop="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -14,6 +15,13 @@
             mc:Ignorable="d">
     <ListBox x:Name="ListBox"
              HorizontalContentAlignment="Stretch"
+             dragDrop:DragDrop.DropHandler="{Binding DropTarget,
+                                                     Mode=OneWay,
+                                                     RelativeSource={RelativeSource FindAncestor,
+                                                                                    AncestorType={x:Type settingPage:FileOrFolderListBox}}}"
+             dragDrop:DragDrop.IsDragSource="True"
+             dragDrop:DragDrop.IsDropTarget="True"
+             dragDrop:DragDrop.UseDefaultDragAdorner="True"
              ItemsSource="{Binding Items,
                                    Mode=OneWay,
                                    RelativeSource={RelativeSource FindAncestor,

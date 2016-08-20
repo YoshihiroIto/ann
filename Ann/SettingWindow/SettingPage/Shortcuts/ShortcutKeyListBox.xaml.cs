@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Windows;
 using System.Windows.Input;
+using GongSolutions.Wpf.DragDrop;
 
 namespace Ann.SettingWindow.SettingPage.Shortcuts
 {
@@ -72,6 +73,28 @@ namespace Ann.SettingWindow.SettingPage.Shortcuts
                     BindsTwoWayByDefault = true
                 }
                 );
+
+        #endregion
+
+        #region DropTarget
+
+        public IDropTarget DropTarget
+        {
+            get { return (IDropTarget)GetValue(DropTargetProperty); }
+            set { SetValue(DropTargetProperty, value); }
+        }
+
+        public static readonly DependencyProperty DropTargetProperty =
+            DependencyProperty.Register(
+                nameof (DropTarget),
+                typeof (IDropTarget),
+                typeof (ShortcutkeyListBox),
+                new FrameworkPropertyMetadata
+                {
+                    DefaultValue            = default(IDropTarget),
+                    BindsTwoWayByDefault    = true
+                }
+            );
 
         #endregion
 
