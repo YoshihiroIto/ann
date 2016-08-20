@@ -169,12 +169,7 @@ namespace Ann.Core
 
         public void CancelUpdateIndex()
         {
-            using(Disposable.Create(() =>_CancelUpdateIndexAsyncSema.Release()))
-            {
-                _CancelUpdateIndexAsyncSema.Wait();
-
-                _dataBase.CancelUpdateIndexAsync().Wait();
-            }
+            Task.Run(CancelUpdateIndexAsync);
         }
 
         public async Task UpdateIndexAsync()
