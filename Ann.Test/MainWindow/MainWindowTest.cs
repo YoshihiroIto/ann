@@ -35,7 +35,8 @@ namespace Ann.Test.MainWindow
                     var configHolder = new ConfigHolder(_config.RootPath);
                     using (var app = new App(configHolder))
                     {
-                        var c = new Ann.MainWindow.MainWindow(app, configHolder);
+                        // ReSharper disable once ObjectCreationAsStatement
+                        new Ann.MainWindow.MainWindow(app, configHolder);
                     }
                 }
                 catch (Exception e)

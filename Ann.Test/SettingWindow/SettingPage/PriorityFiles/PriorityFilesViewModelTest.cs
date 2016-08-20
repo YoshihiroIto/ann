@@ -1,7 +1,7 @@
 ﻿using System;
 using Ann.Core;
 using Ann.Foundation;
-using Ann.SettingWindow.SettingPage;
+using Ann.Properties;
 using Ann.SettingWindow.SettingPage.PriorityFiles;
 using Xunit;
 
@@ -115,6 +115,49 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
             {
                 model.PriorityFiles.Add(new Path("AA"));
                 vm.Files[0].FolderSelectDialogOpenCommand.Execute(null);
+            }
+        }
+
+        [Fact]
+        public void IsFocused_Empty_AutoRemove()
+        {
+            var model = new Core.Config.App();
+
+            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            using (var vm = new PriorityFilesViewModel(model, app))
+            {
+                model.PriorityFiles.Add(new Path(Environment.ExpandEnvironmentVariables(@"%SystemRoot%\explorer.exe")));
+
+                Assert.Equal(1, vm.Files.Count);
+
+                vm.Files[0].IsFocused.Value = true;
+                vm.Files[0].Path.Value = string.Empty;
+
+                vm.Files[0].IsFocused.Value = false;
+
+                Assert.Equal(0, model.PriorityFiles.Count);
+            }
+        }
+
+        [Fact]
+        public void Validate_AlreadySetSameFile()
+        {
+            var model = new Core.Config.App();
+
+            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            using (var vm = new PriorityFilesViewModel(model, app))
+            {
+                model.PriorityFiles.Add(new Path(Environment.ExpandEnvironmentVariables(@"%SystemRoot%\explorer.exe")));
+                model.PriorityFiles.Add(new Path(Environment.ExpandEnvironmentVariables(@"%SystemRoot%\notepad.exe")));
+
+                Assert.Null(vm.Files[0].ValidationMessage.Value);
+                Assert.Null(vm.Files[1].ValidationMessage.Value);
+
+                model.PriorityFiles.Add(new Path(Environment.ExpandEnvironmentVariables(@"%SystemRoot%\explorer.exe")));
+
+                Assert.Equal(Resources.Message_AlreadySetSameFile, vm.Files[0].ValidationMessage.Value);
+                Assert.Null(vm.Files[1].ValidationMessage.Value);
+                Assert.Equal(Resources.Message_AlreadySetSameFile, vm.Files[2].ValidationMessage.Value);
             }
         }
     }
