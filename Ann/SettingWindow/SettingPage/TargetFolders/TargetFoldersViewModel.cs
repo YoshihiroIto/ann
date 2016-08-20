@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Windows;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
 using Ann.Properties;
@@ -151,14 +152,32 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
 
         public void DragOver(IDropInfo dropInfo)
         {
-            DragDrop.DefaultDropHandler.DragOver(dropInfo);
+            var dataObject = dropInfo.Data as DataObject;
+            if (dataObject != null)
+            {
+                var paths = (IEnumerable<string>)dataObject.GetData(DataFormats.FileDrop, false);
+                if (paths != null && paths.Any(Directory.Exists))
+                    dropInfo.Effects = DragDropEffects.Move;
+            }
+            else
+                DragDrop.DefaultDropHandler.DragOver(dropInfo);
         }
 
         public void Drop(IDropInfo dropInfo)
         {
-            var vm = (PathViewModel)dropInfo.Data;
+            var dataObject = dropInfo.Data as DataObject;
+            if (dataObject != null)
+            {
+                var paths = (IEnumerable<string>)dataObject.GetData(DataFormats.FileDrop, false);
 
-            ModelHelper.MovoTo(_model.TargetFolder.Folders, vm.Model, dropInfo.InsertIndex);
+                foreach (var path in paths.Where(Directory.Exists))
+                   _model.TargetFolder.Folders.Add(new Path(path));
+            }
+            else
+            {
+                var vm = (PathViewModel)dropInfo.Data;
+                ModelHelper.MovoTo(_model.TargetFolder.Folders, vm.Model, dropInfo.InsertIndex);
+            }
         }
     }
 }

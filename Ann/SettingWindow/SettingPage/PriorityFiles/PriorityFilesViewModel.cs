@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Windows;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
 using Ann.Properties;
@@ -13,6 +14,7 @@ using GongSolutions.Wpf.DragDrop;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using DragDrop = GongSolutions.Wpf.DragDrop.DragDrop;
 using Path = Ann.Core.Path;
 
 namespace Ann.SettingWindow.SettingPage.PriorityFiles
@@ -117,14 +119,39 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
 
         public void DragOver(IDropInfo dropInfo)
         {
-            DragDrop.DefaultDropHandler.DragOver(dropInfo);
+            var dataObject = dropInfo.Data as DataObject;
+            if (dataObject != null)
+            {
+                var paths = (IEnumerable<string>)dataObject.GetData(DataFormats.FileDrop, false);
+                if (paths != null && paths.Any(x => File.Exists(x) && IsEnableExt(x)))
+                    dropInfo.Effects = DragDropEffects.Move;
+            }
+            else
+                DragDrop.DefaultDropHandler.DragOver(dropInfo);
         }
 
         public void Drop(IDropInfo dropInfo)
         {
-            var vm = (PathViewModel)dropInfo.Data;
+            var dataObject = dropInfo.Data as DataObject;
+            if (dataObject != null)
+            {
+                var paths = (IEnumerable<string>)dataObject.GetData(DataFormats.FileDrop, false);
 
-            ModelHelper.MovoTo(_model.PriorityFiles, vm.Model, dropInfo.InsertIndex);
+                foreach (var path in paths.Where(x => File.Exists(x) && IsEnableExt(x)))
+                   _model.PriorityFiles.Add(new Path(path));
+            }
+            else
+            {
+                var vm = (PathViewModel)dropInfo.Data;
+                ModelHelper.MovoTo(_model.PriorityFiles, vm.Model, dropInfo.InsertIndex);
+            }
+        }
+
+        private bool IsEnableExt(string filePath)
+        {
+            var ext = System.IO.Path.GetExtension(filePath)?.ToLower();
+
+            return _model.ExecutableFileExts.Any(e => ext == "." + e);
         }
     }
 }

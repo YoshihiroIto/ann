@@ -89,7 +89,14 @@
                         </materialDesign:PackIcon>
                     </Button>
 
-                    <TextBox Grid.Column="2" Text="{Binding Path.Value, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox Grid.Column="2"
+                             dragDrop:DragDrop.DropHandler="{Binding DropTarget,
+                                                                     Mode=OneWay,
+                                                                     RelativeSource={RelativeSource FindAncestor,
+                                                                                                    AncestorType={x:Type settingPage:FileOrFolderListBox}}}"
+                             dragDrop:DragDrop.IsDropTarget="True"
+                             Text="{Binding Path.Value,
+                                            UpdateSourceTrigger=PropertyChanged}">
                         <i:Interaction.Behaviors>
                             <behavior:UIElementFocusBehavior IsFocused="{Binding IsFocused.Value}" />
                         </i:Interaction.Behaviors>
@@ -152,6 +159,11 @@
 
     <Button HorizontalAlignment="Left"
             HorizontalContentAlignment="Left"
+            dragDrop:DragDrop.DropHandler="{Binding DropTarget,
+                                                    Mode=OneWay,
+                                                    RelativeSource={RelativeSource FindAncestor,
+                                                                                   AncestorType={x:Type settingPage:FileOrFolderListBox}}}"
+            dragDrop:DragDrop.IsDropTarget="True"
             Command="{Binding AddCommand,
                               RelativeSource={RelativeSource FindAncestor,
                                                              AncestorType={x:Type settingPage:FileOrFolderListBox}}}"
