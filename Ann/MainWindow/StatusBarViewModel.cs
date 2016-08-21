@@ -75,7 +75,7 @@ namespace Ann.MainWindow
                                 new StatusBarItemViewModel.Message
                                 {
                                     String = StringTags.Message_IndexUpdating,
-                                    Options = new[] {c.ToString()}
+                                    Options = new object[] {c.ToString()}
                                 }
                             };
                 })
@@ -149,7 +149,7 @@ namespace Ann.MainWindow
                             new WaitingStatusBarItemViewModel(
                                 app,
                                 StringTags.AutoUpdateStates_CloseAfterNSec,
-                                new[] {Constants.AutoUpdateCloseDelaySec.ToString()});
+                                new object[] {Constants.AutoUpdateCloseDelaySec.ToString()});
                     }
 
                     if (_autoUpdaterItem != null)
@@ -175,7 +175,7 @@ namespace Ann.MainWindow
                                     new StatusBarItemViewModel.Message
                                     {
                                         String = StringTags.AutoUpdateStates_CloseAfter0Sec_Restart,
-                                        Options = new[] {p.ToString()}
+                                        Options = new object[] {p.ToString()}
                                     }
                                 };
                     }
