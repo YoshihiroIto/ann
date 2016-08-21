@@ -1,7 +1,6 @@
 ﻿<StackPanel x:Class="Ann.SettingWindow.SettingPage.FileOrFolderListBox"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-            xmlns:app="clr-namespace:Ann"
             xmlns:behavior="clr-namespace:Ann.Foundation.Control.Behavior;assembly=Ann.Foundation"
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:dragDrop="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
@@ -105,10 +104,10 @@
                             <Style BasedOn="{StaticResource MaterialDesignTextBox}" TargetType="{x:Type TextBox}">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsFolderPicker, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type settingPage:FileOrFolderListBox}}}" Value="True">
-                                        <Setter Property="materialDesign:HintAssist.Hint" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Folder, Mode=OneWay}" />
+                                        <Setter Property="materialDesign:HintAssist.Hint" Value="{DynamicResource Folder}" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding IsFolderPicker, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type settingPage:FileOrFolderListBox}}}" Value="False">
-                                        <Setter Property="materialDesign:HintAssist.Hint" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.File, Mode=OneWay}" />
+                                        <Setter Property="materialDesign:HintAssist.Hint" Value="{DynamicResource File}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
