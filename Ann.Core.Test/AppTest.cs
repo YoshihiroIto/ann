@@ -26,20 +26,22 @@ namespace Ann.Core.Test
         [Fact]
         public void Basic()
         {
-            using (var vm = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var app = new App(configHolder))
             {
-                Assert.True(vm.IsEnableActivateHotKey);
-                vm.IsEnableActivateHotKey = false;
-                Assert.False(vm.IsEnableActivateHotKey);
+                Assert.True(app.IsEnableActivateHotKey);
+                app.IsEnableActivateHotKey = false;
+                Assert.False(app.IsEnableActivateHotKey);
 
-                Assert.False(vm.IsRestartRequested);
+                Assert.False(app.IsRestartRequested);
             }
         }
 
         [Fact]
         public void PriorityFile()
         {
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var app = new App(configHolder))
             {
                 Assert.False(app.IsPriorityFile("AAA"));
 
@@ -208,7 +210,8 @@ namespace Ann.Core.Test
         [Fact]
         public void AutoUpdater()
         {
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var app = new App(configHolder))
             {
                 Assert.Equal(0, app.AutoUpdateRemainingSeconds);
                 Assert.Equal(App.AutoUpdateStates.Wait, app.AutoUpdateState);

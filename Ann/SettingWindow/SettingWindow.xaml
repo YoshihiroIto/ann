@@ -58,7 +58,8 @@
                 <Style x:Key="PageCaptionTextBlockStyle" TargetType="{x:Type TextBlock}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type about:AboutViewModel}">
-                            <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Settings_About, Mode=OneWay}" />
+                            <!--<Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Settings_About, Mode=OneWay}" />-->
+                            <Setter Property="Text" Value="{DynamicResource Settings_About}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type general:GeneralViewModel}">
                             <Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Settings_General, Mode=OneWay}" />

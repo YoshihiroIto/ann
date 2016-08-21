@@ -28,7 +28,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var app = new App(configHolder))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
                 Assert.True(vm.IsIncludeSystemFolder.Value);
@@ -71,7 +72,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var app = new App(configHolder))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
                 vm.IsIncludeSystemFolder.Value = false;
@@ -96,7 +98,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var app = new App(configHolder))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
                 vm.IsIncludeSystemFolder.Value = false;
@@ -130,7 +133,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var app = new App(configHolder))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
                 vm.IsIncludeSystemFolder.Value = false;
@@ -154,7 +158,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var app = new App(configHolder))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
                 vm.IsIncludeSystemFolder.Value = false;
@@ -178,7 +183,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var app = new App(configHolder))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
                 vm.IsIncludeSystemFolder.Value = false;
@@ -213,7 +219,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var app = new App(configHolder))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
                 vm.IsIncludeSystemFolder.Value = false;
@@ -248,7 +255,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var app = new App(configHolder))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
                 vm.IsIncludeSystemFolder.Value = false;
@@ -276,7 +284,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var app = new App(configHolder))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
                 vm.IsIncludeSystemFolder.Value = false;

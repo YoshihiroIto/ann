@@ -248,6 +248,7 @@ namespace Ann.Core
         public App(ConfigHolder configHolder)
         {
             Debug.Assert(configHolder != null);
+
             _configHolder = configHolder;
 
             _dataBase = new ExecutableUnitDataBase(IndexFilePath);
