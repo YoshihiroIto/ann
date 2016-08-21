@@ -9,7 +9,6 @@ using System.Reactive.Subjects;
 using System.Windows;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
-using Ann.Properties;
 using GongSolutions.Wpf.DragDrop;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Reactive.Bindings;

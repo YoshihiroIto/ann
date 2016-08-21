@@ -138,7 +138,6 @@
     <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutsViewTest.cs" />
     <Compile Include="SettingWindow\SettingPage\TargetFolders\TargetFoldersViewTest.cs" />
     <Compile Include="ViewManagerTest.cs" />
-    <Compile Include="CultureServiceTest.cs" />
     <Compile Include="SettingWindow\SettingViewModelTest.cs" />
     <Compile Include="SettingWindow\SettingPage\PathViewModelTest.cs" />
     <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutKeyListBoxViewModelTest.cs" />

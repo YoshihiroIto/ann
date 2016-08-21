@@ -41,7 +41,6 @@ namespace Ann
             _app = new App(_configHolder, _languagesService);
             _viewManager = new ViewManager(Dispatcher, _languagesService);
 
-            CultureService.Instance.SetConfig(_configHolder.Config);
             Reactive.Bindings.UIDispatcherScheduler.Initialize();
 
             MainWindow = new MainWindow.MainWindow(_app, _configHolder);
@@ -57,8 +56,6 @@ namespace Ann
             _viewManager.Dispose();
             _app.Dispose();
             _languagesService.Dispose();
-
-            CultureService.Instance.Destory();
         }
 
         private ConfigHolder _configHolder;
