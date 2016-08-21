@@ -8,12 +8,13 @@ namespace Ann.GenLanguageFile
         {
             var options = new Exporter.OutputOptions
             {
-                Namespace = argv[1]
+                Namespace = argv[2]
             };
 
-            var code = new Exporter().Export(options).Result;
+            var r = new Exporter().Export(options).Result;
 
-            File.WriteAllText(argv[0], code);
+            File.WriteAllText(argv[0], r.Class);
+            File.WriteAllText(argv[1], r.DefaultXaml);
         }
     }
 }

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Markup;
 using CsvHelper;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
@@ -20,7 +22,13 @@ namespace Ann.GenLanguageFile
             public string Namespace { get; set; }
         }
 
-        public async Task<string> Export(OutputOptions options)
+        public class Result
+        {
+            public string Class { get; set; }
+            public string DefaultXaml { get; set; }
+        }
+
+        public async Task<Result> Export(OutputOptions options)
         {
             var scopes = new[] {DriveService.Scope.DriveReadonly};
             var homePath = Environment.OSVersion.Platform == PlatformID.Unix ||
@@ -67,7 +75,7 @@ namespace Ann.GenLanguageFile
             return ExportInternal(csvString, options);
         }
 
-        private string ExportInternal(string csvString, OutputOptions options)
+        private Result ExportInternal(string csvString, OutputOptions options)
         {
             string[] languages = null;
             var languageData = new List<LanguageData>();
@@ -94,44 +102,61 @@ namespace Ann.GenLanguageFile
             }
 
             if (languages != null)
-            {
-                var langCase = new StringBuilder();
-                languages.ForEach((language, i) =>
+                return new Result
                 {
-                    var tagCase = new StringBuilder();
-                    languageData.ForEach(data =>
-                    {
-                        tagCase.Append(
-                            string.Format(
-                                Properties.Resources.CaseNoReturn,
-                                "StringTags",
-                                data.Tag,
-                                string.Format(Properties.Resources.TagCaseReturn, data.Data[i])));
-                    });
-
-                    var tagSwitch = string.Format(Properties.Resources.Switch, "tag", tagCase);
-
-                    langCase.Append(
-                        string.Format(
-                            Properties.Resources.Case,
-                            "Languages",
-                            language,
-                            tagSwitch));
-                });
-
-                var switches = string.Format(Properties.Resources.Switch, "language", langCase);
-
-                var fileImage =
-                    string.Format(Properties.Resources.File,
-                        options.Namespace,
-                        string.Format(Properties.Resources.Languages, string.Join(",\r\n", languages)),
-                        string.Format(Properties.Resources.Tags, string.Join(",\r\n", languageData.Select(l => l.Tag))),
-                        string.Format(Properties.Resources.LocalizationClass, switches));
-
-                return fileImage;
-            }
+                    Class = ExportClass(languages, languageData, options),
+                    DefaultXaml = ExportDefaultXaml(languageData)
+                };
 
             return null;
+        }
+
+        private static string ExportClass(string[] languages, List<LanguageData> languageData, OutputOptions options)
+        {
+            var langCase = new StringBuilder();
+            languages.ForEach((language, i) =>
+            {
+                var tagCase = new StringBuilder();
+                languageData.ForEach(data =>
+                {
+                    tagCase.Append(
+                        string.Format(
+                            Properties.Resources.CaseNoReturn,
+                            "StringTags",
+                            data.Tag,
+                            string.Format(Properties.Resources.TagCaseReturn, data.Data[i])));
+                });
+
+                var tagSwitch = string.Format(Properties.Resources.Switch, "tag", tagCase);
+
+                langCase.Append(
+                    string.Format(
+                        Properties.Resources.Case,
+                        "Languages",
+                        language,
+                        tagSwitch));
+            });
+
+            var switches = string.Format(Properties.Resources.Switch, "language", langCase);
+
+            var fileImage =
+                string.Format(Properties.Resources.File,
+                    options.Namespace,
+                    string.Format(Properties.Resources.Languages, string.Join(",\r\n", languages)),
+                    string.Format(Properties.Resources.Tags, string.Join(",\r\n", languageData.Select(l => l.Tag))),
+                    string.Format(Properties.Resources.LocalizationClass, switches));
+
+            return fileImage;
+        }
+
+        private static string ExportDefaultXaml(List<LanguageData> languageData)
+        {
+            var resDict = new ResourceDictionary();
+
+            foreach (var l in languageData)
+                resDict.Add(l.Tag, l.Data[0]);
+
+            return  XamlWriter.Save(resDict); 
         }
 
         private class LanguageData
