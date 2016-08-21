@@ -2,7 +2,6 @@
 using System.Windows.Input;
 using Ann.Core;
 using Ann.Core.Config;
-using Ann.Properties;
 using Ann.SettingWindow.SettingPage.Shortcuts;
 using Xunit;
 
@@ -99,9 +98,9 @@ namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
 
                 model.Add(new ShortcutKey {Key = Key.A});
 
-                Assert.Equal(Resources.Message_AlreadySetSameKeyStroke, vm.Keys[0].ValidationMessage.Value);
+                Assert.Equal(StringTags.Message_AlreadySetSameKeyStroke, vm.Keys[0].ValidationMessage.Value);
                 Assert.Null(vm.Keys[1].ValidationMessage.Value);
-                Assert.Equal(Resources.Message_AlreadySetSameKeyStroke, vm.Keys[2].ValidationMessage.Value);
+                Assert.Equal(StringTags.Message_AlreadySetSameKeyStroke, vm.Keys[2].ValidationMessage.Value);
             }
         }
     }

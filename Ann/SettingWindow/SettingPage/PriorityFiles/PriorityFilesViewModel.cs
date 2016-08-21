@@ -46,9 +46,9 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
                     var pvm = new PathViewModel(p, false,
                         () => new[]
                         {
-                            new CommonFileDialogFilter(Resources.ExecutableFile,
+                            new CommonFileDialogFilter(app.GetString(StringTags.ExecutableFile),
                                 string.Join(", ", model.ExecutableFileExts.Select(e => "*." + e))),
-                            new CommonFileDialogFilter(Resources.AllFiles, "*.*")
+                            new CommonFileDialogFilter(app.GetString(StringTags.AllFiles), "*.*")
                         });
 
                     pvm.Path
@@ -90,7 +90,6 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
 
             Observable
                 .Merge(Files.CollectionChangedAsObservable().ToUnit())
-                .Merge(CultureService.Instance.ObserveProperty(x => x.Resources).ToUnit())
                 .Subscribe(_ => ValidateAll())
                 .AddTo(CompositeDisposable);
 
@@ -103,16 +102,16 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
                 pvm.ValidationMessage.Value = Validate(pvm, _model.PriorityFiles);
         }
 
-        private string Validate(PathViewModel item, IEnumerable<Path> parentCollection)
+        private static StringTags? Validate(PathViewModel item, IEnumerable<Path> parentCollection)
         {
             if (string.IsNullOrEmpty(item.Path.Value) == false)
                 if (File.Exists(item.Path.Value) == false)
-                    return Resources.Message_FileNotFound;
+                    return StringTags.Message_FileNotFound;
 
             if (parentCollection
                 .Where(p => item.Model != p)
                 .Any(p => p.Value == item.Path.Value))
-                return Resources.Message_AlreadySetSameFile;
+                return StringTags.Message_AlreadySetSameFile;
 
             return null;
         }

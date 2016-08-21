@@ -31,11 +31,16 @@
     </ItemsControl.ItemsPanel>
 
     <ItemsControl.Resources>
+        <mainWindow:MessagesConverter x:Key="MessagesConverter" />
         <DataTemplate DataType="{x:Type mainWindow:StatusBarItemViewModel}">
-            <TextBlock Height="14"
-                       Margin="0,2"
-                       Text="{Binding Message.Value,
-                                      Mode=OneWay}" />
+            <TextBlock Height="14" Margin="0,2">
+                <TextBlock.Text>
+                    <MultiBinding Converter="{StaticResource MessagesConverter}">
+                        <Binding Mode="OneWay" Path="Messages.Value" />
+                        <Binding Mode="OneWay" Path="App" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type mainWindow:ProcessingStatusBarItemViewModel}">
@@ -50,7 +55,14 @@
                              IsIndeterminate="True"
                              Style="{StaticResource MaterialDesignCircularProgressBar}"
                              Value="0" />
-                <TextBlock VerticalAlignment="Center" Text="{Binding Message.Value, Mode=OneWay}" />
+                <TextBlock VerticalAlignment="Center">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource MessagesConverter}">
+                            <Binding Mode="OneWay" Path="Messages.Value" />
+                            <Binding Mode="OneWay" Path="App" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
             </StackPanel>
         </DataTemplate>
 
@@ -64,7 +76,14 @@
                                          DockPanel.Dock="Right"
                                          Foreground="White"
                                          Kind="Clock" />
-                <TextBlock VerticalAlignment="Center" Text="{Binding Message.Value, Mode=OneWay}" />
+                <TextBlock VerticalAlignment="Center">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource MessagesConverter}">
+                            <Binding Mode="OneWay" Path="Messages.Value" />
+                            <Binding Mode="OneWay" Path="App" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
             </StackPanel>
         </DataTemplate>
     </ItemsControl.Resources>

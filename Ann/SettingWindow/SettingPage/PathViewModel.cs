@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Ann.Core;
 using Ann.Foundation.Mvvm;
 using Ann.Foundation.Mvvm.Message;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -17,7 +18,7 @@ namespace Ann.SettingWindow.SettingPage
         public ReactiveProperty<bool> IsFocused { get; }
         public ReactiveCommand FolderSelectDialogOpenCommand { get; }
 
-        public ReactiveProperty<string> ValidationMessage { get; }
+        public ReactiveProperty<StringTags?> ValidationMessage { get; }
 
         public Path Model { get; }
 
@@ -48,7 +49,7 @@ namespace Ann.SettingWindow.SettingPage
                     Path.Value = message.Response;
             }).AddTo(CompositeDisposable);
 
-            ValidationMessage = new ReactiveProperty<string>().AddTo(CompositeDisposable);
+            ValidationMessage = new ReactiveProperty<StringTags?>().AddTo(CompositeDisposable);
         }
     }
 }

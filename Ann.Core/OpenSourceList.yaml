@@ -1,3 +1,11 @@
+- Name: Bouncy Castle
+  Auther: Bouncy Castle Project Contributors
+  Summry: Bouncy Castle is a collection of APIs used in cryptography.
+  Url: http://www.bouncycastle.org/csharp/
+- Name: CsvHelper
+  Auther: Josh Close
+  Summry: A library for reading and writing CSV files. Extremely fast, flexible, and easy to use. Supports reading and writing of custom class objects.
+  Url: https://github.com/JoshClose/CsvHelper
 - Name: DeltaCompressionDotNet
   Auther: ta.speot.is
   Summry: A managed wrapper around Microsoft's delta compression application programming interfaces.
@@ -6,6 +14,36 @@
   Auther: Jan Karger (punker76),  Steven Kirk,  mitchell.jon
   Summry: A Drag'n'Drop Framework for WPF
   Url: https://github.com/punker76/gong-wpf-dragdrop
+- Name: Google APIs Auth Client Library
+  Auther: Google Inc.
+  Summry: >-
+    The Google APIs Client Library is a runtime client for working with Google services.
+            This package includes auth components like user-credential, authorization code flow, etc. for making authenticated calls using the OAuth2 spec.
+
+            Supported Platforms:
+
+            - .NET Framework 4.5
+
+            - NetStandard1.3
+
+            - Windows Store apps
+
+            - Windows Phone 8 and 8.1
+
+            - Portable Class Libraries
+  Url: https://developers.google.com/api-client-library/dotnet
+- Name: Google APIs Client Library
+  Auther: Google Inc.
+  Summry: "The Google APIs Client Library is a runtime client for working with Google services.\n          The library supports service requests, media upload and download, etc.\n\n          Supported Platforms:\n\n          - .NET Framework 4.5\n		  \n		  - NetStandard1.3\n\n          - Windows Store apps\n\n          - Windows Phone 8 and 8.1\n\n          - Portable Class Libraries"
+  Url: https://developers.google.com/api-client-library/dotnet
+- Name: Google APIs Core Client Library
+  Auther: Google Inc.
+  Summry: "The Google APIs Core Library contains the Google APIs HTTP layer, JSON support, Data-store, logging and so on.\n\n          Supported Platforms:\n\n          - .NET Framework 4.5\n		  \n		  - NetStandard1.3\n\n          - Windows Store apps\n\n          - Windows Phone 8 and 8.1\n          \n          - Portable Class Libraries"
+  Url: https://developers.google.com/api-client-library/dotnet
+- Name: Google.Apis.Drive.v3 Client Library
+  Auther: Google Inc.
+  Summry: Google Drive v3 API client library
+  Url: https://www.github.com/google/google-api-dotnet-client
 - Name: Jewelry.Collections
   Auther: YoshihiroIto
   Summry: Jewelry.Collections
@@ -14,6 +52,10 @@
   Auther: James Newton-King
   Summry: Json.NET is a popular high-performance JSON framework for .NET
   Url: http://www.newtonsoft.com/json
+- Name: log4net [1.2.15]
+  Auther: Apache Software Foundation
+  Summry: The Apache log4net library is a tool to help the programmer output log statements to a variety of output targets.
+  Url: http://logging.apache.org/log4net/
 - Name: Material Design Colors XAML Resources
   Auther: James Willock
   Summry: ResourceDictionary instances containing standard Google Material Design swatches, for inclusion in a XAML application.
@@ -178,3 +220,7 @@
   Auther: Antoine Aubry
   Summry: This package contains the YAML parser and serializer.
   Url: http://aaubry.net/pages/yamldotnet.html
+- Name: Zlib.Portable
+  Auther: AdvancedREI, onovotny
+  Summry: A Portable Class Library port of the popular Zlib library from http://dotnetzip.codeplex.com. Works on .NET 4, 4.0.3, & 4.5.x, Sliverlight 5, Windows Phone 8.x, Windows 8.x, Xamarin.iOS, & Xamarin.Android.
+  Url: http://dotnetzip.codeplex.com/

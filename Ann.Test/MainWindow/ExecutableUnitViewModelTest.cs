@@ -35,7 +35,8 @@ namespace Ann.Test.MainWindow
             var model = new ExecutableUnit(path, stringPool, targetFolders);
 
             var configHolder = new ConfigHolder(_config.RootPath);
-            using (var app = new App(configHolder))
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var parent = new MainWindowViewModel(app, configHolder))
             using (var vm = new ExecutableUnitViewModel(parent, model, app))
             {
@@ -55,7 +56,8 @@ namespace Ann.Test.MainWindow
             var model = new ExecutableUnit(path, stringPool, targetFolders);
 
             var configHolder = new ConfigHolder(_config.RootPath);
-            using (var app = new App(configHolder))
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var parent = new MainWindowViewModel(app, configHolder))
             using (var vm = new ExecutableUnitViewModel(parent, model, app))
             {
@@ -81,7 +83,8 @@ namespace Ann.Test.MainWindow
             var model = new ExecutableUnit(path, stringPool, targetFolders);
 
             var configHolder = new ConfigHolder(_config.RootPath);
-            using (var app = new App(configHolder))
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var parent = new MainWindowViewModel(app, configHolder))
             using (var vm = new ExecutableUnitViewModel(parent, model, app))
             {

@@ -44,6 +44,8 @@ namespace Ann.Core
         private Config.App Config => _configHolder.Config;
         private Config.MostRecentUsedList MruList => _configHolder.MruList;
 
+        private readonly LanguagesService _languagesService;
+
         public event EventHandler PriorityFilesChanged;
         public event EventHandler ShortcutKeyChanged;
 
@@ -244,12 +246,15 @@ namespace Ann.Core
             return i;
         }
 
+        public string GetString(StringTags tag) => _languagesService.GetString(tag);
 
-        public App(ConfigHolder configHolder)
+        public App(ConfigHolder configHolder, LanguagesService languagesService)
         {
             Debug.Assert(configHolder != null);
+            Debug.Assert(languagesService != null);
 
             _configHolder = configHolder;
+            _languagesService = languagesService;
 
             _dataBase = new ExecutableUnitDataBase(IndexFilePath);
             _inputControler = new InputControler().AddTo(CompositeDisposable);

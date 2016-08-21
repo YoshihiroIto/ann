@@ -38,7 +38,7 @@ namespace Ann
 
             _configHolder = new ConfigHolder(Constants.ConfigDirPath);
             _languagesService = new LanguagesService(_configHolder.Config);
-            _app = new App(_configHolder);
+            _app = new App(_configHolder, _languagesService);
             _viewManager = new ViewManager(Dispatcher, _languagesService);
 
             CultureService.Instance.SetConfig(_configHolder.Config);

@@ -28,7 +28,8 @@ namespace Ann.Test.MainWindow
         public void Basic()
         {
             var configHolder = new ConfigHolder(_config.RootPath);
-            using (var app = new App(configHolder))
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (new StatusBarViewModel(app))
             {
             }
@@ -38,7 +39,8 @@ namespace Ann.Test.MainWindow
         public void Messages()
         {
             var configHolder = new ConfigHolder(_config.RootPath);
-            using (var app = new App(configHolder))
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             {
                 configHolder.Config.TargetFolder.IsIncludeSystemFolder = false;
                 configHolder.Config.TargetFolder.IsIncludeSystemX86Folder = false;
@@ -52,7 +54,7 @@ namespace Ann.Test.MainWindow
                 using (var vm = new StatusBarViewModel(app))
                 {
                     Assert.Equal(0, vm.Messages.Count);
-                    vm.Messages.Add(new ProcessingStatusBarItemViewModel("aaa"));
+                    vm.Messages.Add(new ProcessingStatusBarItemViewModel(app, StringTags.AllFiles));
                     Assert.Equal(1, vm.Messages.Count);
                 }
             }
@@ -62,7 +64,8 @@ namespace Ann.Test.MainWindow
         public void Visibility()
         {
             var configHolder = new ConfigHolder(_config.RootPath);
-            using (var app = new App(configHolder))
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             {
                 configHolder.Config.TargetFolder.IsIncludeSystemFolder = false;
                 configHolder.Config.TargetFolder.IsIncludeSystemX86Folder = false;
@@ -77,7 +80,7 @@ namespace Ann.Test.MainWindow
                 {
                     Assert.Equal(System.Windows.Visibility.Collapsed, vm.Visibility.Value);
 
-                    var i = new ProcessingStatusBarItemViewModel("aaa");
+                    var i = new ProcessingStatusBarItemViewModel(app, StringTags.AllFiles);
                     vm.Messages.Add(i);
                     Assert.Equal(System.Windows.Visibility.Visible, vm.Visibility.Value);
 

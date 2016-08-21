@@ -33,7 +33,8 @@ namespace Ann.Test.MainWindow
                 try
                 {
                     var configHolder = new ConfigHolder(_config.RootPath);
-                    using (var app = new App(configHolder))
+            using (var languagesService = new LanguagesService(configHolder.Config))
+                    using (var app = new App(configHolder, languagesService))
                     {
                         // ReSharper disable once ObjectCreationAsStatement
                         new Ann.MainWindow.MainWindow(app, configHolder);

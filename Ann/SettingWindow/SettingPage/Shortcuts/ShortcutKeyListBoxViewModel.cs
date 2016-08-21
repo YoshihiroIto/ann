@@ -7,9 +7,9 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Windows.Input;
+using Ann.Core;
 using Ann.Core.Config;
 using Ann.Foundation.Mvvm;
-using Ann.Properties;
 using GongSolutions.Wpf.DragDrop;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -77,7 +77,6 @@ namespace Ann.SettingWindow.SettingPage.Shortcuts
 
             Observable
                 .Merge(Keys.CollectionChangedAsObservable().ToUnit())
-                .Merge(CultureService.Instance.ObserveProperty(x => x.Resources).ToUnit())
                 .Subscribe(_ => ValidateAll())
                 .AddTo(CompositeDisposable);
 
@@ -90,12 +89,12 @@ namespace Ann.SettingWindow.SettingPage.Shortcuts
                 pvm.ValidationMessage.Value = Validate(pvm, _model);
         }
 
-        private string Validate(ShortcutKeyViewModel item, IEnumerable<ShortcutKey> parentCollection)
+        private static StringTags? Validate(ShortcutKeyViewModel item, IEnumerable<ShortcutKey> parentCollection)
         {
             if (parentCollection
                 .Where(p => item.Model != p)
                 .Any(p => p.Text == item.Text.Value))
-                return Resources.Message_AlreadySetSameKeyStroke;
+                return StringTags.Message_AlreadySetSameKeyStroke;
 
             return null;
         }

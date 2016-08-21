@@ -27,7 +27,8 @@ namespace Ann.Core.Test
         public void Basic()
         {
             var configHolder = new ConfigHolder(_config.RootPath);
-            using (var app = new App(configHolder))
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             {
                 Assert.True(app.IsEnableActivateHotKey);
                 app.IsEnableActivateHotKey = false;
@@ -41,7 +42,8 @@ namespace Ann.Core.Test
         public void PriorityFile()
         {
             var configHolder = new ConfigHolder(_config.RootPath);
-            using (var app = new App(configHolder))
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             {
                 Assert.False(app.IsPriorityFile("AAA"));
 
@@ -61,7 +63,8 @@ namespace Ann.Core.Test
         public void TagetFolders()
         {
             var configHolder = new ConfigHolder(_config.RootPath);
-            using (var app = new App(configHolder))
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             {
                 Assert.Equal(6, app.TagetFolders.Count());
 
@@ -80,7 +83,8 @@ namespace Ann.Core.Test
         public void OpenIndexAsync()
         {
             var configHolder = new ConfigHolder(_config.RootPath);
-            using (var app = new App(configHolder))
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             {
                 configHolder.Config.TargetFolder.IsIncludeSystemFolder = false;
                 configHolder.Config.TargetFolder.IsIncludeSystemX86Folder = false;
@@ -100,7 +104,8 @@ namespace Ann.Core.Test
         {
             {
                 var configHolder = new ConfigHolder(_config.RootPath);
-                using (var app = new App(configHolder))
+            using (var languagesService = new LanguagesService(configHolder.Config))
+                using (var app = new App(configHolder, languagesService))
                 {
                     configHolder.Config.TargetFolder.IsIncludeSystemFolder = false;
                     configHolder.Config.TargetFolder.IsIncludeSystemX86Folder = false;
@@ -119,7 +124,8 @@ namespace Ann.Core.Test
 
             {
                 var configHolder = new ConfigHolder(_config.RootPath);
-                using (var app = new App(configHolder))
+            using (var languagesService = new LanguagesService(configHolder.Config))
+                using (var app = new App(configHolder, languagesService))
                 {
                     configHolder.Config.TargetFolder.IsIncludeSystemFolder = false;
                     configHolder.Config.TargetFolder.IsIncludeSystemX86Folder = false;
@@ -138,7 +144,8 @@ namespace Ann.Core.Test
         public void UpdateIndexAsync()
         {
             var configHolder = new ConfigHolder(_config.RootPath);
-            using (var app = new App(configHolder))
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             {
                 configHolder.Config.TargetFolder.IsIncludeSystemFolder = false;
                 configHolder.Config.TargetFolder.IsIncludeSystemX86Folder = false;
@@ -157,7 +164,8 @@ namespace Ann.Core.Test
         public void FindExecutableUnit()
         {
             var configHolder = new ConfigHolder(_config.RootPath);
-            using (var app = new App(configHolder))
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             {
                 configHolder.Config.TargetFolder.Folders.Add(new Path(_context.RootPath));
 
@@ -211,7 +219,8 @@ namespace Ann.Core.Test
         public void AutoUpdater()
         {
             var configHolder = new ConfigHolder(_config.RootPath);
-            using (var app = new App(configHolder))
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             {
                 Assert.Equal(0, app.AutoUpdateRemainingSeconds);
                 Assert.Equal(App.AutoUpdateStates.Wait, app.AutoUpdateState);

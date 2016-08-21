@@ -164,6 +164,7 @@
     <Compile Include="MainWindow\StatusBar.xaml.cs">
       <DependentUpon>StatusBar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MainWindow\MessagesConverter.cs" />
     <Compile Include="SettingWindow\SettingPage\About\AboutView.xaml.cs">
       <DependentUpon>AboutView.xaml</DependentUpon>
     </Compile>

@@ -28,7 +28,8 @@ namespace Ann.Test.MainWindow
         public void Basic()
         {
             var configHolder = new ConfigHolder(_config.RootPath);
-            using (var app = new App(configHolder))
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var vm = new MainWindowViewModel(app, configHolder))
             {
                 Assert.True(double.IsNaN(vm.Left.Value));
@@ -44,7 +45,8 @@ namespace Ann.Test.MainWindow
         public void SettingShowCommand()
         {
             var configHolder = new ConfigHolder(_config.RootPath);
-            using (var app = new App(configHolder))
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var vm = new MainWindowViewModel(app, configHolder))
             {
                 vm.SettingShowCommand.Execute(null);
@@ -55,7 +57,8 @@ namespace Ann.Test.MainWindow
         public void ShowCommand()
         {
             var configHolder = new ConfigHolder(_config.RootPath);
-            using (var app = new App(configHolder))
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var vm = new MainWindowViewModel(app, configHolder))
             {
                 vm.ShowCommand.Execute(null);
@@ -66,7 +69,8 @@ namespace Ann.Test.MainWindow
         public void HideCommand()
         {
             var configHolder = new ConfigHolder(_config.RootPath);
-            using (var app = new App(configHolder))
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var vm = new MainWindowViewModel(app, configHolder))
             {
                 vm.HideCommand.Execute(null);
@@ -77,7 +81,8 @@ namespace Ann.Test.MainWindow
         public void ExitCommand()
         {
             var configHolder = new ConfigHolder(_config.RootPath);
-            using (var app = new App(configHolder))
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var vm = new MainWindowViewModel(app, configHolder))
             {
                 vm.ExitCommand.Execute(null);
@@ -88,7 +93,8 @@ namespace Ann.Test.MainWindow
         public void Candidates()
         {
             var configHolder = new ConfigHolder(_config.RootPath);
-            using (var app = new App(configHolder))
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var vm = new MainWindowViewModel(app, configHolder))
             {
                 Assert.Equal(0, vm.Candidates.Value.Length);

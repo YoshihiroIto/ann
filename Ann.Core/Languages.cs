@@ -94,7 +94,7 @@ case StringTags.Message_FolderNotFound: return "Folder not found.";
 case StringTags.Message_IndexIsNotOpened: return "Cannot open the index.";
 case StringTags.Message_IndexIsOld: return "Index is old. Update the index.";
 case StringTags.Message_IndexNotFound: return "Index not found. Update the index.";
-case StringTags.Message_IndexUpdating: return "Index Updating...";
+case StringTags.Message_IndexUpdating: return "Index Updating...{0}";
 case StringTags.Message_InOpening: return "Index Initializing...";
 case StringTags.Restart: return "Restart";
 case StringTags.Settings: return "Settings";
@@ -148,7 +148,7 @@ case StringTags.Message_FolderNotFound: return "フォルダーが見つかり�
 case StringTags.Message_IndexIsNotOpened: return "インデックスが開けません。";
 case StringTags.Message_IndexIsOld: return "インデックスが古いです。インデックスを更新してください。";
 case StringTags.Message_IndexNotFound: return "インデックスが見つかりません。インデックスを更新してください。";
-case StringTags.Message_IndexUpdating: return "インデックス更新中...";
+case StringTags.Message_IndexUpdating: return "インデックス更新中...{0}";
 case StringTags.Message_InOpening: return "インデックス初期化中...";
 case StringTags.Restart: return "再起動";
 case StringTags.Settings: return "設定";

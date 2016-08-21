@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -180,11 +181,11 @@ namespace Ann.MainWindow
                             return;
                         }
 
-                        var errMes = Properties.Resources.Message_FailedToStart;
+                        var errMes = new List<StringTags> {StringTags.Message_FailedToStart};
                         if (File.Exists(path) == false)
-                            errMes += Properties.Resources.Message_FileNotFound;
+                            errMes.Add(StringTags.Message_FileNotFound);
 
-                        var item = new StatusBarItemViewModel(errMes);
+                        var item = new StatusBarItemViewModel(app, errMes);
 
                         StatusBar.Messages.AddOnScheduler(item);
                         await Task.Delay(TimeSpan.FromSeconds(3));
