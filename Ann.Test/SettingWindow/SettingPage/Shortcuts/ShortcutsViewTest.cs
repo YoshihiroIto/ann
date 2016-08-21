@@ -28,7 +28,8 @@ namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
 
                 try
                 {
-                    var c = new ShortcutsView();
+                    // ReSharper disable once ObjectCreationAsStatement
+                    new ShortcutsView();
                 }
                 catch (Exception e)
                 {

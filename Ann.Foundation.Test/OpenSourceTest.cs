@@ -1,5 +1,4 @@
-﻿using System.Windows.Threading;
-using Xunit;
+﻿using Xunit;
 
 namespace Ann.Foundation.Test
 {

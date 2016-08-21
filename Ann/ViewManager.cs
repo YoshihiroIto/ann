@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows.Threading;
 using Ann.Foundation.Mvvm;
 using Ann.Foundation.Mvvm.Message;

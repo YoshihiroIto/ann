@@ -137,8 +137,9 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
             {
                 var paths = (IEnumerable<string>)dataObject.GetData(DataFormats.FileDrop, false);
 
-                foreach (var path in paths.Where(x => File.Exists(x) && IsEnableExt(x)))
-                   _model.PriorityFiles.Add(new Path(path));
+                if (paths != null)
+                    foreach (var path in paths.Where(x => File.Exists(x) && IsEnableExt(x)))
+                        _model.PriorityFiles.Add(new Path(path));
             }
             else
             {

@@ -28,7 +28,8 @@ namespace Ann.Test.SettingWindow.SettingPage.General
 
                 try
                 {
-                    var c = new GeneralView();
+                    // ReSharper disable once ObjectCreationAsStatement
+                    new GeneralView();
                 }
                 catch (Exception e)
                 {

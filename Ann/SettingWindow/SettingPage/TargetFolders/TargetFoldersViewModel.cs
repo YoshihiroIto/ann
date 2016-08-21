@@ -170,8 +170,9 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
             {
                 var paths = (IEnumerable<string>)dataObject.GetData(DataFormats.FileDrop, false);
 
-                foreach (var path in paths.Where(Directory.Exists))
-                   _model.TargetFolder.Folders.Add(new Path(path));
+                if (paths != null)
+                    foreach (var path in paths.Where(Directory.Exists))
+                        _model.TargetFolder.Folders.Add(new Path(path));
             }
             else
             {

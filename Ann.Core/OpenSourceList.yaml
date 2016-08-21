@@ -2,6 +2,10 @@
   Auther: ta.speot.is
   Summry: A managed wrapper around Microsoft's delta compression application programming interfaces.
   Url: 
+- Name: gong-wpf-dragdrop
+  Auther: Jan Karger (punker76),  Steven Kirk,  mitchell.jon
+  Summry: A Drag'n'Drop Framework for WPF
+  Url: https://github.com/punker76/gong-wpf-dragdrop
 - Name: Jewelry.Collections
   Auther: YoshihiroIto
   Summry: Jewelry.Collections
