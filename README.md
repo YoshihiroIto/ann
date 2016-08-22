@@ -17,6 +17,11 @@ Download
 
 
 
+Help translate
+--------------
+[Ann-Localization](https://docs.google.com/spreadsheets/d/15Eea4QU9iY2JBkNnNlo83EbCq4QeIJVOnnnKh-c93xs/edit?usp=sharing)
+
+
 License
 -------
 

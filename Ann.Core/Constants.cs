@@ -17,6 +17,7 @@ namespace Ann.Core
 
         public static string AnnGitHubUrl = "https://github.com/YoshihiroIto/Ann";
         public static string AnnTwitterUrl = "https://twitter.com/yoiyoi322";
+        public static string AnnLocalizationUrl = "https://docs.google.com/spreadsheets/d/15Eea4QU9iY2JBkNnNlo83EbCq4QeIJVOnnnKh-c93xs/edit?usp=sharing";
 
         public static string SystemFolder => Environment.GetFolderPath(Environment.SpecialFolder.System);
         public static string SystemX86Folder => Environment.GetFolderPath(Environment.SpecialFolder.SystemX86);
