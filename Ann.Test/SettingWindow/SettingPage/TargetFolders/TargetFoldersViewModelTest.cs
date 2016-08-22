@@ -2,7 +2,6 @@
 using System.Threading;
 using Ann.Core;
 using Ann.Foundation;
-using Ann.Properties;
 using Ann.SettingWindow.SettingPage.TargetFolders;
 using Xunit;
 using App = Ann.Core.App;
@@ -28,7 +27,9 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
                 Assert.True(vm.IsIncludeSystemFolder.Value);
@@ -71,7 +72,9 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
                 vm.IsIncludeSystemFolder.Value = false;
@@ -96,7 +99,9 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
                 vm.IsIncludeSystemFolder.Value = false;
@@ -130,7 +135,9 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
                 vm.IsIncludeSystemFolder.Value = false;
@@ -142,10 +149,10 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
 
                 model.TargetFolder.Folders.Add(new Path("XYZ"));
 
-                while (string.IsNullOrEmpty(vm.Folders[0].ValidationMessage.Value))
+                while (vm.Folders[0].ValidationMessage.Value.HasValue == false)
                     Thread.Sleep(TimeSpan.FromMilliseconds(20));
 
-                Assert.Equal(Resources.Message_FolderNotFound, vm.Folders[0].ValidationMessage.Value);
+                Assert.Equal(StringTags.Message_FolderNotFound, vm.Folders[0].ValidationMessage.Value);
             }
         }
 
@@ -154,7 +161,9 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
                 vm.IsIncludeSystemFolder.Value = false;
@@ -166,7 +175,7 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
 
                 model.TargetFolder.Folders.Add(new Path(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)));
 
-                while (string.IsNullOrEmpty(vm.Folders[0].ValidationMessage.Value) == false)
+                while (vm.Folders[0].ValidationMessage.Value.HasValue)
                     Thread.Sleep(TimeSpan.FromMilliseconds(20));
 
                 Assert.Null(vm.Folders[0].ValidationMessage.Value);
@@ -178,7 +187,9 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
                 vm.IsIncludeSystemFolder.Value = false;
@@ -191,18 +202,20 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
                 {
                     model.TargetFolder.Folders.Add(new Path("XYZ"));
 
-                    while (string.IsNullOrEmpty(vm.Folders[0].ValidationMessage.Value))
+                    while (vm.Folders[0].ValidationMessage.Value.HasValue == false)
                         Thread.Sleep(TimeSpan.FromMilliseconds(20));
 
-                    Assert.Equal(Resources.Message_FolderNotFound, vm.Folders[0].ValidationMessage.Value);
+                    Assert.Equal(StringTags.Message_FolderNotFound, vm.Folders[0].ValidationMessage.Value);
                 }
 
                 {
                     model.TargetFolder.Folders[0].Value = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-                    while (string.IsNullOrEmpty(vm.Folders[0].ValidationMessage.Value) == false)
+                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                    while (vm.Folders[0].ValidationMessage.Value.HasValue)
                         Thread.Sleep(TimeSpan.FromMilliseconds(20));
 
+                    // ReSharper disable once HeuristicUnreachableCode
                     Assert.Null(vm.Folders[0].ValidationMessage.Value);
                 }
             }
@@ -213,7 +226,9 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
                 vm.IsIncludeSystemFolder.Value = false;
@@ -226,7 +241,7 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
                 {
                     model.TargetFolder.Folders.Add(new Path(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)));
 
-                    while (string.IsNullOrEmpty(vm.Folders[0].ValidationMessage.Value) == false)
+                    while (vm.Folders[0].ValidationMessage.Value.HasValue)
                         Thread.Sleep(TimeSpan.FromMilliseconds(20));
 
                     Assert.Null(vm.Folders[0].ValidationMessage.Value);
@@ -235,10 +250,10 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
                 {
                     model.TargetFolder.Folders[0].Value = "XYZ";
 
-                    while (string.IsNullOrEmpty(vm.Folders[0].ValidationMessage.Value))
+                    while (vm.Folders[0].ValidationMessage.Value.HasValue == false)
                         Thread.Sleep(TimeSpan.FromMilliseconds(20));
 
-                    Assert.Equal(Resources.Message_FolderNotFound, vm.Folders[0].ValidationMessage.Value);
+                    Assert.Equal(StringTags.Message_FolderNotFound, vm.Folders[0].ValidationMessage.Value);
                 }
             }
         }
@@ -248,7 +263,9 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
                 vm.IsIncludeSystemFolder.Value = false;
@@ -276,7 +293,9 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var vm = new TargetFoldersViewModel(model, app))
             {
                 vm.IsIncludeSystemFolder.Value = false;
@@ -289,14 +308,14 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
                 model.TargetFolder.Folders.Add(new Path(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)));
                 model.TargetFolder.Folders.Add(new Path(Environment.GetFolderPath(Environment.SpecialFolder.CommonPictures)));
 
-                Assert.Null(vm.Folders[0].ValidationMessage.Value);
-                Assert.Null(vm.Folders[1].ValidationMessage.Value);
+                Assert.False(vm.Folders[0].ValidationMessage.Value.HasValue);
+                Assert.False(vm.Folders[1].ValidationMessage.Value.HasValue);
 
                 model.TargetFolder.Folders.Add(new Path(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)));
 
-                Assert.Equal(Resources.Message_AlreadySetSameFolder, vm.Folders[0].ValidationMessage.Value);
+                Assert.Equal(StringTags.Message_AlreadySetSameFolder, vm.Folders[0].ValidationMessage.Value);
                 Assert.Null(vm.Folders[1].ValidationMessage.Value);
-                Assert.Equal(Resources.Message_AlreadySetSameFolder, vm.Folders[2].ValidationMessage.Value);
+                Assert.Equal(StringTags.Message_AlreadySetSameFolder, vm.Folders[2].ValidationMessage.Value);
 
             }
         }

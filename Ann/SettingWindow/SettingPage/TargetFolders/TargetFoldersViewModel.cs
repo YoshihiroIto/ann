@@ -9,7 +9,6 @@ using System.Reactive.Subjects;
 using System.Windows;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
-using Ann.Properties;
 using GongSolutions.Wpf.DragDrop;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -123,7 +122,6 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
 
             Observable
                 .Merge(Folders.CollectionChangedAsObservable().ToUnit())
-                .Merge(CultureService.Instance.ObserveProperty(x => x.Resources).ToUnit())
                 .Subscribe(_ => ValidateAll())
                 .AddTo(CompositeDisposable);
 
@@ -136,16 +134,16 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                 pvm.ValidationMessage.Value = Validate(pvm, _model.TargetFolder.Folders);
         }
 
-        private string Validate(PathViewModel item, IEnumerable<Path> parentCollection)
+        private static StringTags? Validate(PathViewModel item, IEnumerable<Path> parentCollection)
         {
             if (string.IsNullOrEmpty(item.Path.Value) == false)
                 if (Directory.Exists(item.Path.Value) == false)
-                    return Resources.Message_FolderNotFound;
+                    return StringTags.Message_FolderNotFound;
 
             if (parentCollection
                 .Where(p => item.Model != p)
                 .Any(p => p.Value == item.Path.Value))
-                return Resources.Message_AlreadySetSameFolder;
+                return StringTags.Message_AlreadySetSameFolder;
 
             return null;
         }
@@ -170,8 +168,9 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
             {
                 var paths = (IEnumerable<string>)dataObject.GetData(DataFormats.FileDrop, false);
 
-                foreach (var path in paths.Where(Directory.Exists))
-                   _model.TargetFolder.Folders.Add(new Path(path));
+                if (paths != null)
+                    foreach (var path in paths.Where(Directory.Exists))
+                        _model.TargetFolder.Folders.Add(new Path(path));
             }
             else
             {

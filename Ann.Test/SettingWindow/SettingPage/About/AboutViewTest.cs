@@ -28,7 +28,8 @@ namespace Ann.Test.SettingWindow.SettingPage.About
 
                 try
                 {
-                    var c = new AboutView();
+                    // ReSharper disable once ObjectCreationAsStatement
+                    new AboutView();
                 }
                 catch (Exception e)
                 {

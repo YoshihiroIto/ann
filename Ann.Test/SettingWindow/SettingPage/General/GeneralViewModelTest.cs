@@ -61,8 +61,6 @@ namespace Ann.Test.SettingWindow.SettingPage.General
                     cultureName = vm.SelectedCulture.Value.CultureName;
                     caption = vm.SelectedCulture.Value.Caption;
                 }
-
-                CultureService.Instance.CultureName = "en";
             });
             th.Start();
             th.Join();

@@ -117,4 +117,63 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="File" xml:space="preserve">
+    <value>//------------------------------------------------------------------------------
+// &lt;auto-generated&gt;
+// &lt;/auto-generated&gt;
+//------------------------------------------------------------------------------
+using System;
+
+namespace {0}
+{{
+{1}
+
+{2}
+
+{3}
+}}</value>
+  </data>
+  <data name="Languages" xml:space="preserve">
+    <value>public enum Languages
+{{
+{0}
+}}</value>
+  </data>
+  <data name="LocalizationClass" xml:space="preserve">
+    <value>public static class Localization
+{{
+    public static string GetString(Languages language, StringTags tag)
+{{
+{0}
+}}
+}}
+
+</value>
+  </data>
+  <data name="Switch" xml:space="preserve">
+    <value>switch({0})
+{{
+{1}
+default:
+    throw new NotImplementedException();
+}}</value>
+  </data>
+  <data name="Case" xml:space="preserve">
+    <value>case {0}.{1}:
+{2}
+</value>
+  </data>
+  <data name="Tags" xml:space="preserve">
+    <value>public enum StringTags
+{{
+{0}
+}}</value>
+  </data>
+  <data name="CaseNoReturn" xml:space="preserve">
+    <value>case {0}.{1}: {2}</value>
+  </data>
+  <data name="TagCaseReturn" xml:space="preserve">
+    <value>return "{0}";
+</value>
+  </data>
 </root>

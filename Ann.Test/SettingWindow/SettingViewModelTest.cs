@@ -26,7 +26,9 @@ namespace Ann.Test.SettingWindow
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var versionUpdater = new VersionUpdater(null))
             using (var vm = new SettingViewModel(model, versionUpdater, app))
             {
@@ -40,7 +42,9 @@ namespace Ann.Test.SettingWindow
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var versionUpdater = new VersionUpdater(null))
             using (var vm = new SettingViewModel(model, versionUpdater, app))
             {
@@ -53,7 +57,9 @@ namespace Ann.Test.SettingWindow
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var versionUpdater = new VersionUpdater(null))
             using (var vm = new SettingViewModel(model, versionUpdater, app))
             {

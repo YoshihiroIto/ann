@@ -28,7 +28,8 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
 
                 try
                 {
-                    var c = new PriorityFilesView();
+                    // ReSharper disable once ObjectCreationAsStatement
+                    new PriorityFilesView();
                 }
                 catch (Exception e)
                 {

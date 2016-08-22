@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Reactive.Linq;
 using System.Text;
 using System.Windows.Input;
+using Ann.Core;
 using Ann.Core.Config;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings;
@@ -21,7 +22,7 @@ namespace Ann.SettingWindow.SettingPage.Shortcuts
 
         public ReactiveProperty<bool> IsFocused  { get; }
 
-        public ReactiveProperty<string> ValidationMessage { get; }
+        public ReactiveProperty<StringTags?> ValidationMessage { get; }
 
         public ModifierKeys Modifiers
         {
@@ -113,7 +114,7 @@ namespace Ann.SettingWindow.SettingPage.Shortcuts
                 .ToReadOnlyReactiveProperty()
                 .AddTo(CompositeDisposable);
 
-            ValidationMessage = new ReactiveProperty<string>().AddTo(CompositeDisposable); 
+            ValidationMessage = new ReactiveProperty<StringTags?>().AddTo(CompositeDisposable); 
         }
     }
 }

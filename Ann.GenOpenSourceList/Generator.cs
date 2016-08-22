@@ -18,7 +18,8 @@ namespace Ann.GenOpenSourceList
                 var packageNames = packagesConfigPaths
                     .Select(XElement.Load)
                     .SelectMany(p => p.Elements("package"))
-                    .Select(p => p.Attribute("id").Value)
+                    .Select(p => p.Attribute("id")?.Value)
+                    .Where(x => x != null)
                     .Distinct();
 
                 var genPackageTasks = packageNames.Select(GeneratePackageAsync);

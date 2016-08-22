@@ -125,12 +125,12 @@
   </Choose>
   <ItemGroup>
     <Compile Include="MainWindow\MainWindowTest.cs" />
-    <Compile Include="MainWindow\StatusBarItemViewModelTest.cs" />
     <Compile Include="MainWindow\MainWindowViewModelTest.cs" />
+    <Compile Include="MainWindow\MessagesConverterTest.cs" />
+    <Compile Include="MainWindow\StatusBarItemViewModelTest.cs" />
     <Compile Include="MainWindow\StatusBarViewModelTest.cs" />
     <Compile Include="MainWindow\ExecutableUnitViewModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResourcesTest.cs" />
     <Compile Include="SettingWindow\SettingWindowTest.cs" />
     <Compile Include="SettingWindow\SettingPage\About\AboutViewTest.cs" />
     <Compile Include="SettingWindow\SettingPage\FileOrFolderListBoxTest.cs" />
@@ -140,7 +140,6 @@
     <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutsViewTest.cs" />
     <Compile Include="SettingWindow\SettingPage\TargetFolders\TargetFoldersViewTest.cs" />
     <Compile Include="ViewManagerTest.cs" />
-    <Compile Include="CultureServiceTest.cs" />
     <Compile Include="SettingWindow\SettingViewModelTest.cs" />
     <Compile Include="SettingWindow\SettingPage\PathViewModelTest.cs" />
     <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutKeyListBoxViewModelTest.cs" />

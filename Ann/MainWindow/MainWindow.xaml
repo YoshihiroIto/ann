@@ -1,7 +1,6 @@
 ﻿<Window x:Class="Ann.MainWindow.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:app="clr-namespace:Ann"
         xmlns:behavior="clr-namespace:Ann.Foundation.Control.Behavior;assembly=Ann.Foundation"
         xmlns:core="clr-namespace:Ann.Core;assembly=Ann.Core"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -41,10 +40,10 @@
                                                                    Mode=OneTime}">
             <behavior:WindowTaskTrayIconBehavior.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_UpdateIndex, Mode=OneWay}" />
-                    <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Settings, Mode=OneWay}" />
+                    <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_UpdateIndex}" />
+                    <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_Settings}" />
                     <Separator Margin="-100,8,-100,8" />
-                    <MenuItem Command="{Binding ExitCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Exit, Mode=OneWay}" />
+                    <MenuItem Command="{Binding ExitCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_Exit}" />
                 </ContextMenu>
             </behavior:WindowTaskTrayIconBehavior.ContextMenu>
         </behavior:WindowTaskTrayIconBehavior>
@@ -67,10 +66,10 @@
                                          Foreground="Gainsboro"
                                          PlacementMode="BottomAndAlignRightEdges">
                     <StackPanel Margin="0,8">
-                        <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_UpdateIndex, Mode=OneWay}" />
-                        <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Settings, Mode=OneWay}" />
+                        <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_UpdateIndex}" />
+                        <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_Settings}" />
                         <Separator />
-                        <MenuItem Command="{Binding ExitCommand, Mode=OneTime}" Header="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.MenuItem_Exit, Mode=OneWay}" />
+                        <MenuItem Command="{Binding ExitCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_Exit}" />
                     </StackPanel>
                 </materialDesign:PopupBox>
 

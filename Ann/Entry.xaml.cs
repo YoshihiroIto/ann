@@ -37,10 +37,10 @@ namespace Ann
             base.OnStartup(e);
 
             _configHolder = new ConfigHolder(Constants.ConfigDirPath);
-            _app = new App(_configHolder);
-            _viewManager = new ViewManager(Dispatcher);
+            _languagesService = new LanguagesService(_configHolder.Config);
+            _app = new App(_configHolder, _languagesService);
+            _viewManager = new ViewManager(Dispatcher, _languagesService);
 
-            CultureService.Instance.SetConfig(_configHolder.Config);
             Reactive.Bindings.UIDispatcherScheduler.Initialize();
 
             MainWindow = new MainWindow.MainWindow(_app, _configHolder);
@@ -53,13 +53,13 @@ namespace Ann
 
             _isRestartRequested = _app.VersionUpdater.IsRestartRequested;
 
-            _app.Dispose();
             _viewManager.Dispose();
-
-            CultureService.Instance.Destory();
+            _app.Dispose();
+            _languagesService.Dispose();
         }
 
         private ConfigHolder _configHolder;
+        private LanguagesService _languagesService;
         private App _app;
         private ViewManager _viewManager;
 

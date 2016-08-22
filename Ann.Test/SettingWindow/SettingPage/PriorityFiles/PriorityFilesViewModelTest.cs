@@ -1,7 +1,6 @@
 ﻿using System;
 using Ann.Core;
 using Ann.Foundation;
-using Ann.Properties;
 using Ann.SettingWindow.SettingPage.PriorityFiles;
 using Xunit;
 
@@ -26,7 +25,9 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (new PriorityFilesViewModel(model, app))
             {
             }
@@ -37,7 +38,9 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var vm = new PriorityFilesViewModel(model, app))
             {
                 Assert.Equal(0, vm.Files.Count);
@@ -62,7 +65,9 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var vm = new PriorityFilesViewModel(model, app))
             {
                 vm.FileAddCommand.Execute(null);
@@ -80,7 +85,9 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var vm = new PriorityFilesViewModel(model, app))
             {
                 Assert.Equal(0, vm.Files.Count);
@@ -110,7 +117,9 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var vm = new PriorityFilesViewModel(model, app))
             {
                 model.PriorityFiles.Add(new Path("AA"));
@@ -123,7 +132,9 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var vm = new PriorityFilesViewModel(model, app))
             {
                 model.PriorityFiles.Add(new Path(Environment.ExpandEnvironmentVariables(@"%SystemRoot%\explorer.exe")));
@@ -144,7 +155,9 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
         {
             var model = new Core.Config.App();
 
-            using (var app = new App(new ConfigHolder(_config.RootPath)))
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
             using (var vm = new PriorityFilesViewModel(model, app))
             {
                 model.PriorityFiles.Add(new Path(Environment.ExpandEnvironmentVariables(@"%SystemRoot%\explorer.exe")));
@@ -155,9 +168,9 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
 
                 model.PriorityFiles.Add(new Path(Environment.ExpandEnvironmentVariables(@"%SystemRoot%\explorer.exe")));
 
-                Assert.Equal(Resources.Message_AlreadySetSameFile, vm.Files[0].ValidationMessage.Value);
+                Assert.Equal(StringTags.Message_AlreadySetSameFile, vm.Files[0].ValidationMessage.Value);
                 Assert.Null(vm.Files[1].ValidationMessage.Value);
-                Assert.Equal(Resources.Message_AlreadySetSameFile, vm.Files[2].ValidationMessage.Value);
+                Assert.Equal(StringTags.Message_AlreadySetSameFile, vm.Files[2].ValidationMessage.Value);
             }
         }
     }

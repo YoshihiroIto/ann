@@ -41,8 +41,9 @@ namespace Ann.MainWindow
                     if (i)
                     {
                         var item = new ProcessingStatusBarItemViewModel(
+                            app,
                             StatusBarItemViewModel.SearchKey.IndexUpdating,
-                            Properties.Resources.Message_IndexUpdating);
+                            StringTags.Message_IndexUpdating);
                         Messages.Add(item);
                     }
                     else
@@ -68,7 +69,15 @@ namespace Ann.MainWindow
                             x => x.Key == StatusBarItemViewModel.SearchKey.IndexUpdating);
 
                     if (item != null)
-                        item.Message.Value = Properties.Resources.Message_IndexUpdating + c;
+                        item.Messages.Value =
+                            new[]
+                            {
+                                new StatusBarItemViewModel.Message
+                                {
+                                    String = StringTags.Message_IndexUpdating,
+                                    Options = new object[] {c}
+                                }
+                            };
                 })
                 .AddTo(CompositeDisposable);
 
@@ -78,8 +87,9 @@ namespace Ann.MainWindow
                     if (i == false)
                     {
                         var item = new StatusBarItemViewModel(
+                            app,
                             StatusBarItemViewModel.SearchKey.ActivationShortcutKeyIsAlreadyInUse,
-                            Properties.Resources.Message_ActivationShortcutKeyIsAlreadyInUse);
+                            StringTags.Message_ActivationShortcutKeyIsAlreadyInUse);
                         Messages.AddOnScheduler(item);
                     }
                     else
@@ -99,8 +109,9 @@ namespace Ann.MainWindow
                     if (r == IndexOpeningResults.InOpening)
                     {
                         var item = new ProcessingStatusBarItemViewModel(
+                            app,
                             StatusBarItemViewModel.SearchKey.InOpening,
-                            Properties.Resources.Message_InOpening);
+                            StringTags.Message_InOpening);
                         Messages.AddOnScheduler(item);
                     }
                     else
@@ -114,12 +125,12 @@ namespace Ann.MainWindow
                     }
                 }).AddTo(CompositeDisposable);
 
-            SetupVersionUpdater();
+            SetupVersionUpdater(app);
         }
 
         private StatusBarItemViewModel _autoUpdaterItem;
 
-        private void SetupVersionUpdater()
+        private void SetupVersionUpdater(App app)
         {
             CompositeDisposable.Add(() => _autoUpdaterItem?.Dispose());
 
@@ -136,9 +147,9 @@ namespace Ann.MainWindow
                     {
                         _autoUpdaterItem =
                             new WaitingStatusBarItemViewModel(
-                                string.Format(
-                                    Properties.Resources.AutoUpdateStates_CloseAfterNSec,
-                                    Constants.AutoUpdateCloseDelaySec));
+                                app,
+                                StringTags.AutoUpdateStates_CloseAfterNSec,
+                                new object[] {Constants.AutoUpdateCloseDelaySec});
                     }
 
                     if (_autoUpdaterItem != null)
@@ -149,10 +160,25 @@ namespace Ann.MainWindow
                 .Subscribe(p =>
                 {
                     if (_app.AutoUpdateState == App.AutoUpdateStates.CloseAfterNSec)
-                        _autoUpdaterItem.Message.Value =
+                    {
+                        _autoUpdaterItem.Messages.Value =
                             p == 0
-                                ? Properties.Resources.AutoUpdateStates_CloseAfter0Sec_Restart
-                                : string.Format(Properties.Resources.AutoUpdateStates_CloseAfterNSec, p);
+                                ? new[]
+                                {
+                                    new StatusBarItemViewModel.Message
+                                    {
+                                        String = StringTags.AutoUpdateStates_CloseAfter0Sec_Restart,
+                                    }
+                                }
+                                : new[]
+                                {
+                                    new StatusBarItemViewModel.Message
+                                    {
+                                        String = StringTags.AutoUpdateStates_CloseAfter0Sec_Restart,
+                                        Options = new object[] {p.ToString()}
+                                    }
+                                };
+                    }
                 }).AddTo(CompositeDisposable);
         }
     }

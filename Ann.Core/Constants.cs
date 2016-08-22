@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -33,7 +32,8 @@ namespace Ann.Core
                 ? Environment.GetEnvironmentVariable("PROGRAMFILES(X86)")
                 : Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
 
-        public static string CommonStartMenuFolder => Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu);
+        public static string CommonStartMenuFolder
+            => Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu);
 
         private static OpenSource[] _OpenSources;
 
@@ -72,22 +72,15 @@ namespace Ann.Core
 
         static Constants()
         {
-            var dir = System.IO.Path.GetDirectoryName(AssemblyConstants.EntryAssemblyLocation) ?? string.Empty;
-            var resFiles = Directory.EnumerateFiles(dir, "Ann.resources.dll", SearchOption.AllDirectories);
-
-            SupportedCultures = resFiles.Select(f =>
-            {
-                var name = System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(f));
-                Debug.Assert(name != null);
-
-                return new CultureSummry
-                {
-                    Caption = CultureInfo.GetCultureInfo(name).NativeName,
-                    CultureName = name
-                };
-            })
-                .Where(x => x != null)
-                .ToArray();
+            SupportedCultures = Enum.GetValues(typeof(Languages))
+                .Cast<Languages>()
+                .Select(x => x.ToString())
+                .Select(x =>
+                    new CultureSummry
+                    {
+                        Caption = CultureInfo.GetCultureInfo(x).NativeName,
+                        CultureName = x
+                    }).ToArray();
         }
     }
 
