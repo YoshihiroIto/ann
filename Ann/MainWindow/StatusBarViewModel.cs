@@ -174,8 +174,8 @@ namespace Ann.MainWindow
                                 {
                                     new StatusBarItemViewModel.Message
                                     {
-                                        String = StringTags.AutoUpdateStates_CloseAfter0Sec_Restart,
-                                        Options = new object[] {p.ToString()}
+                                        String = StringTags.AutoUpdateStates_CloseAfterNSec,
+                                        Options = new object[] {p}
                                     }
                                 };
                     }
