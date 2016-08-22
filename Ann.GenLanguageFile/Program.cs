@@ -2,10 +2,13 @@
 
 namespace Ann.GenLanguageFile
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] argv)
+        public static int Main(string[] argv)
         {
+            if (argv.Length != 3)
+                return 1;
+
             var options = new Exporter.OutputOptions
             {
                 Namespace = argv[2]
@@ -15,6 +18,8 @@ namespace Ann.GenLanguageFile
 
             File.WriteAllText(argv[0], r.Class);
             File.WriteAllText(argv[1], r.DefaultXaml);
+
+            return 0;
         }
     }
 }

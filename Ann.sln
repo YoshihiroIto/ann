@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ann.Test", "Ann.Test\Ann.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ann.GenLanguageFile", "Ann.GenLanguageFile\Ann.GenLanguageFile.csproj", "{2E16952B-F745-4580-90DC-68C6B917B759}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ann.GenLanguageFile.Test", "Ann.GenLanguageFile.Test\Ann.GenLanguageFile.Test.csproj", "{4D994B91-EE37-416F-A190-BC2F478A11A9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{2E16952B-F745-4580-90DC-68C6B917B759}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E16952B-F745-4580-90DC-68C6B917B759}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E16952B-F745-4580-90DC-68C6B917B759}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D994B91-EE37-416F-A190-BC2F478A11A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D994B91-EE37-416F-A190-BC2F478A11A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D994B91-EE37-416F-A190-BC2F478A11A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D994B91-EE37-416F-A190-BC2F478A11A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
