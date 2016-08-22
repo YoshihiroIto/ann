@@ -126,6 +126,8 @@
   <ItemGroup>
     <Compile Include="MainWindow\MainWindowTest.cs" />
     <Compile Include="MainWindow\MainWindowViewModelTest.cs" />
+    <Compile Include="MainWindow\MessagesConverterTest.cs" />
+    <Compile Include="MainWindow\StatusBarItemViewModelTest.cs" />
     <Compile Include="MainWindow\StatusBarViewModelTest.cs" />
     <Compile Include="MainWindow\ExecutableUnitViewModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

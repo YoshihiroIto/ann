@@ -75,7 +75,7 @@ namespace Ann.MainWindow
                                 new StatusBarItemViewModel.Message
                                 {
                                     String = StringTags.Message_IndexUpdating,
-                                    Options = new object[] {c.ToString()}
+                                    Options = new object[] {c}
                                 }
                             };
                 })
@@ -149,7 +149,7 @@ namespace Ann.MainWindow
                             new WaitingStatusBarItemViewModel(
                                 app,
                                 StringTags.AutoUpdateStates_CloseAfterNSec,
-                                new object[] {Constants.AutoUpdateCloseDelaySec.ToString()});
+                                new object[] {Constants.AutoUpdateCloseDelaySec});
                     }
 
                     if (_autoUpdaterItem != null)
