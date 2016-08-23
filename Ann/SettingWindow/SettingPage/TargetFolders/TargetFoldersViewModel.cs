@@ -9,6 +9,7 @@ using System.Reactive.Subjects;
 using System.Windows;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
+using Ann.Foundation.Mvvm.Message;
 using GongSolutions.Wpf.DragDrop;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -35,11 +36,16 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
 
         private readonly Core.Config.App _model;
 
-        public TargetFoldersViewModel(Core.Config.App model, App app)
+        private readonly WindowMessageBroker _messenger;
+
+        public TargetFoldersViewModel(Core.Config.App model, App app, WindowMessageBroker messenger)
         {
             Debug.Assert(model != null);
+            Debug.Assert(app != null);
+            Debug.Assert(messenger != null);
 
             _model = model;
+            _messenger = messenger;
 
             _pathChanged = new Subject<int>().AddTo(CompositeDisposable);
 
@@ -72,7 +78,8 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                 var isInitializing = true;
                 using (Disposable.Create(() => isInitializing = false))
                 {
-                    var path = new PathViewModel(p, true);
+                    var path = new PathViewModel(p, DialogOpeningAction);
+
                     path.Path
                         .Where(_ => isInitializing == false)
                         .Subscribe(_ => _pathChanged.OnNext(0))
@@ -126,6 +133,18 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
                 .AddTo(CompositeDisposable);
 
             ValidateAll();
+        }
+
+        private string DialogOpeningAction()
+        {
+            var message = new FileOrFolderSelectMessage
+            {
+                IsFolderPicker = true
+            };
+
+            _messenger.Publish(message);
+
+            return message.Response;
         }
 
         private void ValidateAll()

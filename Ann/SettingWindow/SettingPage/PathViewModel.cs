@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
-using Ann.Foundation.Mvvm.Message;
-using Microsoft.WindowsAPICodePack.Dialogs;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using Reactive.Bindings.Notifiers;
 using Path = Ann.Core.Path;
 
 namespace Ann.SettingWindow.SettingPage
@@ -22,9 +18,10 @@ namespace Ann.SettingWindow.SettingPage
 
         public Path Model { get; }
 
-        public PathViewModel(Path model, bool isFolder, Func<IEnumerable<CommonFileDialogFilter>> makeFilters = null)
+        public PathViewModel(Path model, Func<string> dialogOpeningAction)
         {
             Debug.Assert(model != null);
+            Debug.Assert(dialogOpeningAction != null);
 
             Model = model;
 
@@ -37,16 +34,9 @@ namespace Ann.SettingWindow.SettingPage
             FolderSelectDialogOpenCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             FolderSelectDialogOpenCommand.Subscribe(_ =>
             {
-                var message = new FileOrFolderSelectMessage
-                {
-                    IsFolderPicker = isFolder,
-                    Filters = makeFilters?.Invoke()
-                };
-
-                MessageBroker.Default.Publish(message);
-
-                if (message.Response != null)
-                    Path.Value = message.Response;
+                var result = dialogOpeningAction();
+                if (result != null)
+                    Path.Value = result;
             }).AddTo(CompositeDisposable);
 
             ValidationMessage = new ReactiveProperty<StringTags?>().AddTo(CompositeDisposable);

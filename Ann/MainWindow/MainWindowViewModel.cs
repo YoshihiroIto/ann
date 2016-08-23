@@ -53,6 +53,7 @@ namespace Ann.MainWindow
         public ReadOnlyReactiveProperty<IndexOpeningResults> IndexOpeningResult { get; }
 
         public WindowMessageBroker Messenger { get; }
+        public AsyncMessageBroker AsyncMessenger { get; }
 
         public string Caption { get; } = $"{AssemblyConstants.Product} {AssemblyConstants.Version}";
 
@@ -72,6 +73,7 @@ namespace Ann.MainWindow
             using (new TimeMeasure("MainWindowViewModel.ctor"))
             {
                 Messenger = new WindowMessageBroker().AddTo(CompositeDisposable);
+                AsyncMessenger = new AsyncMessageBroker().AddTo(CompositeDisposable);
 
                 InitializeCommand = new ReactiveCommand().AddTo(CompositeDisposable);
                 InitializeCommand
@@ -224,7 +226,7 @@ namespace Ann.MainWindow
                         configHolder.Config.ShortcutKeys.Activate.Key = key;
 
                         IsShowingSettingShow.Value = true;
-                        await AsyncMessageBroker.Default.PublishAsync(
+                        await AsyncMessenger.PublishAsync(
                             new SettingViewModel(
                                 configHolder.Config,
                                 _app.VersionUpdater,

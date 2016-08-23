@@ -1,3 +1,5 @@
+[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/YoshihiroIto/ann/blob/master/LICENSE) [![Twitter](https://img.shields.io/badge/twitter-%40yoiyoi322-blue.svg?style=flat-square)](https://twitter.com/yoiyoi322)
+
 |         | Build | Package 
 |---------|-------|---------
 | master  | [![Build status](https://img.shields.io/appveyor/ci/YoshihiroIto/ann.svg?style=flat-square)](https://ci.appveyor.com/project/YoshihiroIto/ann)|[![Release](https://img.shields.io/github/release/YoshihiroIto/ann.svg?style=flat-square)](https://github.com/YoshihiroIto/ann/releases/latest)

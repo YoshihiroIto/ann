@@ -1,4 +1,5 @@
 ﻿using Ann.Core;
+using Ann.Foundation.Mvvm.Message;
 using Ann.SettingWindow.SettingPage.About;
 using Xunit;
 
@@ -15,7 +16,8 @@ namespace Ann.Test.SettingWindow.SettingPage.About
         public void Basic()
         {
             using (var versionUpdater = new VersionUpdater(null))
-            using (var vm = new AboutViewModel(versionUpdater))
+            using (var messenger = new WindowMessageBroker())
+            using (var vm = new AboutViewModel(versionUpdater, messenger))
             {
                Assert.Equal(VersionCheckingStates.Wait, vm.VersionCheckingState.Value);
                Assert.Equal(0, vm.UpdateProgress.Value);
@@ -26,7 +28,8 @@ namespace Ann.Test.SettingWindow.SettingPage.About
         public void RestartCommand()
         {
             using (var versionUpdater = new VersionUpdater(null))
-            using (var vm = new AboutViewModel(versionUpdater))
+            using (var messenger = new WindowMessageBroker())
+            using (var vm = new AboutViewModel(versionUpdater, messenger))
             {
                 vm.RestartCommand.Execute(null);
             }
