@@ -75,7 +75,7 @@ namespace Ann.MainWindow
             candidate.ScrollIntoView(candidate.SelectedItem);
         }
 
-        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void ItemPanel_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             _DataContext.CandidateItemHeight.Value = e.NewSize.Height;
         }
