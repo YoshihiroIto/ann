@@ -12,7 +12,6 @@ using Ann.SettingWindow.SettingPage.Shortcuts;
 using Ann.SettingWindow.SettingPage.TargetFolders;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using Reactive.Bindings.Notifiers;
 
 namespace Ann.SettingWindow
 {
@@ -24,11 +23,15 @@ namespace Ann.SettingWindow
         public ReactiveCommand InitializeCommand { get; }
         public ReactiveCommand CloseCommand { get; }
 
+        public WindowMessageBroker Messenger { get; }
+
         public SettingViewModel(Core.Config.App model, VersionUpdater versionUpdater, App app)
         {
             Debug.Assert(model != null);
 
             CompositeDisposable.Add(() => Pages.ForEach(p => p.Dispose()));
+
+            Messenger = new WindowMessageBroker().AddTo(CompositeDisposable);
 
             InitializeCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             InitializeCommand
@@ -37,16 +40,16 @@ namespace Ann.SettingWindow
 
             CloseCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             CloseCommand
-                .Subscribe(_ => MessageBroker.Default.Publish(new WindowActionMessage(WindowAction.Close)))
+                .Subscribe(_ => Messenger.Publish(new WindowActionMessage(WindowAction.Close)))
                 .AddTo(CompositeDisposable);
 
             Pages = new ViewModelBase[]
             {
                 new GeneralViewModel(model, versionUpdater),
                 new ShortcutsViewModel(model),
-                new TargetFoldersViewModel(model, app),
-                new PriorityFilesViewModel(model, app),
-                new AboutViewModel(versionUpdater)
+                new TargetFoldersViewModel(model, app, Messenger),
+                new PriorityFilesViewModel(model, app, Messenger),
+                new AboutViewModel(versionUpdater, Messenger)
             };
             SelectedPage = new ReactiveProperty<ViewModelBase>(Pages[0]).AddTo(CompositeDisposable);
         }

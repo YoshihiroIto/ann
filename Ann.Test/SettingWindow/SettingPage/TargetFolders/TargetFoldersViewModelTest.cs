@@ -2,6 +2,7 @@
 using System.Threading;
 using Ann.Core;
 using Ann.Foundation;
+using Ann.Foundation.Mvvm.Message;
 using Ann.SettingWindow.SettingPage.TargetFolders;
 using Xunit;
 using App = Ann.Core.App;
@@ -28,9 +29,11 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
             var model = new Core.Config.App();
 
             var configHolder = new ConfigHolder(_config.RootPath);
+
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
-            using (var vm = new TargetFoldersViewModel(model, app))
+            using (var messenger = new WindowMessageBroker())
+            using (var vm = new TargetFoldersViewModel(model, app, messenger))
             {
                 Assert.True(vm.IsIncludeSystemFolder.Value);
                 Assert.True(vm.IsIncludeSystemX86Folder.Value);
@@ -75,7 +78,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
-            using (var vm = new TargetFoldersViewModel(model, app))
+            using (var messenger = new WindowMessageBroker())
+            using (var vm = new TargetFoldersViewModel(model, app, messenger))
             {
                 vm.IsIncludeSystemFolder.Value = false;
                 vm.IsIncludeSystemX86Folder.Value = false;
@@ -102,7 +106,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
-            using (var vm = new TargetFoldersViewModel(model, app))
+            using (var messenger = new WindowMessageBroker())
+            using (var vm = new TargetFoldersViewModel(model, app, messenger))
             {
                 vm.IsIncludeSystemFolder.Value = false;
                 vm.IsIncludeSystemX86Folder.Value = false;
@@ -138,7 +143,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
-            using (var vm = new TargetFoldersViewModel(model, app))
+            using (var messenger = new WindowMessageBroker())
+            using (var vm = new TargetFoldersViewModel(model, app, messenger))
             {
                 vm.IsIncludeSystemFolder.Value = false;
                 vm.IsIncludeSystemX86Folder.Value = false;
@@ -164,7 +170,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
-            using (var vm = new TargetFoldersViewModel(model, app))
+            using (var messenger = new WindowMessageBroker())
+            using (var vm = new TargetFoldersViewModel(model, app, messenger))
             {
                 vm.IsIncludeSystemFolder.Value = false;
                 vm.IsIncludeSystemX86Folder.Value = false;
@@ -190,7 +197,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
-            using (var vm = new TargetFoldersViewModel(model, app))
+            using (var messenger = new WindowMessageBroker())
+            using (var vm = new TargetFoldersViewModel(model, app, messenger))
             {
                 vm.IsIncludeSystemFolder.Value = false;
                 vm.IsIncludeSystemX86Folder.Value = false;
@@ -229,7 +237,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
-            using (var vm = new TargetFoldersViewModel(model, app))
+            using (var messenger = new WindowMessageBroker())
+            using (var vm = new TargetFoldersViewModel(model, app, messenger))
             {
                 vm.IsIncludeSystemFolder.Value = false;
                 vm.IsIncludeSystemX86Folder.Value = false;
@@ -266,7 +275,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
-            using (var vm = new TargetFoldersViewModel(model, app))
+            using (var messenger = new WindowMessageBroker())
+            using (var vm = new TargetFoldersViewModel(model, app, messenger))
             {
                 vm.IsIncludeSystemFolder.Value = false;
                 vm.IsIncludeSystemX86Folder.Value = false;
@@ -296,7 +306,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
-            using (var vm = new TargetFoldersViewModel(model, app))
+            using (var messenger = new WindowMessageBroker())
+            using (var vm = new TargetFoldersViewModel(model, app, messenger))
             {
                 vm.IsIncludeSystemFolder.Value = false;
                 vm.IsIncludeSystemX86Folder.Value = false;

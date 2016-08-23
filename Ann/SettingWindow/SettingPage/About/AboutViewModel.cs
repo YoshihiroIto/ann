@@ -5,7 +5,6 @@ using Ann.Foundation.Mvvm;
 using Ann.Foundation.Mvvm.Message;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using Reactive.Bindings.Notifiers;
 
 namespace Ann.SettingWindow.SettingPage.About
 {
@@ -19,7 +18,7 @@ namespace Ann.SettingWindow.SettingPage.About
 
         public ReactiveCommand RestartCommand { get; }
 
-        public AboutViewModel(VersionUpdater versionUpdater)
+        public AboutViewModel(VersionUpdater versionUpdater, WindowMessageBroker messenger)
         {
             OpenUrlCommand = new ReactiveCommand<string>().AddTo(CompositeDisposable);
             OpenUrlCommand.Subscribe(async o => await ProcessHelper.RunAsync(o, string.Empty, false))
@@ -41,7 +40,7 @@ namespace Ann.SettingWindow.SettingPage.About
             RestartCommand.Subscribe(_ =>
             {
                 versionUpdater.RequestRestart();
-                MessageBroker.Default.Publish(new WindowActionMessage(WindowAction.Close));
+                messenger.Publish(new WindowActionMessage(WindowAction.Close));
             }).AddTo(CompositeDisposable);
         }
     }

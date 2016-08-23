@@ -1,6 +1,7 @@
 ﻿using System;
 using Ann.Core;
 using Ann.Foundation;
+using Ann.Foundation.Mvvm.Message;
 using Ann.SettingWindow.SettingPage.PriorityFiles;
 using Xunit;
 
@@ -28,7 +29,8 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
-            using (new PriorityFilesViewModel(model, app))
+            using (var messenger = new WindowMessageBroker())
+            using (new PriorityFilesViewModel(model, app, messenger))
             {
             }
         }
@@ -41,7 +43,8 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
-            using (var vm = new PriorityFilesViewModel(model, app))
+            using (var messenger = new WindowMessageBroker())
+            using (var vm = new PriorityFilesViewModel(model, app, messenger))
             {
                 Assert.Equal(0, vm.Files.Count);
 
@@ -68,7 +71,8 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
-            using (var vm = new PriorityFilesViewModel(model, app))
+            using (var messenger = new WindowMessageBroker())
+            using (var vm = new PriorityFilesViewModel(model, app, messenger))
             {
                 vm.FileAddCommand.Execute(null);
 
@@ -88,7 +92,8 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
-            using (var vm = new PriorityFilesViewModel(model, app))
+            using (var messenger = new WindowMessageBroker())
+            using (var vm = new PriorityFilesViewModel(model, app, messenger))
             {
                 Assert.Equal(0, vm.Files.Count);
 
@@ -120,7 +125,8 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
-            using (var vm = new PriorityFilesViewModel(model, app))
+            using (var messenger = new WindowMessageBroker())
+            using (var vm = new PriorityFilesViewModel(model, app, messenger))
             {
                 model.PriorityFiles.Add(new Path("AA"));
                 vm.Files[0].FolderSelectDialogOpenCommand.Execute(null);
@@ -135,7 +141,8 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
-            using (var vm = new PriorityFilesViewModel(model, app))
+            using (var messenger = new WindowMessageBroker())
+            using (var vm = new PriorityFilesViewModel(model, app, messenger))
             {
                 model.PriorityFiles.Add(new Path(Environment.ExpandEnvironmentVariables(@"%SystemRoot%\explorer.exe")));
 
@@ -158,7 +165,8 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
-            using (var vm = new PriorityFilesViewModel(model, app))
+            using (var messenger = new WindowMessageBroker())
+            using (var vm = new PriorityFilesViewModel(model, app, messenger))
             {
                 model.PriorityFiles.Add(new Path(Environment.ExpandEnvironmentVariables(@"%SystemRoot%\explorer.exe")));
                 model.PriorityFiles.Add(new Path(Environment.ExpandEnvironmentVariables(@"%SystemRoot%\notepad.exe")));

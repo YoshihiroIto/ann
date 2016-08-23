@@ -9,6 +9,7 @@ using System.Reactive.Subjects;
 using System.Windows;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
+using Ann.Foundation.Mvvm.Message;
 using GongSolutions.Wpf.DragDrop;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Reactive.Bindings;
@@ -28,12 +29,18 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
         private readonly Subject<int> _pathChanged;
 
         private readonly Core.Config.App _model;
+        private readonly App _app;
+        private readonly WindowMessageBroker _messenger;
 
-        public PriorityFilesViewModel(Core.Config.App model, App app)
+        public PriorityFilesViewModel(Core.Config.App model, App app, WindowMessageBroker messenger)
         {
             Debug.Assert(model != null);
+            Debug.Assert(app != null);
+            Debug.Assert(messenger != null);
 
             _model = model;
+            _app = app;
+            _messenger = messenger;
 
             _pathChanged = new Subject<int>().AddTo(CompositeDisposable);
 
@@ -42,13 +49,7 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
                 var isInitializing = true;
                 using (Disposable.Create(() => isInitializing = false))
                 {
-                    var pvm = new PathViewModel(p, false,
-                        () => new[]
-                        {
-                            new CommonFileDialogFilter(app.GetString(StringTags.ExecutableFile),
-                                string.Join(", ", model.ExecutableFileExts.Select(e => "*." + e))),
-                            new CommonFileDialogFilter(app.GetString(StringTags.AllFiles), "*.*")
-                        });
+                    var pvm = new PathViewModel(p, DialogOpeningAction);
 
                     pvm.Path
                         .Where(_ => isInitializing == false)
@@ -95,6 +96,25 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
             ValidateAll();
         }
 
+        private string DialogOpeningAction()
+        {
+            var message = new FileOrFolderSelectMessage
+            {
+                IsFolderPicker = false,
+                Filters =
+                    new[]
+                    {
+                        new CommonFileDialogFilter(_app.GetString(StringTags.ExecutableFile),
+                            string.Join(", ", _model.ExecutableFileExts.Select(e => "*." + e))),
+                        new CommonFileDialogFilter(_app.GetString(StringTags.AllFiles), "*.*")
+                    }
+            };
+
+            _messenger.Publish(message);
+
+            return message.Response;
+        }
+
         private void ValidateAll()
         {
             foreach (var pvm in Files)
@@ -120,7 +140,7 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
             var dataObject = dropInfo.Data as DataObject;
             if (dataObject != null)
             {
-                var paths = (IEnumerable<string>)dataObject.GetData(DataFormats.FileDrop, false);
+                var paths = (IEnumerable<string>) dataObject.GetData(DataFormats.FileDrop, false);
                 if (paths != null && paths.Any(x => File.Exists(x) && IsEnableExt(x)))
                     dropInfo.Effects = DragDropEffects.Move;
             }
@@ -133,7 +153,7 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
             var dataObject = dropInfo.Data as DataObject;
             if (dataObject != null)
             {
-                var paths = (IEnumerable<string>)dataObject.GetData(DataFormats.FileDrop, false);
+                var paths = (IEnumerable<string>) dataObject.GetData(DataFormats.FileDrop, false);
 
                 if (paths != null)
                     foreach (var path in paths.Where(x => File.Exists(x) && IsEnableExt(x)))
@@ -141,7 +161,7 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
             }
             else
             {
-                var vm = (PathViewModel)dropInfo.Data;
+                var vm = (PathViewModel) dropInfo.Data;
                 ModelHelper.MovoTo(_model.PriorityFiles, vm.Model, dropInfo.InsertIndex);
             }
         }

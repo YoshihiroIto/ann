@@ -28,7 +28,7 @@ namespace Ann.Test
         {
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languageService = new LanguagesService(configHolder.Config))
-            using (new ViewManager(Dispatcher.CurrentDispatcher, languageService))
+            using (new ViewManager(languageService))
             {
             }
         }

@@ -9,6 +9,7 @@ using System.Windows.Input;
 using Ann.Core;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm.Message;
+using Ann.SettingWindow;
 using Reactive.Bindings.Extensions;
 
 namespace Ann.MainWindow
@@ -209,6 +210,11 @@ namespace Ann.MainWindow
             _DataContext.Messenger
                 .Subscribe<WindowActionMessage>(WindowActionAction.InvokeAction)
                 .AddTo(_DataContext.CompositeDisposable);
+
+            _DataContext.AsyncMessenger
+                .Subscribe<SettingViewModel>(
+                    vm => Task.Run(() => Dispatcher.Invoke(() => new SettingWindow.SettingWindow {DataContext = vm}.ShowDialog()))
+                ).AddTo(_DataContext.CompositeDisposable);
         }
     }
 }
