@@ -23,7 +23,7 @@ namespace Ann.Foundation
 
                 using (var reader = new StringReader(File.ReadAllText(filePath)))
                 {
-                    var config = new Deserializer().Deserialize<T>(reader);
+                    var config = new Deserializer(ignoreUnmatched:true).Deserialize<T>(reader);
 
                     // ReSharper disable once ConvertIfStatementToNullCoalescingExpression
                     if (config == null)
