@@ -104,36 +104,33 @@
                 </TextBox>
             </DockPanel>
 
-            <ListBox MaxHeight="{Binding CandidatesListMaxHeight.Value,
-                                         Mode=OneWay}"
-                     Margin="0,16,0,0"
-                     HorizontalContentAlignment="Stretch"
-                     Background="Transparent"
-                     BorderThickness="0"
-                     Focusable="False"
-                     IsTabStop="False"
-                     ItemsSource="{Binding Candidates.Value,
-                                           Mode=OneWay}"
-                     SelectedItem="{Binding SelectedCandidate.Value,
-                                            Mode=TwoWay}"
-                     SelectionMode="Single"
-                     VirtualizingPanel.IsVirtualizing="True"
-                     VirtualizingPanel.ScrollUnit="Item"
-                     VirtualizingPanel.VirtualizationMode="Recycling">
-                <ListBox.Template>
+            <ItemsControl MaxHeight="{Binding CandidatesListMaxHeight.Value,
+                                              Mode=OneWay}"
+                          Margin="0,16,0,0"
+                          HorizontalContentAlignment="Stretch"
+                          Background="Transparent"
+                          BorderThickness="0"
+                          Focusable="False"
+                          IsTabStop="False"
+                          ItemsSource="{Binding Candidates.Value,
+                                                Mode=OneWay}"
+                          VirtualizingPanel.IsVirtualizing="True"
+                          VirtualizingPanel.ScrollUnit="Item"
+                          VirtualizingPanel.VirtualizationMode="Recycling">
+                <ItemsControl.Template>
                     <ControlTemplate>
                         <ItemsPresenter />
                     </ControlTemplate>
-                </ListBox.Template>
+                </ItemsControl.Template>
 
-                <ListBox.ItemsPanel>
+                <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <VirtualizingStackPanel CanVerticallyScroll="False" Orientation="Vertical" />
                     </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
+                </ItemsControl.ItemsPanel>
 
-                <ListBox.Style>
-                    <Style TargetType="{x:Type ListBox}">
+                <ItemsControl.Style>
+                    <Style TargetType="{x:Type ItemsControl}">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Candidates.Value, Mode=OneWay}" Value="{x:Null}">
                                 <Setter Property="Visibility" Value="Collapsed" />
@@ -143,16 +140,16 @@
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </ListBox.Style>
+                </ItemsControl.Style>
 
-                <ListBox.ItemContainerStyle>
-                    <Style BasedOn="{StaticResource CandidateListBoxItemStyle}" TargetType="{x:Type ListBoxItem}">
+                <!--<ItemsControl.ItemContainerStyle>
+                    <Style BasedOn="{StaticResource CandidateItemsControlItemStyle}" TargetType="{x:Type ItemsControlItem}">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                         <Setter Property="VerticalContentAlignment" Value="Stretch" />
                     </Style>
-                </ListBox.ItemContainerStyle>
+                </ItemsControl.ItemContainerStyle>-->
 
-                <ListBox.ItemTemplate>
+                <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type mainWindow:ExecutableUnitViewModel}">
                         <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown" SizeChanged="ItemPanel_SizeChanged">
                             <Grid.ColumnDefinitions>
@@ -166,6 +163,20 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
+
+                            <Grid.Style>
+                                <Style TargetType="{x:Type Grid}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource Item.MouseOver.Background}" />
+                                        </Trigger>
+
+                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource Item.SelectedActive.Background}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
 
                             <Rectangle Grid.Row="0"
                                        Grid.Column="0"
@@ -237,10 +248,10 @@
                                 <materialDesign:PopupBox.Style>
                                     <Style TargetType="{x:Type materialDesign:PopupBox}">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Grid}}" Value="True">
                                                 <Setter Property="Visibility" Value="Visible" />
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="False">
+                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Grid}}" Value="False">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -277,8 +288,8 @@
                             </Button>
                         </Grid>
                     </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </StackPanel>
 
         <mainWindow:StatusBar DataContext="{Binding StatusBar, Mode=OneTime}" />

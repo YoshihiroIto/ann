@@ -35,6 +35,18 @@ namespace Ann.MainWindow
 
         #endregion
 
+        #region IsSelected
+
+        private bool _IsSelected;
+
+        public bool IsSelected
+        {
+            get { return _IsSelected; }
+            set { SetProperty(ref _IsSelected, value); }
+        }
+
+        #endregion
+
         public ImageSource Icon => _parent.GetIcon(Path);
 
         public bool IsPriorityFile
