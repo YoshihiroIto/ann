@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using Ann.Core;
 using Ann.Foundation;
@@ -65,17 +64,7 @@ namespace Ann.MainWindow
             DragMove();
         }
 
-        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var candidate = sender as ListBox;
-
-            if (candidate?.SelectedItem == null)
-                return;
-
-            candidate.ScrollIntoView(candidate.SelectedItem);
-        }
-
-        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void ItemPanel_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             _DataContext.CandidateItemHeight.Value = e.NewSize.Height;
         }

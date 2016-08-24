@@ -33,7 +33,7 @@
         </ComboBox.ItemTemplate>
     </ComboBox>
 
-    <Button Margin="16,8,0,0"
+    <Button Margin="16,4,0,0"
             HorizontalAlignment="Left"
             Content="{DynamicResource HelpTranslate}"
             Focusable="False"

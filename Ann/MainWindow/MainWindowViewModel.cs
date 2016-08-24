@@ -103,8 +103,8 @@ namespace Ann.MainWindow
                         .Merge(_app.ObserveProperty(x => x.IsIndexUpdating).ToUnit())
                         .Merge(_app.ObserveProperty(x => x.IndexOpeningResult).ToUnit())
                         .Select(_ =>
-                            _app.IsIndexUpdating == false &&
-                            _app.IndexOpeningResult != IndexOpeningResults.InOpening
+                                _app.IsIndexUpdating == false &&
+                                _app.IndexOpeningResult != IndexOpeningResults.InOpening
                         )
                         .ToReactiveCommand()
                         .AddTo(CompositeDisposable);
@@ -115,9 +115,9 @@ namespace Ann.MainWindow
 
                 Observable
                     .Merge(Input.ToUnit())
-                    .Merge(configHolder.Config.ObserveProperty(x => x.CandidatesCensoringSize).ToUnit())
+                    .Merge(configHolder.Config.ObserveProperty(x => x.MaxCandidateLinesCount).ToUnit())
                     .Throttle(TimeSpan.FromMilliseconds(50))
-                    .Subscribe(_ => _app.Find(Input.Value, configHolder.Config.CandidatesCensoringSize))
+                    .Subscribe(_ => _app.Find(Input.Value, configHolder.Config.MaxCandidateLinesCount))
                     .AddTo(CompositeDisposable);
 
                 Candidates = new ReactiveProperty<ExecutableUnitViewModel[]>().AddTo(CompositeDisposable);
@@ -148,6 +148,15 @@ namespace Ann.MainWindow
                     .ToReactiveCommand()
                     .AddTo(CompositeDisposable);
 
+                Candidates
+                    .Subscribe(c =>
+                    {
+                        SelectedCandidate.Value = c?.FirstOrDefault();
+                        if (SelectedCandidate.Value != null)
+                            SelectedCandidate.Value.IsSelected = true;
+                    })
+                    .AddTo(CompositeDisposable);
+
                 SelectedCandidateMoveCommand
                     .Subscribe(p =>
                     {
@@ -159,7 +168,11 @@ namespace Ann.MainWindow
                         else if (next == Candidates.Value.Length)
                             next = 0;
 
+                        if (SelectedCandidate.Value != null)
+                            SelectedCandidate.Value.IsSelected = false;
+
                         SelectedCandidate.Value = Candidates.Value[next];
+                        SelectedCandidate.Value.IsSelected = true;
                     }).AddTo(CompositeDisposable);
 
                 RunCommand = SelectedCandidate
@@ -309,7 +322,7 @@ namespace Ann.MainWindow
                 if (c.Path == path)
                     return index;
 
-                ++ index;
+                ++index;
             }
 
             return -1;
