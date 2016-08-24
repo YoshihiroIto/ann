@@ -117,13 +117,14 @@
                      ScrollViewer.CanContentScroll="True"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      ScrollViewer.PanningMode="VerticalOnly"
+                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
                      SelectedItem="{Binding SelectedCandidate.Value,
                                             Mode=TwoWay}"
                      SelectionChanged="ListBox_SelectionChanged"
                      SelectionMode="Single"
                      VirtualizingPanel.IsVirtualizing="True"
                      VirtualizingPanel.ScrollUnit="Item"
-                     VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                     VirtualizingPanel.VirtualizationMode="Recycling">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <VirtualizingStackPanel CanVerticallyScroll="True" Orientation="Vertical" />
@@ -152,31 +153,44 @@
 
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type mainWindow:ExecutableUnitViewModel}">
-                        <Border SnapsToDevicePixels="True" BorderThickness="0,1,0,0" BorderBrush="#20A0A0A0"  SizeChanged="ItemPanel_SizeChanged">
-                            <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
+                        <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown" SizeChanged="ItemPanel_SizeChanged">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-                                <Image Grid.Column="0"
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Rectangle Grid.Row="0"
+                                       Grid.Column="0"
+                                       Grid.ColumnSpan="4"
+                                       Height="1"
+                                       Fill="#20A0A0A0"
+                                       SnapsToDevicePixels="True" />
+
+                            <Image Grid.Row="1"
+                                   Grid.Column="0"
                                    Width="{x:Static core:Constants.IconSize}"
                                    Height="{x:Static core:Constants.IconSize}"
                                    Margin="4,4,8,4"
                                    Source="{Binding Icon,
                                                     Mode=OneWay}" />
 
-                                <Grid Grid.Column="1"
+                            <Grid Grid.Row="1"
+                                  Grid.Column="1"
                                   Margin="0,4"
                                   VerticalAlignment="Center">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
 
-                                    <TextBlock Grid.Row="0"
+                                <TextBlock Grid.Row="0"
                                            Grid.Column="0"
                                            Margin="0,0,0,2"
                                            FontSize="24"
@@ -188,7 +202,7 @@
                                            ToolTip="{Binding Name,
                                                              Mode=OneWay}" />
 
-                                    <TextBlock Grid.Row="1"
+                                <TextBlock Grid.Row="1"
                                            Grid.Column="0"
                                            Foreground="#AAA"
                                            Padding="0"
@@ -197,69 +211,70 @@
                                            TextTrimming="CharacterEllipsis"
                                            ToolTip="{Binding Path,
                                                              Mode=OneWay}" />
-                                </Grid>
+                            </Grid>
 
-                                <materialDesign:PopupBox Grid.Column="2"
+                            <materialDesign:PopupBox Grid.Row="1"
+                                                     Grid.Column="2"
                                                      Margin="0,0,-8,-24"
                                                      Closed="PopupBox_Closed"
                                                      DockPanel.Dock="Right"
                                                      Foreground="Gainsboro"
                                                      PlacementMode="BottomAndAlignRightEdges"
                                                      PreviewMouseLeftButtonUp="PopupBox_PreviewMouseLeftButtonUp">
-                                    <StackPanel>
-                                        <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                                        <Button Command="{Binding DataContext.RunCommand,
+                                <StackPanel>
+                                    <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
+                                    <Button Command="{Binding DataContext.RunCommand,
                                                               RelativeSource={RelativeSource AncestorType=Window},
                                                               Mode=OneWay}"
                                             CommandParameter="admin"
                                             Content="Run As Administrator" />
 
-                                        <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                                        <Button Command="{Binding DataContext.ContainingFolderOpenCommand, RelativeSource={RelativeSource AncestorType=Window}, Mode=OneWay}" Content="Open Containing Folder" />
-                                    </StackPanel>
+                                    <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
+                                    <Button Command="{Binding DataContext.ContainingFolderOpenCommand, RelativeSource={RelativeSource AncestorType=Window}, Mode=OneWay}" Content="Open Containing Folder" />
+                                </StackPanel>
 
-                                    <materialDesign:PopupBox.Style>
-                                        <Style TargetType="{x:Type materialDesign:PopupBox}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="False">
-                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </materialDesign:PopupBox.Style>
-                                </materialDesign:PopupBox>
+                                <materialDesign:PopupBox.Style>
+                                    <Style TargetType="{x:Type materialDesign:PopupBox}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="False">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </materialDesign:PopupBox.Style>
+                            </materialDesign:PopupBox>
 
-                                <Button Grid.Column="3"
+                            <Button Grid.Row="1"
+                                    Grid.Column="3"
                                     Margin="0,0,4,0"
                                     VerticalAlignment="Bottom"
                                     materialDesign:RippleAssist.IsCentered="True"
                                     Focusable="False"
                                     IsTabStop="False">
-                                    <materialDesign:PackIcon Kind="Star" />
-                                    <Button.Style>
-                                        <Style BasedOn="{StaticResource MaterialDesignToolButton}" TargetType="{x:Type Button}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsPriorityFile, Mode=OneWay}" Value="True">
-                                                    <Setter Property="Foreground" Value="Yellow" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding IsPriorityFile, Mode=OneWay}" Value="False">
-                                                    <Setter Property="Foreground" Value="#888" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
+                                <materialDesign:PackIcon Kind="Star" />
+                                <Button.Style>
+                                    <Style BasedOn="{StaticResource MaterialDesignToolButton}" TargetType="{x:Type Button}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsPriorityFile, Mode=OneWay}" Value="True">
+                                                <Setter Property="Foreground" Value="Yellow" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsPriorityFile, Mode=OneWay}" Value="False">
+                                                <Setter Property="Foreground" Value="#888" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
 
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="Click">
-                                            <interactivity:EventToReactiveCommand Command="{Binding IsPriorityFileFlipCommand, Mode=OneTime}" />
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                </Button>
-                            </Grid>
-                        </Border>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <interactivity:EventToReactiveCommand Command="{Binding IsPriorityFileFlipCommand, Mode=OneTime}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Button>
+                        </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
