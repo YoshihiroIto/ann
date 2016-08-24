@@ -114,20 +114,21 @@
                      IsTabStop="False"
                      ItemsSource="{Binding Candidates.Value,
                                            Mode=OneWay}"
-                     ScrollViewer.CanContentScroll="True"
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     ScrollViewer.PanningMode="VerticalOnly"
-                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
                      SelectedItem="{Binding SelectedCandidate.Value,
                                             Mode=TwoWay}"
-                     SelectionChanged="ListBox_SelectionChanged"
                      SelectionMode="Single"
                      VirtualizingPanel.IsVirtualizing="True"
                      VirtualizingPanel.ScrollUnit="Item"
                      VirtualizingPanel.VirtualizationMode="Recycling">
+                <ListBox.Template>
+                    <ControlTemplate>
+                        <ItemsPresenter />
+                    </ControlTemplate>
+                </ListBox.Template>
+
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <VirtualizingStackPanel CanVerticallyScroll="True" Orientation="Vertical" />
+                        <VirtualizingStackPanel CanVerticallyScroll="False" Orientation="Vertical" />
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
 

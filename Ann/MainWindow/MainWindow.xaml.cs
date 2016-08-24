@@ -49,6 +49,7 @@ namespace Ann.MainWindow
             InitializeHotKey();
             InitializeShortcutKey();
 
+#if false
             Application.Current.Deactivated += (_, __) =>
             {
                 if (WindowsHelper.IsOnTrayMouseCursor)
@@ -58,21 +59,12 @@ namespace Ann.MainWindow
                 if (windows.Length == 1 && Equals(windows[0], this))
                     Visibility = Visibility.Hidden;
             };
+#endif
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DragMove();
-        }
-
-        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var candidate = sender as ListBox;
-
-            if (candidate?.SelectedItem == null)
-                return;
-
-            candidate.ScrollIntoView(candidate.SelectedItem);
         }
 
         private void ItemPanel_SizeChanged(object sender, SizeChangedEventArgs e)
