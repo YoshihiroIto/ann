@@ -113,10 +113,6 @@ namespace Ann.Core.Test.Config
             c.IconCacheSize = 0;
             Assert.Equal(0, c.IconCacheSize);
 
-            Assert.Equal(100, c.CandidatesCensoringSize);
-            c.CandidatesCensoringSize = 20;
-            Assert.Equal(20, c.CandidatesCensoringSize);
-
             Assert.Equal(
                 new[] {"exe", "lnk", "appref-ms", "bat", "cmd", "com", "vbs", "vbe", "js", "jse", "wsf", "wsh"},
                 c.ExecutableFileExts);

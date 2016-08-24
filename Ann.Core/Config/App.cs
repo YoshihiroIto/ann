@@ -110,18 +110,6 @@ namespace Ann.Core.Config
 
         #endregion
 
-        #region CandidatesCensoringSize
-
-        private int _CandidatesCensoringSize = 100;
-
-        public int CandidatesCensoringSize
-        {
-            get { return _CandidatesCensoringSize; }
-            set { SetProperty(ref _CandidatesCensoringSize, value); }
-        }
-
-        #endregion
-
         #region ExecutableFileExts
 
         private ObservableCollection<string> _ExecutableFileExts = new ObservableCollection<string>
