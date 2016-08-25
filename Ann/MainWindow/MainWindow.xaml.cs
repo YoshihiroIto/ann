@@ -64,11 +64,6 @@ namespace Ann.MainWindow
             DragMove();
         }
 
-        private void ItemPanel_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            _DataContext.CandidateItemHeight.Value = e.NewSize.Height;
-        }
-
         private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var item = (sender as FrameworkElement)?.DataContext as ExecutableUnitViewModel;

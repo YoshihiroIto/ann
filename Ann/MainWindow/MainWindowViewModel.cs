@@ -45,7 +45,6 @@ namespace Ann.MainWindow
 
         public ImageSource GetIcon(string path) => _iconDecoder.GetIcon(path);
         public ReadOnlyReactiveProperty<double> CandidatesListMaxHeight { get; }
-        public ReactiveProperty<double> CandidateItemHeight { get; }
 
         public AsyncReactiveCommand SettingShowCommand { get; }
         public ReactiveProperty<bool> IsShowingSettingShow { get; }
@@ -62,6 +61,8 @@ namespace Ann.MainWindow
         public StatusBarViewModel StatusBar { get; }
 
         private readonly App _app;
+
+        private const double CandidateItemHeight = 64;
 
         public MainWindowViewModel(App app, ConfigHolder configHolder)
         {
@@ -89,12 +90,10 @@ namespace Ann.MainWindow
                     .ToReactivePropertyAsSynchronized(x => x.MaxCandidateLinesCount)
                     .AddTo(CompositeDisposable);
 
-                CandidateItemHeight = new ReactiveProperty<double>().AddTo(CompositeDisposable);
                 CandidatesListMaxHeight =
                     Observable
                         .Merge(MaxCandidatesLinesCount.ToUnit())
-                        .Merge(CandidateItemHeight.ToUnit())
-                        .Select(_ => CandidateItemHeight.Value*MaxCandidatesLinesCount.Value + 4)
+                        .Select(_ => CandidateItemHeight*MaxCandidatesLinesCount.Value + 4)
                         .ToReadOnlyReactiveProperty()
                         .AddTo(CompositeDisposable);
 
