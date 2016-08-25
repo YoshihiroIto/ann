@@ -149,6 +149,8 @@
                                 MouseLeftButtonDown="Grid_MouseLeftButtonDown">
                             <Canvas.Style>
                                 <Style TargetType="{x:Type Canvas}">
+                                    <Setter Property="Background" Value="Transparent" />
+
                                     <Style.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter Property="Background" Value="{StaticResource Item.MouseOver.Background}" />
@@ -188,7 +190,7 @@
                                 </i:Interaction.Triggers>
                             </Button>
 
-                            <materialDesign:PopupBox Canvas.Right="18"
+                            <materialDesign:PopupBox Canvas.Right="24"
                                                      Canvas.Bottom="3"
                                                      Closed="PopupBox_Closed"
                                                      DockPanel.Dock="Right"
@@ -237,7 +239,7 @@
 
                             <TextBlock Canvas.Left="64"
                                        Canvas.Top="8"
-                                       Width="460"
+                                       Width="440"
                                        Height="30"
                                        FontSize="24"
                                        Foreground="White"
@@ -250,7 +252,7 @@
 
                             <TextBlock Canvas.Left="64"
                                        Canvas.Top="42"
-                                       Width="460"
+                                       Width="440"
                                        Height="16"
                                        Foreground="#AAA"
                                        Padding="0"
