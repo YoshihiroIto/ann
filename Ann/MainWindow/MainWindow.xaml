@@ -2,7 +2,6 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:behavior="clr-namespace:Ann.Foundation.Control.Behavior;assembly=Ann.Foundation"
-        xmlns:core="clr-namespace:Ann.Core;assembly=Ann.Core"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:interactivity="clr-namespace:Reactive.Bindings.Interactivity;assembly=ReactiveProperty.NET46"
@@ -104,33 +103,11 @@
                 </TextBox>
             </DockPanel>
 
-            <ItemsControl MaxHeight="{Binding CandidatesListMaxHeight.Value,
-                                              Mode=OneWay}"
-                          Margin="0,16,0,0"
-                          HorizontalContentAlignment="Stretch"
-                          Background="Transparent"
-                          BorderThickness="0"
-                          Focusable="False"
-                          IsTabStop="False"
-                          ItemsSource="{Binding Candidates.Value,
-                                                Mode=OneWay}"
-                          VirtualizingPanel.IsVirtualizing="True"
-                          VirtualizingPanel.ScrollUnit="Item"
-                          VirtualizingPanel.VirtualizationMode="Recycling">
-                <ItemsControl.Template>
-                    <ControlTemplate>
-                        <ItemsPresenter />
-                    </ControlTemplate>
-                </ItemsControl.Template>
-
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <VirtualizingStackPanel CanVerticallyScroll="False" Orientation="Vertical" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-
-                <ItemsControl.Style>
-                    <Style TargetType="{x:Type ItemsControl}">
+            <Canvas x:Name="ExecutableUnitsPanel"
+                    Width="566"
+                    Margin="0,16,0,0">
+                <Canvas.Style>
+                    <Style TargetType="{x:Type Canvas}">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Candidates.Value, Mode=OneWay}" Value="{x:Null}">
                                 <Setter Property="Visibility" Value="Collapsed" />
@@ -140,131 +117,8 @@
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </ItemsControl.Style>
-
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type mainWindow:ExecutableUnitViewModel}">
-                        <Canvas Width="566"
-                                Height="64"
-                                MouseLeftButtonDown="Grid_MouseLeftButtonDown">
-                            <Canvas.Style>
-                                <Style TargetType="{x:Type Canvas}">
-                                    <Setter Property="Background" Value="Transparent" />
-
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="{StaticResource Item.MouseOver.Background}" />
-                                        </Trigger>
-
-                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                            <Setter Property="Background" Value="{StaticResource Item.SelectedActive.Background}" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Canvas.Style>
-
-                            <Button Canvas.Right="4"
-                                    Canvas.Bottom="0"
-                                    VerticalAlignment="Bottom"
-                                    materialDesign:RippleAssist.IsCentered="True"
-                                    Focusable="False"
-                                    IsTabStop="False">
-                                <materialDesign:PackIcon Kind="Star" />
-                                <Button.Style>
-                                    <Style BasedOn="{StaticResource MaterialDesignToolButton}" TargetType="{x:Type Button}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsPriorityFile, Mode=OneWay}" Value="True">
-                                                <Setter Property="Foreground" Value="Yellow" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding IsPriorityFile, Mode=OneWay}" Value="False">
-                                                <Setter Property="Foreground" Value="#888" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="Click">
-                                        <interactivity:EventToReactiveCommand Command="{Binding IsPriorityFileFlipCommand, Mode=OneTime}" />
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                            </Button>
-
-                            <materialDesign:PopupBox Canvas.Right="24"
-                                                     Canvas.Bottom="3"
-                                                     Closed="PopupBox_Closed"
-                                                     DockPanel.Dock="Right"
-                                                     Foreground="Gainsboro"
-                                                     PlacementMode="BottomAndAlignRightEdges"
-                                                     PreviewMouseLeftButtonUp="PopupBox_PreviewMouseLeftButtonUp">
-                                <StackPanel>
-                                    <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                                    <Button Command="{Binding DataContext.RunCommand,
-                                                              RelativeSource={RelativeSource AncestorType=Window},
-                                                              Mode=OneWay}"
-                                            CommandParameter="admin"
-                                            Content="{DynamicResource MenuItem_RunAsAdministrator}" />
-
-                                    <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                                    <Button Command="{Binding DataContext.ContainingFolderOpenCommand, RelativeSource={RelativeSource AncestorType=Window}, Mode=OneWay}" Content="{DynamicResource MenuItem_OpenContainingFolder}" />
-                                </StackPanel>
-
-                                <materialDesign:PopupBox.Style>
-                                    <Style TargetType="{x:Type materialDesign:PopupBox}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Canvas}}" Value="True">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Canvas}}" Value="False">
-                                                <Setter Property="Visibility" Value="Collapsed" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </materialDesign:PopupBox.Style>
-                            </materialDesign:PopupBox>
-
-                            <Rectangle Canvas.Left="0"
-                                       Canvas.Top="0"
-                                       Width="566"
-                                       Height="1"
-                                       Fill="#20A0A0A0"
-                                       SnapsToDevicePixels="True" />
-
-                            <Image Canvas.Left="8"
-                                   Canvas.Top="8"
-                                   Width="{x:Static core:Constants.IconSize}"
-                                   Height="{x:Static core:Constants.IconSize}"
-                                   Source="{Binding Icon,
-                                                    Mode=OneWay}" />
-
-                            <TextBlock Canvas.Left="64"
-                                       Canvas.Top="8"
-                                       Width="440"
-                                       Height="30"
-                                       FontSize="24"
-                                       Foreground="White"
-                                       Padding="0"
-                                       Text="{Binding Name,
-                                                      Mode=OneWay}"
-                                       TextTrimming="CharacterEllipsis"
-                                       ToolTip="{Binding Name,
-                                                         Mode=OneWay}" />
-
-                            <TextBlock Canvas.Left="64"
-                                       Canvas.Top="42"
-                                       Width="440"
-                                       Height="16"
-                                       Foreground="#AAA"
-                                       Padding="0"
-                                       Text="{Binding Path,
-                                                      Mode=OneWay}"
-                                       TextTrimming="CharacterEllipsis"
-                                       ToolTip="{Binding Path,
-                                                         Mode=OneWay}" />
-                        </Canvas>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                </Canvas.Style>
+            </Canvas>
         </StackPanel>
 
         <mainWindow:StatusBar DataContext="{Binding StatusBar, Mode=OneTime}" />

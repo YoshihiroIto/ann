@@ -158,6 +158,9 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MainWindow\ExecutableUnitPanel.xaml.cs">
+      <DependentUpon>ExecutableUnitPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainWindow\StatusBarViewModel.cs" />
     <Compile Include="MainWindow\StatusBarItemViewModel.cs" />
     <Compile Include="MainWindow\StatusBar.xaml.cs">
@@ -205,6 +208,10 @@
     <Page Include="Language.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MainWindow\ExecutableUnitPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainWindow\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

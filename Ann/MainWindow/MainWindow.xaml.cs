@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Ann.Core;
 using Ann.Foundation;
@@ -39,6 +40,14 @@ namespace Ann.MainWindow
                 WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             InitializeComponent();
+
+
+            Loaded += OnLoaded;
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        {
+            SetupExecutableUnitsPanel();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -48,6 +57,7 @@ namespace Ann.MainWindow
             InitializeHotKey();
             InitializeShortcutKey();
 
+#if false
             Application.Current.Deactivated += (_, __) =>
             {
                 if (WindowsHelper.IsOnTrayMouseCursor)
@@ -57,6 +67,7 @@ namespace Ann.MainWindow
                 if (windows.Length == 1 && Equals(windows[0], this))
                     Visibility = Visibility.Hidden;
             };
+#endif
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -113,8 +124,8 @@ namespace Ann.MainWindow
             _DataContext.CompositeDisposable.Add(() => _activateHotKey?.Dispose());
 
             Observable.FromEventPattern(
-                h => _app.ShortcutKeyChanged += h,
-                h => _app.ShortcutKeyChanged -= h)
+                    h => _app.ShortcutKeyChanged += h,
+                    h => _app.ShortcutKeyChanged -= h)
                 .Subscribe(_ => SetupHotKey())
                 .AddTo(_DataContext.CompositeDisposable);
         }
@@ -124,8 +135,8 @@ namespace Ann.MainWindow
             SetupShortcutKey();
 
             Observable.FromEventPattern(
-                h => _app.ShortcutKeyChanged += h,
-                h => _app.ShortcutKeyChanged -= h)
+                    h => _app.ShortcutKeyChanged += h,
+                    h => _app.ShortcutKeyChanged -= h)
                 .Subscribe(_ => SetupShortcutKey())
                 .AddTo(_DataContext.CompositeDisposable);
         }
@@ -197,8 +208,46 @@ namespace Ann.MainWindow
 
             _DataContext.AsyncMessenger
                 .Subscribe<SettingViewModel>(
-                    vm => Task.Run(() => Dispatcher.Invoke(() => new SettingWindow.SettingWindow {DataContext = vm}.ShowDialog()))
+                    vm =>
+                        Task.Run(
+                            () =>
+                                Dispatcher.Invoke(
+                                    () => new SettingWindow.SettingWindow {DataContext = vm}.ShowDialog()))
                 ).AddTo(_DataContext.CompositeDisposable);
+        }
+
+        private const int ExecutableUnitPanelCount = 10;
+        private readonly ExecutableUnitPanel[] _ExecutableUnitPanels = new ExecutableUnitPanel[ExecutableUnitPanelCount];
+
+        private const double PanelHeight = 64.0;
+
+        private void SetupExecutableUnitsPanel()
+        {
+            for (var i = 0; i != ExecutableUnitPanelCount; ++i)
+            {
+                _ExecutableUnitPanels[i] = new ExecutableUnitPanel();
+                Canvas.SetTop(_ExecutableUnitPanels[i], i * PanelHeight);
+
+                ExecutableUnitsPanel.Children.Add(_ExecutableUnitPanels[i]);
+            }
+
+            _DataContext.Candidates
+                .ObserveOnUIDispatcher()
+                .Subscribe(candidates =>
+                {
+                    var index = 0;
+
+                    foreach (var c in candidates)
+                    {
+                        _ExecutableUnitPanels[index].DataContext = c;
+                        ++index;
+                    }
+
+                    for (var i = index; i != ExecutableUnitPanelCount; ++i)
+                        _ExecutableUnitPanels[i].DataContext = null;
+
+                    ExecutableUnitsPanel.Height = index*PanelHeight;
+                }).AddTo(_DataContext.CompositeDisposable);
         }
     }
 }
