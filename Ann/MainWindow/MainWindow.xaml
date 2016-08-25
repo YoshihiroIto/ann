@@ -239,10 +239,10 @@
                                                               RelativeSource={RelativeSource AncestorType=Window},
                                                               Mode=OneWay}"
                                             CommandParameter="admin"
-                                            Content="Run As Administrator" />
+                                            Content="{DynamicResource MenuItem_RunAsAdministrator}" />
 
                                     <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                                    <Button Command="{Binding DataContext.ContainingFolderOpenCommand, RelativeSource={RelativeSource AncestorType=Window}, Mode=OneWay}" Content="Open Containing Folder" />
+                                    <Button Command="{Binding DataContext.ContainingFolderOpenCommand, RelativeSource={RelativeSource AncestorType=Window}, Mode=OneWay}" Content="{DynamicResource MenuItem_OpenContainingFolder}" />
                                 </StackPanel>
 
                                 <materialDesign:PopupBox.Style>
