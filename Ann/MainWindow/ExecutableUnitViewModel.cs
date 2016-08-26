@@ -90,6 +90,9 @@ namespace Ann.MainWindow
             }
         }
 
+        public ReactiveCommand<string> RunCommand => _parent.RunCommand;
+        public ReactiveCommand ContainingFolderOpenCommand => _parent.ContainingFolderOpenCommand;
+
         private readonly MainWindowViewModel _parent;
         private readonly App _app;
 

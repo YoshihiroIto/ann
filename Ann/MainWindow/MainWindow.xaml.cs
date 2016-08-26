@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Ann.Core;
 using Ann.Foundation;
@@ -39,7 +40,25 @@ namespace Ann.MainWindow
                 WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             InitializeComponent();
+
+            Loaded += OnLoaded;
         }
+
+        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        {
+            SetupExecutableUnitsPanel();
+
+            UpdateSize();
+
+            Observable.FromEventPattern<DependencyPropertyChangedEventHandler, DependencyPropertyChangedEventArgs>(
+                    h => StatusBar.IsVisibleChanged += h,
+                    h => StatusBar.IsVisibleChanged -= h)
+                .Throttle(TimeSpan.FromMilliseconds(50))
+                .ObserveOnUIDispatcher()
+                .Subscribe(_ => UpdateSize())
+                .AddTo(_DataContext.CompositeDisposable);
+        }
+
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -64,19 +83,6 @@ namespace Ann.MainWindow
             DragMove();
         }
 
-        private void ItemPanel_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            _DataContext.CandidateItemHeight.Value = e.NewSize.Height;
-        }
-
-        private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            var item = (sender as FrameworkElement)?.DataContext as ExecutableUnitViewModel;
-
-            _DataContext.SelectedCandidate.Value = item;
-            _DataContext.RunCommand.Execute(null);
-        }
-
         private async void Window_Activated(object sender, EventArgs e)
         {
             await FocusInputTextBlockIfVisibledAsync();
@@ -89,17 +95,12 @@ namespace Ann.MainWindow
 
         private async void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            UpdateSize();
+
             InputTextBox.Text = string.Empty;
 
             WpfHelper.DoEvents();
             await FocusInputTextBlockIfVisibledAsync();
-        }
-
-        private void PopupBox_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            var item = (sender as FrameworkElement)?.DataContext as ExecutableUnitViewModel;
-
-            _DataContext.SelectedCandidate.Value = item;
         }
 
         private async Task FocusInputTextBlockIfVisibledAsync()
@@ -118,8 +119,8 @@ namespace Ann.MainWindow
             _DataContext.CompositeDisposable.Add(() => _activateHotKey?.Dispose());
 
             Observable.FromEventPattern(
-                h => _app.ShortcutKeyChanged += h,
-                h => _app.ShortcutKeyChanged -= h)
+                    h => _app.ShortcutKeyChanged += h,
+                    h => _app.ShortcutKeyChanged -= h)
                 .Subscribe(_ => SetupHotKey())
                 .AddTo(_DataContext.CompositeDisposable);
         }
@@ -129,8 +130,8 @@ namespace Ann.MainWindow
             SetupShortcutKey();
 
             Observable.FromEventPattern(
-                h => _app.ShortcutKeyChanged += h,
-                h => _app.ShortcutKeyChanged -= h)
+                    h => _app.ShortcutKeyChanged += h,
+                    h => _app.ShortcutKeyChanged -= h)
                 .Subscribe(_ => SetupShortcutKey())
                 .AddTo(_DataContext.CompositeDisposable);
         }
@@ -202,8 +203,96 @@ namespace Ann.MainWindow
 
             _DataContext.AsyncMessenger
                 .Subscribe<SettingViewModel>(
-                    vm => Task.Run(() => Dispatcher.Invoke(() => new SettingWindow.SettingWindow {DataContext = vm}.ShowDialog()))
+                    vm =>
+                        Task.Run(
+                            () =>
+                                Dispatcher.Invoke(
+                                    () => new SettingWindow.SettingWindow {DataContext = vm}.ShowDialog()))
                 ).AddTo(_DataContext.CompositeDisposable);
+        }
+
+        private void UpdateSize()
+        {
+            BasePanel.Height =
+                InputLineHeight +
+                _DataContext.Candidates.Value.Length*ViewConstants.ExecutableUnitPanelHeight;
+
+            var height = BasePanel.Height;
+
+            if (_DataContext.Candidates.Value.Any())
+                height += ViewConstants.BaseMarginUnit;
+
+            if (StatusBar.Visibility == Visibility.Visible)
+            {
+                height += StatusBar.ActualHeight;
+                Canvas.SetTop(StatusBar, height - StatusBar.ActualHeight - ViewConstants.MainWindowBorderThicknessUnit*2);
+                Canvas.SetLeft(StatusBar, 0);
+            }
+
+            Height = height;
+        }
+
+        private double InputLineHeight =>
+            InputLine.ActualHeight +
+            InputLine.Margin.Top +
+            InputLine.Margin.Bottom;
+
+        private readonly Canvas[] _ExecutableUnitPanels = new Canvas[ViewConstants.MaxExecutableUnitPanelCount];
+
+        private void SetupExecutableUnitsPanel()
+        {
+            for (var i = 0; i != ViewConstants.MaxExecutableUnitPanelCount; ++i)
+            {
+                _ExecutableUnitPanels[i] = Resources["ExecutableUnitPanel"] as Canvas;
+                Debug.Assert(_ExecutableUnitPanels[i] != null);
+
+                _ExecutableUnitPanels[i].DataContext = null;
+                _ExecutableUnitPanels[i].PreviewMouseLeftButtonUp += ExecutableUnitPanel_PreviewMouseLeftButtonUp;
+                _ExecutableUnitPanels[i].MouseLeftButtonDown += ExecutableUnitPanel_MouseLeftButtonDown;
+
+                Canvas.SetTop(_ExecutableUnitPanels[i], InputLineHeight + i*ViewConstants.ExecutableUnitPanelHeight);
+                Canvas.SetLeft(_ExecutableUnitPanels[i], ViewConstants.BaseMarginUnit);
+
+                BasePanel.Children.Add(_ExecutableUnitPanels[i]);
+            }
+
+            _DataContext.Candidates
+                .ObserveOnUIDispatcher()
+                .Subscribe(candidates =>
+                {
+                    var index = 0;
+
+                    foreach (var c in candidates)
+                    {
+                        _ExecutableUnitPanels[index].DataContext = c;
+                        _ExecutableUnitPanels[index].Visibility = Visibility.Visible;
+
+                        ++index;
+                    }
+
+                    for (var i = index; i != ViewConstants.MaxExecutableUnitPanelCount; ++i)
+                    {
+                        _ExecutableUnitPanels[i].DataContext = null;
+                        _ExecutableUnitPanels[i].Visibility = Visibility.Collapsed;
+                    }
+
+                    UpdateSize();
+                }).AddTo(_DataContext.CompositeDisposable);
+        }
+
+        private void ExecutableUnitPanel_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            var item = (sender as FrameworkElement)?.DataContext as ExecutableUnitViewModel;
+
+            _DataContext.SelectedCandidate.Value = item;
+        }
+
+        private void ExecutableUnitPanel_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var item = (sender as FrameworkElement)?.DataContext as ExecutableUnitViewModel;
+
+            _DataContext.SelectedCandidate.Value = item;
+            _DataContext.RunCommand.Execute(null);
         }
     }
 }

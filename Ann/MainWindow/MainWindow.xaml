@@ -2,20 +2,20 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:behavior="clr-namespace:Ann.Foundation.Control.Behavior;assembly=Ann.Foundation"
-        xmlns:core="clr-namespace:Ann.Core;assembly=Ann.Core"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:interactivity="clr-namespace:Reactive.Bindings.Interactivity;assembly=ReactiveProperty.NET46"
         xmlns:mainWindow="clr-namespace:Ann.MainWindow"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        Width="600"
+        xmlns:ann="clr-namespace:Ann"
+        Width="{x:Static ann:ViewConstants.MainWindowWidth}"
         d:DataContext="{d:DesignData mainWindow:MainWindowViewModel}"
         Activated="Window_Activated"
         AllowsTransparency="True"
         Background="#9000"
         BorderBrush="#C000"
-        BorderThickness="1"
+        BorderThickness="{x:Static ann:ViewConstants.MainWindowBorderThickness}"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
         IsVisibleChanged="Window_IsVisibleChanged"
         Left="{Binding Left.Value,
@@ -24,7 +24,6 @@
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
-        SizeToContent="Height"
         SnapsToDevicePixels="True"
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto"
@@ -32,6 +31,14 @@
                       Mode=TwoWay}"
         WindowStyle="None"
         mc:Ignorable="d">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ExecutableUnitPanel.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
     <i:Interaction.Behaviors>
         <behavior:WindowTaskTrayIconBehavior IconSource="/app.ico"
                                              LeftClickedCommand="{Binding ShowCommand,
@@ -57,241 +64,61 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <DockPanel LastChildFill="True">
-        <StackPanel Margin="16" DockPanel.Dock="Top">
-            <DockPanel LastChildFill="True">
-                <materialDesign:PopupBox Margin="0,0,-12,0"
-                                         Closed="PopupBox_Closed"
-                                         DockPanel.Dock="Right"
-                                         Foreground="Gainsboro"
-                                         PlacementMode="BottomAndAlignRightEdges">
-                    <StackPanel Margin="0,8">
-                        <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_UpdateIndex}" />
-                        <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_Settings}" />
-                        <Separator />
-                        <MenuItem Command="{Binding ExitCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_Exit}" />
-                    </StackPanel>
-                </materialDesign:PopupBox>
+    <Canvas x:Name="BasePanel"
+            Width="{x:Static ann:ViewConstants.MainWindowWidth}"
+            VerticalAlignment="Top">
+        <mainWindow:StatusBar x:Name="StatusBar"
+                              Width="{x:Static ann:ViewConstants.StatusBarWidth}"
+                              DataContext="{Binding StatusBar,
+                                                    Mode=OneTime}" />
+        <DockPanel x:Name="InputLine"
+                   Canvas.Left="0"
+                   Canvas.Top="0"
+                   Width="{x:Static ann:ViewConstants.InputLineWidth}"
+                   Margin="{x:Static ann:ViewConstants.BaseMargin}"
+                   LastChildFill="True">
+            <materialDesign:PopupBox Margin="0,0,-12,0"
+                                     Closed="PopupBox_Closed"
+                                     DockPanel.Dock="Right"
+                                     Foreground="Gainsboro"
+                                     PlacementMode="BottomAndAlignRightEdges">
+                <StackPanel Margin="0,8">
+                    <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_UpdateIndex}" />
+                    <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_Settings}" />
+                    <Separator />
+                    <MenuItem Command="{Binding ExitCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_Exit}" />
+                </StackPanel>
+            </materialDesign:PopupBox>
 
-                <TextBox x:Name="InputTextBox"
-                         Background="Transparent"
-                         BorderThickness="0"
-                         CaretBrush="White"
-                         FontSize="32"
-                         Foreground="White"
-                         Text="{Binding Input.Value,
-                                        Mode=TwoWay,
-                                        UpdateSourceTrigger=PropertyChanged}">
-                    <TextBox.InputBindings>
-                        <KeyBinding Key="Up"
-                                    Command="{Binding SelectedCandidateMoveCommand,
-                                                      Mode=OneTime}"
-                                    CommandParameter="-1" />
-                        <KeyBinding Key="Down"
-                                    Command="{Binding SelectedCandidateMoveCommand,
-                                                      Mode=OneTime}"
-                                    CommandParameter="1" />
+            <TextBox x:Name="InputTextBox"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     CaretBrush="White"
+                     FontSize="32"
+                     Foreground="White"
+                     Text="{Binding Input.Value,
+                                    Mode=TwoWay,
+                                    UpdateSourceTrigger=PropertyChanged}">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Up"
+                                Command="{Binding SelectedCandidateMoveCommand,
+                                                  Mode=OneTime}"
+                                CommandParameter="-1" />
+                    <KeyBinding Key="Down"
+                                Command="{Binding SelectedCandidateMoveCommand,
+                                                  Mode=OneTime}"
+                                CommandParameter="1" />
 
-                        <KeyBinding Key="Tab"
-                                    Command="{Binding SelectedCandidateMoveCommand,
-                                                      Mode=OneTime}"
-                                    CommandParameter="-1"
-                                    Modifiers="Shift" />
-                        <KeyBinding Key="Tab"
-                                    Command="{Binding SelectedCandidateMoveCommand}"
-                                    CommandParameter="1" />
-                    </TextBox.InputBindings>
-                </TextBox>
-            </DockPanel>
-
-            <ItemsControl MaxHeight="{Binding CandidatesListMaxHeight.Value,
-                                              Mode=OneWay}"
-                          Margin="0,16,0,0"
-                          HorizontalContentAlignment="Stretch"
-                          Background="Transparent"
-                          BorderThickness="0"
-                          Focusable="False"
-                          IsTabStop="False"
-                          ItemsSource="{Binding Candidates.Value,
-                                                Mode=OneWay}"
-                          VirtualizingPanel.IsVirtualizing="True"
-                          VirtualizingPanel.ScrollUnit="Item"
-                          VirtualizingPanel.VirtualizationMode="Recycling">
-                <ItemsControl.Template>
-                    <ControlTemplate>
-                        <ItemsPresenter />
-                    </ControlTemplate>
-                </ItemsControl.Template>
-
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <VirtualizingStackPanel CanVerticallyScroll="False" Orientation="Vertical" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-
-                <ItemsControl.Style>
-                    <Style TargetType="{x:Type ItemsControl}">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Candidates.Value, Mode=OneWay}" Value="{x:Null}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Candidates.Value.Count, Mode=OneWay}" Value="0">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ItemsControl.Style>
-
-                <!--<ItemsControl.ItemContainerStyle>
-                    <Style BasedOn="{StaticResource CandidateItemsControlItemStyle}" TargetType="{x:Type ItemsControlItem}">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        <Setter Property="VerticalContentAlignment" Value="Stretch" />
-                    </Style>
-                </ItemsControl.ItemContainerStyle>-->
-
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type mainWindow:ExecutableUnitViewModel}">
-                        <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown" SizeChanged="ItemPanel_SizeChanged">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <Grid.Style>
-                                <Style TargetType="{x:Type Grid}">
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="{StaticResource Item.MouseOver.Background}" />
-                                        </Trigger>
-
-                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                            <Setter Property="Background" Value="{StaticResource Item.SelectedActive.Background}" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Grid.Style>
-
-                            <Rectangle Grid.Row="0"
-                                       Grid.Column="0"
-                                       Grid.ColumnSpan="4"
-                                       Height="1"
-                                       Fill="#20A0A0A0"
-                                       SnapsToDevicePixels="True" />
-
-                            <Image Grid.Row="1"
-                                   Grid.Column="0"
-                                   Width="{x:Static core:Constants.IconSize}"
-                                   Height="{x:Static core:Constants.IconSize}"
-                                   Margin="4,4,8,4"
-                                   Source="{Binding Icon,
-                                                    Mode=OneWay}" />
-
-                            <Grid Grid.Row="1"
-                                  Grid.Column="1"
-                                  Margin="0,4"
-                                  VerticalAlignment="Center">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-
-                                <TextBlock Grid.Row="0"
-                                           Grid.Column="0"
-                                           Margin="0,0,0,2"
-                                           FontSize="24"
-                                           Foreground="White"
-                                           Padding="0"
-                                           Text="{Binding Name,
-                                                          Mode=OneWay}"
-                                           TextTrimming="CharacterEllipsis"
-                                           ToolTip="{Binding Name,
-                                                             Mode=OneWay}" />
-
-                                <TextBlock Grid.Row="1"
-                                           Grid.Column="0"
-                                           Foreground="#AAA"
-                                           Padding="0"
-                                           Text="{Binding Path,
-                                                          Mode=OneWay}"
-                                           TextTrimming="CharacterEllipsis"
-                                           ToolTip="{Binding Path,
-                                                             Mode=OneWay}" />
-                            </Grid>
-
-                            <materialDesign:PopupBox Grid.Row="1"
-                                                     Grid.Column="2"
-                                                     Margin="0,0,-8,-24"
-                                                     Closed="PopupBox_Closed"
-                                                     DockPanel.Dock="Right"
-                                                     Foreground="Gainsboro"
-                                                     PlacementMode="BottomAndAlignRightEdges"
-                                                     PreviewMouseLeftButtonUp="PopupBox_PreviewMouseLeftButtonUp">
-                                <StackPanel>
-                                    <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                                    <Button Command="{Binding DataContext.RunCommand,
-                                                              RelativeSource={RelativeSource AncestorType=Window},
-                                                              Mode=OneWay}"
-                                            CommandParameter="admin"
-                                            Content="Run As Administrator" />
-
-                                    <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                                    <Button Command="{Binding DataContext.ContainingFolderOpenCommand, RelativeSource={RelativeSource AncestorType=Window}, Mode=OneWay}" Content="Open Containing Folder" />
-                                </StackPanel>
-
-                                <materialDesign:PopupBox.Style>
-                                    <Style TargetType="{x:Type materialDesign:PopupBox}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Grid}}" Value="True">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Grid}}" Value="False">
-                                                <Setter Property="Visibility" Value="Collapsed" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </materialDesign:PopupBox.Style>
-                            </materialDesign:PopupBox>
-
-                            <Button Grid.Row="1"
-                                    Grid.Column="3"
-                                    Margin="0,0,4,0"
-                                    VerticalAlignment="Bottom"
-                                    materialDesign:RippleAssist.IsCentered="True"
-                                    Focusable="False"
-                                    IsTabStop="False">
-                                <materialDesign:PackIcon Kind="Star" />
-                                <Button.Style>
-                                    <Style BasedOn="{StaticResource MaterialDesignToolButton}" TargetType="{x:Type Button}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsPriorityFile, Mode=OneWay}" Value="True">
-                                                <Setter Property="Foreground" Value="Yellow" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding IsPriorityFile, Mode=OneWay}" Value="False">
-                                                <Setter Property="Foreground" Value="#888" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="Click">
-                                        <interactivity:EventToReactiveCommand Command="{Binding IsPriorityFileFlipCommand, Mode=OneTime}" />
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                            </Button>
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>
-
-        <mainWindow:StatusBar DataContext="{Binding StatusBar, Mode=OneTime}" />
-    </DockPanel>
+                    <KeyBinding Key="Tab"
+                                Command="{Binding SelectedCandidateMoveCommand,
+                                                  Mode=OneTime}"
+                                CommandParameter="-1"
+                                Modifiers="Shift" />
+                    <KeyBinding Key="Tab"
+                                Command="{Binding SelectedCandidateMoveCommand}"
+                                CommandParameter="1" />
+                </TextBox.InputBindings>
+            </TextBox>
+        </DockPanel>
+    </Canvas>
 </Window>

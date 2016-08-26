@@ -22,8 +22,11 @@ Download,
 ExecutableFile,
 File,
 Folder,
+HelpTranslate,
 MaxCandidateLines,
 MenuItem_Exit,
+MenuItem_OpenContainingFolder,
+MenuItem_RunAsAdministrator,
 MenuItem_Settings,
 MenuItem_UpdateIndex,
 Message_ActivationShortcutKeyIsAlreadyInUse,
@@ -60,8 +63,7 @@ VersionChecker_Checking,
 VersionChecker_Downloaded,
 VersionChecker_Downloading,
 VersionChecker_Latest,
-VersionChecker_Unknown,
-HelpTranslate
+VersionChecker_Unknown
 }
 
 public static class Localization
@@ -81,8 +83,11 @@ case StringTags.Download: return "Download";
 case StringTags.ExecutableFile: return "Executable file";
 case StringTags.File: return "File";
 case StringTags.Folder: return "Folder";
+case StringTags.HelpTranslate: return "Help translate.";
 case StringTags.MaxCandidateLines: return "Max Candidate Lines";
 case StringTags.MenuItem_Exit: return "Exit";
+case StringTags.MenuItem_OpenContainingFolder: return "Open containing folder";
+case StringTags.MenuItem_RunAsAdministrator: return "Run as administrator";
 case StringTags.MenuItem_Settings: return "Settings...";
 case StringTags.MenuItem_UpdateIndex: return "Update Index";
 case StringTags.Message_ActivationShortcutKeyIsAlreadyInUse: return "Activation Shortcut key is already in use.";
@@ -120,7 +125,6 @@ case StringTags.VersionChecker_Downloaded: return "Download was completed. Versi
 case StringTags.VersionChecker_Downloading: return "Now downloading files...";
 case StringTags.VersionChecker_Latest: return "Ann is up to date.";
 case StringTags.VersionChecker_Unknown: return "Cannot confirm the version update. Check Internet connection.";
-case StringTags.HelpTranslate: return "Help translate.";
 
 default:
     throw new NotImplementedException();
@@ -136,8 +140,11 @@ case StringTags.Download: return "ダウンロード";
 case StringTags.ExecutableFile: return "実行可能ファイル";
 case StringTags.File: return "ファイル";
 case StringTags.Folder: return "フォルダー";
+case StringTags.HelpTranslate: return "翻訳にご協力ください。";
 case StringTags.MaxCandidateLines: return "表示候補数";
 case StringTags.MenuItem_Exit: return "終了";
+case StringTags.MenuItem_OpenContainingFolder: return "フォルダーを開く";
+case StringTags.MenuItem_RunAsAdministrator: return "管理者権限で実行";
 case StringTags.MenuItem_Settings: return "設定...";
 case StringTags.MenuItem_UpdateIndex: return "インデックスの更新";
 case StringTags.Message_ActivationShortcutKeyIsAlreadyInUse: return "アクティブ化ショートカットキーはすでに使われています。";
@@ -175,7 +182,6 @@ case StringTags.VersionChecker_Downloaded: return "ダウンロード完了し�
 case StringTags.VersionChecker_Downloading: return "ダウンロード中です...";
 case StringTags.VersionChecker_Latest: return "最新バージョンです。";
 case StringTags.VersionChecker_Unknown: return "バージョン更新の確認ができません。インターネット接続を確認してください。";
-case StringTags.HelpTranslate: return "翻訳にご協力ください。";
 
 default:
     throw new NotImplementedException();

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Ann.Core;
@@ -45,7 +45,6 @@ namespace Ann.MainWindow
 
         public ImageSource GetIcon(string path) => _iconDecoder.GetIcon(path);
         public ReadOnlyReactiveProperty<double> CandidatesListMaxHeight { get; }
-        public ReactiveProperty<double> CandidateItemHeight { get; }
 
         public AsyncReactiveCommand SettingShowCommand { get; }
         public ReactiveProperty<bool> IsShowingSettingShow { get; }
@@ -62,6 +61,8 @@ namespace Ann.MainWindow
         public StatusBarViewModel StatusBar { get; }
 
         private readonly App _app;
+
+        private const double CandidateItemHeight = 64;
 
         public MainWindowViewModel(App app, ConfigHolder configHolder)
         {
@@ -89,12 +90,10 @@ namespace Ann.MainWindow
                     .ToReactivePropertyAsSynchronized(x => x.MaxCandidateLinesCount)
                     .AddTo(CompositeDisposable);
 
-                CandidateItemHeight = new ReactiveProperty<double>().AddTo(CompositeDisposable);
                 CandidatesListMaxHeight =
                     Observable
                         .Merge(MaxCandidatesLinesCount.ToUnit())
-                        .Merge(CandidateItemHeight.ToUnit())
-                        .Select(_ => CandidateItemHeight.Value*MaxCandidatesLinesCount.Value + 4)
+                        .Select(_ => CandidateItemHeight*MaxCandidatesLinesCount.Value + 4)
                         .ToReadOnlyReactiveProperty()
                         .AddTo(CompositeDisposable);
 
@@ -110,20 +109,23 @@ namespace Ann.MainWindow
                         .AddTo(CompositeDisposable);
 
                 IndexUpdateCommand
-                    .Subscribe(async _ => await _app.UpdateIndexAsync())
+                    .Subscribe(async _ =>
+                    {
+                        Messenger.Publish(new WindowActionMessage(WindowAction.VisibleActive));
+                        await _app.UpdateIndexAsync();
+                    })
                     .AddTo(CompositeDisposable);
 
                 Observable
                     .Merge(Input.ToUnit())
                     .Merge(configHolder.Config.ObserveProperty(x => x.MaxCandidateLinesCount).ToUnit())
-                    .Throttle(TimeSpan.FromMilliseconds(50))
+                    //.Throttle(TimeSpan.FromMilliseconds(50))
                     .Subscribe(_ => _app.Find(Input.Value, configHolder.Config.MaxCandidateLinesCount))
                     .AddTo(CompositeDisposable);
 
                 Candidates = new ReactiveProperty<ExecutableUnitViewModel[]>().AddTo(CompositeDisposable);
                 _app.ObserveProperty(x => x.Candidates)
-                    .ObserveOn(ThreadPoolScheduler.Instance)
-                    .Subscribe(c =>
+                    .Subscribe(async c =>
                     {
                         var old = Candidates.Value;
 
@@ -133,8 +135,15 @@ namespace Ann.MainWindow
                         if (old == null)
                             return;
 
-                        foreach (var o in old)
-                            o.Dispose();
+                        if (Splat.ModeDetector.InUnitTestRunner())
+                            foreach (var o in old)
+                                o.Dispose();
+                        else
+                            await Application.Current.Dispatcher.InvokeAsync(() =>
+                            {
+                                foreach (var o in old)
+                                    o.Dispose();
+                            });
                     })
                     .AddTo(CompositeDisposable);
 
