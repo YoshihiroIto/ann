@@ -56,71 +56,70 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <DockPanel LastChildFill="True">
-        <StackPanel Margin="16" DockPanel.Dock="Top">
-            <DockPanel LastChildFill="True">
-                <materialDesign:PopupBox Margin="0,0,-12,0"
-                                         Closed="PopupBox_Closed"
-                                         DockPanel.Dock="Right"
-                                         Foreground="Gainsboro"
-                                         PlacementMode="BottomAndAlignRightEdges">
-                    <StackPanel Margin="0,8">
-                        <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_UpdateIndex}" />
-                        <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_Settings}" />
-                        <Separator />
-                        <MenuItem Command="{Binding ExitCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_Exit}" />
-                    </StackPanel>
-                </materialDesign:PopupBox>
+    <StackPanel>
+        <DockPanel LastChildFill="True" Margin="16">
+            <materialDesign:PopupBox Margin="0,0,-12,0"
+                                     Closed="PopupBox_Closed"
+                                     DockPanel.Dock="Right"
+                                     Foreground="Gainsboro"
+                                     PlacementMode="BottomAndAlignRightEdges">
+                <StackPanel Margin="0,8">
+                    <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_UpdateIndex}" />
+                    <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_Settings}" />
+                    <Separator />
+                    <MenuItem Command="{Binding ExitCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_Exit}" />
+                </StackPanel>
+            </materialDesign:PopupBox>
 
-                <TextBox x:Name="InputTextBox"
-                         Background="Transparent"
-                         BorderThickness="0"
-                         CaretBrush="White"
-                         FontSize="32"
-                         Foreground="White"
-                         Text="{Binding Input.Value,
-                                        Mode=TwoWay,
-                                        UpdateSourceTrigger=PropertyChanged}">
-                    <TextBox.InputBindings>
-                        <KeyBinding Key="Up"
-                                    Command="{Binding SelectedCandidateMoveCommand,
-                                                      Mode=OneTime}"
-                                    CommandParameter="-1" />
-                        <KeyBinding Key="Down"
-                                    Command="{Binding SelectedCandidateMoveCommand,
-                                                      Mode=OneTime}"
-                                    CommandParameter="1" />
+            <TextBox x:Name="InputTextBox"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     CaretBrush="White"
+                     FontSize="32"
+                     Foreground="White"
+                     Text="{Binding Input.Value,
+                                    Mode=TwoWay,
+                                    UpdateSourceTrigger=PropertyChanged}">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Up"
+                                Command="{Binding SelectedCandidateMoveCommand,
+                                                  Mode=OneTime}"
+                                CommandParameter="-1" />
+                    <KeyBinding Key="Down"
+                                Command="{Binding SelectedCandidateMoveCommand,
+                                                  Mode=OneTime}"
+                                CommandParameter="1" />
 
-                        <KeyBinding Key="Tab"
-                                    Command="{Binding SelectedCandidateMoveCommand,
-                                                      Mode=OneTime}"
-                                    CommandParameter="-1"
-                                    Modifiers="Shift" />
-                        <KeyBinding Key="Tab"
-                                    Command="{Binding SelectedCandidateMoveCommand}"
-                                    CommandParameter="1" />
-                    </TextBox.InputBindings>
-                </TextBox>
-            </DockPanel>
+                    <KeyBinding Key="Tab"
+                                Command="{Binding SelectedCandidateMoveCommand,
+                                                  Mode=OneTime}"
+                                CommandParameter="-1"
+                                Modifiers="Shift" />
+                    <KeyBinding Key="Tab"
+                                Command="{Binding SelectedCandidateMoveCommand}"
+                                CommandParameter="1" />
+                </TextBox.InputBindings>
+            </TextBox>
+        </DockPanel>
 
-            <Canvas x:Name="ExecutableUnitsPanel"
-                    Width="566"
-                    Margin="0,16,0,0">
-                <Canvas.Style>
-                    <Style TargetType="{x:Type Canvas}">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Candidates.Value, Mode=OneWay}" Value="{x:Null}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Candidates.Value.Count, Mode=OneWay}" Value="0">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Canvas.Style>
-            </Canvas>
-        </StackPanel>
+        <Canvas x:Name="ExecutableUnitsPanel"
+                Width="566"
+                Margin="0,0,0,16"
+                >
+            <Canvas.Style>
+                <Style TargetType="{x:Type Canvas}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Candidates.Value, Mode=OneWay}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Candidates.Value.Count, Mode=OneWay}" Value="0">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Canvas.Style>
+        </Canvas>
 
         <mainWindow:StatusBar DataContext="{Binding StatusBar, Mode=OneTime}" />
-    </DockPanel>
+    </StackPanel>
 </Window>
