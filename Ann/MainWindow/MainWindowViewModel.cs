@@ -109,7 +109,11 @@ namespace Ann.MainWindow
                         .AddTo(CompositeDisposable);
 
                 IndexUpdateCommand
-                    .Subscribe(async _ => await _app.UpdateIndexAsync())
+                    .Subscribe(async _ =>
+                    {
+                            Messenger.Publish(new WindowActionMessage(WindowAction.VisibleActive));
+                        await _app.UpdateIndexAsync();
+                    })
                     .AddTo(CompositeDisposable);
 
                 Observable
