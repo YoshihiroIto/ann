@@ -197,6 +197,7 @@
     </Compile>
     <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutKeyListBoxViewModel.cs" />
     <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutKeyViewModel.cs" />
+    <Compile Include="ViewConstants.cs" />
     <Compile Include="ViewManager.cs" />
     <Page Include="Entry.xaml">
       <Generator>MSBuild:Compile</Generator>

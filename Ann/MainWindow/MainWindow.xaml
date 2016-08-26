@@ -8,13 +8,14 @@
         xmlns:mainWindow="clr-namespace:Ann.MainWindow"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        Width="600"
+        xmlns:ann="clr-namespace:Ann"
+        Width="{x:Static ann:ViewConstants.MainWindowWidth}"
         d:DataContext="{d:DesignData mainWindow:MainWindowViewModel}"
         Activated="Window_Activated"
         AllowsTransparency="True"
         Background="#9000"
         BorderBrush="#C000"
-        BorderThickness="1"
+        BorderThickness="{x:Static ann:ViewConstants.MainWindowBorderThickness}"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
         IsVisibleChanged="Window_IsVisibleChanged"
         Left="{Binding Left.Value,
@@ -64,17 +65,17 @@
     </i:Interaction.Triggers>
 
     <Canvas x:Name="BasePanel"
-            Width="600"
+            Width="{x:Static ann:ViewConstants.MainWindowWidth}"
             VerticalAlignment="Top">
         <mainWindow:StatusBar x:Name="StatusBar"
-                              Width="598"
+                              Width="{x:Static ann:ViewConstants.StatusBarWidth}"
                               DataContext="{Binding StatusBar,
                                                     Mode=OneTime}" />
         <DockPanel x:Name="InputLine"
                    Canvas.Left="0"
                    Canvas.Top="0"
-                   Width="568"
-                   Margin="16"
+                   Width="{x:Static ann:ViewConstants.InputLineWidth}"
+                   Margin="{x:Static ann:ViewConstants.BaseMargin}"
                    LastChildFill="True">
             <materialDesign:PopupBox Margin="0,0,-12,0"
                                      Closed="PopupBox_Closed"

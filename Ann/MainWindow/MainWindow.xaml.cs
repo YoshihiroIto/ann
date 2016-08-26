@@ -215,17 +215,17 @@ namespace Ann.MainWindow
         {
             BasePanel.Height =
                 InputLineHeight +
-                _DataContext.Candidates.Value.Length*PanelHeight;
+                _DataContext.Candidates.Value.Length*ViewConstants.ExecutableUnitPanelHeight;
 
             var height = BasePanel.Height;
 
             if (_DataContext.Candidates.Value.Any())
-                height += 16;
+                height += ViewConstants.BaseMarginUnit;
 
             if (StatusBar.Visibility == Visibility.Visible)
             {
                 height += StatusBar.ActualHeight;
-                Canvas.SetTop(StatusBar, height - StatusBar.ActualHeight - 2);
+                Canvas.SetTop(StatusBar, height - StatusBar.ActualHeight - ViewConstants.MainWindowBorderThicknessUnit*2);
                 Canvas.SetLeft(StatusBar, 0);
             }
 
@@ -237,14 +237,11 @@ namespace Ann.MainWindow
             InputLine.Margin.Top +
             InputLine.Margin.Bottom;
 
-        private const int ExecutableUnitPanelCount = 10;
-        private readonly Canvas[] _ExecutableUnitPanels = new Canvas[ExecutableUnitPanelCount];
-
-        private const double PanelHeight = 64.0;
+        private readonly Canvas[] _ExecutableUnitPanels = new Canvas[ViewConstants.MaxExecutableUnitPanelCount];
 
         private void SetupExecutableUnitsPanel()
         {
-            for (var i = 0; i != ExecutableUnitPanelCount; ++i)
+            for (var i = 0; i != ViewConstants.MaxExecutableUnitPanelCount; ++i)
             {
                 _ExecutableUnitPanels[i] = Resources["ExecutableUnitPanel"] as Canvas;
                 Debug.Assert(_ExecutableUnitPanels[i] != null);
@@ -253,8 +250,8 @@ namespace Ann.MainWindow
                 _ExecutableUnitPanels[i].PreviewMouseLeftButtonUp += ExecutableUnitPanel_PreviewMouseLeftButtonUp;
                 _ExecutableUnitPanels[i].MouseLeftButtonDown += ExecutableUnitPanel_MouseLeftButtonDown;
 
-                Canvas.SetTop(_ExecutableUnitPanels[i], InputLineHeight + i*PanelHeight);
-                Canvas.SetLeft(_ExecutableUnitPanels[i], 16);
+                Canvas.SetTop(_ExecutableUnitPanels[i], InputLineHeight + i*ViewConstants.ExecutableUnitPanelHeight);
+                Canvas.SetLeft(_ExecutableUnitPanels[i], ViewConstants.BaseMarginUnit);
 
                 BasePanel.Children.Add(_ExecutableUnitPanels[i]);
             }
@@ -273,7 +270,7 @@ namespace Ann.MainWindow
                         ++index;
                     }
 
-                    for (var i = index; i != ExecutableUnitPanelCount; ++i)
+                    for (var i = index; i != ViewConstants.MaxExecutableUnitPanelCount; ++i)
                     {
                         _ExecutableUnitPanels[i].DataContext = null;
                         _ExecutableUnitPanels[i].Visibility = Visibility.Collapsed;
