@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Ann.Core;
@@ -125,8 +125,7 @@ namespace Ann.MainWindow
 
                 Candidates = new ReactiveProperty<ExecutableUnitViewModel[]>().AddTo(CompositeDisposable);
                 _app.ObserveProperty(x => x.Candidates)
-                    .ObserveOn(ThreadPoolScheduler.Instance)
-                    .Subscribe(c =>
+                    .Subscribe(async c =>
                     {
                         var old = Candidates.Value;
 
@@ -136,8 +135,11 @@ namespace Ann.MainWindow
                         if (old == null)
                             return;
 
-                        foreach (var o in old)
-                            o.Dispose();
+                        await Application.Current.Dispatcher.InvokeAsync(() =>
+                        {
+                            foreach (var o in old)
+                                o.Dispose();
+                        });
                     })
                     .AddTo(CompositeDisposable);
 
