@@ -158,9 +158,6 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MainWindow\ExecutableUnitPanel.xaml.cs">
-      <DependentUpon>ExecutableUnitPanel.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MainWindow\StatusBarViewModel.cs" />
     <Compile Include="MainWindow\StatusBarItemViewModel.cs" />
     <Compile Include="MainWindow\StatusBar.xaml.cs">

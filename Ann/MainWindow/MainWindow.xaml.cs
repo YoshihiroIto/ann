@@ -48,6 +48,8 @@ namespace Ann.MainWindow
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
             SetupExecutableUnitsPanel();
+
+            UpdateSize();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -73,14 +75,6 @@ namespace Ann.MainWindow
             DragMove();
         }
 
-        private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            var item = (sender as FrameworkElement)?.DataContext as ExecutableUnitViewModel;
-
-            _DataContext.SelectedCandidate.Value = item;
-            _DataContext.RunCommand.Execute(null);
-        }
-
         private async void Window_Activated(object sender, EventArgs e)
         {
             await FocusInputTextBlockIfVisibledAsync();
@@ -93,17 +87,12 @@ namespace Ann.MainWindow
 
         private async void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            UpdateSize();
+
             InputTextBox.Text = string.Empty;
 
             WpfHelper.DoEvents();
             await FocusInputTextBlockIfVisibledAsync();
-        }
-
-        private void PopupBox_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            var item = (sender as FrameworkElement)?.DataContext as ExecutableUnitViewModel;
-
-            _DataContext.SelectedCandidate.Value = item;
         }
 
         private async Task FocusInputTextBlockIfVisibledAsync()
@@ -214,8 +203,34 @@ namespace Ann.MainWindow
                 ).AddTo(_DataContext.CompositeDisposable);
         }
 
+        private void UpdateSize()
+        {
+            BasePanel.Height =
+                InputLineHeight +
+                _DataContext.Candidates.Value.Length*PanelHeight;
+
+            var height = BasePanel.Height;
+
+            if (_DataContext.Candidates.Value.Any())
+                height += 16;
+
+            if (StatusBar.Visibility == Visibility.Visible)
+            {
+                height += StatusBar.ActualHeight;
+                Canvas.SetTop(StatusBar, height - StatusBar.ActualHeight - 2);
+                Canvas.SetLeft(StatusBar, 0);
+            }
+
+            Height = height;
+        }
+
+        private double InputLineHeight =>
+            InputLine.ActualHeight +
+            InputLine.Margin.Top +
+            InputLine.Margin.Bottom;
+
         private const int ExecutableUnitPanelCount = 10;
-        private readonly ExecutableUnitPanel[] _ExecutableUnitPanels = new ExecutableUnitPanel[ExecutableUnitPanelCount];
+        private readonly Canvas[] _ExecutableUnitPanels = new Canvas[ExecutableUnitPanelCount];
 
         private const double PanelHeight = 64.0;
 
@@ -223,10 +238,17 @@ namespace Ann.MainWindow
         {
             for (var i = 0; i != ExecutableUnitPanelCount; ++i)
             {
-                _ExecutableUnitPanels[i] = new ExecutableUnitPanel();
-                Canvas.SetTop(_ExecutableUnitPanels[i], i * PanelHeight);
+                _ExecutableUnitPanels[i] = Resources["ExecutableUnitPanel"] as Canvas;
+                Debug.Assert(_ExecutableUnitPanels[i] != null);
 
-                ExecutableUnitsPanel.Children.Add(_ExecutableUnitPanels[i]);
+                _ExecutableUnitPanels[i].DataContext = null;
+                _ExecutableUnitPanels[i].PreviewMouseLeftButtonUp += ExecutableUnitPanel_PreviewMouseLeftButtonUp;
+                _ExecutableUnitPanels[i].MouseLeftButtonDown += ExecutableUnitPanel_MouseLeftButtonDown;
+
+                Canvas.SetTop(_ExecutableUnitPanels[i], InputLineHeight + i*PanelHeight);
+                Canvas.SetLeft(_ExecutableUnitPanels[i], 16);
+
+                BasePanel.Children.Add(_ExecutableUnitPanels[i]);
             }
 
             _DataContext.Candidates
@@ -238,14 +260,39 @@ namespace Ann.MainWindow
                     foreach (var c in candidates)
                     {
                         _ExecutableUnitPanels[index].DataContext = c;
+                        _ExecutableUnitPanels[index].Visibility = Visibility.Visible;
+
                         ++index;
                     }
 
                     for (var i = index; i != ExecutableUnitPanelCount; ++i)
+                    {
                         _ExecutableUnitPanels[i].DataContext = null;
+                        _ExecutableUnitPanels[i].Visibility = Visibility.Collapsed;
+                    }
 
-                    ExecutableUnitsPanel.Height = index*PanelHeight;
+                    UpdateSize();
                 }).AddTo(_DataContext.CompositeDisposable);
+        }
+
+        private void ExecutableUnitPanel_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            var item = (sender as FrameworkElement)?.DataContext as ExecutableUnitViewModel;
+
+            _DataContext.SelectedCandidate.Value = item;
+        }
+
+        private void ExecutableUnitPanel_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var item = (sender as FrameworkElement)?.DataContext as ExecutableUnitViewModel;
+
+            _DataContext.SelectedCandidate.Value = item;
+            _DataContext.RunCommand.Execute(null);
+        }
+
+        private void StatusBar_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            UpdateSize();
         }
     }
 }

@@ -115,7 +115,7 @@ namespace Ann.MainWindow
                 Observable
                     .Merge(Input.ToUnit())
                     .Merge(configHolder.Config.ObserveProperty(x => x.MaxCandidateLinesCount).ToUnit())
-                    .Throttle(TimeSpan.FromMilliseconds(50))
+                    //.Throttle(TimeSpan.FromMilliseconds(50))
                     .Subscribe(_ => _app.Find(Input.Value, configHolder.Config.MaxCandidateLinesCount))
                     .AddTo(CompositeDisposable);
 
