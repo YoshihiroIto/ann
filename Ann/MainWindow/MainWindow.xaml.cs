@@ -57,7 +57,6 @@ namespace Ann.MainWindow
             InitializeHotKey();
             InitializeShortcutKey();
 
-#if false
             Application.Current.Deactivated += (_, __) =>
             {
                 if (WindowsHelper.IsOnTrayMouseCursor)
@@ -67,7 +66,6 @@ namespace Ann.MainWindow
                 if (windows.Length == 1 && Equals(windows[0], this))
                     Visibility = Visibility.Hidden;
             };
-#endif
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
