@@ -41,7 +41,6 @@ namespace Ann.MainWindow
 
             InitializeComponent();
 
-
             Loaded += OnLoaded;
         }
 
@@ -50,7 +49,16 @@ namespace Ann.MainWindow
             SetupExecutableUnitsPanel();
 
             UpdateSize();
+
+            Observable.FromEventPattern<DependencyPropertyChangedEventHandler, DependencyPropertyChangedEventArgs>(
+                    h => StatusBar.IsVisibleChanged += h,
+                    h => StatusBar.IsVisibleChanged -= h)
+                .Throttle(TimeSpan.FromMilliseconds(50))
+                .ObserveOnUIDispatcher()
+                .Subscribe(_ => UpdateSize())
+                .AddTo(_DataContext.CompositeDisposable);
         }
+
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -288,11 +296,6 @@ namespace Ann.MainWindow
 
             _DataContext.SelectedCandidate.Value = item;
             _DataContext.RunCommand.Execute(null);
-        }
-
-        private void StatusBar_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            UpdateSize();
         }
     }
 }

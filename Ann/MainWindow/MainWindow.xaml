@@ -69,8 +69,7 @@
         <mainWindow:StatusBar x:Name="StatusBar"
                               Width="598"
                               DataContext="{Binding StatusBar,
-                                                    Mode=OneTime}"
-                              IsVisibleChanged="StatusBar_IsVisibleChanged" />
+                                                    Mode=OneTime}" />
         <DockPanel x:Name="InputLine"
                    Canvas.Left="0"
                    Canvas.Top="0"
