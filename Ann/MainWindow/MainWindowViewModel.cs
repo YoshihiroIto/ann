@@ -111,7 +111,7 @@ namespace Ann.MainWindow
                 IndexUpdateCommand
                     .Subscribe(async _ =>
                     {
-                            Messenger.Publish(new WindowActionMessage(WindowAction.VisibleActive));
+                        Messenger.Publish(new WindowActionMessage(WindowAction.VisibleActive));
                         await _app.UpdateIndexAsync();
                     })
                     .AddTo(CompositeDisposable);
@@ -135,11 +135,15 @@ namespace Ann.MainWindow
                         if (old == null)
                             return;
 
-                        await Application.Current.Dispatcher.InvokeAsync(() =>
-                        {
+                        if (Splat.ModeDetector.InUnitTestRunner())
                             foreach (var o in old)
                                 o.Dispose();
-                        });
+                        else
+                            await Application.Current.Dispatcher.InvokeAsync(() =>
+                            {
+                                foreach (var o in old)
+                                    o.Dispose();
+                            });
                     })
                     .AddTo(CompositeDisposable);
 
