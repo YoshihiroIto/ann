@@ -33,6 +33,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.JScript" />
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\WindowsAPICodePack-Core.1.1.2\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
       <Private>True</Private>
@@ -100,6 +101,7 @@
     <Compile Include="Control\Behavior\WindowDisposeDataContextOnClosedBehavior.cs" />
     <Compile Include="DirectoryHelper.cs" />
     <Compile Include="DisposableFileSystem.cs" />
+    <Compile Include="Evaluator.cs" />
     <Compile Include="Exception\UninitializedException.cs" />
     <Compile Include="Exception\NestingException.cs" />
     <Compile Include="MockKeyboardDevice.cs" />

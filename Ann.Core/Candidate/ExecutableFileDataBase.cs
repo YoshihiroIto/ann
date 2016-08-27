@@ -13,7 +13,7 @@ using FlatBuffers;
 using IndexFile;
 using File = System.IO.File;
 
-namespace Ann.Core
+namespace Ann.Core.Candidate
 {
     public class ExecutableFileDataBase : NotificationObject
     {

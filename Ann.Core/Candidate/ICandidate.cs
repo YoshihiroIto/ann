@@ -1,7 +1,7 @@
 ﻿using System.Windows.Input;
 using System.Windows.Media;
 
-namespace Ann.Core.Interface
+namespace Ann.Core.Candidate
 {
     public interface ICandidate
     {

@@ -4,7 +4,7 @@ using System.Reactive.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
 using Ann.Core;
-using Ann.Core.Interface;
+using Ann.Core.Candidate;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;

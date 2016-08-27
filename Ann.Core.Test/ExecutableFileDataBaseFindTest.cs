@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Ann.Core.Candidate;
 using Ann.Foundation;
 using Xunit;
 

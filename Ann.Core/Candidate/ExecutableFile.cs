@@ -7,11 +7,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
-using Ann.Core.Interface;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 
-namespace Ann.Core
+namespace Ann.Core.Candidate
 {
     [DebuggerDisplay("Id:{_id}, MaxId:{_maxId}, Score:{_score}, Path:{Path}")]
     public class ExecutableFile : IComparable<ExecutableFile>, ICandidate

@@ -10,7 +10,7 @@ using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings.Extensions;
 using System.Threading;
-using Ann.Core.Interface;
+using Ann.Core.Candidate;
 using Reactive.Bindings;
 
 namespace Ann.Core

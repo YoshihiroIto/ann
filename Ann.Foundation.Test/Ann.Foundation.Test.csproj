@@ -131,6 +131,7 @@
     <Compile Include="Mvvm\ViewModelBaseTest.cs" />
     <Compile Include="Mvvm\DisposableNotificationObjectTest.cs" />
     <Compile Include="Mvvm\NotificationObjectTest.cs" />
+    <Compile Include="EvaluatorTest.cs" />
     <Compile Include="ProcessHelperTest.cs" />
     <Compile Include="WindowsHelperTest.cs" />
     <Compile Include="HotKeyRegisterTest.cs" />

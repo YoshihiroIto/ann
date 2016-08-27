@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Windows.Threading;
 using Ann.Core;
+using Ann.Core.Candidate;
 using Ann.Foundation;
 using Ann.MainWindow;
 using Xunit;
