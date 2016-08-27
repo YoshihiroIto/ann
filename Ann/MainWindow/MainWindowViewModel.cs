@@ -211,9 +211,9 @@ namespace Ann.MainWindow
 
                         var item = new StatusBarItemViewModel(app, errMes);
 
-                        StatusBar.Messages.AddOnScheduler(item);
+                        StatusBar.Messages.Add(item);
                         await Task.Delay(TimeSpan.FromSeconds(3));
-                        StatusBar.Messages.RemoveOnScheduler(item);
+                        StatusBar.Messages.Remove(item);
                         item.Dispose();
                     }).AddTo(CompositeDisposable);
 

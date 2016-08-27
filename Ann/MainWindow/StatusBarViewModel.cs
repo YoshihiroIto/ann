@@ -1,22 +1,27 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows;
+using System.Windows.Data;
 using Ann.Core;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using Splat;
 
 namespace Ann.MainWindow
 {
     public class StatusBarViewModel : ViewModelBase
     {
-        public ReactiveCollection<StatusBarItemViewModel> Messages { get; }
+        public ObservableCollection<StatusBarItemViewModel> Messages { get; }
         public ReadOnlyReactiveProperty<Visibility> Visibility { get; }
 
         private readonly App _app;
+
+        private readonly object _messageRemoveLock = new object();
 
         public StatusBarViewModel(App app)
         {
@@ -24,10 +29,20 @@ namespace Ann.MainWindow
 
             _app = app;
 
-            Messages = new ReactiveCollection<StatusBarItemViewModel>().AddTo(CompositeDisposable);
+            Messages = new ObservableCollection<StatusBarItemViewModel>();
+
+            if (ModeDetector.InUnitTestRunner() == false)
+                BindingOperations.EnableCollectionSynchronization(Messages, new object());
 
             CompositeDisposable.Add(async () => await app.CancelUpdateIndexAsync());
-            CompositeDisposable.Add(() => Messages.ForEach(x => x.Dispose()));
+            CompositeDisposable.Add(() =>
+            {
+                lock (_messageRemoveLock)
+                {
+                    Messages.ForEach(x => x.Dispose());
+                    Messages.Clear();
+                }
+            });
 
             Visibility = Messages.CollectionChangedAsObservable()
                 .Select(_ => Messages.Any() ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed)
@@ -35,7 +50,7 @@ namespace Ann.MainWindow
                 .AddTo(CompositeDisposable);
 
             app.ObserveProperty(x => x.IsIndexUpdating)
-                .SubscribeOn(ReactivePropertyScheduler.Default)
+                //.SubscribeOn(ReactivePropertyScheduler.Default)
                 .Subscribe(i =>
                 {
                     if (i)
@@ -48,40 +63,47 @@ namespace Ann.MainWindow
                     }
                     else
                     {
-                        var item = Messages
-                            .FirstOrDefault(
-                                x => x.Key == StatusBarItemViewModel.SearchKey.IndexUpdating);
+                        lock (_messageRemoveLock)
+                        {
+                            var item = Messages
+                                .FirstOrDefault(
+                                    x => x.Key == StatusBarItemViewModel.SearchKey.IndexUpdating);
 
-                        if (item == null)
-                            return;
+                            if (item == null)
+                                return;
 
-                        Messages.Remove(item);
-                        item.Dispose();
+                            Messages.Remove(item);
+                            item.Dispose();
+                        }
                     }
                 }).AddTo(CompositeDisposable);
 
             app.ObserveProperty(c => c.Crawling)
-                .SubscribeOn(ReactivePropertyScheduler.Default)
+                //.SubscribeOn(ReactivePropertyScheduler.Default)
                 .Subscribe(c =>
                 {
-                    var item = Messages
-                        .FirstOrDefault(
-                            x => x.Key == StatusBarItemViewModel.SearchKey.IndexUpdating);
+                    lock (_messageRemoveLock)
+                    {
+                        var item = Messages
+                            .FirstOrDefault(
+                                x => x.Key == StatusBarItemViewModel.SearchKey.IndexUpdating);
 
-                    if (item != null)
-                        item.Messages.Value =
-                            new[]
-                            {
-                                new StatusBarItemViewModel.Message
+                        if (item != null)
+                            item.Messages.Value =
+                                new[]
                                 {
-                                    String = StringTags.Message_IndexUpdating,
-                                    Options = new object[] {c}
-                                }
-                            };
+                                    new StatusBarItemViewModel.Message
+                                    {
+                                        String = StringTags.Message_IndexUpdating,
+                                        Options = new object[] {c}
+                                    }
+                                };
+                    }
                 })
                 .AddTo(CompositeDisposable);
 
             app.ObserveProperty(x => x.IsEnableActivateHotKey)
+                //.SubscribeOn(ReactivePropertyScheduler.Default)
                 .Subscribe(i =>
                 {
                     if (i == false)
@@ -90,20 +112,24 @@ namespace Ann.MainWindow
                             app,
                             StatusBarItemViewModel.SearchKey.ActivationShortcutKeyIsAlreadyInUse,
                             StringTags.Message_ActivationShortcutKeyIsAlreadyInUse);
-                        Messages.AddOnScheduler(item);
+                        Messages.Add(item);
                     }
                     else
                     {
-                        var item = Messages
-                            .FirstOrDefault(
-                                x => x.Key == StatusBarItemViewModel.SearchKey.ActivationShortcutKeyIsAlreadyInUse);
+                        lock (_messageRemoveLock)
+                        {
+                            var item = Messages
+                                .FirstOrDefault(
+                                    x => x.Key == StatusBarItemViewModel.SearchKey.ActivationShortcutKeyIsAlreadyInUse);
 
-                        Messages.RemoveOnScheduler(item);
-                        item?.Dispose();
+                            Messages.Remove(item);
+                            item?.Dispose();
+                        }
                     }
                 }).AddTo(CompositeDisposable);
 
             app.ObserveProperty(x => x.IndexOpeningResult)
+                //.SubscribeOn(ReactivePropertyScheduler.Default)
                 .Subscribe(r =>
                 {
                     if (r == IndexOpeningResults.InOpening)
@@ -112,16 +138,19 @@ namespace Ann.MainWindow
                             app,
                             StatusBarItemViewModel.SearchKey.InOpening,
                             StringTags.Message_InOpening);
-                        Messages.AddOnScheduler(item);
+                        Messages.Add(item);
                     }
                     else
                     {
-                        var item = Messages
-                            .FirstOrDefault(
-                                x => x.Key == StatusBarItemViewModel.SearchKey.InOpening);
+                        lock (_messageRemoveLock)
+                        {
+                            var item = Messages
+                                .FirstOrDefault(
+                                    x => x.Key == StatusBarItemViewModel.SearchKey.InOpening);
 
-                        Messages.RemoveOnScheduler(item);
-                        item?.Dispose();
+                            Messages.Remove(item);
+                            item?.Dispose();
+                        }
                     }
                 }).AddTo(CompositeDisposable);
 
@@ -135,11 +164,12 @@ namespace Ann.MainWindow
             CompositeDisposable.Add(() => _autoUpdaterItem?.Dispose());
 
             _app.ObserveProperty(x => x.AutoUpdateState)
+                //.SubscribeOn(ReactivePropertyScheduler.Default)
                 .Subscribe(s =>
                 {
                     if (_autoUpdaterItem != null)
                     {
-                        Messages.RemoveOnScheduler(_autoUpdaterItem);
+                        Messages.Remove(_autoUpdaterItem);
                         _autoUpdaterItem.Dispose();
                     }
 
@@ -157,6 +187,7 @@ namespace Ann.MainWindow
                 }).AddTo(CompositeDisposable);
 
             _app.ObserveProperty(x => x.AutoUpdateRemainingSeconds)
+                //.SubscribeOn(ReactivePropertyScheduler.Default)
                 .Subscribe(p =>
                 {
                     if (_app.AutoUpdateState == App.AutoUpdateStates.CloseAfterNSec)
