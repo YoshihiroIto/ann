@@ -9,7 +9,7 @@ namespace Ann
         public const int MaxCandidateCount = 10;
 
         public const double MainWindowWidth = 600;
-        public const double MainWindowBorderThicknessUnit = 1;
+        public const double MainWindowBorderThicknessUnit = 0;
         public static Thickness MainWindowBorderThickness = new Thickness(MainWindowBorderThicknessUnit);
 
         public const double BaseMarginUnit = 16;
