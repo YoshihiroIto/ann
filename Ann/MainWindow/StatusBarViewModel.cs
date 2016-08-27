@@ -46,13 +46,15 @@ namespace Ann.MainWindow
             });
 
             Visibility = Messages.CollectionChangedAsObservable()
-                .Select(_ => Messages.Any() ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed)
+                .Select(_ => Messages.Any()
+                    ? System.Windows.Visibility.Visible
+                    : System.Windows.Visibility.Collapsed)
                 .ToReadOnlyReactiveProperty(System.Windows.Visibility.Collapsed)
                 .AddTo(CompositeDisposable);
 
             Observable.FromEventPattern<
-                EventHandler<App.NotificationEventArgs>,
-                App.NotificationEventArgs>(
+                    EventHandler<App.NotificationEventArgs>,
+                    App.NotificationEventArgs>(
                     h => _app.Notification += h,
                     h => _app.Notification -= h)
                 .Subscribe(async e =>
@@ -67,7 +69,6 @@ namespace Ann.MainWindow
                 .AddTo(CompositeDisposable);
 
             app.ObserveProperty(x => x.IsIndexUpdating)
-                //.SubscribeOn(ReactivePropertyScheduler.Default)
                 .Subscribe(i =>
                 {
                     if (i)
@@ -96,7 +97,6 @@ namespace Ann.MainWindow
                 }).AddTo(CompositeDisposable);
 
             app.ObserveProperty(c => c.Crawling)
-                //.SubscribeOn(ReactivePropertyScheduler.Default)
                 .Subscribe(c =>
                 {
                     lock (_messageRemoveLock)
@@ -120,7 +120,6 @@ namespace Ann.MainWindow
                 .AddTo(CompositeDisposable);
 
             app.ObserveProperty(x => x.IsEnableActivateHotKey)
-                //.SubscribeOn(ReactivePropertyScheduler.Default)
                 .Subscribe(i =>
                 {
                     if (i == false)
@@ -146,7 +145,6 @@ namespace Ann.MainWindow
                 }).AddTo(CompositeDisposable);
 
             app.ObserveProperty(x => x.IndexOpeningResult)
-                //.SubscribeOn(ReactivePropertyScheduler.Default)
                 .Subscribe(r =>
                 {
                     if (r == IndexOpeningResults.InOpening)
@@ -181,7 +179,6 @@ namespace Ann.MainWindow
             CompositeDisposable.Add(() => _autoUpdaterItem?.Dispose());
 
             _app.ObserveProperty(x => x.AutoUpdateState)
-                //.SubscribeOn(ReactivePropertyScheduler.Default)
                 .Subscribe(s =>
                 {
                     if (_autoUpdaterItem != null)
@@ -204,7 +201,6 @@ namespace Ann.MainWindow
                 }).AddTo(CompositeDisposable);
 
             _app.ObserveProperty(x => x.AutoUpdateRemainingSeconds)
-                //.SubscribeOn(ReactivePropertyScheduler.Default)
                 .Subscribe(p =>
                 {
                     if (_app.AutoUpdateState == App.AutoUpdateStates.CloseAfterNSec)

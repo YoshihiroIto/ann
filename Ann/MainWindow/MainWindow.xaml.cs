@@ -53,12 +53,25 @@ namespace Ann.MainWindow
             Observable.FromEventPattern<DependencyPropertyChangedEventHandler, DependencyPropertyChangedEventArgs>(
                     h => StatusBar.IsVisibleChanged += h,
                     h => StatusBar.IsVisibleChanged -= h)
-                .Throttle(TimeSpan.FromMilliseconds(50))
+                .Throttle(TimeSpan.FromMilliseconds(5))
+                .ObserveOnUIDispatcher()
+                .Subscribe(_ => UpdateSize())
+                .AddTo(_DataContext.CompositeDisposable);
+
+            Observable.FromEventPattern<SizeChangedEventHandler, SizeChangedEventArgs>(
+                    h => StatusBar.SizeChanged += h,
+                    h => StatusBar.SizeChanged -= h)
+                .ObserveOnUIDispatcher()
+                .Subscribe(_ => UpdateSize())
+                .AddTo(_DataContext.CompositeDisposable);
+
+            Observable.FromEventPattern<SizeChangedEventHandler, SizeChangedEventArgs>(
+                    h => SizeChanged += h,
+                    h => SizeChanged -= h)
                 .ObserveOnUIDispatcher()
                 .Subscribe(_ => UpdateSize())
                 .AddTo(_DataContext.CompositeDisposable);
         }
-
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -218,7 +231,7 @@ namespace Ann.MainWindow
             if (_DataContext.Candidates.Value.Any())
                 height += ViewConstants.BaseMarginUnit;
 
-            if (StatusBar.Visibility == Visibility.Visible)
+            //if (StatusBar.Visibility == Visibility.Visible)
             {
                 height += StatusBar.ActualHeight;
                 Canvas.SetLeft(StatusBar, 0);

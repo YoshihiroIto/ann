@@ -15,7 +15,7 @@
                                    Mode=OneWay}"
               mc:Ignorable="d">
     <ItemsControl.Template>
-        <ControlTemplate TargetType="ItemsControl">
+        <ControlTemplate>
             <Border Background="#60EE3030"
                     BorderThickness="0"
                     Padding="16,4,16,4">
