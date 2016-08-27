@@ -6,7 +6,7 @@ enum Versions : int
     Version = 7,
 }
 
-table ExecutableUnit
+table ExecutableFile
 {
     Path :string;
 }
@@ -14,7 +14,7 @@ table ExecutableUnit
 table File
 {
     Version :Versions;
-    Rows    :[ExecutableUnit];
+    Rows    :[ExecutableFile];
 }
 
 root_type File;

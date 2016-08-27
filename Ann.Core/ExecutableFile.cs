@@ -7,7 +7,7 @@ using System.Linq;
 namespace Ann.Core
 {
     [DebuggerDisplay("Id:{_id}, MaxId:{_maxId}, Score:{_score}, Path:{Path}")]
-    public class ExecutableUnit : IComparable<ExecutableUnit>
+    public class ExecutableFile : IComparable<ExecutableFile>
     {
         public readonly string Path;
         public readonly string Name;
@@ -39,7 +39,7 @@ namespace Ann.Core
             _maxId = maxId;
         }
 
-        public ExecutableUnit(
+        public ExecutableFile(
             string path,
             ConcurrentDictionary<string, string> stringPool,
             string[] targetFolders)
@@ -83,7 +83,7 @@ namespace Ann.Core
                 LowerFileNameParts = null;
         }
 
-        public ExecutableUnit(
+        public ExecutableFile(
             int id, int maxId, string path,
             ConcurrentDictionary<string, string> stringPool,
             string[] targetFolders)
@@ -108,6 +108,6 @@ namespace Ann.Core
 
         private static readonly char[] Separator = {' ', '_', '-', '/', '\\'};
 
-        int IComparable<ExecutableUnit>.CompareTo(ExecutableUnit other) => _score - other._score;
+        int IComparable<ExecutableFile>.CompareTo(ExecutableFile other) => _score - other._score;
     }
 }

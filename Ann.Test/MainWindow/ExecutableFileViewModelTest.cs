@@ -8,11 +8,11 @@ using Xunit;
 
 namespace Ann.Test.MainWindow
 {
-    public class ExecutableUnitViewModelTest : IDisposable
+    public class ExecutableFileViewModelTest : IDisposable
     { 
         private readonly DisposableFileSystem _config = new DisposableFileSystem();
 
-        public ExecutableUnitViewModelTest()
+        public ExecutableFileViewModelTest()
         {
             TestHelper.CleanTestEnv();
         }
@@ -32,7 +32,7 @@ namespace Ann.Test.MainWindow
             var stringPool = new ConcurrentDictionary<string, string>();
             var targetFolders = new string[0];
 
-            var model = new ExecutableUnit(path, stringPool, targetFolders);
+            var model = new ExecutableFile(path, stringPool, targetFolders);
 
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
@@ -53,7 +53,7 @@ namespace Ann.Test.MainWindow
             var stringPool = new ConcurrentDictionary<string, string>();
             var targetFolders = new string[0];
 
-            var model = new ExecutableUnit(path, stringPool, targetFolders);
+            var model = new ExecutableFile(path, stringPool, targetFolders);
 
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
@@ -80,7 +80,7 @@ namespace Ann.Test.MainWindow
             var stringPool = new ConcurrentDictionary<string, string>();
             var targetFolders = new string[0];
 
-            var model = new ExecutableUnit(path, stringPool, targetFolders);
+            var model = new ExecutableFile(path, stringPool, targetFolders);
 
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))

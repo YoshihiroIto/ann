@@ -18,9 +18,9 @@ namespace Ann.Core
     {
         #region Candidates
 
-        private IEnumerable<ExecutableUnit> _Candidates = Enumerable.Empty<ExecutableUnit>();
+        private IEnumerable<ExecutableFile> _Candidates = Enumerable.Empty<ExecutableFile>();
 
-        public IEnumerable<ExecutableUnit> Candidates
+        public IEnumerable<ExecutableFile> Candidates
         {
             get { return _Candidates; }
             set { SetProperty(ref _Candidates, value); }
@@ -53,7 +53,7 @@ namespace Ann.Core
         public void InvokeShortcutKeyChanged() => ShortcutKeyChanged?.Invoke(this, EventArgs.Empty);
 
         private HashSet<string> _priorityFiles = new HashSet<string>();
-        private readonly ExecutableUnitDataBase _dataBase;
+        private readonly ExecutableFileDataBase _dataBase;
         private readonly InputControler _inputControler;
 
         private string IndexFilePath => System.IO.Path.Combine(_configHolder.ConfigDirPath, "index.dat");
@@ -256,7 +256,7 @@ namespace Ann.Core
             _configHolder = configHolder;
             _languagesService = languagesService;
 
-            _dataBase = new ExecutableUnitDataBase(IndexFilePath);
+            _dataBase = new ExecutableFileDataBase(IndexFilePath);
             _inputControler = new InputControler().AddTo(CompositeDisposable);
 
             UpdateFromConfig();

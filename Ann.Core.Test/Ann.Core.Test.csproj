@@ -129,10 +129,10 @@
     <Compile Include="Config\AppTest.cs" />
     <Compile Include="VersionUpdaterTest.cs" />
     <Compile Include="ConstantsTest.cs" />
-    <Compile Include="ExecutableUnitDataBaseBasicTest.cs">
+    <Compile Include="ExecutableFileDataBaseBasicTest.cs">
       <DependentUpon>ExecutableUnitDataBaseTest.cs</DependentUpon>
     </Compile>
-    <Compile Include="ExecutableUnitDataBaseFindTest.cs">
+    <Compile Include="ExecutableFileDataBaseFindTest.cs">
       <DependentUpon>ExecutableUnitDataBaseTest.cs</DependentUpon>
     </Compile>
     <Compile Include="ExecutableUnitDataBaseTest.cs" />

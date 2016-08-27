@@ -6,11 +6,11 @@ using Xunit;
 
 namespace Ann.Core.Test
 {
-    public class ExecutableUnitDataBaseBasicTest : IDisposable
+    public class ExecutableFileDataBaseBasicTest : IDisposable
     {
         private readonly DisposableFileSystem _context = new DisposableFileSystem();
 
-        public ExecutableUnitDataBaseBasicTest()
+        public ExecutableFileDataBaseBasicTest()
         {
             TestHelper.CleanTestEnv();
         }
@@ -26,7 +26,7 @@ namespace Ann.Core.Test
             var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
             var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
 
-            var db = new ExecutableUnitDataBase(dbFilePath);
+            var db = new ExecutableFileDataBase(dbFilePath);
 
             var r = await db.OpenIndexAsync(targetPaths);
 
@@ -42,11 +42,11 @@ namespace Ann.Core.Test
             var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
             var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
 
-            var db = new ExecutableUnitDataBase(dbFilePath);
+            var db = new ExecutableFileDataBase(dbFilePath);
             var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
             Assert.Equal(IndexOpeningResults.Ok, r);
-            Assert.Equal(3, db.ExecutableUnitCount);
+            Assert.Equal(3, db.ExecutableFileCount);
         }
 
         [Theory]
@@ -59,18 +59,18 @@ namespace Ann.Core.Test
                 var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
                 var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
 
-                var db = new ExecutableUnitDataBase(dbFilePath);
+                var db = new ExecutableFileDataBase(dbFilePath);
                 var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
                 Assert.Equal(IndexOpeningResults.Ok, r);
-                Assert.Equal(3, db.ExecutableUnitCount);
+                Assert.Equal(3, db.ExecutableFileCount);
             }
 
             {
                 var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
                 var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
 
-                var db = new ExecutableUnitDataBase(dbFilePath);
+                var db = new ExecutableFileDataBase(dbFilePath);
                 var r = await db.OpenIndexAsync(targetPaths);
 
                 Assert.Equal(IndexOpeningResults.Ok, r);
@@ -87,11 +87,11 @@ namespace Ann.Core.Test
                 var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
                 var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
 
-                var db = new ExecutableUnitDataBase(dbFilePath);
+                var db = new ExecutableFileDataBase(dbFilePath);
                 var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
                 Assert.Equal(IndexOpeningResults.Ok, r);
-                Assert.Equal(3, db.ExecutableUnitCount);
+                Assert.Equal(3, db.ExecutableFileCount);
             }
 
             foreach (var f in targetFiles)
@@ -101,7 +101,7 @@ namespace Ann.Core.Test
                 var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
                 var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
 
-                var db = new ExecutableUnitDataBase(dbFilePath);
+                var db = new ExecutableFileDataBase(dbFilePath);
                 var r = await db.OpenIndexAsync(targetPaths);
 
                 Assert.Equal(IndexOpeningResults.Ok, r);
@@ -121,11 +121,11 @@ namespace Ann.Core.Test
             var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
             var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
 
-            var db = new ExecutableUnitDataBase(dbFilePath);
+            var db = new ExecutableFileDataBase(dbFilePath);
             var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
             Assert.Equal(IndexOpeningResults.Ok, r);
-            Assert.Equal(3, db.ExecutableUnitCount);
+            Assert.Equal(3, db.ExecutableFileCount);
         }
 
         [Theory]
@@ -137,11 +137,11 @@ namespace Ann.Core.Test
             var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
             var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
 
-            var db = new ExecutableUnitDataBase(dbFilePath);
+            var db = new ExecutableFileDataBase(dbFilePath);
             var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
             Assert.Equal(IndexOpeningResults.Ok, r);
-            Assert.Equal(3, db.ExecutableUnitCount);
+            Assert.Equal(3, db.ExecutableFileCount);
 
             var f = db.Find("aaa", executableFileExts).ToArray();
 
@@ -167,11 +167,11 @@ namespace Ann.Core.Test
             var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
             var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
 
-            var db = new ExecutableUnitDataBase(dbFilePath);
+            var db = new ExecutableFileDataBase(dbFilePath);
             var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
             Assert.Equal(IndexOpeningResults.Ok, r);
-            Assert.Equal(3, db.ExecutableUnitCount);
+            Assert.Equal(3, db.ExecutableFileCount);
 
             var f = db.Find("aaa", executableFileExts).ToArray();
 

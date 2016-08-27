@@ -96,7 +96,7 @@ namespace Ann.MainWindow
         private readonly MainWindowViewModel _parent;
         private readonly App _app;
 
-        public CandidatePanelViewModel(MainWindowViewModel parent, ExecutableUnit model, App app)
+        public CandidatePanelViewModel(MainWindowViewModel parent, ExecutableFile model, App app)
         {
             Debug.Assert(parent != null);
             Debug.Assert(model != null);

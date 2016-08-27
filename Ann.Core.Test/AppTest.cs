@@ -161,7 +161,7 @@ namespace Ann.Core.Test
         }
 
         [Fact]
-        public void FindExecutableUnit()
+        public void FindExecutableFile()
         {
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))

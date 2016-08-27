@@ -146,11 +146,11 @@
     <Compile Include="Config\MainWindow.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="CultureSummry.cs" />
-    <Compile Include="ExecutableUnit.cs" />
-    <Compile Include="ExecutableUnitDataBase.cs" />
-    <Compile Include="IndexFile\ExecutableUnit.cs" />
-    <Compile Include="IndexFile\File.cs" />
+    <Compile Include="ExecutableFile.cs" />
+    <Compile Include="ExecutableFileDataBase.cs" />
     <Compile Include="IconDecoder.cs" />
+    <Compile Include="IndexFile\ExecutableFile.cs" />
+    <Compile Include="IndexFile\File.cs" />
     <Compile Include="IndexFile\Versions.cs" />
     <Compile Include="Languages.cs" />
     <Compile Include="LanguagesService.cs" />
