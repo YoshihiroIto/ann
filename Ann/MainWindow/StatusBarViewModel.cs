@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using Ann.Core;
@@ -47,6 +48,22 @@ namespace Ann.MainWindow
             Visibility = Messages.CollectionChangedAsObservable()
                 .Select(_ => Messages.Any() ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed)
                 .ToReadOnlyReactiveProperty(System.Windows.Visibility.Collapsed)
+                .AddTo(CompositeDisposable);
+
+            Observable.FromEventPattern<
+                EventHandler<App.NotificationEventArgs>,
+                App.NotificationEventArgs>(
+                    h => _app.Notification += h,
+                    h => _app.Notification -= h)
+                .Subscribe(async e =>
+                {
+                    var item = new StatusBarItemViewModel(app, e.EventArgs.Messages);
+
+                    Messages.Add(item);
+                    await Task.Delay(TimeSpan.FromSeconds(3));
+                    Messages.Remove(item);
+                    item.Dispose();
+                })
                 .AddTo(CompositeDisposable);
 
             app.ObserveProperty(x => x.IsIndexUpdating)

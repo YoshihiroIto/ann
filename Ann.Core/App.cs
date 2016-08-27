@@ -382,5 +382,20 @@ namespace Ann.Core
             get { return _dataBase.IconCacheSize; }
             set { _dataBase.IconCacheSize = value; }
         }
+
+        public class NotificationEventArgs : EventArgs
+        {
+            public StringTags[] Messages;
+        }
+
+        public event EventHandler<NotificationEventArgs> Notification;
+
+        public void NoticeMessages(IEnumerable<StringTags> messages)
+        {
+            Notification?.Invoke(this, new NotificationEventArgs
+            {
+                Messages = messages.ToArray()
+            });
+        }
     }
 }

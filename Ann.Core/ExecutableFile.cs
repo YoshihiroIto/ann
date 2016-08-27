@@ -2,7 +2,9 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 using Ann.Core.Interface;
@@ -44,6 +46,7 @@ namespace Ann.Core
             _maxId = maxId;
         }
 
+        private readonly App _app;
         private readonly IconDecoder _iconDecoder;
 
         public ExecutableFile(
@@ -53,8 +56,10 @@ namespace Ann.Core
             ConcurrentDictionary<string, string> stringPool,
             string[] targetFolders)
         {
+            Debug.Assert(app != null);
             Debug.Assert(iconDecoder != null);
 
+            _app = app;
             _iconDecoder = iconDecoder;
 
             var fvi = FileVersionInfo.GetVersionInfo(path);
@@ -95,37 +100,14 @@ namespace Ann.Core
             if (LowerFileNameParts.Length <= 1)
                 LowerFileNameParts = null;
 
-            _RunCommand = new DelegateCommand(
-                async () =>
-                {
-                    var i = await app.RunAsync(Path, false);
-
-                    if (i == false)
-                    {
-                        // todo:実行に失敗したら
-#if false
-                        var errMes = new List<StringTags> {StringTags.Message_FailedToStart};
-                        if (File.Exists(path) == false)
-                            errMes.Add(StringTags.Message_FileNotFound);
-
-                        var item = new StatusBarItemViewModel(app, errMes);
-
-                        StatusBar.Messages.Add(item);
-                        await Task.Delay(TimeSpan.FromSeconds(3));
-                        StatusBar.Messages.Remove(item);
-                        item.Dispose();
-#endif
-                    }
-                });
+            _RunCommand = new DelegateCommand(async () => await RunAsync(false));
 
             _SubCommands = new[]
             {
                 new MenuCommand
                 {
                     Caption = StringTags.MenuItem_RunAsAdministrator,
-                    Command = new DelegateCommand(async () =>
-                        // todo:実行に失敗したら
-                            await app.RunAsync(Path, true))
+                    Command = new DelegateCommand(async () => await RunAsync(true))
                 },
                 new MenuCommand
                 {
@@ -134,6 +116,19 @@ namespace Ann.Core
                             await ProcessHelper.RunAsync("EXPLORER", $"/select,\"{path}\"", false))
                 }
             };
+        }
+
+        private async Task RunAsync(bool isRunAsAdmin)
+        {
+            var i = await _app.RunAsync(Path, isRunAsAdmin);
+            if (i)
+                return;
+
+            var errMes = new List<StringTags> { StringTags.Message_FailedToStart };
+            if (File.Exists(Path) == false)
+                errMes.Add(StringTags.Message_FileNotFound);
+
+            _app.NoticeMessages(errMes);
         }
 
         public ExecutableFile(
