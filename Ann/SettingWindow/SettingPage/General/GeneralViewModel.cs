@@ -18,7 +18,7 @@ namespace Ann.SettingWindow.SettingPage.General
         public ReactiveCommand HelpTranslateOpenCommand { get; }
 
         public static readonly int[] MaxCandidateLines
-            = Enumerable.Range(1, ViewConstants.MaxExecutableUnitPanelCount).ToArray();
+            = Enumerable.Range(1, ViewConstants.MaxCandidateCount).ToArray();
 
         public GeneralViewModel(Core.Config.App model, VersionUpdater versionUpdater)
         {

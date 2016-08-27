@@ -9,7 +9,7 @@ using Reactive.Bindings.Extensions;
 
 namespace Ann.MainWindow
 {
-    public class ExecutableUnitViewModel : ViewModelBase
+    public class CandidatePanelViewModel : ViewModelBase
     {
         #region Name
 
@@ -96,7 +96,7 @@ namespace Ann.MainWindow
         private readonly MainWindowViewModel _parent;
         private readonly App _app;
 
-        public ExecutableUnitViewModel(MainWindowViewModel parent, ExecutableUnit model, App app)
+        public CandidatePanelViewModel(MainWindowViewModel parent, ExecutableUnit model, App app)
         {
             Debug.Assert(parent != null);
             Debug.Assert(model != null);

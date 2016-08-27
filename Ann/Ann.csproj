@@ -207,7 +207,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="MainWindow\ExecutableUnitPanel.xaml">
+    <Page Include="MainWindow\CandidatePanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -219,7 +219,7 @@
       <DependentUpon>Entry.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow\ExecutableUnitViewModel.cs" />
+    <Compile Include="MainWindow\CandidatePanelViewModel.cs" />
     <Compile Include="MainWindow\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

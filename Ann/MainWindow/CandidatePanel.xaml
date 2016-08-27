@@ -7,10 +7,10 @@
             xmlns:mainWindow="clr-namespace:Ann.MainWindow"
             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-            x:Key="ExecutableUnitPanel"
-            Width="{x:Static ann:ViewConstants.ExecutableUnitPanelWidth}"
-            Height="{x:Static ann:ViewConstants.ExecutableUnitPanelHeight}"
-            d:DataContext="{d:DesignInstance mainWindow:ExecutableUnitViewModel}"
+            x:Key="CandidatePanel"
+            Width="{x:Static ann:ViewConstants.CandidatePanelWidth}"
+            Height="{x:Static ann:ViewConstants.CandidatePanelHeight}"
+            d:DataContext="{d:DesignInstance mainWindow:CandidatePanelViewModel}"
             d:DesignHeight="300"
             d:DesignWidth="300"
             x:Shared="False"
@@ -31,8 +31,8 @@
             </Style>
         </Canvas.Style>
 
-        <Button Canvas.Right="{x:Static ann:ViewConstants.ExecutableUnitPanel_Star_Right}"
-                Canvas.Bottom="{x:Static ann:ViewConstants.ExecutableUnitPanel_Star_Bottom}"
+        <Button Canvas.Right="{x:Static ann:ViewConstants.CandidatePanel_Star_Right}"
+                Canvas.Bottom="{x:Static ann:ViewConstants.CandidatePanel_Star_Bottom}"
                 VerticalAlignment="Bottom"
                 materialDesign:RippleAssist.IsCentered="True"
                 Focusable="False"
@@ -58,8 +58,8 @@
             </i:Interaction.Triggers>
         </Button>
 
-        <materialDesign:PopupBox Canvas.Right="{x:Static ann:ViewConstants.ExecutableUnitPanel_Menu_Right}"
-                                 Canvas.Top="{x:Static ann:ViewConstants.ExecutableUnitPanel_Menu_Top}"
+        <materialDesign:PopupBox Canvas.Right="{x:Static ann:ViewConstants.CandidatePanel_Menu_Right}"
+                                 Canvas.Top="{x:Static ann:ViewConstants.CandidatePanel_Menu_Top}"
                                  DockPanel.Dock="Right"
                                  Foreground="Gainsboro"
                                  PlacementMode="BottomAndAlignRightEdges">
@@ -88,21 +88,21 @@
 
         <Rectangle Canvas.Left="0"
                    Canvas.Bottom="0"
-                   Width="{x:Static ann:ViewConstants.ExecutableUnitPanelWidth}"
+                   Width="{x:Static ann:ViewConstants.CandidatePanelWidth}"
                    Height="1"
                    Fill="#20A0A0A0"
                    SnapsToDevicePixels="True" />
 
-        <Image Canvas.Left="{x:Static ann:ViewConstants.ExecutableUnitPanel_Image_Left}"
-               Canvas.Top="{x:Static ann:ViewConstants.ExecutableUnitPanel_Image_Top}"
+        <Image Canvas.Left="{x:Static ann:ViewConstants.CandidatePanel_Image_Left}"
+               Canvas.Top="{x:Static ann:ViewConstants.CandidatePanel_Image_Top}"
                Width="{x:Static core:Constants.IconSize}"
                Height="{x:Static core:Constants.IconSize}"
                Source="{Binding Icon,
                                 Mode=OneTime}" />
 
-        <TextBlock Canvas.Left="{x:Static ann:ViewConstants.ExecutableUnitPanel_Name_Left}"
-                   Canvas.Top="{x:Static ann:ViewConstants.ExecutableUnitPanel_Name_Top}"
-                   Width="{x:Static ann:ViewConstants.ExecutableUnitPanel_Name_Width}"
+        <TextBlock Canvas.Left="{x:Static ann:ViewConstants.CandidatePanel_Name_Left}"
+                   Canvas.Top="{x:Static ann:ViewConstants.CandidatePanel_Name_Top}"
+                   Width="{x:Static ann:ViewConstants.CandidatePanel_Name_Width}"
                    Height="30"
                    FontSize="24"
                    Foreground="White"
@@ -113,9 +113,9 @@
                    ToolTip="{Binding Name,
                                      Mode=OneTime}" />
 
-        <TextBlock Canvas.Left="{x:Static ann:ViewConstants.ExecutableUnitPanel_Path_Left}"
-                   Canvas.Top="{x:Static ann:ViewConstants.ExecutableUnitPanel_Path_Top}"
-                   Width="{x:Static ann:ViewConstants.ExecutableUnitPanel_Path_Width}"
+        <TextBlock Canvas.Left="{x:Static ann:ViewConstants.CandidatePanel_Path_Left}"
+                   Canvas.Top="{x:Static ann:ViewConstants.CandidatePanel_Path_Top}"
+                   Width="{x:Static ann:ViewConstants.CandidatePanel_Path_Width}"
                    Height="16"
                    Foreground="#AAA"
                    Padding="0"

@@ -38,7 +38,7 @@ namespace Ann.Test.MainWindow
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
             using (var parent = new MainWindowViewModel(app, configHolder))
-            using (var vm = new ExecutableUnitViewModel(parent, model, app))
+            using (var vm = new CandidatePanelViewModel(parent, model, app))
             {
                 Assert.Equal("Ann", vm.Name);
                 Assert.Equal(path, vm.Path);
@@ -59,7 +59,7 @@ namespace Ann.Test.MainWindow
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
             using (var parent = new MainWindowViewModel(app, configHolder))
-            using (var vm = new ExecutableUnitViewModel(parent, model, app))
+            using (var vm = new CandidatePanelViewModel(parent, model, app))
             {
                 Assert.False(vm.IsPriorityFile);
 
@@ -86,7 +86,7 @@ namespace Ann.Test.MainWindow
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
             using (var parent = new MainWindowViewModel(app, configHolder))
-            using (var vm = new ExecutableUnitViewModel(parent, model, app))
+            using (var vm = new CandidatePanelViewModel(parent, model, app))
             {
                 Assert.False(vm.IsPriorityFile);
                 Assert.False(app.IsPriorityFile(path));

@@ -28,8 +28,8 @@ namespace Ann.MainWindow
 
         public ReactiveCommand InitializeCommand { get; }
 
-        public ReactiveProperty<ExecutableUnitViewModel[]> Candidates { get; }
-        public ReactiveProperty<ExecutableUnitViewModel> SelectedCandidate { get; }
+        public ReactiveProperty<CandidatePanelViewModel[]> Candidates { get; }
+        public ReactiveProperty<CandidatePanelViewModel> SelectedCandidate { get; }
         public ReactiveCommand<object> SelectedCandidateMoveCommand { get; }
 
         public ReactiveCommand<string> RunCommand { get; }
@@ -123,14 +123,14 @@ namespace Ann.MainWindow
                     .Subscribe(_ => _app.Find(Input.Value, configHolder.Config.MaxCandidateLinesCount))
                     .AddTo(CompositeDisposable);
 
-                Candidates = new ReactiveProperty<ExecutableUnitViewModel[]>().AddTo(CompositeDisposable);
+                Candidates = new ReactiveProperty<CandidatePanelViewModel[]>().AddTo(CompositeDisposable);
                 _app.ObserveProperty(x => x.Candidates)
                     .Subscribe(async c =>
                     {
                         var old = Candidates.Value;
 
                         Candidates.Value =
-                            c.Select(u => new ExecutableUnitViewModel(this, u, _app)).ToArray();
+                            c.Select(u => new CandidatePanelViewModel(this, u, _app)).ToArray();
 
                         if (old == null)
                             return;
