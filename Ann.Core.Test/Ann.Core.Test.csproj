@@ -121,7 +121,11 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Candidate\CalculatorTest.cs" />
+    <Compile Include="Candidate\CalculationResultTest.cs" />
     <Compile Include="LanguagesTest.cs" />
+    <Compile Include="MenuCommandTest.cs" />
+    <Compile Include="StringTagToStringConverterTest.cs" />
     <Compile Include="ResourcesTest.cs" />
     <Compile Include="ConfigHolderTest.cs" />
     <Compile Include="Config\MostRecentUsedListTest.cs" />
@@ -129,13 +133,13 @@
     <Compile Include="Config\AppTest.cs" />
     <Compile Include="VersionUpdaterTest.cs" />
     <Compile Include="ConstantsTest.cs" />
-    <Compile Include="ExecutableFileDataBaseBasicTest.cs">
+    <Compile Include="Candidate\ExecutableFileDataBaseBasicTest.cs">
       <DependentUpon>ExecutableUnitDataBaseTest.cs</DependentUpon>
     </Compile>
-    <Compile Include="ExecutableFileDataBaseFindTest.cs">
+    <Compile Include="Candidate\ExecutableFileDataBaseFindTest.cs">
       <DependentUpon>ExecutableUnitDataBaseTest.cs</DependentUpon>
     </Compile>
-    <Compile Include="ExecutableUnitDataBaseTest.cs" />
+    <Compile Include="Candidate\ExecutableUnitDataBaseTest.cs" />
     <Compile Include="AppTest.cs" />
     <Compile Include="IconDecoderTest.cs" />
     <Compile Include="PathTest.cs" />

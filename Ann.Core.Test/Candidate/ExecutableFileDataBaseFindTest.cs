@@ -4,7 +4,7 @@ using Ann.Core.Candidate;
 using Ann.Foundation;
 using Xunit;
 
-namespace Ann.Core.Test
+namespace Ann.Core.Test.Candidate
 {
     public class ExecutableFileDataBaseFindTest : IDisposable
     {
