@@ -37,9 +37,9 @@ namespace Ann
         public const double CandidatePanel_Name_Top = CandidatePanel_BaseMarginUnit;
         public const double CandidatePanel_Name_Width = CandidatePanelWidth - 96;
 
-        public const double CandidatePanel_Path_Left = CandidatePanel_Name_Left;
-        public const double CandidatePanel_Path_Top = 42;
-        public const double CandidatePanel_Path_Width = CandidatePanel_Name_Width;
+        public const double CandidatePanel_Comment_Left = CandidatePanel_Name_Left;
+        public const double CandidatePanel_Comment_Top = 42;
+        public const double CandidatePanel_Comment_Width = CandidatePanel_Name_Width;
 
     }
     // ReSharper restore InconsistentNaming

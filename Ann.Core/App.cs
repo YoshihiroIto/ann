@@ -18,9 +18,9 @@ namespace Ann.Core
     {
         #region Candidates
 
-        private IEnumerable<ExecutableFile> _Candidates = Enumerable.Empty<ExecutableFile>();
+        private IEnumerable<ICandidate> _Candidates = Enumerable.Empty<ICandidate>();
 
-        public IEnumerable<ExecutableFile> Candidates
+        public IEnumerable<ICandidate> Candidates
         {
             get { return _Candidates; }
             set { SetProperty(ref _Candidates, value); }
@@ -159,7 +159,7 @@ namespace Ann.Core
 
         public async Task CancelUpdateIndexAsync()
         {
-            using(Disposable.Create(() =>_CancelUpdateIndexAsyncSema.Release()))
+            using (Disposable.Create(() => _CancelUpdateIndexAsyncSema.Release()))
             {
                 await _CancelUpdateIndexAsyncSema.WaitAsync();
                 await _dataBase.CancelUpdateIndexAsync();
@@ -311,7 +311,7 @@ namespace Ann.Core
 
         public bool IsEnableAutoUpdater { get; set; }
 
-#region AutoUpdateRemainingSeconds
+        #region AutoUpdateRemainingSeconds
 
         private int _AutoUpdateRemainingSeconds;
 
@@ -321,7 +321,7 @@ namespace Ann.Core
             private set { SetProperty(ref _AutoUpdateRemainingSeconds, value); }
         }
 
-#endregion
+        #endregion
 
         private void SetupAutoUpdater()
         {
@@ -344,7 +344,7 @@ namespace Ann.Core
                             while (AutoUpdateRemainingSeconds > 0)
                             {
                                 await Task.Delay(TimeSpan.FromSeconds(1));
-                                -- AutoUpdateRemainingSeconds;
+                                --AutoUpdateRemainingSeconds;
                             }
 
                             await Task.Delay(TimeSpan.FromSeconds(2));
@@ -364,7 +364,7 @@ namespace Ann.Core
 
         public bool IsRestartRequested => VersionUpdater.IsRestartRequested;
 
-#region AutoUpdateState
+        #region AutoUpdateState
 
         private AutoUpdateStates _AutoUpdateState;
 
@@ -373,6 +373,13 @@ namespace Ann.Core
             get { return _AutoUpdateState; }
             private set { SetProperty(ref _AutoUpdateState, value); }
         }
-#endregion
+
+        #endregion
+
+        public int ExecutableFileDataBaseIconCacheSize
+        {
+            get { return _dataBase.IconCacheSize; }
+            set { _dataBase.IconCacheSize = value; }
+        }
     }
 }

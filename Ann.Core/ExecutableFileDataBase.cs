@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 using FlatBuffers;
@@ -44,6 +45,14 @@ namespace Ann.Core
         }
 
         #endregion
+
+        public int IconCacheSize
+        {
+            get { return _iconDecoder.IconCacheSize; }
+            set { _iconDecoder.IconCacheSize = value; }
+        }
+
+        private readonly IconDecoder _iconDecoder = new IconDecoder();
 
         public IEnumerable<ExecutableFile> Find(string input, IEnumerable<string> executableFileExts)
         {
@@ -230,7 +239,7 @@ namespace Ann.Core
 
                     var euOffsets = new Offset<IndexFile.ExecutableFile>[_ExecutableFiles.Length];
 
-                    for (var i = 0; i != _ExecutableFiles.Length; ++ i)
+                    for (var i = 0; i != _ExecutableFiles.Length; ++i)
                     {
                         euOffsets[i] =
                             IndexFile.ExecutableFile.CreateExecutableFile(
@@ -297,7 +306,7 @@ namespace Ann.Core
                                 try
                                 {
                                     tempExecutableFiles[i] = new ExecutableFile(i, root.RowsLength, rowTemp.Path,
-                                        stringPool, targetFoldersArray);
+                                        _iconDecoder, stringPool, targetFoldersArray);
                                 }
                                 catch
                                 {
@@ -358,13 +367,13 @@ namespace Ann.Core
                         .AsParallel()
                         .WithCancellation(_crawlingTokenSource.Token)
                         .SelectMany(targetFolder =>
-                            DirectoryHelper.EnumerateAllFiles(targetFolder)
-                                .Where(f => executableExts.Contains(System.IO.Path.GetExtension(f)?.ToLower()))
-                                .Select(f =>
-                                {
-                                    CrawlingCount = Interlocked.Increment(ref count);
-                                    return new ExecutableFile(f, stringPool, targetFoldersArray);
-                                })
+                                DirectoryHelper.EnumerateAllFiles(targetFolder)
+                                    .Where(f => executableExts.Contains(System.IO.Path.GetExtension(f)?.ToLower()))
+                                    .Select(f =>
+                                    {
+                                        CrawlingCount = Interlocked.Increment(ref count);
+                                        return new ExecutableFile(f, _iconDecoder, stringPool, targetFoldersArray);
+                                    })
                         ).ToArray();
 
                     results.ForEach((r, i) => r.SetId(i, results.Length));
@@ -425,5 +434,7 @@ namespace Ann.Core
                 .Select(e => e[0] == '.' ? e.ToLower() : "." + e.ToLower())
                 .ToArray();
         }
+
+        public ImageSource GetIcon(string path) => _iconDecoder.GetIcon(path);
     }
 }

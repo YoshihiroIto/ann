@@ -3,11 +3,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Media;
 
 namespace Ann.Core
 {
     [DebuggerDisplay("Id:{_id}, MaxId:{_maxId}, Score:{_score}, Path:{Path}")]
-    public class ExecutableFile : IComparable<ExecutableFile>
+    public class ExecutableFile : IComparable<ExecutableFile>, ICandidate
     {
         public readonly string Path;
         public readonly string Name;
@@ -39,11 +40,18 @@ namespace Ann.Core
             _maxId = maxId;
         }
 
+        private readonly IconDecoder _iconDecoder;
+
         public ExecutableFile(
             string path,
+            IconDecoder iconDecoder,
             ConcurrentDictionary<string, string> stringPool,
             string[] targetFolders)
         {
+            Debug.Assert(iconDecoder != null);
+
+            _iconDecoder = iconDecoder;
+
             var fvi = FileVersionInfo.GetVersionInfo(path);
 
             var name = string.IsNullOrWhiteSpace(fvi.FileDescription)
@@ -85,9 +93,10 @@ namespace Ann.Core
 
         public ExecutableFile(
             int id, int maxId, string path,
+            IconDecoder iconDecoder,
             ConcurrentDictionary<string, string> stringPool,
             string[] targetFolders)
-            : this(path, stringPool, targetFolders)
+            : this(path, iconDecoder, stringPool, targetFolders)
         {
             SetId(id, maxId);
         }
@@ -109,5 +118,8 @@ namespace Ann.Core
         private static readonly char[] Separator = {' ', '_', '-', '/', '\\'};
 
         int IComparable<ExecutableFile>.CompareTo(ExecutableFile other) => _score - other._score;
+        string ICandidate.Name => string.IsNullOrWhiteSpace(Name) == false ? Name : System.IO.Path.GetFileName(Path);
+        string ICandidate.Comment => Path;
+        ImageSource ICandidate.Icon => _iconDecoder.GetIcon(Path);
     }
 }

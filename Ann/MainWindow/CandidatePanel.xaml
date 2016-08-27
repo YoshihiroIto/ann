@@ -113,16 +113,16 @@
                    ToolTip="{Binding Name,
                                      Mode=OneTime}" />
 
-        <TextBlock Canvas.Left="{x:Static ann:ViewConstants.CandidatePanel_Path_Left}"
-                   Canvas.Top="{x:Static ann:ViewConstants.CandidatePanel_Path_Top}"
-                   Width="{x:Static ann:ViewConstants.CandidatePanel_Path_Width}"
+        <TextBlock Canvas.Left="{x:Static ann:ViewConstants.CandidatePanel_Comment_Left}"
+                   Canvas.Top="{x:Static ann:ViewConstants.CandidatePanel_Comment_Top}"
+                   Width="{x:Static ann:ViewConstants.CandidatePanel_Comment_Width}"
                    Height="16"
                    Foreground="#AAA"
                    Padding="0"
-                   Text="{Binding Path,
+                   Text="{Binding Comment,
                                   Mode=OneTime}"
                    TextTrimming="CharacterEllipsis"
-                   ToolTip="{Binding Path,
+                   ToolTip="{Binding Comment,
                                      Mode=OneTime}" />
     </Canvas>
 </ResourceDictionary>

@@ -31,8 +31,9 @@ namespace Ann.Test.MainWindow
             var path = AssemblyConstants.EntryAssemblyLocation;
             var stringPool = new ConcurrentDictionary<string, string>();
             var targetFolders = new string[0];
+            var iconDecoder = new IconDecoder();
 
-            var model = new ExecutableFile(path, stringPool, targetFolders);
+            var model = new ExecutableFile(path, iconDecoder, stringPool, targetFolders);
 
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
@@ -41,7 +42,7 @@ namespace Ann.Test.MainWindow
             using (var vm = new CandidatePanelViewModel(parent, model, app))
             {
                 Assert.Equal("Ann", vm.Name);
-                Assert.Equal(path, vm.Path);
+                Assert.Equal(path, vm.Comment);
                 Assert.NotNull(vm.Icon);
             }
         }
@@ -52,8 +53,9 @@ namespace Ann.Test.MainWindow
             var path = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\Explorer.exe");
             var stringPool = new ConcurrentDictionary<string, string>();
             var targetFolders = new string[0];
+            var iconDecoder = new IconDecoder();
 
-            var model = new ExecutableFile(path, stringPool, targetFolders);
+            var model = new ExecutableFile(path, iconDecoder, stringPool, targetFolders);
 
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
@@ -79,8 +81,9 @@ namespace Ann.Test.MainWindow
             var path = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\Explorer.exe");
             var stringPool = new ConcurrentDictionary<string, string>();
             var targetFolders = new string[0];
+            var iconDecoder = new IconDecoder();
 
-            var model = new ExecutableFile(path, stringPool, targetFolders);
+            var model = new ExecutableFile(path, iconDecoder, stringPool, targetFolders);
 
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))

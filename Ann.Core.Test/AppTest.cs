@@ -193,8 +193,8 @@ namespace Ann.Core.Test
 
                 var f1 = app.Candidates.ToArray();
                 Assert.Equal(2, f1.Length);
-                Assert.Equal("aaa.exe", System.IO.Path.GetFileName(f1[0].Path));
-                Assert.Equal("aaaa.exe", System.IO.Path.GetFileName(f1[1].Path));
+                Assert.Equal("aaa.exe", System.IO.Path.GetFileName(f1[0].Comment));
+                Assert.Equal("aaaa.exe", System.IO.Path.GetFileName(f1[1].Comment));
 
                 app.AddPriorityFile(System.IO.Path.Combine(_context.RootPath, "aaaa.exe"));
 
@@ -208,8 +208,8 @@ namespace Ann.Core.Test
 
                 var f2 = app.Candidates.ToArray();
                 Assert.Equal(2, f2.Length);
-                Assert.Equal("aaaa.exe", System.IO.Path.GetFileName(f2[0].Path));
-                Assert.Equal("aaa.exe", System.IO.Path.GetFileName(f2[1].Path));
+                Assert.Equal("aaaa.exe", System.IO.Path.GetFileName(f2[0].Comment));
+                Assert.Equal("aaa.exe", System.IO.Path.GetFileName(f2[1].Comment));
 
                 app.RemovePriorityFile(System.IO.Path.Combine(_context.RootPath, "aaaa.exe"));
             }

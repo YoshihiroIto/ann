@@ -43,7 +43,6 @@ namespace Ann.MainWindow
         public ReactiveProperty<double> Top { get; }
         public ReactiveProperty<int> MaxCandidatesLinesCount { get; }
 
-        public ImageSource GetIcon(string path) => _iconDecoder.GetIcon(path);
         public ReadOnlyReactiveProperty<double> CandidatesListMaxHeight { get; }
 
         public AsyncReactiveCommand SettingShowCommand { get; }
@@ -55,8 +54,6 @@ namespace Ann.MainWindow
         public AsyncMessageBroker AsyncMessenger { get; }
 
         public string Caption { get; } = $"{AssemblyConstants.Product} {AssemblyConstants.Version}";
-
-        private readonly IconDecoder _iconDecoder = new IconDecoder();
 
         public StatusBarViewModel StatusBar { get; }
 
@@ -169,7 +166,7 @@ namespace Ann.MainWindow
                 SelectedCandidateMoveCommand
                     .Subscribe(p =>
                     {
-                        var current = IndexOfCandidates(SelectedCandidate.Value.Path);
+                        var current = IndexOfCandidates(SelectedCandidate.Value.Comment);
                         var next = current + int.Parse((string) p);
 
                         if (next == -1)
@@ -191,7 +188,7 @@ namespace Ann.MainWindow
                 RunCommand
                     .Do(_ =>
                     {
-                        path = SelectedCandidate.Value.Path;
+                        path = SelectedCandidate.Value.Comment;
                         Input.Value = string.Empty;
                     })
                     .Delay(TimeSpan.FromMilliseconds(20))
@@ -221,7 +218,7 @@ namespace Ann.MainWindow
                     .Select(i => i != null)
                     .ToReactiveCommand().AddTo(CompositeDisposable);
                 ContainingFolderOpenCommand
-                    .Subscribe(async _ => await OpenByExplorer(SelectedCandidate.Value.Path))
+                    .Subscribe(async _ => await OpenByExplorer(SelectedCandidate.Value.Comment))
                     .AddTo(CompositeDisposable);
 
                 SettingShowCommand = new AsyncReactiveCommand().AddTo(CompositeDisposable);
@@ -300,7 +297,7 @@ namespace Ann.MainWindow
                 .AddTo(CompositeDisposable);
 
             configHolder.Config.ObserveProperty(x => x.IconCacheSize)
-                .Subscribe(x => _iconDecoder.IconCacheSize = x)
+                .Subscribe(x => _app.ExecutableFileDataBaseIconCacheSize = x)
                 .AddTo(CompositeDisposable);
 
             CompositeDisposable.Add(DisposeCandidates);
@@ -328,7 +325,7 @@ namespace Ann.MainWindow
             var index = 0;
             foreach (var c in Candidates.Value)
             {
-                if (c.Path == path)
+                if (c.Comment == path)
                     return index;
 
                 ++index;

@@ -11,31 +11,11 @@ namespace Ann.MainWindow
 {
     public class CandidatePanelViewModel : ViewModelBase
     {
-        #region Name
+        public string Name => _model.Name;
+        public string Comment => _model.Comment;
+        public ImageSource Icon => _model.Icon;
 
-        private string _Name;
-
-        public string Name
-        {
-            get { return _Name; }
-            set { SetProperty(ref _Name, value); }
-        }
-
-        #endregion
-
-        #region Path
-
-        private string _Path;
-
-        public string Path
-        {
-            get { return _Path; }
-            set { SetProperty(ref _Path, value); }
-        }
-
-        #endregion
-
-        #region IsSelected
+#region IsSelected
 
         private bool _IsSelected;
 
@@ -45,9 +25,7 @@ namespace Ann.MainWindow
             set { SetProperty(ref _IsSelected, value); }
         }
 
-        #endregion
-
-        public ImageSource Icon => _parent.GetIcon(Path);
+#endregion
 
         public bool IsPriorityFile
         {
@@ -59,19 +37,19 @@ namespace Ann.MainWindow
                     _isSubscribedPriorityFilesChanged = true;
                 }
 
-                return _app.IsPriorityFile(Path);
+                return _app.IsPriorityFile(Comment);
             }
 
             set
             {
                 if (value)
                 {
-                    if (_app.AddPriorityFile(Path))
+                    if (_app.AddPriorityFile(Comment))
                         RaisePropertyChanged();
                 }
                 else
                 {
-                    if (_app.RemovePriorityFile(Path))
+                    if (_app.RemovePriorityFile(Comment))
                         RaisePropertyChanged();
                 }
             }
@@ -94,19 +72,18 @@ namespace Ann.MainWindow
         public ReactiveCommand ContainingFolderOpenCommand => _parent.ContainingFolderOpenCommand;
 
         private readonly MainWindowViewModel _parent;
+        private readonly ICandidate _model;
         private readonly App _app;
 
-        public CandidatePanelViewModel(MainWindowViewModel parent, ExecutableFile model, App app)
+        public CandidatePanelViewModel(MainWindowViewModel parent, ICandidate model, App app)
         {
             Debug.Assert(parent != null);
             Debug.Assert(model != null);
             Debug.Assert(app != null);
 
             _parent = parent;
+            _model = model;
             _app = app;
-
-            Name = string.IsNullOrWhiteSpace(model.Name) == false ? model.Name : System.IO.Path.GetFileName(model.Path);
-            Path = model.Path;
         }
 
         private bool _isSubscribedPriorityFilesChanged;

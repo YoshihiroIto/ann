@@ -148,6 +148,7 @@
     <Compile Include="CultureSummry.cs" />
     <Compile Include="ExecutableFile.cs" />
     <Compile Include="ExecutableFileDataBase.cs" />
+    <Compile Include="ICandidate.cs" />
     <Compile Include="IconDecoder.cs" />
     <Compile Include="IndexFile\ExecutableFile.cs" />
     <Compile Include="IndexFile\File.cs" />
