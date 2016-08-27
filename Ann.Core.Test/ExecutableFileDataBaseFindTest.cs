@@ -7,6 +7,7 @@ namespace Ann.Core.Test
 {
     public class ExecutableFileDataBaseFindTest : IDisposable
     {
+        private readonly DisposableFileSystem _config = new DisposableFileSystem();
         private readonly DisposableFileSystem _context = new DisposableFileSystem();
 
         public ExecutableFileDataBaseFindTest()
@@ -16,7 +17,8 @@ namespace Ann.Core.Test
 
         public void Dispose()
         {
-            _context?.Dispose();
+            _config.Dispose();
+            _context.Dispose();
         }
 
         [Theory]
@@ -30,19 +32,24 @@ namespace Ann.Core.Test
             var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
             var executableFileExts = new[] {"exe"};
 
-            var db = new ExecutableFileDataBase(dbFilePath);
-            var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
+            {
+                var db = new ExecutableFileDataBase(app, dbFilePath);
+                var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
-            Assert.Equal(IndexOpeningResults.Ok, r);
-            Assert.Equal(3, db.ExecutableFileCount);
+                Assert.Equal(IndexOpeningResults.Ok, r);
+                Assert.Equal(3, db.ExecutableFileCount);
 
-            var f = db.Find("bb", executableFileExts).ToArray();
+                var f = db.Find("bb", executableFileExts).ToArray();
 
-            Assert.Equal(1, f.Length);
-            Assert.Equal(name, f[0].Name);
-            Assert.Equal(
-                System.IO.Path.Combine(_context.RootPath, @"target1\bbb.exe").ToLower(),
-                f[0].Path.ToLower());
+                Assert.Equal(1, f.Length);
+                Assert.Equal(name, f[0].Name);
+                Assert.Equal(
+                    System.IO.Path.Combine(_context.RootPath, @"target1\bbb.exe").ToLower(),
+                    f[0].Path.ToLower());
+            }
         }
 
         [Theory]
@@ -57,15 +64,20 @@ namespace Ann.Core.Test
             var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
             var executableFileExts = new[] {"exe"};
 
-            var db = new ExecutableFileDataBase(dbFilePath);
-            var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
+            {
+                var db = new ExecutableFileDataBase(app, dbFilePath);
+                var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
-            Assert.Equal(IndexOpeningResults.Ok, r);
-            Assert.Equal(3, db.ExecutableFileCount);
+                Assert.Equal(IndexOpeningResults.Ok, r);
+                Assert.Equal(3, db.ExecutableFileCount);
 
-            var f = db.Find(input, executableFileExts).ToArray();
+                var f = db.Find(input, executableFileExts).ToArray();
 
-            Assert.Equal(0, f.Length);
+                Assert.Equal(0, f.Length);
+            }
         }
 
         [Theory]
@@ -132,21 +144,26 @@ namespace Ann.Core.Test
             };
             var executableFileExts = new[] {"exe"};
 
-            var db = new ExecutableFileDataBase(dbFilePath);
-            var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
+            {
+                var db = new ExecutableFileDataBase(app, dbFilePath);
+                var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
-            Assert.Equal(IndexOpeningResults.Ok, r);
-            Assert.Equal(3, db.ExecutableFileCount);
+                Assert.Equal(IndexOpeningResults.Ok, r);
+                Assert.Equal(3, db.ExecutableFileCount);
 
-            var baseLength = _context.RootPath.Length + 1;
-            var candidates = db.Find(input, executableFileExts).ToArray();
+                var baseLength = _context.RootPath.Length + 1;
+                var candidates = db.Find(input, executableFileExts).ToArray();
 
-            Assert.Equal(
-                expected,
-                candidates
-                    .Select(c => c.Path)
-                    .Select(p => p.Substring(baseLength))
+                Assert.Equal(
+                    expected,
+                    candidates
+                        .Select(c => c.Path)
+                        .Select(p => p.Substring(baseLength))
                 );
+            }
         }
 
         [Theory]
@@ -176,19 +193,24 @@ namespace Ann.Core.Test
             var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
             var executableFileExts = exts;
 
-            var db = new ExecutableFileDataBase(dbFilePath);
-            var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
+            {
+                var db = new ExecutableFileDataBase(app, dbFilePath);
+                var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
-            Assert.Equal(IndexOpeningResults.Ok, r);
+                Assert.Equal(IndexOpeningResults.Ok, r);
 
-            var baseLength = _context.RootPath.Length + 1;
-            var candidates = db.Find("abc", executableFileExts).ToArray();
+                var baseLength = _context.RootPath.Length + 1;
+                var candidates = db.Find("abc", executableFileExts).ToArray();
 
-            Assert.Equal(
-                candidates
-                    .Select(c => c.Path)
-                    .Select(p => p.Substring(baseLength)),
-                expected);
+                Assert.Equal(
+                    candidates
+                        .Select(c => c.Path)
+                        .Select(p => p.Substring(baseLength)),
+                    expected);
+            }
         }
 
         [Theory]
@@ -216,19 +238,24 @@ namespace Ann.Core.Test
             var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
             var executableFileExts = new[] {"exe"};
 
-            var db = new ExecutableFileDataBase(dbFilePath);
-            var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
+            {
+                var db = new ExecutableFileDataBase(app, dbFilePath);
+                var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
-            Assert.Equal(IndexOpeningResults.Ok, r);
+                Assert.Equal(IndexOpeningResults.Ok, r);
 
-            var baseLength = _context.RootPath.Length + 1;
-            var candidates = db.Find(input, executableFileExts).ToArray();
+                var baseLength = _context.RootPath.Length + 1;
+                var candidates = db.Find(input, executableFileExts).ToArray();
 
-            Assert.Equal(
-                candidates
-                    .Select(c => c.Path)
-                    .Select(p => p.Substring(baseLength)).OrderBy(x => x),
-                expected.OrderBy(x => x));
+                Assert.Equal(
+                    candidates
+                        .Select(c => c.Path)
+                        .Select(p => p.Substring(baseLength)).OrderBy(x => x),
+                    expected.OrderBy(x => x));
+            }
         }
     }
 }

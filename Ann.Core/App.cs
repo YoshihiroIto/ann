@@ -256,7 +256,7 @@ namespace Ann.Core
             _configHolder = configHolder;
             _languagesService = languagesService;
 
-            _dataBase = new ExecutableFileDataBase(IndexFilePath);
+            _dataBase = new ExecutableFileDataBase(this, IndexFilePath);
             _inputControler = new InputControler().AddTo(CompositeDisposable);
 
             UpdateFromConfig();

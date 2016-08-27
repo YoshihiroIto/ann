@@ -3,7 +3,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Input;
 using System.Windows.Media;
+using Ann.Foundation.Mvvm;
 
 namespace Ann.Core
 {
@@ -44,6 +46,7 @@ namespace Ann.Core
 
         public ExecutableFile(
             string path,
+            App app, 
             IconDecoder iconDecoder,
             ConcurrentDictionary<string, string> stringPool,
             string[] targetFolders)
@@ -89,14 +92,39 @@ namespace Ann.Core
 
             if (LowerFileNameParts.Length <= 1)
                 LowerFileNameParts = null;
+
+            _RunCommand = new DelegateCommand(
+                async () =>
+                {
+                    var i =  await app.RunAsync(path, false);
+
+                    if (i == false)
+                    {
+
+                    // todo:実行に失敗したら
+#if false
+                        var errMes = new List<StringTags> {StringTags.Message_FailedToStart};
+                        if (File.Exists(path) == false)
+                            errMes.Add(StringTags.Message_FileNotFound);
+
+                        var item = new StatusBarItemViewModel(app, errMes);
+
+                        StatusBar.Messages.Add(item);
+                        await Task.Delay(TimeSpan.FromSeconds(3));
+                        StatusBar.Messages.Remove(item);
+                        item.Dispose();
+#endif
+                    }
+                });
         }
 
         public ExecutableFile(
             int id, int maxId, string path,
+            App app, 
             IconDecoder iconDecoder,
             ConcurrentDictionary<string, string> stringPool,
             string[] targetFolders)
-            : this(path, iconDecoder, stringPool, targetFolders)
+            : this(path, app, iconDecoder, stringPool, targetFolders)
         {
             SetId(id, maxId);
         }
@@ -121,5 +149,8 @@ namespace Ann.Core
         string ICandidate.Name => string.IsNullOrWhiteSpace(Name) == false ? Name : System.IO.Path.GetFileName(Path);
         string ICandidate.Comment => Path;
         ImageSource ICandidate.Icon => _iconDecoder.GetIcon(Path);
+
+        private readonly DelegateCommand _RunCommand;
+        ICommand ICandidate.RunCommand => _RunCommand;
     }
 }

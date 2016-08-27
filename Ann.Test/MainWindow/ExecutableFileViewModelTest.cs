@@ -32,18 +32,20 @@ namespace Ann.Test.MainWindow
             var stringPool = new ConcurrentDictionary<string, string>();
             var targetFolders = new string[0];
             var iconDecoder = new IconDecoder();
-
-            var model = new ExecutableFile(path, iconDecoder, stringPool, targetFolders);
-
             var configHolder = new ConfigHolder(_config.RootPath);
+
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
-            using (var parent = new MainWindowViewModel(app, configHolder))
-            using (var vm = new CandidatePanelViewModel(parent, model, app))
             {
-                Assert.Equal("Ann", vm.Name);
-                Assert.Equal(path, vm.Comment);
-                Assert.NotNull(vm.Icon);
+                var model = new ExecutableFile(path, app, iconDecoder, stringPool, targetFolders);
+
+                using (var parent = new MainWindowViewModel(app, configHolder))
+                using (var vm = new CandidatePanelViewModel(parent, model, app))
+                {
+                    Assert.Equal("Ann", vm.Name);
+                    Assert.Equal(path, vm.Comment);
+                    Assert.NotNull(vm.Icon);
+                }
             }
         }
 
@@ -54,24 +56,26 @@ namespace Ann.Test.MainWindow
             var stringPool = new ConcurrentDictionary<string, string>();
             var targetFolders = new string[0];
             var iconDecoder = new IconDecoder();
-
-            var model = new ExecutableFile(path, iconDecoder, stringPool, targetFolders);
-
             var configHolder = new ConfigHolder(_config.RootPath);
+
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
-            using (var parent = new MainWindowViewModel(app, configHolder))
-            using (var vm = new CandidatePanelViewModel(parent, model, app))
             {
-                Assert.False(vm.IsPriorityFile);
+                var model = new ExecutableFile(path, app, iconDecoder, stringPool, targetFolders);
 
-                vm.IsPriorityFile = true;
-                Assert.True(vm.IsPriorityFile);
-                Assert.True(app.IsPriorityFile(path));
+                using (var parent = new MainWindowViewModel(app, configHolder))
+                using (var vm = new CandidatePanelViewModel(parent, model, app))
+                {
+                    Assert.False(vm.IsPriorityFile);
 
-                vm.IsPriorityFile = false;
-                Assert.False(vm.IsPriorityFile);
-                Assert.False(app.IsPriorityFile(path));
+                    vm.IsPriorityFile = true;
+                    Assert.True(vm.IsPriorityFile);
+                    Assert.True(app.IsPriorityFile(path));
+
+                    vm.IsPriorityFile = false;
+                    Assert.False(vm.IsPriorityFile);
+                    Assert.False(app.IsPriorityFile(path));
+                }
             }
         }
 
@@ -82,27 +86,29 @@ namespace Ann.Test.MainWindow
             var stringPool = new ConcurrentDictionary<string, string>();
             var targetFolders = new string[0];
             var iconDecoder = new IconDecoder();
-
-            var model = new ExecutableFile(path, iconDecoder, stringPool, targetFolders);
-
             var configHolder = new ConfigHolder(_config.RootPath);
+
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
-            using (var parent = new MainWindowViewModel(app, configHolder))
-            using (var vm = new CandidatePanelViewModel(parent, model, app))
             {
-                Assert.False(vm.IsPriorityFile);
-                Assert.False(app.IsPriorityFile(path));
+                var model = new ExecutableFile(path, app, iconDecoder, stringPool, targetFolders);
 
-                vm.IsPriorityFileFlipCommand.Execute(null);
+                using (var parent = new MainWindowViewModel(app, configHolder))
+                using (var vm = new CandidatePanelViewModel(parent, model, app))
+                {
+                    Assert.False(vm.IsPriorityFile);
+                    Assert.False(app.IsPriorityFile(path));
 
-                Assert.True(vm.IsPriorityFile);
-                Assert.True(app.IsPriorityFile(path));
+                    vm.IsPriorityFileFlipCommand.Execute(null);
 
-                vm.IsPriorityFileFlipCommand.Execute(null);
+                    Assert.True(vm.IsPriorityFile);
+                    Assert.True(app.IsPriorityFile(path));
 
-                Assert.False(vm.IsPriorityFile);
-                Assert.False(app.IsPriorityFile(path));
+                    vm.IsPriorityFileFlipCommand.Execute(null);
+
+                    Assert.False(vm.IsPriorityFile);
+                    Assert.False(app.IsPriorityFile(path));
+                }
             }
         }
     }

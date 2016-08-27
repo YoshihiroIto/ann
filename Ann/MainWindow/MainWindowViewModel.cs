@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using Ann.Core;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm;
@@ -182,37 +179,11 @@ namespace Ann.MainWindow
                     }).AddTo(CompositeDisposable);
 
                 RunCommand = SelectedCandidate
-                    .Select(i => i != null)
+                    .Select(i => i != null && i.RunCommand.CanExecute(null))
                     .ToReactiveCommand<string>().AddTo(CompositeDisposable);
-                string path = null;
-                RunCommand
-                    .Do(_ =>
-                    {
-                        path = SelectedCandidate.Value.Comment;
-                        Input.Value = string.Empty;
-                    })
-                    .Delay(TimeSpan.FromMilliseconds(20))
-                    .ObserveOn(ReactivePropertyScheduler.Default)
-                    .Subscribe(async p =>
-                    {
-                        var i = await _app.RunAsync(path, p == "admin");
-                        if (i)
-                        {
-                            Messenger.Publish(new WindowActionMessage(WindowAction.Hidden));
-                            return;
-                        }
 
-                        var errMes = new List<StringTags> {StringTags.Message_FailedToStart};
-                        if (File.Exists(path) == false)
-                            errMes.Add(StringTags.Message_FileNotFound);
-
-                        var item = new StatusBarItemViewModel(app, errMes);
-
-                        StatusBar.Messages.Add(item);
-                        await Task.Delay(TimeSpan.FromSeconds(3));
-                        StatusBar.Messages.Remove(item);
-                        item.Dispose();
-                    }).AddTo(CompositeDisposable);
+                RunCommand.Subscribe(_ => SelectedCandidate.Value.RunCommand.Execute(null))
+                    .AddTo(CompositeDisposable);
 
                 ContainingFolderOpenCommand = SelectedCandidate
                     .Select(i => i != null)

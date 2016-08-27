@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reactive.Linq;
+using System.Windows.Input;
 using System.Windows.Media;
 using Ann.Core;
 using Ann.Foundation.Mvvm;
@@ -68,7 +69,7 @@ namespace Ann.MainWindow
             }
         }
 
-        public ReactiveCommand<string> RunCommand => _parent.RunCommand;
+        public ICommand RunCommand => _model.RunCommand;
         public ReactiveCommand ContainingFolderOpenCommand => _parent.ContainingFolderOpenCommand;
 
         private readonly MainWindowViewModel _parent;

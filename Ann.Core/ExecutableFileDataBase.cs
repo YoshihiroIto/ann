@@ -17,10 +17,14 @@ namespace Ann.Core
 {
     public class ExecutableFileDataBase : NotificationObject
     {
+        private readonly App _app;
         private readonly string _indexFile;
 
-        public ExecutableFileDataBase(string indexFile)
+        public ExecutableFileDataBase(App app, string indexFile)
         {
+            Debug.Assert(app != null);
+
+            _app = app;
             _indexFile = indexFile;
         }
 
@@ -306,7 +310,7 @@ namespace Ann.Core
                                 try
                                 {
                                     tempExecutableFiles[i] = new ExecutableFile(i, root.RowsLength, rowTemp.Path,
-                                        _iconDecoder, stringPool, targetFoldersArray);
+                                        _app, _iconDecoder, stringPool, targetFoldersArray);
                                 }
                                 catch
                                 {
@@ -372,7 +376,7 @@ namespace Ann.Core
                                     .Select(f =>
                                     {
                                         CrawlingCount = Interlocked.Increment(ref count);
-                                        return new ExecutableFile(f, _iconDecoder, stringPool, targetFoldersArray);
+                                        return new ExecutableFile(f, _app, _iconDecoder, stringPool, targetFoldersArray);
                                     })
                         ).ToArray();
 
