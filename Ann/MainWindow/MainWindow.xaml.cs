@@ -74,7 +74,7 @@ namespace Ann.MainWindow
 
                 var windows = Application.Current.Windows.OfType<Window>().ToArray();
                 if (windows.Length == 1 && Equals(windows[0], this))
-                    Visibility = Visibility.Hidden;
+                    _DataContext.Messenger.Publish(new WindowActionMessage(WindowAction.Hidden));
             };
         }
 
@@ -154,16 +154,12 @@ namespace Ann.MainWindow
                 _configHolder.Config.ShortcutKeys.Activate.Key,
                 Application.Current.MainWindow);
 
-            _activateHotKey.HotKeyPressed += (_, __) =>
-            {
-                if (Visibility == Visibility.Hidden)
-                {
-                    Visibility = Visibility.Visible;
-                    Activate();
-                }
-                else
-                    Visibility = Visibility.Hidden;
-            };
+            _activateHotKey.HotKeyPressed +=
+                (_, __) =>
+                    _DataContext.Messenger.Publish(
+                        new WindowActionMessage(Visibility == Visibility.Hidden
+                            ? WindowAction.VisibleActive
+                            : WindowAction.Hidden));
 
             _app.IsEnableActivateHotKey = _activateHotKey.Register();
 
@@ -225,8 +221,8 @@ namespace Ann.MainWindow
             if (StatusBar.Visibility == Visibility.Visible)
             {
                 height += StatusBar.ActualHeight;
-                Canvas.SetTop(StatusBar, height - StatusBar.ActualHeight - ViewConstants.MainWindowBorderThicknessUnit*2);
                 Canvas.SetLeft(StatusBar, 0);
+                Canvas.SetTop(StatusBar, height - StatusBar.ActualHeight - ViewConstants.MainWindowBorderThicknessUnit*2);
             }
 
             Height = height;
