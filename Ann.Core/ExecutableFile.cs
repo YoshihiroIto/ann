@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
+using Ann.Core.Interface;
+using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 
 namespace Ann.Core
@@ -46,7 +48,7 @@ namespace Ann.Core
 
         public ExecutableFile(
             string path,
-            App app, 
+            App app,
             IconDecoder iconDecoder,
             ConcurrentDictionary<string, string> stringPool,
             string[] targetFolders)
@@ -76,7 +78,7 @@ namespace Ann.Core
                 .Select(s => stringPool.GetOrAdd(s, s))
                 .ToArray();
 
-            LowerDirectoryParts = LowerDirectory.Split(new [] { '\\'}, StringSplitOptions.RemoveEmptyEntries)
+            LowerDirectoryParts = LowerDirectory.Split(new[] {'\\'}, StringSplitOptions.RemoveEmptyEntries)
                 .Select(s => stringPool.GetOrAdd(s, s))
                 .ToArray();
 
@@ -96,12 +98,11 @@ namespace Ann.Core
             _RunCommand = new DelegateCommand(
                 async () =>
                 {
-                    var i =  await app.RunAsync(path, false);
+                    var i = await app.RunAsync(Path, false);
 
                     if (i == false)
                     {
-
-                    // todo:実行に失敗したら
+                        // todo:実行に失敗したら
 #if false
                         var errMes = new List<StringTags> {StringTags.Message_FailedToStart};
                         if (File.Exists(path) == false)
@@ -116,11 +117,28 @@ namespace Ann.Core
 #endif
                     }
                 });
+
+            _SubCommands = new[]
+            {
+                new MenuCommand
+                {
+                    Caption = StringTags.MenuItem_RunAsAdministrator,
+                    Command = new DelegateCommand(async () =>
+                        // todo:実行に失敗したら
+                            await app.RunAsync(Path, true))
+                },
+                new MenuCommand
+                {
+                    Caption = StringTags.MenuItem_OpenContainingFolder,
+                    Command = new DelegateCommand(async () =>
+                            await ProcessHelper.RunAsync("EXPLORER", $"/select,\"{path}\"", false))
+                }
+            };
         }
 
         public ExecutableFile(
             int id, int maxId, string path,
-            App app, 
+            App app,
             IconDecoder iconDecoder,
             ConcurrentDictionary<string, string> stringPool,
             string[] targetFolders)
@@ -152,5 +170,8 @@ namespace Ann.Core
 
         private readonly DelegateCommand _RunCommand;
         ICommand ICandidate.RunCommand => _RunCommand;
+
+        private readonly MenuCommand[] _SubCommands;
+        MenuCommand[] ICandidate.SubCommands => _SubCommands;
     }
 }

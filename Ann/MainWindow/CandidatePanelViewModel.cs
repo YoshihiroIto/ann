@@ -4,6 +4,7 @@ using System.Reactive.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
 using Ann.Core;
+using Ann.Core.Interface;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -16,8 +17,12 @@ namespace Ann.MainWindow
         public string Comment => _model.Comment;
         public ImageSource Icon => _model.Icon;
 
-#region IsSelected
+        public ICommand RunCommand => _model.RunCommand;
+        public MenuCommand[] SubCommands => _model.SubCommands;
 
+        public App App { get; }
+
+#region IsSelected
         private bool _IsSelected;
 
         public bool IsSelected
@@ -25,7 +30,6 @@ namespace Ann.MainWindow
             get { return _IsSelected; }
             set { SetProperty(ref _IsSelected, value); }
         }
-
 #endregion
 
         public bool IsPriorityFile
@@ -38,19 +42,19 @@ namespace Ann.MainWindow
                     _isSubscribedPriorityFilesChanged = true;
                 }
 
-                return _app.IsPriorityFile(Comment);
+                return App.IsPriorityFile(Comment);
             }
 
             set
             {
                 if (value)
                 {
-                    if (_app.AddPriorityFile(Comment))
+                    if (App.AddPriorityFile(Comment))
                         RaisePropertyChanged();
                 }
                 else
                 {
-                    if (_app.RemovePriorityFile(Comment))
+                    if (App.RemovePriorityFile(Comment))
                         RaisePropertyChanged();
                 }
             }
@@ -69,22 +73,15 @@ namespace Ann.MainWindow
             }
         }
 
-        public ICommand RunCommand => _model.RunCommand;
-        public ReactiveCommand ContainingFolderOpenCommand => _parent.ContainingFolderOpenCommand;
-
-        private readonly MainWindowViewModel _parent;
         private readonly ICandidate _model;
-        private readonly App _app;
 
-        public CandidatePanelViewModel(MainWindowViewModel parent, ICandidate model, App app)
+        public CandidatePanelViewModel(ICandidate model, App app)
         {
-            Debug.Assert(parent != null);
             Debug.Assert(model != null);
             Debug.Assert(app != null);
 
-            _parent = parent;
             _model = model;
-            _app = app;
+            App = app;
         }
 
         private bool _isSubscribedPriorityFilesChanged;
@@ -92,8 +89,8 @@ namespace Ann.MainWindow
         private void SubscribPriorityFilesChanged()
         {
             Observable.FromEventPattern(
-                h => _app.PriorityFilesChanged += h,
-                h => _app.PriorityFilesChanged -= h)
+                h => App.PriorityFilesChanged += h,
+                h => App.PriorityFilesChanged -= h)
                 .Subscribe(_ =>
                     // ReSharper disable once ExplicitCallerInfoArgument
                     RaisePropertyChanged(nameof(IsPriorityFile))

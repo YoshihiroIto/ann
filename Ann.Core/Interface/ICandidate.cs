@@ -1,7 +1,7 @@
 ﻿using System.Windows.Input;
 using System.Windows.Media;
 
-namespace Ann.Core
+namespace Ann.Core.Interface
 {
     public interface ICandidate
     {
@@ -10,5 +10,6 @@ namespace Ann.Core
         string Comment { get; }
        
         ICommand RunCommand { get; }
+        MenuCommand[] SubCommands { get; }
     }
 }

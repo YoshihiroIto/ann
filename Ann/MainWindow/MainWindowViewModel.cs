@@ -29,8 +29,7 @@ namespace Ann.MainWindow
         public ReactiveProperty<CandidatePanelViewModel> SelectedCandidate { get; }
         public ReactiveCommand<object> SelectedCandidateMoveCommand { get; }
 
-        public ReactiveCommand<string> RunCommand { get; }
-        public ReactiveCommand ContainingFolderOpenCommand { get; }
+        public ReactiveCommand RunCommand { get; }
 
         public ReactiveCommand ShowCommand { get; }
         public ReactiveCommand HideCommand { get; }
@@ -113,7 +112,6 @@ namespace Ann.MainWindow
                 Observable
                     .Merge(Input.ToUnit())
                     .Merge(configHolder.Config.ObserveProperty(x => x.MaxCandidateLinesCount).ToUnit())
-                    //.Throttle(TimeSpan.FromMilliseconds(50))
                     .Subscribe(_ => _app.Find(Input.Value, configHolder.Config.MaxCandidateLinesCount))
                     .AddTo(CompositeDisposable);
 
@@ -124,7 +122,7 @@ namespace Ann.MainWindow
                         var old = Candidates.Value;
 
                         Candidates.Value =
-                            c.Select(u => new CandidatePanelViewModel(this, u, _app)).ToArray();
+                            c.Select(u => new CandidatePanelViewModel(u, _app)).ToArray();
 
                         if (old == null)
                             return;
@@ -180,16 +178,8 @@ namespace Ann.MainWindow
 
                 RunCommand = SelectedCandidate
                     .Select(i => i != null && i.RunCommand.CanExecute(null))
-                    .ToReactiveCommand<string>().AddTo(CompositeDisposable);
-
-                RunCommand.Subscribe(_ => SelectedCandidate.Value.RunCommand.Execute(null))
-                    .AddTo(CompositeDisposable);
-
-                ContainingFolderOpenCommand = SelectedCandidate
-                    .Select(i => i != null)
                     .ToReactiveCommand().AddTo(CompositeDisposable);
-                ContainingFolderOpenCommand
-                    .Subscribe(async _ => await OpenByExplorer(SelectedCandidate.Value.Comment))
+                RunCommand.Subscribe(_ => SelectedCandidate.Value.RunCommand.Execute(null))
                     .AddTo(CompositeDisposable);
 
                 SettingShowCommand = new AsyncReactiveCommand().AddTo(CompositeDisposable);
@@ -303,11 +293,6 @@ namespace Ann.MainWindow
             }
 
             return -1;
-        }
-
-        private static async Task OpenByExplorer(string path)
-        {
-            await ProcessHelper.RunAsync("EXPLORER", $"/select,\"{path}\"", false);
         }
     }
 }
