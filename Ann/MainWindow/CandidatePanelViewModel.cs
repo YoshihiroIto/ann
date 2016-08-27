@@ -15,10 +15,12 @@ namespace Ann.MainWindow
     {
         public string Name => _model.Name;
         public string Comment => _model.Comment;
-        public ImageSource Icon => _model.Icon;
+        public Brush Icon => _model.Icon;
 
         public ICommand RunCommand => _model.RunCommand;
         public MenuCommand[] SubCommands => _model.SubCommands;
+
+        public bool CanSetPriority => _model.CanSetPriority;
 
         public App App { get; }
 
@@ -36,6 +38,9 @@ namespace Ann.MainWindow
         {
             get
             {
+                if (_model.CanSetPriority == false)
+                    return false;
+
                 if (_isSubscribedPriorityFilesChanged == false)
                 {
                     SubscribPriorityFilesChanged();
@@ -47,6 +52,9 @@ namespace Ann.MainWindow
 
             set
             {
+                if (_model.CanSetPriority == false)
+                    return;
+
                 if (value)
                 {
                     if (App.AddPriorityFile(Comment))

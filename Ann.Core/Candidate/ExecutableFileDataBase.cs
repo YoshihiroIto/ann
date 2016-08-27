@@ -439,6 +439,6 @@ namespace Ann.Core.Candidate
                 .ToArray();
         }
 
-        public ImageSource GetIcon(string path) => _iconDecoder.GetIcon(path);
+        public ImageBrush GetIcon(string path) => _iconDecoder.GetIcon(path);
     }
 }

@@ -53,9 +53,11 @@ namespace Ann.Core
         public void InvokePriorityFilesChanged() => PriorityFilesChanged?.Invoke(this, EventArgs.Empty);
         public void InvokeShortcutKeyChanged() => ShortcutKeyChanged?.Invoke(this, EventArgs.Empty);
 
-        private HashSet<string> _priorityFiles = new HashSet<string>();
-        private readonly ExecutableFileDataBase _executableFileDataBase;
         private readonly InputControler _inputControler;
+        private readonly ExecutableFileDataBase _executableFileDataBase;
+        private readonly Calculator _calculator = new Calculator();
+
+        private HashSet<string> _priorityFiles = new HashSet<string>();
 
         private string IndexFilePath => System.IO.Path.Combine(_configHolder.ConfigDirPath, "index.dat");
 
@@ -186,7 +188,8 @@ namespace Ann.Core
                 using (Disposable.Create(() => IsIndexUpdating = false))
                 {
                     IsIndexUpdating = true;
-                    IndexOpeningResult = await _executableFileDataBase.UpdateIndexAsync(TagetFolders, Config.ExecutableFileExts);
+                    IndexOpeningResult =
+                        await _executableFileDataBase.UpdateIndexAsync(TagetFolders, Config.ExecutableFileExts);
                 }
             }
         }
@@ -195,11 +198,16 @@ namespace Ann.Core
         {
             _inputControler.Push(() =>
             {
-                Candidates = _executableFileDataBase
-                    .Find(input, Config.ExecutableFileExts)
-                    .OrderBy(u => MakeOrder(u.Path))
-                    .Take(maxCandidates)
-                    .ToArray();
+                var r = _calculator.Calculate(input);
+
+                if (r != null)
+                    Candidates = new[] {r};
+                else
+                    Candidates = _executableFileDataBase
+                        .Find(input, Config.ExecutableFileExts)
+                        .OrderBy(u => MakeOrder(u.Path))
+                        .Take(maxCandidates)
+                        .ToArray();
             });
         }
 

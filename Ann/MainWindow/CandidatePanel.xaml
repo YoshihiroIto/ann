@@ -51,6 +51,10 @@
                         <DataTrigger Binding="{Binding IsPriorityFile, Mode=OneWay}" Value="False">
                             <Setter Property="Foreground" Value="#888" />
                         </DataTrigger>
+
+                        <DataTrigger Binding="{Binding CanSetPriority, Mode=OneTime}" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Button.Style>
@@ -100,6 +104,10 @@
                         <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Canvas}}" Value="False">
                             <Setter Property="Visibility" Value="Collapsed" />
                         </DataTrigger>
+
+                        <DataTrigger Binding="{Binding SubCommands, Mode=OneTime}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </materialDesign:PopupBox.Style>
@@ -117,12 +125,12 @@
                    ToolTip="{Binding Comment,
                                      Mode=OneTime}" />
 
-        <Image Canvas.Left="{x:Static ann:ViewConstants.CandidatePanel_Image_Left}"
-               Canvas.Top="{x:Static ann:ViewConstants.CandidatePanel_Image_Top}"
-               Width="{x:Static core:Constants.IconSize}"
-               Height="{x:Static core:Constants.IconSize}"
-               Source="{Binding Icon,
-                                Mode=OneTime}" />
+        <Canvas Canvas.Left="{x:Static ann:ViewConstants.CandidatePanel_Image_Left}"
+                Canvas.Top="{x:Static ann:ViewConstants.CandidatePanel_Image_Top}"
+                Width="{x:Static core:Constants.IconSize}"
+                Height="{x:Static core:Constants.IconSize}"
+                Background="{Binding Icon,
+                                     Mode=OneTime}" />
 
         <TextBlock Canvas.Left="{x:Static ann:ViewConstants.CandidatePanel_Name_Left}"
                    Canvas.Top="{x:Static ann:ViewConstants.CandidatePanel_Name_Top}"

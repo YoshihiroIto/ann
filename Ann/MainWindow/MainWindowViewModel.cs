@@ -177,9 +177,9 @@ namespace Ann.MainWindow
                     }).AddTo(CompositeDisposable);
 
                 RunCommand = SelectedCandidate
-                    .Select(i => i != null && i.RunCommand.CanExecute(null))
+                    .Select(i => i?.RunCommand != null && i.RunCommand.CanExecute(null))
                     .ToReactiveCommand().AddTo(CompositeDisposable);
-                RunCommand.Subscribe(_ => SelectedCandidate.Value.RunCommand.Execute(null))
+                RunCommand.Subscribe(_ => SelectedCandidate?.Value?.RunCommand?.Execute(null))
                     .AddTo(CompositeDisposable);
 
                 SettingShowCommand = new AsyncReactiveCommand().AddTo(CompositeDisposable);

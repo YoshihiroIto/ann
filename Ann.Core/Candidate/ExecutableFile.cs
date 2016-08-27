@@ -160,12 +160,14 @@ namespace Ann.Core.Candidate
         int IComparable<ExecutableFile>.CompareTo(ExecutableFile other) => _score - other._score;
         string ICandidate.Name => string.IsNullOrWhiteSpace(Name) == false ? Name : System.IO.Path.GetFileName(Path);
         string ICandidate.Comment => Path;
-        ImageSource ICandidate.Icon => _iconDecoder.GetIcon(Path);
+        Brush ICandidate.Icon => _iconDecoder.GetIcon(Path);
 
         private readonly DelegateCommand _RunCommand;
         ICommand ICandidate.RunCommand => _RunCommand;
 
         private readonly MenuCommand[] _SubCommands;
         MenuCommand[] ICandidate.SubCommands => _SubCommands;
+
+        bool ICandidate.CanSetPriority => true;
     }
 }

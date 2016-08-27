@@ -5,11 +5,13 @@ namespace Ann.Core.Candidate
 {
     public interface ICandidate
     {
-        ImageSource Icon { get; }
+        Brush Icon { get; }
         string Name { get; }
         string Comment { get; }
        
         ICommand RunCommand { get; }
         MenuCommand[] SubCommands { get; }
+
+        bool CanSetPriority { get; }
     }
 }

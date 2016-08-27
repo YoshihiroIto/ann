@@ -7,15 +7,22 @@ namespace Ann.Foundation
     // http://odetocode.com/articles/80.aspx を参考にしました
     public static class Evaluator
     {
-        public static object Eval(string statement)
+        public static string Eval(string statement)
         {
-            return EvaluatorType.InvokeMember(
-                "Eval",
-                BindingFlags.InvokeMethod,
-                null,
-                EvaluatorInstance,
-                new object[] {statement}
-            ).ToString();
+            try
+            {
+                return EvaluatorType.InvokeMember(
+                    "Eval",
+                    BindingFlags.InvokeMethod,
+                    null,
+                    EvaluatorInstance,
+                    new object[] {statement}
+                ).ToString();
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
 
         static Evaluator()
