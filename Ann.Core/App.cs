@@ -54,7 +54,7 @@ namespace Ann.Core
         public void InvokeShortcutKeyChanged() => ShortcutKeyChanged?.Invoke(this, EventArgs.Empty);
 
         private HashSet<string> _priorityFiles = new HashSet<string>();
-        private readonly ExecutableFileDataBase _dataBase;
+        private readonly ExecutableFileDataBase _executableFileDataBase;
         private readonly InputControler _inputControler;
 
         private string IndexFilePath => System.IO.Path.Combine(_configHolder.ConfigDirPath, "index.dat");
@@ -152,7 +152,7 @@ namespace Ann.Core
         public async Task OpenIndexAsync()
         {
             IndexOpeningResult = IndexOpeningResults.InOpening;
-            IndexOpeningResult = await _dataBase.OpenIndexAsync(TagetFolders);
+            IndexOpeningResult = await _executableFileDataBase.OpenIndexAsync(TagetFolders);
         }
 
         private readonly SemaphoreSlim _CancelUpdateIndexAsyncSema = new SemaphoreSlim(1, 1);
@@ -163,7 +163,7 @@ namespace Ann.Core
             using (Disposable.Create(() => _CancelUpdateIndexAsyncSema.Release()))
             {
                 await _CancelUpdateIndexAsyncSema.WaitAsync();
-                await _dataBase.CancelUpdateIndexAsync();
+                await _executableFileDataBase.CancelUpdateIndexAsync();
 
                 while (IsIndexUpdating)
                     await Task.Delay(TimeSpan.FromMilliseconds(20));
@@ -186,7 +186,7 @@ namespace Ann.Core
                 using (Disposable.Create(() => IsIndexUpdating = false))
                 {
                     IsIndexUpdating = true;
-                    IndexOpeningResult = await _dataBase.UpdateIndexAsync(TagetFolders, Config.ExecutableFileExts);
+                    IndexOpeningResult = await _executableFileDataBase.UpdateIndexAsync(TagetFolders, Config.ExecutableFileExts);
                 }
             }
         }
@@ -195,7 +195,7 @@ namespace Ann.Core
         {
             _inputControler.Push(() =>
             {
-                Candidates = _dataBase
+                Candidates = _executableFileDataBase
                     .Find(input, Config.ExecutableFileExts)
                     .OrderBy(u => MakeOrder(u.Path))
                     .Take(maxCandidates)
@@ -257,12 +257,12 @@ namespace Ann.Core
             _configHolder = configHolder;
             _languagesService = languagesService;
 
-            _dataBase = new ExecutableFileDataBase(this, IndexFilePath);
             _inputControler = new InputControler().AddTo(CompositeDisposable);
 
             UpdateFromConfig();
 
-            _dataBase.ObserveProperty(x => x.CrawlingCount)
+            _executableFileDataBase = new ExecutableFileDataBase(this, IndexFilePath);
+            _executableFileDataBase.ObserveProperty(x => x.CrawlingCount)
                 .Subscribe(c => Crawling = c)
                 .AddTo(CompositeDisposable);
 
@@ -379,8 +379,8 @@ namespace Ann.Core
 
         public int ExecutableFileDataBaseIconCacheSize
         {
-            get { return _dataBase.IconCacheSize; }
-            set { _dataBase.IconCacheSize = value; }
+            get { return _executableFileDataBase.IconCacheSize; }
+            set { _executableFileDataBase.IconCacheSize = value; }
         }
 
         public class NotificationEventArgs : EventArgs
