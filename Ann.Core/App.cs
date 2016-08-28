@@ -200,6 +200,11 @@ namespace Ann.Core
 
         public void Find(string input)
         {
+            if (input == null)
+                return;
+
+            input = input.Trim();
+            
             _inputQueue.Push(() =>
             {
                 switch (MakeCommand(input))
