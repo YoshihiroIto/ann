@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace Ann.Core
 {
-    public class InputControler : IDisposable
+    public class InputQueue : IDisposable
     {
-        public InputControler()
+        public InputQueue()
         {
             Start();
         }

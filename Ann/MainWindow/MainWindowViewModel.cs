@@ -112,7 +112,7 @@ namespace Ann.MainWindow
                 Observable
                     .Merge(Input.ToUnit())
                     .Merge(configHolder.Config.ObserveProperty(x => x.MaxCandidateLinesCount).ToUnit())
-                    .Subscribe(_ => _app.Find(Input.Value, configHolder.Config.MaxCandidateLinesCount))
+                    .Subscribe(_ => _app.Find(Input.Value))
                     .AddTo(CompositeDisposable);
 
                 Candidates = new ReactiveProperty<CandidatePanelViewModel[]>().AddTo(CompositeDisposable);

@@ -187,7 +187,7 @@ namespace Ann.Core.Test
                     // ReSharper disable once AccessToDisposedClosure
                 using (app.ObserveProperty(x => x.Candidates, false).Subscribe(_ => e1.Set()))
                 {
-                    app.Find("aaa", 10);
+                    app.Find("aaa");
                     e1.Wait();
                 }
 
@@ -202,7 +202,7 @@ namespace Ann.Core.Test
                     // ReSharper disable once AccessToDisposedClosure
                 using (app.ObserveProperty(x => x.Candidates, false).Subscribe(_ => e1.Set()))
                 {
-                    app.Find("aaa", 10);
+                    app.Find("aaa");
                     e1.Wait();
                 }
 

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using System.Windows;
 using Ann.Foundation;
@@ -53,9 +54,10 @@ namespace Ann.Core
         public void InvokePriorityFilesChanged() => PriorityFilesChanged?.Invoke(this, EventArgs.Empty);
         public void InvokeShortcutKeyChanged() => ShortcutKeyChanged?.Invoke(this, EventArgs.Empty);
 
-        private readonly InputControler _inputControler;
+        private readonly InputQueue _inputQueue;
         private readonly ExecutableFileDataBase _executableFileDataBase;
         private readonly Calculator _calculator = new Calculator();
+        private readonly Translator _translator;
 
         private HashSet<string> _priorityFiles = new HashSet<string>();
 
@@ -194,21 +196,79 @@ namespace Ann.Core
             }
         }
 
-        public void Find(string input, int maxCandidates)
-        {
-            _inputControler.Push(() =>
-            {
-                var r = _calculator.Calculate(input);
+        private readonly Subject<string> _translatorSubject;
 
-                if (r != null)
-                    Candidates = new[] {r};
-                else
-                    Candidates = _executableFileDataBase
-                        .Find(input, Config.ExecutableFileExts)
-                        .OrderBy(u => MakeOrder(u.Path))
-                        .Take(maxCandidates)
-                        .ToArray();
+        public void Find(string input)
+        {
+            _inputQueue.Push(() =>
+            {
+                switch (MakeCommand(input))
+                {
+                    case CommandType.Nothing:
+                    {
+                        Candidates = new ICandidate[0];
+                        break;
+                    }
+
+                    case CommandType.Translate:
+                    {
+                        if (input.Split(' ').Length >= 2)
+                            _translatorSubject.OnNext(input);
+                        else
+                            Candidates = new ICandidate[0];
+
+                        break;
+                    }
+
+                    case CommandType.Calculate:
+                    {
+                        var r = _calculator.Calculate(input);
+                        Candidates = r != null ? new[] {r} : new ICandidate[0];
+
+                        break;
+                    }
+
+                    case CommandType.ExecutableFile:
+                    {
+                        Candidates = _executableFileDataBase
+                            .Find(input, Config.ExecutableFileExts)
+                            .OrderBy(u => MakeOrder(u.Path))
+                            .Take(Config.MaxCandidateLinesCount)
+                            .ToArray();
+
+                        break;
+                    }
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             });
+        }
+
+        private enum CommandType
+        {
+            Nothing,
+            Translate,
+            Calculate,
+            ExecutableFile
+        }
+
+        private CommandType MakeCommand(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return CommandType.Nothing;
+
+            input = input.ToLower();
+
+            // todo:コンフィグで扱う
+            var langs = Config.Translator.TranslatorSet.Select(x => x.Keyword.ToLower());
+            if (langs.Any(l => input.StartsWith(l + " ")))
+                return CommandType.Translate;
+
+            if (Calculator.CanAccepte(input))
+                return CommandType.Calculate;
+
+            return CommandType.ExecutableFile;
         }
 
         private const int MaxMruCount = 50;
@@ -265,7 +325,7 @@ namespace Ann.Core
             _configHolder = configHolder;
             _languagesService = languagesService;
 
-            _inputControler = new InputControler().AddTo(CompositeDisposable);
+            _inputQueue = new InputQueue().AddTo(CompositeDisposable);
 
             UpdateFromConfig();
 
@@ -273,6 +333,29 @@ namespace Ann.Core
             _executableFileDataBase.ObserveProperty(x => x.CrawlingCount)
                 .Subscribe(c => Crawling = c)
                 .AddTo(CompositeDisposable);
+
+            _translator = new Translator(
+                configHolder.Config.Translator.MicrosoftTranslatorClientId,
+                configHolder.Config.Translator.MicrosoftTranslatorClientSecret
+            );
+
+            _translatorSubject = new Subject<string>().AddTo(CompositeDisposable);
+            _translatorSubject
+                .Throttle(TimeSpan.FromMilliseconds(150))
+                .Subscribe(input =>
+            {
+                var parts = input.Split(' ');
+                var keyword = parts[0];
+
+                var translatorSet = Config.Translator.TranslatorSet.First(x => x.Keyword.ToLower() == keyword);
+
+                var r = _translator.TranslateAsync(
+                    input.Substring(keyword.Length),
+                    translatorSet.From,
+                    translatorSet.To).Result;
+
+                Candidates = r != null ? new[] { r } : new ICandidate[0];
+            }).AddTo(CompositeDisposable);
 
             VersionUpdater = new VersionUpdater(Config.GitHubPersonalAccessToken).AddTo(CompositeDisposable);
 
@@ -320,7 +403,7 @@ namespace Ann.Core
 
         public bool IsEnableAutoUpdater { get; set; }
 
-        #region AutoUpdateRemainingSeconds
+#region AutoUpdateRemainingSeconds
 
         private int _AutoUpdateRemainingSeconds;
 
@@ -330,7 +413,7 @@ namespace Ann.Core
             private set { SetProperty(ref _AutoUpdateRemainingSeconds, value); }
         }
 
-        #endregion
+#endregion
 
         private void SetupAutoUpdater()
         {
@@ -373,7 +456,7 @@ namespace Ann.Core
 
         public bool IsRestartRequested => VersionUpdater.IsRestartRequested;
 
-        #region AutoUpdateState
+#region AutoUpdateState
 
         private AutoUpdateStates _AutoUpdateState;
 
@@ -383,7 +466,7 @@ namespace Ann.Core
             private set { SetProperty(ref _AutoUpdateState, value); }
         }
 
-        #endregion
+#endregion
 
         public int ExecutableFileDataBaseIconCacheSize
         {

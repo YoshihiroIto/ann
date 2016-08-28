@@ -11,7 +11,7 @@ namespace Ann.Core.Candidate
             if (string.IsNullOrWhiteSpace(input))
                 return null;
 
-            if (input.All(c => AcceptedCharas.Contains(c) == false))
+            if (CanAccepte(input) == false)
                 return null;
 
             var r = Evaluator.Eval(input);
@@ -20,6 +20,11 @@ namespace Ann.Core.Candidate
                 return null;
 
             return new CalculationResult(r);
+        }
+
+        public static bool CanAccepte(string input)
+        {
+            return input.All(c => AcceptedCharas.Contains(c));
         }
 
         private static readonly HashSet<char> AcceptedCharas = new HashSet<char>

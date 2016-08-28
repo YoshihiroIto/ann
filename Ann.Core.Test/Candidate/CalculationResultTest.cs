@@ -21,7 +21,7 @@ namespace Ann.Core.Test.Candidate
 
             Assert.Equal("Calculator", i.Comment);
             Assert.Equal("ABC", i.Name);
-            Assert.Null(i.RunCommand);
+            Assert.NotNull(i.RunCommand);
             Assert.Null(i.SubCommands);
             Assert.False(i.CanSetPriority);
         }

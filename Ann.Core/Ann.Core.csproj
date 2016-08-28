@@ -140,7 +140,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
+    <Compile Include="Candidate\TranslateResult.cs" />
     <Compile Include="Candidate\CalculationResult.cs" />
+    <Compile Include="Candidate\Translator.cs" />
     <Compile Include="Candidate\Calculator.cs" />
     <Compile Include="ConfigHolder.cs" />
     <Compile Include="Config\App.cs" />
@@ -168,7 +170,7 @@
     </Compile>
     <Compile Include="TestHelper.cs" />
     <Compile Include="Types.cs" />
-    <Compile Include="InputControler.cs" />
+    <Compile Include="InputQueue.cs" />
     <Compile Include="VersionUpdater.cs" />
   </ItemGroup>
   <ItemGroup>

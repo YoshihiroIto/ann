@@ -32,7 +32,7 @@ namespace Ann.Test.SettingWindow.SettingPage.General
             using (var versionUpdater = new VersionUpdater(null))
             using (var vm = new GeneralViewModel(app, versionUpdater))
             {
-                Assert.Equal(8, vm.MaxCandidateLinesCount.Value);
+                Assert.Equal(10, vm.MaxCandidateLinesCount.Value);
 
                 vm.MaxCandidateLinesCount.Value = 7;
                 Assert.Equal(7, vm.MaxCandidateLinesCount.Value);
