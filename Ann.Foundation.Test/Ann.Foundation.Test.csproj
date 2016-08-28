@@ -127,6 +127,7 @@
     <Compile Include="Mvvm\Message\WindowActionActionTest.cs" />
     <Compile Include="Mvvm\Message\WindowActionMessageTest.cs" />
     <Compile Include="Mvvm\Message\WindowMessageBrokerTest.cs" />
+    <Compile Include="Mvvm\DelegateCommandTest.cs" />
     <Compile Include="Mvvm\ModelHelperTest.cs" />
     <Compile Include="Mvvm\ViewModelBaseTest.cs" />
     <Compile Include="Mvvm\DisposableNotificationObjectTest.cs" />

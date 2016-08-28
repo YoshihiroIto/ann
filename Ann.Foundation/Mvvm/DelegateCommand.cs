@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace Ann.Foundation.Mvvm
@@ -21,11 +22,16 @@ namespace Ann.Foundation.Mvvm
 
         public void Execute(object parameter)
         {
+            if (CanExecute(parameter) == false)
+                return;
+
             _Execute();
         }
 
         public DelegateCommand(Action execute, Func<bool> canExecute = null)
         {
+            Debug.Assert(execute != null);
+
             _Execute = execute;
             _CanExecute = canExecute;
         }
