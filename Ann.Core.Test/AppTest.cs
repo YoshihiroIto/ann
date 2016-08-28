@@ -161,7 +161,7 @@ namespace Ann.Core.Test
         }
 
         [Fact]
-        public void FindExecutableUnit()
+        public void FindExecutableFile()
         {
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
@@ -187,14 +187,14 @@ namespace Ann.Core.Test
                     // ReSharper disable once AccessToDisposedClosure
                 using (app.ObserveProperty(x => x.Candidates, false).Subscribe(_ => e1.Set()))
                 {
-                    app.Find("aaa", 10);
+                    app.Find("aaa");
                     e1.Wait();
                 }
 
                 var f1 = app.Candidates.ToArray();
                 Assert.Equal(2, f1.Length);
-                Assert.Equal("aaa.exe", System.IO.Path.GetFileName(f1[0].Path));
-                Assert.Equal("aaaa.exe", System.IO.Path.GetFileName(f1[1].Path));
+                Assert.Equal("aaa.exe", System.IO.Path.GetFileName(f1[0].Comment));
+                Assert.Equal("aaaa.exe", System.IO.Path.GetFileName(f1[1].Comment));
 
                 app.AddPriorityFile(System.IO.Path.Combine(_context.RootPath, "aaaa.exe"));
 
@@ -202,14 +202,14 @@ namespace Ann.Core.Test
                     // ReSharper disable once AccessToDisposedClosure
                 using (app.ObserveProperty(x => x.Candidates, false).Subscribe(_ => e1.Set()))
                 {
-                    app.Find("aaa", 10);
+                    app.Find("aaa");
                     e1.Wait();
                 }
 
                 var f2 = app.Candidates.ToArray();
                 Assert.Equal(2, f2.Length);
-                Assert.Equal("aaaa.exe", System.IO.Path.GetFileName(f2[0].Path));
-                Assert.Equal("aaa.exe", System.IO.Path.GetFileName(f2[1].Path));
+                Assert.Equal("aaaa.exe", System.IO.Path.GetFileName(f2[0].Comment));
+                Assert.Equal("aaa.exe", System.IO.Path.GetFileName(f2[1].Comment));
 
                 app.RemovePriorityFile(System.IO.Path.Combine(_context.RootPath, "aaaa.exe"));
             }

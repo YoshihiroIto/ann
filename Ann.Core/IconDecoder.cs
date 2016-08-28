@@ -27,14 +27,14 @@ namespace Ann.Core
                 {
                     _IconCache = IconCacheSize == 0
                         ? null
-                        : new LruCache<string, ImageSource>(_IconCacheSize, false);
+                        : new LruCache<string, ImageBrush>(_IconCacheSize, false);
                 }
             }
         }
 
         #endregion
 
-        public ImageSource GetIcon(string path)
+        public ImageBrush GetIcon(string path)
         {
             var i = _IconCache?.Get(path);
             if (i != null)
@@ -50,7 +50,7 @@ namespace Ann.Core
 
             if (_IconShareFileExt.Contains(ext))
             {
-                ImageSource icon;
+                ImageBrush icon;
                 if (_ShareIconCache.TryGetValue(ext, out icon))
                     return icon;
 
@@ -64,7 +64,7 @@ namespace Ann.Core
                 : _IconCache.GetOrAdd(path, DecodeIcon);
         }
 
-        private static ImageSource DecodeIcon(string path)
+        private static ImageBrush DecodeIcon(string path)
         {
             using (var file = ShellFile.FromFilePath(path))
             {
@@ -74,7 +74,11 @@ namespace Ann.Core
                 if (bi.CanFreeze && bi.IsFrozen == false)
                     bi.Freeze();
 
-                return bi;
+                var b = new ImageBrush(bi);
+                if (b.CanFreeze && b.IsFrozen == false)
+                    b.Freeze();
+
+                return b;
             }
         }
 
@@ -136,8 +140,8 @@ namespace Ann.Core
             }
         }
 
-        private LruCache<string, ImageSource> _IconCache;
-        private readonly Dictionary<string, ImageSource> _ShareIconCache = new Dictionary<string, ImageSource>();
+        private LruCache<string, ImageBrush> _IconCache;
+        private readonly Dictionary<string, ImageBrush> _ShareIconCache = new Dictionary<string, ImageBrush>();
 
         private readonly HashSet<string> _IconShareFileExt = new HashSet<string>
         {

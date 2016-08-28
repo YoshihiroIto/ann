@@ -1,42 +1,30 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reactive.Linq;
+using System.Windows.Input;
 using System.Windows.Media;
 using Ann.Core;
+using Ann.Core.Candidate;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 
 namespace Ann.MainWindow
 {
-    public class ExecutableUnitViewModel : ViewModelBase
+    public class CandidatePanelViewModel : ViewModelBase
     {
-        #region Name
+        public string Name => _model.Name;
+        public string Comment => _model.Comment;
+        public Brush Icon => _model.Icon;
 
-        private string _Name;
+        public ICommand RunCommand => _model.RunCommand;
+        public MenuCommand[] SubCommands => _model.SubCommands;
 
-        public string Name
-        {
-            get { return _Name; }
-            set { SetProperty(ref _Name, value); }
-        }
+        public bool CanSetPriority => _model.CanSetPriority;
 
-        #endregion
+        public App App { get; }
 
-        #region Path
-
-        private string _Path;
-
-        public string Path
-        {
-            get { return _Path; }
-            set { SetProperty(ref _Path, value); }
-        }
-
-        #endregion
-
-        #region IsSelected
-
+#region IsSelected
         private bool _IsSelected;
 
         public bool IsSelected
@@ -44,34 +32,37 @@ namespace Ann.MainWindow
             get { return _IsSelected; }
             set { SetProperty(ref _IsSelected, value); }
         }
-
-        #endregion
-
-        public ImageSource Icon => _parent.GetIcon(Path);
+#endregion
 
         public bool IsPriorityFile
         {
             get
             {
+                if (_model.CanSetPriority == false)
+                    return false;
+
                 if (_isSubscribedPriorityFilesChanged == false)
                 {
                     SubscribPriorityFilesChanged();
                     _isSubscribedPriorityFilesChanged = true;
                 }
 
-                return _app.IsPriorityFile(Path);
+                return App.IsPriorityFile(Comment);
             }
 
             set
             {
+                if (_model.CanSetPriority == false)
+                    return;
+
                 if (value)
                 {
-                    if (_app.AddPriorityFile(Path))
+                    if (App.AddPriorityFile(Comment))
                         RaisePropertyChanged();
                 }
                 else
                 {
-                    if (_app.RemovePriorityFile(Path))
+                    if (App.RemovePriorityFile(Comment))
                         RaisePropertyChanged();
                 }
             }
@@ -90,23 +81,21 @@ namespace Ann.MainWindow
             }
         }
 
-        public ReactiveCommand<string> RunCommand => _parent.RunCommand;
-        public ReactiveCommand ContainingFolderOpenCommand => _parent.ContainingFolderOpenCommand;
+        private readonly ICandidate _model;
 
-        private readonly MainWindowViewModel _parent;
-        private readonly App _app;
-
-        public ExecutableUnitViewModel(MainWindowViewModel parent, ExecutableUnit model, App app)
+        public CandidatePanelViewModel(ICandidate model, App app, Core.Config.App config)
         {
-            Debug.Assert(parent != null);
             Debug.Assert(model != null);
             Debug.Assert(app != null);
+            Debug.Assert(config != null);
 
-            _parent = parent;
-            _app = app;
+            _model = model;
+            App = app;
 
-            Name = string.IsNullOrWhiteSpace(model.Name) == false ? model.Name : System.IO.Path.GetFileName(model.Path);
-            Path = model.Path;
+            config.ObserveProperty(c => c.Culture)
+                // ReSharper disable once ExplicitCallerInfoArgument
+                .Subscribe(_ => RaisePropertyChanged(nameof(Comment)))
+                .AddTo(CompositeDisposable);
         }
 
         private bool _isSubscribedPriorityFilesChanged;
@@ -114,8 +103,8 @@ namespace Ann.MainWindow
         private void SubscribPriorityFilesChanged()
         {
             Observable.FromEventPattern(
-                h => _app.PriorityFilesChanged += h,
-                h => _app.PriorityFilesChanged -= h)
+                h => App.PriorityFilesChanged += h,
+                h => App.PriorityFilesChanged -= h)
                 .Subscribe(_ =>
                     // ReSharper disable once ExplicitCallerInfoArgument
                     RaisePropertyChanged(nameof(IsPriorityFile))

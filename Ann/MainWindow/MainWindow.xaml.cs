@@ -46,19 +46,32 @@ namespace Ann.MainWindow
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            SetupExecutableUnitsPanel();
+            SetupCandidatePanels();
 
             UpdateSize();
 
             Observable.FromEventPattern<DependencyPropertyChangedEventHandler, DependencyPropertyChangedEventArgs>(
                     h => StatusBar.IsVisibleChanged += h,
                     h => StatusBar.IsVisibleChanged -= h)
-                .Throttle(TimeSpan.FromMilliseconds(50))
+                .Throttle(TimeSpan.FromMilliseconds(5))
+                .ObserveOnUIDispatcher()
+                .Subscribe(_ => UpdateSize())
+                .AddTo(_DataContext.CompositeDisposable);
+
+            Observable.FromEventPattern<SizeChangedEventHandler, SizeChangedEventArgs>(
+                    h => StatusBar.SizeChanged += h,
+                    h => StatusBar.SizeChanged -= h)
+                .ObserveOnUIDispatcher()
+                .Subscribe(_ => UpdateSize())
+                .AddTo(_DataContext.CompositeDisposable);
+
+            Observable.FromEventPattern<SizeChangedEventHandler, SizeChangedEventArgs>(
+                    h => SizeChanged += h,
+                    h => SizeChanged -= h)
                 .ObserveOnUIDispatcher()
                 .Subscribe(_ => UpdateSize())
                 .AddTo(_DataContext.CompositeDisposable);
         }
-
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -74,7 +87,7 @@ namespace Ann.MainWindow
 
                 var windows = Application.Current.Windows.OfType<Window>().ToArray();
                 if (windows.Length == 1 && Equals(windows[0], this))
-                    Visibility = Visibility.Hidden;
+                    _DataContext.Messenger.Publish(new WindowActionMessage(WindowAction.Hidden));
             };
         }
 
@@ -154,16 +167,12 @@ namespace Ann.MainWindow
                 _configHolder.Config.ShortcutKeys.Activate.Key,
                 Application.Current.MainWindow);
 
-            _activateHotKey.HotKeyPressed += (_, __) =>
-            {
-                if (Visibility == Visibility.Hidden)
-                {
-                    Visibility = Visibility.Visible;
-                    Activate();
-                }
-                else
-                    Visibility = Visibility.Hidden;
-            };
+            _activateHotKey.HotKeyPressed +=
+                (_, __) =>
+                    _DataContext.Messenger.Publish(
+                        new WindowActionMessage(Visibility == Visibility.Hidden
+                            ? WindowAction.VisibleActive
+                            : WindowAction.Hidden));
 
             _app.IsEnableActivateHotKey = _activateHotKey.Register();
 
@@ -215,18 +224,18 @@ namespace Ann.MainWindow
         {
             BasePanel.Height =
                 InputLineHeight +
-                _DataContext.Candidates.Value.Length*ViewConstants.ExecutableUnitPanelHeight;
+                _DataContext.Candidates.Value.Length*ViewConstants.CandidatePanelHeight;
 
             var height = BasePanel.Height;
 
             if (_DataContext.Candidates.Value.Any())
                 height += ViewConstants.BaseMarginUnit;
 
-            if (StatusBar.Visibility == Visibility.Visible)
+            //if (StatusBar.Visibility == Visibility.Visible)
             {
                 height += StatusBar.ActualHeight;
-                Canvas.SetTop(StatusBar, height - StatusBar.ActualHeight - ViewConstants.MainWindowBorderThicknessUnit*2);
                 Canvas.SetLeft(StatusBar, 0);
+                Canvas.SetTop(StatusBar, height - StatusBar.ActualHeight - ViewConstants.MainWindowBorderThicknessUnit*2);
             }
 
             Height = height;
@@ -237,23 +246,23 @@ namespace Ann.MainWindow
             InputLine.Margin.Top +
             InputLine.Margin.Bottom;
 
-        private readonly Canvas[] _ExecutableUnitPanels = new Canvas[ViewConstants.MaxExecutableUnitPanelCount];
+        private readonly Canvas[] _CandidatePanels = new Canvas[ViewConstants.MaxCandidateCount];
 
-        private void SetupExecutableUnitsPanel()
+        private void SetupCandidatePanels()
         {
-            for (var i = 0; i != ViewConstants.MaxExecutableUnitPanelCount; ++i)
+            for (var i = 0; i != ViewConstants.MaxCandidateCount; ++i)
             {
-                _ExecutableUnitPanels[i] = Resources["ExecutableUnitPanel"] as Canvas;
-                Debug.Assert(_ExecutableUnitPanels[i] != null);
+                _CandidatePanels[i] = Resources["CandidatePanel"] as Canvas;
+                Debug.Assert(_CandidatePanels[i] != null);
 
-                _ExecutableUnitPanels[i].DataContext = null;
-                _ExecutableUnitPanels[i].PreviewMouseLeftButtonUp += ExecutableUnitPanel_PreviewMouseLeftButtonUp;
-                _ExecutableUnitPanels[i].MouseLeftButtonDown += ExecutableUnitPanel_MouseLeftButtonDown;
+                _CandidatePanels[i].DataContext = null;
+                _CandidatePanels[i].PreviewMouseLeftButtonUp += CandidatePanel_PreviewMouseLeftButtonUp;
+                _CandidatePanels[i].MouseLeftButtonDown += CandidatePanel_MouseLeftButtonDown;
 
-                Canvas.SetTop(_ExecutableUnitPanels[i], InputLineHeight + i*ViewConstants.ExecutableUnitPanelHeight);
-                Canvas.SetLeft(_ExecutableUnitPanels[i], ViewConstants.BaseMarginUnit);
+                Canvas.SetLeft(_CandidatePanels[i], ViewConstants.BaseMarginUnit);
+                Canvas.SetTop(_CandidatePanels[i], InputLineHeight + i*ViewConstants.CandidatePanelHeight);
 
-                BasePanel.Children.Add(_ExecutableUnitPanels[i]);
+                BasePanel.Children.Add(_CandidatePanels[i]);
             }
 
             _DataContext.Candidates
@@ -264,32 +273,32 @@ namespace Ann.MainWindow
 
                     foreach (var c in candidates)
                     {
-                        _ExecutableUnitPanels[index].DataContext = c;
-                        _ExecutableUnitPanels[index].Visibility = Visibility.Visible;
+                        _CandidatePanels[index].DataContext = c;
+                        _CandidatePanels[index].Visibility = Visibility.Visible;
 
                         ++index;
                     }
 
-                    for (var i = index; i != ViewConstants.MaxExecutableUnitPanelCount; ++i)
+                    for (var i = index; i != ViewConstants.MaxCandidateCount; ++i)
                     {
-                        _ExecutableUnitPanels[i].DataContext = null;
-                        _ExecutableUnitPanels[i].Visibility = Visibility.Collapsed;
+                        _CandidatePanels[i].DataContext = null;
+                        _CandidatePanels[i].Visibility = Visibility.Collapsed;
                     }
 
                     UpdateSize();
                 }).AddTo(_DataContext.CompositeDisposable);
         }
 
-        private void ExecutableUnitPanel_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void CandidatePanel_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            var item = (sender as FrameworkElement)?.DataContext as ExecutableUnitViewModel;
+            var item = (sender as FrameworkElement)?.DataContext as CandidatePanelViewModel;
 
             _DataContext.SelectedCandidate.Value = item;
         }
 
-        private void ExecutableUnitPanel_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void CandidatePanel_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var item = (sender as FrameworkElement)?.DataContext as ExecutableUnitViewModel;
+            var item = (sender as FrameworkElement)?.DataContext as CandidatePanelViewModel;
 
             _DataContext.SelectedCandidate.Value = item;
             _DataContext.RunCommand.Execute(null);

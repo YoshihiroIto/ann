@@ -140,20 +140,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
+    <Compile Include="Candidate\TranslateResult.cs" />
+    <Compile Include="Candidate\CalculationResult.cs" />
+    <Compile Include="Candidate\Translator.cs" />
+    <Compile Include="Candidate\Calculator.cs" />
     <Compile Include="ConfigHolder.cs" />
     <Compile Include="Config\App.cs" />
     <Compile Include="Config\MostRecentUsedList.cs" />
     <Compile Include="Config\MainWindow.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="CultureSummry.cs" />
-    <Compile Include="ExecutableUnit.cs" />
-    <Compile Include="ExecutableUnitDataBase.cs" />
-    <Compile Include="IndexFile\ExecutableUnit.cs" />
-    <Compile Include="IndexFile\File.cs" />
+    <Compile Include="Candidate\ExecutableFile.cs" />
+    <Compile Include="Candidate\ExecutableFileDataBase.cs" />
+    <Compile Include="Candidate\ICandidate.cs" />
     <Compile Include="IconDecoder.cs" />
+    <Compile Include="IndexFile\ExecutableFile.cs" />
+    <Compile Include="IndexFile\File.cs" />
     <Compile Include="IndexFile\Versions.cs" />
+    <Compile Include="MenuCommand.cs" />
     <Compile Include="Languages.cs" />
     <Compile Include="LanguagesService.cs" />
+    <Compile Include="StringTagToStringConverter.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -163,7 +170,7 @@
     </Compile>
     <Compile Include="TestHelper.cs" />
     <Compile Include="Types.cs" />
-    <Compile Include="InputControler.cs" />
+    <Compile Include="InputQueue.cs" />
     <Compile Include="VersionUpdater.cs" />
   </ItemGroup>
   <ItemGroup>

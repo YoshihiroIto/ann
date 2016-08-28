@@ -63,7 +63,9 @@ VersionChecker_Checking,
 VersionChecker_Downloaded,
 VersionChecker_Downloading,
 VersionChecker_Latest,
-VersionChecker_Unknown
+VersionChecker_Unknown,
+Calculation,
+Translation
 }
 
 public static class Localization
@@ -125,6 +127,8 @@ case StringTags.VersionChecker_Downloaded: return "Download was completed. Versi
 case StringTags.VersionChecker_Downloading: return "Now downloading files...";
 case StringTags.VersionChecker_Latest: return "Ann is up to date.";
 case StringTags.VersionChecker_Unknown: return "Cannot confirm the version update. Check Internet connection.";
+case StringTags.Calculation: return "Calculation";
+case StringTags.Translation: return "Translation";
 
 default:
     throw new NotImplementedException();
@@ -182,6 +186,8 @@ case StringTags.VersionChecker_Downloaded: return "ダウンロード完了し�
 case StringTags.VersionChecker_Downloading: return "ダウンロード中です...";
 case StringTags.VersionChecker_Latest: return "最新バージョンです。";
 case StringTags.VersionChecker_Unknown: return "バージョン更新の確認ができません。インターネット接続を確認してください。";
+case StringTags.Calculation: return "計算";
+case StringTags.Translation: return "翻訳";
 
 default:
     throw new NotImplementedException();

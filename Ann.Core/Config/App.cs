@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
+using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 using YamlDotNet.Serialization;
 
@@ -48,7 +49,7 @@ namespace Ann.Core.Config
 
         #region MaxCandidateLinesCount
 
-        private int _MaxCandidateLinesCount = 8;
+        private int _MaxCandidateLinesCount = 10;
 
         public int MaxCandidateLinesCount
         {
@@ -144,6 +145,18 @@ namespace Ann.Core.Config
         {
             get { return _GitHubPersonalAccessToken; }
             set { SetProperty(ref _GitHubPersonalAccessToken, value); }
+        }
+
+        #endregion
+
+        #region Translator
+
+        private Translator _Translator = new Translator();
+
+        public Translator Translator
+        {
+            get { return _Translator; }
+            set { SetProperty(ref _Translator, value); }
         }
 
         #endregion
@@ -309,6 +322,96 @@ namespace Ann.Core.Config
         {
             get { return _Hide; }
             set { SetProperty(ref _Hide, value); }
+        }
+
+        #endregion
+    }
+
+    public class Translator : ModelBase
+    {
+        #region MicrosoftTranslatorClientId
+
+        private string _MicrosoftTranslatorClientId = string.Empty;
+
+        public string MicrosoftTranslatorClientId
+        {
+            get { return _MicrosoftTranslatorClientId; }
+            set { SetProperty(ref _MicrosoftTranslatorClientId, value); }
+        }
+
+        #endregion
+
+        #region MicrosoftTranslatorClientSecret
+
+        private string _MicrosoftTranslatorClientSecret = string.Empty;
+
+        public string MicrosoftTranslatorClientSecret
+        {
+            get { return _MicrosoftTranslatorClientSecret; }
+            set { SetProperty(ref _MicrosoftTranslatorClientSecret, value); }
+        }
+
+        #endregion
+
+        #region TranslatorSet
+
+        private ObservableCollection<TranslatorSet> _TranslatorSet = new ObservableCollection<TranslatorSet>
+        {
+            new TranslatorSet
+            {
+                Keyword = "ja",
+                To = TranslateService.LanguageCodes.ja
+            },
+            new TranslatorSet
+            {
+                Keyword = "en",
+                To = TranslateService.LanguageCodes.en
+            }
+        };
+
+        public ObservableCollection<TranslatorSet> TranslatorSet
+        {
+            get { return _TranslatorSet; }
+            set { SetProperty(ref _TranslatorSet, value); }
+        }
+
+        #endregion
+    }
+
+    public class TranslatorSet : ModelBase
+    {
+        #region Keyword
+
+        private string _Keyword;
+
+        public string Keyword
+        {
+            get { return _Keyword; }
+            set { SetProperty(ref _Keyword, value); }
+        }
+
+        #endregion
+
+        #region From
+
+        private TranslateService.LanguageCodes _From = TranslateService.LanguageCodes.AutoDetect;
+
+        public TranslateService.LanguageCodes From
+        {
+            get { return _From; }
+            set { SetProperty(ref _From, value); }
+        }
+
+        #endregion
+
+        #region To
+
+        private TranslateService.LanguageCodes _To;
+
+        public TranslateService.LanguageCodes To
+        {
+            get { return _To; }
+            set { SetProperty(ref _To, value); }
         }
 
         #endregion

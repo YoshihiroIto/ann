@@ -97,9 +97,9 @@ namespace Ann.Core.Test.Config
             Assert.Equal("AA", c.PriorityFiles[0].Value);
             Assert.Equal("BB", c.PriorityFiles[1].Value);
 
-            Assert.Equal(8, c.MaxCandidateLinesCount);
-            c.MaxCandidateLinesCount = 10;
             Assert.Equal(10, c.MaxCandidateLinesCount);
+            c.MaxCandidateLinesCount = 5;
+            Assert.Equal(5, c.MaxCandidateLinesCount);
 
             Assert.True(c.IsStartOnSystemStartup);
             c.IsStartOnSystemStartup = false;

@@ -4,12 +4,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using System.Windows;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 using Reactive.Bindings.Extensions;
 using System.Threading;
+using Ann.Core.Candidate;
 using Reactive.Bindings;
 
 namespace Ann.Core
@@ -18,9 +20,9 @@ namespace Ann.Core
     {
         #region Candidates
 
-        private IEnumerable<ExecutableUnit> _Candidates = Enumerable.Empty<ExecutableUnit>();
+        private IEnumerable<ICandidate> _Candidates = Enumerable.Empty<ICandidate>();
 
-        public IEnumerable<ExecutableUnit> Candidates
+        public IEnumerable<ICandidate> Candidates
         {
             get { return _Candidates; }
             set { SetProperty(ref _Candidates, value); }
@@ -52,9 +54,12 @@ namespace Ann.Core
         public void InvokePriorityFilesChanged() => PriorityFilesChanged?.Invoke(this, EventArgs.Empty);
         public void InvokeShortcutKeyChanged() => ShortcutKeyChanged?.Invoke(this, EventArgs.Empty);
 
+        private readonly InputQueue _inputQueue;
+        private readonly ExecutableFileDataBase _executableFileDataBase;
+        private readonly Calculator _calculator = new Calculator();
+        private readonly Translator _translator;
+
         private HashSet<string> _priorityFiles = new HashSet<string>();
-        private readonly ExecutableUnitDataBase _dataBase;
-        private readonly InputControler _inputControler;
 
         private string IndexFilePath => System.IO.Path.Combine(_configHolder.ConfigDirPath, "index.dat");
 
@@ -151,7 +156,7 @@ namespace Ann.Core
         public async Task OpenIndexAsync()
         {
             IndexOpeningResult = IndexOpeningResults.InOpening;
-            IndexOpeningResult = await _dataBase.OpenIndexAsync(TagetFolders);
+            IndexOpeningResult = await _executableFileDataBase.OpenIndexAsync(TagetFolders);
         }
 
         private readonly SemaphoreSlim _CancelUpdateIndexAsyncSema = new SemaphoreSlim(1, 1);
@@ -159,10 +164,10 @@ namespace Ann.Core
 
         public async Task CancelUpdateIndexAsync()
         {
-            using(Disposable.Create(() =>_CancelUpdateIndexAsyncSema.Release()))
+            using (Disposable.Create(() => _CancelUpdateIndexAsyncSema.Release()))
             {
                 await _CancelUpdateIndexAsyncSema.WaitAsync();
-                await _dataBase.CancelUpdateIndexAsync();
+                await _executableFileDataBase.CancelUpdateIndexAsync();
 
                 while (IsIndexUpdating)
                     await Task.Delay(TimeSpan.FromMilliseconds(20));
@@ -185,21 +190,113 @@ namespace Ann.Core
                 using (Disposable.Create(() => IsIndexUpdating = false))
                 {
                     IsIndexUpdating = true;
-                    IndexOpeningResult = await _dataBase.UpdateIndexAsync(TagetFolders, Config.ExecutableFileExts);
+                    IndexOpeningResult =
+                        await _executableFileDataBase.UpdateIndexAsync(TagetFolders, Config.ExecutableFileExts);
                 }
             }
         }
 
-        public void Find(string input, int maxCandidates)
+        private Subject<string> _translatorSubject;
+        private string _currentInput;
+
+        private void SetupTranslatorSubject()
         {
-            _inputControler.Push(() =>
+            _translatorSubject = new Subject<string>().AddTo(CompositeDisposable);
+            _translatorSubject
+                .Throttle(TimeSpan.FromMilliseconds(150))
+                .Subscribe(input =>
+                {
+                    var parts = input.Split(' ');
+                    var keyword = parts[0];
+
+                    var translatorSet = Config.Translator.TranslatorSet.First(x => x.Keyword.ToLower() == keyword);
+
+                    var r = _translator.TranslateAsync(
+                        input.Substring(keyword.Length),
+                        translatorSet.From,
+                        translatorSet.To).Result;
+
+                    if (input == _currentInput)
+                        Candidates = r != null ? new[] {r} : new ICandidate[0];
+                }).AddTo(CompositeDisposable);
+        }
+
+        public void Find(string input)
+        {
+            _currentInput = input;
+
+            if (input == null)
+                return;
+
+            input = input.Trim();
+            _currentInput = input;
+
+            _inputQueue.Push(() =>
             {
-                Candidates = _dataBase
-                    .Find(input, Config.ExecutableFileExts)
-                    .OrderBy(u => MakeOrder(u.Path))
-                    .Take(maxCandidates)
-                    .ToArray();
+                switch (MakeCommand(input))
+                {
+                    case CommandType.Nothing:
+                    {
+                        Candidates = new ICandidate[0];
+                        break;
+                    }
+
+                    case CommandType.Translate:
+                    {
+                        if (input.Split(' ').Length >= 2)
+                            _translatorSubject.OnNext(input);
+                        else
+                            Candidates = new ICandidate[0];
+
+                        break;
+                    }
+
+                    case CommandType.Calculate:
+                    {
+                        var r = _calculator.Calculate(this, input);
+                        Candidates = r != null ? new[] {r} : new ICandidate[0];
+
+                        break;
+                    }
+
+                    case CommandType.ExecutableFile:
+                    {
+                        Candidates = _executableFileDataBase
+                            .Find(input, Config.ExecutableFileExts)
+                            .OrderBy(u => MakeOrder(u.Path))
+                            .Take(Config.MaxCandidateLinesCount)
+                            .ToArray();
+
+                        break;
+                    }
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             });
+        }
+
+        private enum CommandType
+        {
+            Nothing,
+            Translate,
+            Calculate,
+            ExecutableFile
+        }
+
+        private CommandType MakeCommand(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return CommandType.Nothing;
+
+            var langs = Config.Translator.TranslatorSet.Select(x => x.Keyword.ToLower());
+            if (langs.Any(l => input.StartsWith(l + " ")))
+                return CommandType.Translate;
+
+            if (Calculator.CanAccepte(input))
+                return CommandType.Calculate;
+
+            return CommandType.ExecutableFile;
         }
 
         private const int MaxMruCount = 50;
@@ -256,14 +353,22 @@ namespace Ann.Core
             _configHolder = configHolder;
             _languagesService = languagesService;
 
-            _dataBase = new ExecutableUnitDataBase(IndexFilePath);
-            _inputControler = new InputControler().AddTo(CompositeDisposable);
+            _inputQueue = new InputQueue().AddTo(CompositeDisposable);
 
             UpdateFromConfig();
 
-            _dataBase.ObserveProperty(x => x.CrawlingCount)
+            _executableFileDataBase = new ExecutableFileDataBase(this, IndexFilePath);
+            _executableFileDataBase.ObserveProperty(x => x.CrawlingCount)
                 .Subscribe(c => Crawling = c)
                 .AddTo(CompositeDisposable);
+
+            _translator = new Translator(
+                this,
+                configHolder.Config.Translator.MicrosoftTranslatorClientId,
+                configHolder.Config.Translator.MicrosoftTranslatorClientSecret
+            );
+
+            SetupTranslatorSubject();
 
             VersionUpdater = new VersionUpdater(Config.GitHubPersonalAccessToken).AddTo(CompositeDisposable);
 
@@ -311,7 +416,7 @@ namespace Ann.Core
 
         public bool IsEnableAutoUpdater { get; set; }
 
-#region AutoUpdateRemainingSeconds
+        #region AutoUpdateRemainingSeconds
 
         private int _AutoUpdateRemainingSeconds;
 
@@ -321,7 +426,7 @@ namespace Ann.Core
             private set { SetProperty(ref _AutoUpdateRemainingSeconds, value); }
         }
 
-#endregion
+        #endregion
 
         private void SetupAutoUpdater()
         {
@@ -344,7 +449,7 @@ namespace Ann.Core
                             while (AutoUpdateRemainingSeconds > 0)
                             {
                                 await Task.Delay(TimeSpan.FromSeconds(1));
-                                -- AutoUpdateRemainingSeconds;
+                                --AutoUpdateRemainingSeconds;
                             }
 
                             await Task.Delay(TimeSpan.FromSeconds(2));
@@ -364,7 +469,7 @@ namespace Ann.Core
 
         public bool IsRestartRequested => VersionUpdater.IsRestartRequested;
 
-#region AutoUpdateState
+        #region AutoUpdateState
 
         private AutoUpdateStates _AutoUpdateState;
 
@@ -373,6 +478,28 @@ namespace Ann.Core
             get { return _AutoUpdateState; }
             private set { SetProperty(ref _AutoUpdateState, value); }
         }
-#endregion
+
+        #endregion
+
+        public int ExecutableFileDataBaseIconCacheSize
+        {
+            get { return _executableFileDataBase.IconCacheSize; }
+            set { _executableFileDataBase.IconCacheSize = value; }
+        }
+
+        public class NotificationEventArgs : EventArgs
+        {
+            public StringTags[] Messages;
+        }
+
+        public event EventHandler<NotificationEventArgs> Notification;
+
+        public void NoticeMessages(IEnumerable<StringTags> messages)
+        {
+            Notification?.Invoke(this, new NotificationEventArgs
+            {
+                Messages = messages.ToArray()
+            });
+        }
     }
 }

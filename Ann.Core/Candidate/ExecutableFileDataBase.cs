@@ -6,32 +6,37 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 using FlatBuffers;
 using IndexFile;
 using File = System.IO.File;
 
-namespace Ann.Core
+namespace Ann.Core.Candidate
 {
-    public class ExecutableUnitDataBase : NotificationObject
+    public class ExecutableFileDataBase : NotificationObject
     {
+        private readonly App _app;
         private readonly string _indexFile;
 
-        public ExecutableUnitDataBase(string indexFile)
+        public ExecutableFileDataBase(App app, string indexFile)
         {
+            Debug.Assert(app != null);
+
+            _app = app;
             _indexFile = indexFile;
         }
 
-        private ExecutableUnit[] _executableUnits;
-        private ExecutableUnit[] _prevResult;
+        private ExecutableFile[] _ExecutableFiles;
+        private ExecutableFile[] _prevResult;
         private string _prevKeyword;
 
-        private bool IsOpend => _executableUnits != null;
+        private bool IsOpend => _ExecutableFiles != null;
 
         private const Versions CurrentIndexVersion = Versions.Version;
 
-        public int ExecutableUnitCount => IsOpend ? _executableUnits.Length : 0;
+        public int ExecutableFileCount => IsOpend ? _ExecutableFiles.Length : 0;
 
         #region CrawlingCount
 
@@ -45,20 +50,28 @@ namespace Ann.Core
 
         #endregion
 
-        public IEnumerable<ExecutableUnit> Find(string input, IEnumerable<string> executableFileExts)
+        public int IconCacheSize
+        {
+            get { return _iconDecoder.IconCacheSize; }
+            set { _iconDecoder.IconCacheSize = value; }
+        }
+
+        private readonly IconDecoder _iconDecoder = new IconDecoder();
+
+        public IEnumerable<ExecutableFile> Find(string input, IEnumerable<string> executableFileExts)
         {
             if (input == null)
             {
                 _prevKeyword = null;
                 _prevResult = null;
-                return Enumerable.Empty<ExecutableUnit>();
+                return Enumerable.Empty<ExecutableFile>();
             }
 
             if (IsOpend == false)
             {
                 _prevKeyword = null;
                 _prevResult = null;
-                return Enumerable.Empty<ExecutableUnit>();
+                return Enumerable.Empty<ExecutableFile>();
             }
 
             input = input.Trim();
@@ -67,13 +80,13 @@ namespace Ann.Core
             {
                 _prevKeyword = null;
                 _prevResult = null;
-                return Enumerable.Empty<ExecutableUnit>();
+                return Enumerable.Empty<ExecutableFile>();
             }
 
             input = input.ToLower();
 
             var targets = _prevKeyword == null || input.StartsWith(_prevKeyword) == false
-                ? _executableUnits
+                ? _ExecutableFiles
                 : _prevResult;
 
             var executableFileExtsArray = NormalizeExecutableFileExts(executableFileExts);
@@ -84,13 +97,13 @@ namespace Ann.Core
                 executableFileExtsArray.ForEach((e, i) => extScores[e] = i);
 
                 var inputs = input.Split(' ');
-                var temp = new List<ExecutableUnit> {Capacity = targets.Length};
+                var temp = new List<ExecutableFile> {Capacity = targets.Length};
 
                 var lockObj = new object();
 
                 Parallel.ForEach(
                     targets,
-                    () => new List<ExecutableUnit> {Capacity = targets.Length},
+                    () => new List<ExecutableFile> {Capacity = targets.Length},
                     (u, loop, local) =>
                     {
                         if (inputs.All(u.SearchKey.Contains) == false)
@@ -118,7 +131,7 @@ namespace Ann.Core
             return _prevResult;
         }
 
-        private static int MakeScore(ExecutableUnit u, string[] inputs, Dictionary<string, int> extScores)
+        private static int MakeScore(ExecutableFile u, string[] inputs, Dictionary<string, int> extScores)
         {
             var score = 0;
 
@@ -134,7 +147,7 @@ namespace Ann.Core
             return score/inputs.Length;
         }
 
-        private static int MakeScore(ExecutableUnit u, string input, Dictionary<string, int> extScores)
+        private static int MakeScore(ExecutableFile u, string input, Dictionary<string, int> extScores)
         {
             // ReSharper disable once PossibleNullReferenceException
             var ext = System.IO.Path.GetExtension(u.Path).ToLower();
@@ -210,10 +223,10 @@ namespace Ann.Core
                 if (result.IsCanceled)
                     return IndexOpeningResults.Ok;
 
-                _executableUnits = result.Units;
+                _ExecutableFiles = result.Files;
             }
 
-            if (_executableUnits == null)
+            if (_ExecutableFiles == null)
                 return IndexOpeningResults.CanNotOpen;
 
             await Task.Run(() =>
@@ -228,14 +241,14 @@ namespace Ann.Core
                 {
                     var fbb = new FlatBufferBuilder(1);
 
-                    var euOffsets = new Offset<IndexFile.ExecutableUnit>[_executableUnits.Length];
+                    var euOffsets = new Offset<IndexFile.ExecutableFile>[_ExecutableFiles.Length];
 
-                    for (var i = 0; i != _executableUnits.Length; ++ i)
+                    for (var i = 0; i != _ExecutableFiles.Length; ++i)
                     {
                         euOffsets[i] =
-                            IndexFile.ExecutableUnit.CreateExecutableUnit(
+                            IndexFile.ExecutableFile.CreateExecutableFile(
                                 fbb,
-                                fbb.CreateString(_executableUnits[i].Path));
+                                fbb.CreateString(_ExecutableFiles[i].Path));
                     }
 
                     var rowsOffset = IndexFile.File.CreateRowsVector(fbb, euOffsets);
@@ -276,14 +289,14 @@ namespace Ann.Core
                         if (root.Version != CurrentIndexVersion)
                             return IndexOpeningResults.OldIndex;
 
-                        var tempExecutableUnits = new ExecutableUnit[root.RowsLength];
+                        var tempExecutableFiles = new ExecutableFile[root.RowsLength];
                         var isContainsInvalid = false;
                         var stringPool = new ConcurrentDictionary<string, string>();
 
                         Parallel.For(
                             0,
                             root.RowsLength,
-                            () => new IndexFile.ExecutableUnit(),
+                            () => new IndexFile.ExecutableFile(),
                             (i, loop, rowTemp) =>
                             {
                                 root.GetRows(rowTemp, i);
@@ -296,8 +309,8 @@ namespace Ann.Core
 
                                 try
                                 {
-                                    tempExecutableUnits[i] = new ExecutableUnit(i, root.RowsLength, rowTemp.Path,
-                                        stringPool, targetFoldersArray);
+                                    tempExecutableFiles[i] = new ExecutableFile(i, root.RowsLength, rowTemp.Path,
+                                        _app, _iconDecoder, stringPool, targetFoldersArray);
                                 }
                                 catch
                                 {
@@ -308,17 +321,17 @@ namespace Ann.Core
                             },
                             rowTemp => { });
 
-                        _executableUnits =
+                        _ExecutableFiles =
                             isContainsInvalid
-                                ? tempExecutableUnits.Where(t => t != null).ToArray()
-                                : tempExecutableUnits;
+                                ? tempExecutableFiles.Where(t => t != null).ToArray()
+                                : tempExecutableFiles;
                     }
 
                     return IndexOpeningResults.Ok;
                 }
                 catch
                 {
-                    _executableUnits = null;
+                    _ExecutableFiles = null;
                     return IndexOpeningResults.CanNotOpen;
                 }
             });
@@ -330,7 +343,7 @@ namespace Ann.Core
 
         private class CrawlingResult
         {
-            public ExecutableUnit[] Units { get; set; }
+            public ExecutableFile[] Files { get; set; }
             public bool IsCanceled { get; set; }
         }
 
@@ -358,20 +371,20 @@ namespace Ann.Core
                         .AsParallel()
                         .WithCancellation(_crawlingTokenSource.Token)
                         .SelectMany(targetFolder =>
-                            DirectoryHelper.EnumerateAllFiles(targetFolder)
-                                .Where(f => executableExts.Contains(System.IO.Path.GetExtension(f)?.ToLower()))
-                                .Select(f =>
-                                {
-                                    CrawlingCount = Interlocked.Increment(ref count);
-                                    return new ExecutableUnit(f, stringPool, targetFoldersArray);
-                                })
+                                DirectoryHelper.EnumerateAllFiles(targetFolder)
+                                    .Where(f => executableExts.Contains(System.IO.Path.GetExtension(f)?.ToLower()))
+                                    .Select(f =>
+                                    {
+                                        CrawlingCount = Interlocked.Increment(ref count);
+                                        return new ExecutableFile(f, _app, _iconDecoder, stringPool, targetFoldersArray);
+                                    })
                         ).ToArray();
 
                     results.ForEach((r, i) => r.SetId(i, results.Length));
 
                     return new CrawlingResult
                     {
-                        Units = results,
+                        Files = results,
                         IsCanceled = false,
                     };
                 }
@@ -425,5 +438,7 @@ namespace Ann.Core
                 .Select(e => e[0] == '.' ? e.ToLower() : "." + e.ToLower())
                 .ToArray();
         }
+
+        public ImageBrush GetIcon(string path) => _iconDecoder.GetIcon(path);
     }
 }

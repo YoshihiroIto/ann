@@ -34,7 +34,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="ExecutableUnitPanel.xaml" />
+                <ResourceDictionary Source="CandidatePanel.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
