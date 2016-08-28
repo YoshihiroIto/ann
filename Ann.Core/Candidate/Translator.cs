@@ -1,14 +1,18 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using System.Threading.Tasks;
 using Ann.Foundation;
 
 namespace Ann.Core.Candidate
 {
     public class Translator
     {
+        private readonly App _app;
         private readonly TranslateService _service;
 
-        public Translator(string clientId, string clientSecret)
+        public Translator(App app, string clientId, string clientSecret)
         {
+            Debug.Assert(app != null);
+            _app = app;
             _service = new TranslateService(clientId, clientSecret);
         }
 
@@ -22,7 +26,7 @@ namespace Ann.Core.Candidate
             if (r == null)
                 return null;
 
-            return new TranslateResult(r);
+            return new TranslateResult(r, _app);
         }
     }
 }

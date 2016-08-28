@@ -222,7 +222,7 @@ namespace Ann.Core
 
                     case CommandType.Calculate:
                     {
-                        var r = _calculator.Calculate(input);
+                        var r = _calculator.Calculate(this, input);
                         Candidates = r != null ? new[] {r} : new ICandidate[0];
 
                         break;
@@ -335,6 +335,7 @@ namespace Ann.Core
                 .AddTo(CompositeDisposable);
 
             _translator = new Translator(
+                this,
                 configHolder.Config.Translator.MicrosoftTranslatorClientId,
                 configHolder.Config.Translator.MicrosoftTranslatorClientSecret
             );

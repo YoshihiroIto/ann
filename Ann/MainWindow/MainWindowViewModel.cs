@@ -122,7 +122,7 @@ namespace Ann.MainWindow
                         var old = Candidates.Value;
 
                         Candidates.Value =
-                            c.Select(u => new CandidatePanelViewModel(u, _app)).ToArray();
+                            c.Select(u => new CandidatePanelViewModel(u, _app, configHolder.Config)).ToArray();
 
                         if (old == null)
                             return;

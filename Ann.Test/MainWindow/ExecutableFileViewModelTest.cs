@@ -40,8 +40,7 @@ namespace Ann.Test.MainWindow
             {
                 var model = new ExecutableFile(path, app, iconDecoder, stringPool, targetFolders);
 
-                using (var parent = new MainWindowViewModel(app, configHolder))
-                using (var vm = new CandidatePanelViewModel(model, app))
+                using (var vm = new CandidatePanelViewModel(model, app, configHolder.Config))
                 {
                     Assert.Equal("Ann", vm.Name);
                     Assert.Equal(path, vm.Comment);
@@ -64,8 +63,7 @@ namespace Ann.Test.MainWindow
             {
                 var model = new ExecutableFile(path, app, iconDecoder, stringPool, targetFolders);
 
-                using (var parent = new MainWindowViewModel(app, configHolder))
-                using (var vm = new CandidatePanelViewModel(model, app))
+                using (var vm = new CandidatePanelViewModel(model, app, configHolder.Config))
                 {
                     Assert.False(vm.IsPriorityFile);
 
@@ -94,8 +92,7 @@ namespace Ann.Test.MainWindow
             {
                 var model = new ExecutableFile(path, app, iconDecoder, stringPool, targetFolders);
 
-                using (var parent = new MainWindowViewModel(app, configHolder))
-                using (var vm = new CandidatePanelViewModel(model, app))
+                using (var vm = new CandidatePanelViewModel(model, app, configHolder.Config))
                 {
                     Assert.False(vm.IsPriorityFile);
                     Assert.False(app.IsPriorityFile(path));

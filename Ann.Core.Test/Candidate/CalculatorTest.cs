@@ -1,28 +1,52 @@
-﻿using Ann.Core.Candidate;
+﻿using System;
+using Ann.Core.Candidate;
+using Ann.Foundation;
 using Xunit;
 
 namespace Ann.Core.Test.Candidate
 {
-    public class CalculatorTest
+    public class CalculatorTest : IDisposable
     {
+        private readonly DisposableFileSystem _config = new DisposableFileSystem();
+
+        public CalculatorTest()
+        {
+            TestHelper.CleanTestEnv();
+        }
+
+        public void Dispose()
+        {
+            _config.Dispose();
+        }
+
         [Fact]
         public void Basic()
         {
-            var c = new Calculator();
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
+            {
+                var c = new Calculator();
 
-            var r = c.Calculate("4*5");
+                var r = c.Calculate(app, "4*5");
 
-            Assert.Equal(r.Name, "20");
+                Assert.Equal(r.Name, "20");
+            }
         }
 
         [Fact]
         public void Error()
         {
-            var c = new Calculator();
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
+            {
+                var c = new Calculator();
 
-            var r = c.Calculate("(123");
+                var r = c.Calculate(app, "(123");
 
-            Assert.Null(r);
+                Assert.Null(r);
+            }
         }
 
         [Theory]
@@ -31,11 +55,16 @@ namespace Ann.Core.Test.Candidate
         [InlineData("a")]
         public void Null(string input)
         {
-            var c = new Calculator();
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
+            {
+                var c = new Calculator();
 
-            var actual = c.Calculate(input);
+                var actual = c.Calculate(app, input);
 
-            Assert.Null(actual);
+                Assert.Null(actual);
+            }
         }
     }
 }

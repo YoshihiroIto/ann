@@ -83,13 +83,19 @@ namespace Ann.MainWindow
 
         private readonly ICandidate _model;
 
-        public CandidatePanelViewModel(ICandidate model, App app)
+        public CandidatePanelViewModel(ICandidate model, App app, Core.Config.App config)
         {
             Debug.Assert(model != null);
             Debug.Assert(app != null);
+            Debug.Assert(config != null);
 
             _model = model;
             App = app;
+
+            config.ObserveProperty(c => c.Culture)
+                // ReSharper disable once ExplicitCallerInfoArgument
+                .Subscribe(_ => RaisePropertyChanged(nameof(Comment)))
+                .AddTo(CompositeDisposable);
         }
 
         private bool _isSubscribedPriorityFilesChanged;
