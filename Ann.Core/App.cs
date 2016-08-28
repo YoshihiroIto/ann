@@ -196,15 +196,41 @@ namespace Ann.Core
             }
         }
 
-        private readonly Subject<string> _translatorSubject;
+        private Subject<string> _translatorSubject;
+        private string _currentInput;
+
+        private void SetupTranslatorSubject()
+        {
+            _translatorSubject = new Subject<string>().AddTo(CompositeDisposable);
+            _translatorSubject
+                .Throttle(TimeSpan.FromMilliseconds(150))
+                .Subscribe(input =>
+                {
+                    var parts = input.Split(' ');
+                    var keyword = parts[0];
+
+                    var translatorSet = Config.Translator.TranslatorSet.First(x => x.Keyword.ToLower() == keyword);
+
+                    var r = _translator.TranslateAsync(
+                        input.Substring(keyword.Length),
+                        translatorSet.From,
+                        translatorSet.To).Result;
+
+                    if (input == _currentInput)
+                        Candidates = r != null ? new[] {r} : new ICandidate[0];
+                }).AddTo(CompositeDisposable);
+        }
 
         public void Find(string input)
         {
+            _currentInput = input;
+
             if (input == null)
                 return;
 
             input = input.Trim();
-            
+            _currentInput = input;
+
             _inputQueue.Push(() =>
             {
                 switch (MakeCommand(input))
@@ -263,9 +289,6 @@ namespace Ann.Core
             if (string.IsNullOrWhiteSpace(input))
                 return CommandType.Nothing;
 
-            input = input.ToLower();
-
-            // todo:コンフィグで扱う
             var langs = Config.Translator.TranslatorSet.Select(x => x.Keyword.ToLower());
             if (langs.Any(l => input.StartsWith(l + " ")))
                 return CommandType.Translate;
@@ -345,23 +368,7 @@ namespace Ann.Core
                 configHolder.Config.Translator.MicrosoftTranslatorClientSecret
             );
 
-            _translatorSubject = new Subject<string>().AddTo(CompositeDisposable);
-            _translatorSubject
-                .Throttle(TimeSpan.FromMilliseconds(150))
-                .Subscribe(input =>
-            {
-                var parts = input.Split(' ');
-                var keyword = parts[0];
-
-                var translatorSet = Config.Translator.TranslatorSet.First(x => x.Keyword.ToLower() == keyword);
-
-                var r = _translator.TranslateAsync(
-                    input.Substring(keyword.Length),
-                    translatorSet.From,
-                    translatorSet.To).Result;
-
-                Candidates = r != null ? new[] { r } : new ICandidate[0];
-            }).AddTo(CompositeDisposable);
+            SetupTranslatorSubject();
 
             VersionUpdater = new VersionUpdater(Config.GitHubPersonalAccessToken).AddTo(CompositeDisposable);
 
@@ -409,7 +416,7 @@ namespace Ann.Core
 
         public bool IsEnableAutoUpdater { get; set; }
 
-#region AutoUpdateRemainingSeconds
+        #region AutoUpdateRemainingSeconds
 
         private int _AutoUpdateRemainingSeconds;
 
@@ -419,7 +426,7 @@ namespace Ann.Core
             private set { SetProperty(ref _AutoUpdateRemainingSeconds, value); }
         }
 
-#endregion
+        #endregion
 
         private void SetupAutoUpdater()
         {
@@ -462,7 +469,7 @@ namespace Ann.Core
 
         public bool IsRestartRequested => VersionUpdater.IsRestartRequested;
 
-#region AutoUpdateState
+        #region AutoUpdateState
 
         private AutoUpdateStates _AutoUpdateState;
 
@@ -472,7 +479,7 @@ namespace Ann.Core
             private set { SetProperty(ref _AutoUpdateState, value); }
         }
 
-#endregion
+        #endregion
 
         public int ExecutableFileDataBaseIconCacheSize
         {
