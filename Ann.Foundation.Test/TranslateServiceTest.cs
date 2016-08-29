@@ -23,6 +23,7 @@ namespace Ann.Foundation.Test
             Assert.Null(r);
         }
 
+#if false
         [Fact]
         public void AuthErrro()
         {
@@ -35,6 +36,7 @@ namespace Ann.Foundation.Test
 
             Assert.Null(r);
         }
+#endif
 
         [Theory]
         [InlineData("Water", "水", TranslateService.LanguageCodes.en,TranslateService.LanguageCodes.ja)]
