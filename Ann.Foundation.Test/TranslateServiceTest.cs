@@ -11,7 +11,8 @@ namespace Ann.Foundation.Test
         [InlineData("a", null)]
         [InlineData(null, "a")]
         [InlineData(null, null)]
-        public void Null(string clientId, string clientSecret)
+        [InlineData("a", "a")]
+        public void Error(string clientId, string clientSecret)
         {
             var s = new TranslateService(clientId, clientSecret);
 

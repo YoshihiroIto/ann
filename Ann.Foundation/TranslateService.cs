@@ -34,7 +34,7 @@ namespace Ann.Foundation
             _ClientSecret = clientSecret;
         }
 
-        private async Task InitializeAsync()
+        private async Task<bool> InitializeAsync()
         {
             using (var client = new HttpClient())
             {
@@ -47,6 +47,10 @@ namespace Ann.Foundation
                 });
 
                 var result = await client.PostAsync(OAuthUri, content);
+
+                if (result.IsSuccessStatusCode == false)
+                    return false;
+
                 var json = await result.Content.ReadAsStringAsync();
                 var response = JsonConvert.DeserializeObject<Newtonsoft.Json.Linq.JContainer>(json);
                 var now = DateTime.Now;
@@ -54,6 +58,8 @@ namespace Ann.Foundation
                 _AccessToken = response.Value<string>("access_token");
                 var expiresIn = response.Value<long>("expires_in");
                 _AccessTokenExpires = now.AddSeconds(expiresIn);
+
+                return true;
             }
         }
 
@@ -65,7 +71,11 @@ namespace Ann.Foundation
             try
             {
                 if (string.IsNullOrEmpty(_AccessToken) || _AccessTokenExpires.CompareTo(DateTime.Now) < 0)
-                    await InitializeAsync();
+                {
+                    var i = await InitializeAsync();
+                    if (i == false)
+                        return null;
+                }
 
                 using (var client = new HttpClient())
                 {
