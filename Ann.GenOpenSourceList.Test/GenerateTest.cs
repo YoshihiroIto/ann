@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using Ann.Foundation;
 using Xunit;
 using YamlDotNet.Serialization;
@@ -22,6 +23,9 @@ namespace Ann.GenOpenSourceList.Test
         [Fact]
         public void Generate()
         {
+            if (NetworkInterface.GetIsNetworkAvailable() == false)
+                return;
+
             var packagesFilePath = Path.Combine(_context.RootPath, "packages.config");
             File.WriteAllText(packagesFilePath, Packages);
 
@@ -52,6 +56,9 @@ namespace Ann.GenOpenSourceList.Test
         [Fact]
         public void Program()
         {
+            if (NetworkInterface.GetIsNetworkAvailable() == false)
+                return;
+
             var packagesFilePath = Path.Combine(_context.RootPath, "packages.config");
             File.WriteAllText(packagesFilePath, Packages);
 
@@ -80,6 +87,9 @@ namespace Ann.GenOpenSourceList.Test
         [Fact]
         public void AnnAll()
         {
+            if (NetworkInterface.GetIsNetworkAvailable() == false)
+                return;
+
             var cd = Directory.GetCurrentDirectory();
             var solutionDirPath = Path.Combine(cd, @"..\..\..\Ann");
 

@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Xunit;
 using YamlDotNet.Serialization;
+using System.Net.NetworkInformation;
 
 namespace Ann.Foundation.Test
 {
@@ -40,6 +41,9 @@ namespace Ann.Foundation.Test
         [InlineData("水","Water",TranslateService.LanguageCodes.ja,  TranslateService.LanguageCodes.en)]
         public void Basic(string fromWord, string toWord, TranslateService.LanguageCodes from, TranslateService.LanguageCodes to)
         {
+            if (NetworkInterface.GetIsNetworkAvailable() == false)
+                return;
+
             var authenticationFile = "../../TranslateServiceTest.yaml";
 
             if (File.Exists(authenticationFile) == false)
@@ -62,6 +66,9 @@ namespace Ann.Foundation.Test
         [InlineData("水","Water", TranslateService.LanguageCodes.en)]
         public void Auto(string fromWord, string toWord, TranslateService.LanguageCodes to)
         {
+            if (NetworkInterface.GetIsNetworkAvailable() == false)
+                return;
+
             const string authFile = "../../TranslateServiceTest.yaml";
 
             if (File.Exists(authFile) == false)
