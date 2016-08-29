@@ -21,6 +21,9 @@ namespace Ann.GenLanguageFile.Test
             if (NetworkInterface.GetIsNetworkAvailable() == false)
                 return;
 
+            if (File.Exists(Exporter.ClientSecretFilePath) == false)
+                return;
+
             var options = new Exporter.OutputOptions
             {
                 Namespace = "ABC"
@@ -43,6 +46,9 @@ namespace Ann.GenLanguageFile.Test
         public void Program()
         {
             if (NetworkInterface.GetIsNetworkAvailable() == false)
+                return;
+
+            if (File.Exists(Exporter.ClientSecretFilePath) == false)
                 return;
 
             var classPath = Path.Combine(_context.RootPath, "class.cs");
