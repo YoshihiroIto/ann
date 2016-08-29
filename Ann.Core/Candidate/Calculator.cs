@@ -14,13 +14,15 @@ namespace Ann.Core.Candidate
             if (CanAccepte(input) == false)
                 return null;
 
-            var r = Evaluator.Eval(input);
+            var r = _Evaluator.Eval(input);
 
             if (string.IsNullOrWhiteSpace(r))
                 return null;
 
             return new CalculationResult(r, languagesService);
         }
+
+        private readonly Evaluator _Evaluator = new Evaluator();
 
         public static bool CanAccepte(string input)
         {

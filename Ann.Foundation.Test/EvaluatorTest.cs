@@ -7,8 +7,10 @@ namespace Ann.Foundation.Test
         [Fact]
         public void Basic()
         {
-            Assert.Equal("6", Evaluator.Eval("1+2+3"));
-            Assert.Equal("0.5", Evaluator.Eval("1/2"));
+            var e = new Evaluator();
+
+            Assert.Equal("6", e.Eval("1+2+3"));
+            Assert.Equal("0.5", e.Eval("1/2"));
         }
     }
 }

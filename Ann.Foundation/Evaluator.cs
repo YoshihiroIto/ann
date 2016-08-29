@@ -5,17 +5,17 @@ using System.Reflection;
 namespace Ann.Foundation
 {
     // http://odetocode.com/articles/80.aspx を参考にしました
-    public static class Evaluator
+    public class Evaluator
     {
-        public static string Eval(string statement)
+        public string Eval(string statement)
         {
             try
             {
-                return EvaluatorType.InvokeMember(
+                return _EvaluatorType.InvokeMember(
                     "Eval",
                     BindingFlags.InvokeMethod,
                     null,
-                    EvaluatorInstance,
+                    _EvaluatorInstance,
                     new object[] {statement}
                 ).ToString();
             }
@@ -25,7 +25,7 @@ namespace Ann.Foundation
             }
         }
 
-        static Evaluator()
+        public Evaluator()
         {
             const string source =
                 @"package Evaluator
@@ -44,11 +44,11 @@ namespace Ann.Foundation
             var results = provider.CompileAssemblyFromSource(parameters, source);
             var assembly = results.CompiledAssembly;
 
-            EvaluatorType = assembly.GetType("Evaluator.Evaluator");
-            EvaluatorInstance = Activator.CreateInstance(EvaluatorType);
+            _EvaluatorType = assembly.GetType("Evaluator.Evaluator");
+            _EvaluatorInstance = Activator.CreateInstance(_EvaluatorType);
         }
 
-        private static readonly Type EvaluatorType;
-        private static readonly object EvaluatorInstance;
+        private readonly Type _EvaluatorType;
+        private readonly object _EvaluatorInstance;
     }
 }
