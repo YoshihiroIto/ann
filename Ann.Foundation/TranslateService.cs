@@ -59,6 +59,9 @@ namespace Ann.Foundation
 
         public async Task<string> TranslateAsync(string input, LanguageCodes from, LanguageCodes to)
         {
+            if (string.IsNullOrEmpty(_ClientId) || string.IsNullOrEmpty(_ClientSecret))
+                return null;
+
             try
             {
                 if (string.IsNullOrEmpty(_AccessToken) || _AccessTokenExpires.CompareTo(DateTime.Now) < 0)
