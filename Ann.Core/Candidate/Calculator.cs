@@ -6,7 +6,7 @@ namespace Ann.Core.Candidate
 {
     public class Calculator
     {
-        public ICandidate Calculate(App app, string input)
+        public ICandidate Calculate(string input, LanguagesService languagesService)
         {
             if (string.IsNullOrWhiteSpace(input))
                 return null;
@@ -19,7 +19,7 @@ namespace Ann.Core.Candidate
             if (string.IsNullOrWhiteSpace(r))
                 return null;
 
-            return new CalculationResult(r, app);
+            return new CalculationResult(r, languagesService);
         }
 
         public static bool CanAccepte(string input)

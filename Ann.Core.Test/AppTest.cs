@@ -184,6 +184,7 @@ namespace Ann.Core.Test
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
             {
+                app.Find("          ");
 
                 Assert.Equal(0, app.Candidates.Count());
             }

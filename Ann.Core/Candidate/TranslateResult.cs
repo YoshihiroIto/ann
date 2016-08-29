@@ -7,18 +7,18 @@ namespace Ann.Core.Candidate
 {
     public class TranslateResult : ICandidate
     {
-        public TranslateResult(string result, App app)
+        public TranslateResult(string result, LanguagesService languagesService)
         {
             _result = result;
-            _app = app;
+            _languagesService = languagesService;
 
             _RunCommand = new DelegateCommand(() => Clipboard.SetText(result));
         }
 
         private readonly string _result;
-        private readonly App _app;
+        private readonly LanguagesService _languagesService;
 
-        string ICandidate.Comment => _app.GetString(StringTags.Translation);
+        string ICandidate.Comment => _languagesService.GetString(StringTags.Translation);
         Brush ICandidate.Icon => Application.Current?.Resources["IconTranslator"] as Brush;
         string ICandidate.Name => _result;
         MenuCommand[] ICandidate.SubCommands => null;

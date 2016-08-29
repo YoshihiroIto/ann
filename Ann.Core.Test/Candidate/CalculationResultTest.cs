@@ -24,9 +24,8 @@ namespace Ann.Core.Test.Candidate
         {
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
             {
-                var r = new CalculationResult("ABC", app);
+                var r = new CalculationResult("ABC", languagesService);
 
                 // ReSharper disable once IsExpressionAlwaysTrue
                 Assert.True(r is ICandidate);
@@ -40,7 +39,7 @@ namespace Ann.Core.Test.Candidate
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
             {
-                var i = new CalculationResult("ABC", app) as ICandidate;
+                var i = new CalculationResult("ABC", languagesService) as ICandidate;
 
                 Assert.Equal(app.GetString(StringTags.Calculation), i.Comment);
                 Assert.Equal("ABC", i.Name);

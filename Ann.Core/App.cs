@@ -223,24 +223,19 @@ namespace Ann.Core
 
         public void Find(string input)
         {
+            input = input?.Trim();
             _currentInput = input;
 
-            if (input == null)
+            if (string.IsNullOrEmpty(input))
+            {
+                Candidates = new ICandidate[0];
                 return;
-
-            input = input.Trim();
-            _currentInput = input;
+            }
 
             _inputQueue.Push(() =>
             {
                 switch (MakeCommand(input))
                 {
-                    case CommandType.Nothing:
-                    {
-                        Candidates = new ICandidate[0];
-                        break;
-                    }
-
                     case CommandType.Translate:
                     {
                         if (input.Split(' ').Length >= 2)
@@ -253,7 +248,7 @@ namespace Ann.Core
 
                     case CommandType.Calculate:
                     {
-                        var r = _calculator.Calculate(this, input);
+                        var r = _calculator.Calculate(input, _languagesService);
                         Candidates = r != null ? new[] {r} : new ICandidate[0];
 
                         break;
@@ -278,7 +273,6 @@ namespace Ann.Core
 
         private enum CommandType
         {
-            Nothing,
             Translate,
             Calculate,
             ExecutableFile
@@ -286,9 +280,6 @@ namespace Ann.Core
 
         private CommandType MakeCommand(string input)
         {
-            if (string.IsNullOrWhiteSpace(input))
-                return CommandType.Nothing;
-
             var langs = Config.Translator.TranslatorSet.Select(x => x.Keyword.ToLower());
             if (langs.Any(l => input.StartsWith(l + " ")))
                 return CommandType.Translate;
@@ -363,9 +354,9 @@ namespace Ann.Core
                 .AddTo(CompositeDisposable);
 
             _translator = new Translator(
-                this,
                 configHolder.Config.Translator.MicrosoftTranslatorClientId,
-                configHolder.Config.Translator.MicrosoftTranslatorClientSecret
+                configHolder.Config.Translator.MicrosoftTranslatorClientSecret,
+_languagesService
             );
 
             SetupTranslatorSubject();
@@ -416,7 +407,7 @@ namespace Ann.Core
 
         public bool IsEnableAutoUpdater { get; set; }
 
-        #region AutoUpdateRemainingSeconds
+#region AutoUpdateRemainingSeconds
 
         private int _AutoUpdateRemainingSeconds;
 
@@ -426,7 +417,7 @@ namespace Ann.Core
             private set { SetProperty(ref _AutoUpdateRemainingSeconds, value); }
         }
 
-        #endregion
+#endregion
 
         private void SetupAutoUpdater()
         {
@@ -469,7 +460,7 @@ namespace Ann.Core
 
         public bool IsRestartRequested => VersionUpdater.IsRestartRequested;
 
-        #region AutoUpdateState
+#region AutoUpdateState
 
         private AutoUpdateStates _AutoUpdateState;
 
@@ -479,7 +470,7 @@ namespace Ann.Core
             private set { SetProperty(ref _AutoUpdateState, value); }
         }
 
-        #endregion
+#endregion
 
         public int ExecutableFileDataBaseIconCacheSize
         {

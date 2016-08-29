@@ -6,13 +6,12 @@ namespace Ann.Core.Candidate
 {
     public class Translator
     {
-        private readonly App _app;
+        private readonly LanguagesService _languagesService;
         private readonly TranslateService _service;
 
-        public Translator(App app, string clientId, string clientSecret)
+        public Translator(string clientId, string clientSecret, LanguagesService languagesService)
         {
-            Debug.Assert(app != null);
-            _app = app;
+            _languagesService = languagesService;
             _service = new TranslateService(clientId, clientSecret);
         }
 
@@ -26,7 +25,7 @@ namespace Ann.Core.Candidate
             if (r == null)
                 return null;
 
-            return new TranslateResult(r, _app);
+            return new TranslateResult(r, _languagesService);
         }
     }
 }
