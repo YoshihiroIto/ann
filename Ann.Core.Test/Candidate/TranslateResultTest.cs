@@ -1,15 +1,14 @@
-﻿using System;
-using Ann.Core.Candidate;
+﻿using Ann.Core.Candidate;
 using Ann.Foundation;
 using Xunit;
 
 namespace Ann.Core.Test.Candidate
 {
-    public class CalculationResultTest : IDisposable
+    public class TranslateResultTest 
     {
         private readonly DisposableFileSystem _config = new DisposableFileSystem();
 
-        public CalculationResultTest()
+        public TranslateResultTest()
         {
             TestHelper.CleanTestEnv();
         }
@@ -25,7 +24,7 @@ namespace Ann.Core.Test.Candidate
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
             {
-                var r = new CalculationResult("ABC", languagesService);
+                var r = new TranslateResult("ABC", languagesService);
 
                 // ReSharper disable once IsExpressionAlwaysTrue
                 Assert.True(r is ICandidate);
@@ -39,9 +38,9 @@ namespace Ann.Core.Test.Candidate
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
             {
-                var i = new CalculationResult("ABC", languagesService) as ICandidate;
+                var i = new TranslateResult("ABC", languagesService) as ICandidate;
 
-                Assert.Equal(app.GetString(StringTags.Calculation), i.Comment);
+                Assert.Equal(app.GetString(StringTags.Translation), i.Comment);
                 Assert.Equal("ABC", i.Name);
                 Assert.NotNull(i.RunCommand);
                 Assert.Null(i.SubCommands);
@@ -55,7 +54,7 @@ namespace Ann.Core.Test.Candidate
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
             {
-                var r = new CalculationResult("ABC", languagesService) as ICandidate;
+                var r = new TranslateResult("ABC", languagesService) as ICandidate;
 
                 r.RunCommand.Execute(null);
             }
