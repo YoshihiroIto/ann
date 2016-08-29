@@ -46,6 +46,7 @@ namespace Ann.Foundation
                     {"scope", "http://api.microsofttranslator.com"},
                 });
 
+                client.Timeout = TimeSpan.FromSeconds(10);
                 var result = await client.PostAsync(OAuthUri, content);
 
                 if (result.IsSuccessStatusCode == false)
