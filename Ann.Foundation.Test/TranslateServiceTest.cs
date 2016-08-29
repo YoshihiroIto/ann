@@ -23,21 +23,6 @@ namespace Ann.Foundation.Test
             Assert.Null(r);
         }
 
-#if false
-        [Fact]
-        public void AuthErrro()
-        {
-            var s = new TranslateService("XXX", "YYY");
-
-            var r = s.TranslateAsync(
-                "Apple",
-                TranslateService.LanguageCodes.en,
-                TranslateService.LanguageCodes.ja).Result;
-
-            Assert.Null(r);
-        }
-#endif
-
         [Theory]
         [InlineData("Water", "水", TranslateService.LanguageCodes.en,TranslateService.LanguageCodes.ja)]
         [InlineData("水","Water",TranslateService.LanguageCodes.ja,  TranslateService.LanguageCodes.en)]
