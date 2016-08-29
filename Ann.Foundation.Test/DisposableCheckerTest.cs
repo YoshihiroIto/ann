@@ -7,6 +7,11 @@ namespace Ann.Foundation.Test
 {
     public class DisposableCheckerTest : IDisposable
     {
+        public DisposableCheckerTest()
+        {
+            DisposableChecker.Clean();
+        }
+
         public void Dispose()
         {
             DisposableChecker.Clean();
