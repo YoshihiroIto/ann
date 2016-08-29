@@ -25,7 +25,7 @@ namespace Ann.Core
         public IEnumerable<ICandidate> Candidates
         {
             get { return _Candidates; }
-            set { SetProperty(ref _Candidates, value); }
+            private set { SetProperty(ref _Candidates, value); }
         }
 
         #endregion

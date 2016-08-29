@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using Ann.Foundation;
@@ -161,7 +163,54 @@ namespace Ann.Core.Test
         }
 
         [Fact]
-        public void FindExecutableFile()
+        public void Find_Null()
+        {
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
+            {
+                var c = app.Candidates.ToArray();
+
+                app.Find(null);
+
+                Assert.Equal(c, app.Candidates);
+            }
+        }
+
+        [Fact]
+        public void Find_Space()
+        {
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
+            {
+
+                Assert.Equal(0, app.Candidates.Count());
+            }
+        }
+
+        [Fact]
+        public void Find_Calculate()
+        {
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
+            {
+                using (var e1 = new ManualResetEventSlim())
+                    // ReSharper disable once AccessToDisposedClosure
+                using (app.ObserveProperty(x => x.Candidates, false).Subscribe(_ => e1.Set()))
+                {
+                    app.Find("12+12");
+                    e1.Wait();
+                }
+
+                Assert.Equal(1, app.Candidates.Count());
+                Assert.Equal("24", app.Candidates.FirstOrDefault()?.Name);
+            }
+        }
+
+        [Fact]
+        public void Find_ExecutableFile()
         {
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
@@ -230,6 +279,55 @@ namespace Ann.Core.Test
                 Assert.False(app.IsEnableAutoUpdater);
                 app.IsEnableAutoUpdater = true;
                 Assert.True(app.IsEnableAutoUpdater);
+            }
+        }
+
+        [Fact]
+        public void NoticeMessages()
+        {
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
+            {
+                var messages = new List<StringTags> {StringTags.AllFiles};
+
+                app.Notification += (s, e) =>
+                {
+                    // ReSharper disable once AccessToDisposedClosure
+                    Assert.Same(app, s);
+                    Assert.Equal(messages, e.Messages);
+                };
+
+                app.NoticeMessages(messages);
+            }
+        }
+
+        [Fact]
+        public void ExecutableFileDataBaseIconCacheSize()
+        {
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
+            {
+                Assert.Equal(0, app.ExecutableFileDataBaseIconCacheSize);
+                app.ExecutableFileDataBaseIconCacheSize = 10;
+                Assert.Equal(10, app.ExecutableFileDataBaseIconCacheSize);
+            }
+        }
+
+        [Fact]
+        public void RunAsync()
+        {
+            var configHolder = new ConfigHolder(_config.RootPath);
+            using (var languagesService = new LanguagesService(configHolder.Config))
+            using (var app = new App(configHolder, languagesService))
+            {
+                var i = app.RunAsync("notepad", false).Result;
+
+                Assert.True(i);
+
+                foreach (var p in Process.GetProcessesByName("notepad"))
+                    p.Kill();
             }
         }
     }
