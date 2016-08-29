@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Ann.Foundation.Mvvm;
@@ -12,7 +13,17 @@ namespace Ann.Core.Candidate
             _result = result;
             _languagesService = languagesService;
 
-            _RunCommand = new DelegateCommand(() => Clipboard.SetText(result));
+            _RunCommand = new DelegateCommand(() =>
+            {
+                try
+                {
+                    Clipboard.SetText(result);
+                }
+                catch
+                {
+                    // ignored
+                }
+            });
         }
 
         private readonly string _result;
