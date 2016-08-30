@@ -25,7 +25,7 @@ namespace Ann.Core.Test.Candidate
         [Theory]
         [InlineData("Water", "水", TranslateService.LanguageCodes.en,TranslateService.LanguageCodes.ja)]
         [InlineData("水","Water",TranslateService.LanguageCodes.ja,  TranslateService.LanguageCodes.en)]
-        public void Basic(string fromWord, string toWord, TranslateService.LanguageCodes from, TranslateService.LanguageCodes to)
+        public async void Basic(string fromWord, string toWord, TranslateService.LanguageCodes from, TranslateService.LanguageCodes to)
         {
             if (NetworkInterface.GetIsNetworkAvailable() == false)
                 return;
@@ -47,7 +47,7 @@ namespace Ann.Core.Test.Candidate
                     auth.MicrosoftTranslatorClientSecret,
                     languagesService);
 
-                var r = s.TranslateAsync(fromWord, from, to).Result as ICandidate;
+                var r = await s.TranslateAsync(fromWord, from, to) as ICandidate;
                 Assert.Equal(toWord, r.Name);
             }
         }

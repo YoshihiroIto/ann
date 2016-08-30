@@ -16,7 +16,7 @@ namespace Ann.GenLanguageFile.Test
         }
 
         [Fact]
-        public void Export()
+        public async void Export()
         {
             if (NetworkInterface.GetIsNetworkAvailable() == false)
                 return;
@@ -29,7 +29,7 @@ namespace Ann.GenLanguageFile.Test
                 Namespace = "ABC"
             };
 
-            var r = new Exporter().Export(options).Result;
+            var r = await new Exporter().Export(options);
 
             Assert.Contains("namespace ABC", r.Class);
             Assert.Contains("xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"", r.DefaultXaml);

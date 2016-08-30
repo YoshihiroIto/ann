@@ -27,7 +27,7 @@ namespace Ann.Foundation.Test
         [Theory]
         [InlineData("Water", "水", TranslateService.LanguageCodes.en,TranslateService.LanguageCodes.ja)]
         [InlineData("水","Water",TranslateService.LanguageCodes.ja,  TranslateService.LanguageCodes.en)]
-        public void Basic(string fromWord, string toWord, TranslateService.LanguageCodes from, TranslateService.LanguageCodes to)
+        public async void Basic(string fromWord, string toWord, TranslateService.LanguageCodes from, TranslateService.LanguageCodes to)
         {
             if (NetworkInterface.GetIsNetworkAvailable() == false)
                 return;
@@ -45,14 +45,14 @@ namespace Ann.Foundation.Test
                 auth.MicrosoftTranslatorClientId, 
                 auth.MicrosoftTranslatorClientSecret);
 
-            var r = s.TranslateAsync(fromWord, from, to).Result;
+            var r = await s.TranslateAsync(fromWord, from, to);
             Assert.Equal(toWord, r);
         }
 
         [Theory]
         [InlineData("Water", "水", TranslateService.LanguageCodes.ja)]
         [InlineData("水","Water", TranslateService.LanguageCodes.en)]
-        public void Auto(string fromWord, string toWord, TranslateService.LanguageCodes to)
+        public async void Auto(string fromWord, string toWord, TranslateService.LanguageCodes to)
         {
             if (NetworkInterface.GetIsNetworkAvailable() == false)
                 return;
@@ -70,7 +70,7 @@ namespace Ann.Foundation.Test
                 auth.MicrosoftTranslatorClientId, 
                 auth.MicrosoftTranslatorClientSecret);
 
-            var r = s.TranslateAsync(fromWord, TranslateService.LanguageCodes.AutoDetect, to).Result;
+            var r = await s.TranslateAsync(fromWord, TranslateService.LanguageCodes.AutoDetect, to);
             Assert.Equal(toWord, r);
         }
 
