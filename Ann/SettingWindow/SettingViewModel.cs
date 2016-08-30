@@ -25,9 +25,14 @@ namespace Ann.SettingWindow
 
         public WindowMessageBroker Messenger { get; }
 
+        public App App { get; }
+
         public SettingViewModel(Core.Config.App model, VersionUpdater versionUpdater, App app)
         {
             Debug.Assert(model != null);
+            Debug.Assert(app != null);
+
+            App = app;
 
             CompositeDisposable.Add(() => Pages.ForEach(p => p.Dispose()));
 

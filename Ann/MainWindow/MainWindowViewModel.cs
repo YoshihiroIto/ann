@@ -161,7 +161,7 @@ namespace Ann.MainWindow
                 SelectedCandidateMoveCommand
                     .Subscribe(p =>
                     {
-                        var current = IndexOfCandidates(SelectedCandidate.Value.Comment);
+                        var current = IndexOfCandidates(SelectedCandidate.Value);
                         var next = current + int.Parse((string) p);
 
                         if (next == -1)
@@ -281,12 +281,12 @@ namespace Ann.MainWindow
                 c.Dispose();
         }
 
-        private int IndexOfCandidates(string path)
+        private int IndexOfCandidates(CandidatePanelViewModel candidate)
         {
             var index = 0;
             foreach (var c in Candidates.Value)
             {
-                if (c.Comment == path)
+                if (ReferenceEquals(c, candidate))
                     return index;
 
                 ++index;

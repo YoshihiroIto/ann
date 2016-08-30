@@ -18,7 +18,7 @@ namespace Ann.SettingWindow.SettingPage
 
         public Path Model { get; }
 
-        public PathViewModel(Path model, Func<string> dialogOpeningAction)
+        public PathViewModel(Path model, Func<string, string> dialogOpeningAction)
         {
             Debug.Assert(model != null);
             Debug.Assert(dialogOpeningAction != null);
@@ -34,7 +34,7 @@ namespace Ann.SettingWindow.SettingPage
             FolderSelectDialogOpenCommand = new ReactiveCommand().AddTo(CompositeDisposable);
             FolderSelectDialogOpenCommand.Subscribe(_ =>
             {
-                var result = dialogOpeningAction();
+                var result = dialogOpeningAction(model.Value);
                 if (result != null)
                     Path.Value = result;
             }).AddTo(CompositeDisposable);
