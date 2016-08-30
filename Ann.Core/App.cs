@@ -217,17 +217,17 @@ namespace Ann.Core
             _translatorSubject = new Subject<string>().AddTo(CompositeDisposable);
             _translatorSubject
                 .Throttle(TimeSpan.FromMilliseconds(150))
-                .Subscribe(input =>
+                .Subscribe(async input =>
                 {
                     var parts = input.Split(' ');
                     var keyword = parts[0];
 
                     var translatorSet = Config.Translator.TranslatorSet.First(x => x.Keyword.ToLower() == keyword);
 
-                    var r = _translator.TranslateAsync(
+                    var r = await _translator.TranslateAsync(
                         input.Substring(keyword.Length),
                         translatorSet.From,
-                        translatorSet.To).Result;
+                        translatorSet.To);
 
                     if (input == _currentInput)
                         Candidates = r != null ? new[] {r} : new ICandidate[0];
@@ -245,7 +245,7 @@ namespace Ann.Core
                 return;
             }
 
-            _inputQueue.Push(() =>
+            _inputQueue.Push(async () =>
             {
                 switch (MakeCommand(input))
                 {
@@ -270,7 +270,7 @@ namespace Ann.Core
                     case CommandType.GoogleSuggest:
                     {
                         // todo:config化
-                        var r = _GoogleSuggest.SuggestAsync(input.Substring(2), "ja").Result;
+                        var r = await _GoogleSuggest.SuggestAsync(input.Substring(2), "ja");
                         Candidates = r ?? new ICandidate[0];
 
                         break;
