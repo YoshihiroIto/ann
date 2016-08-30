@@ -96,11 +96,24 @@ namespace Ann.SettingWindow.SettingPage.PriorityFiles
             ValidateAll();
         }
 
-        private string DialogOpeningAction()
+        private string DialogOpeningAction(string path)
         {
+            string dir;
+            {
+                if (string.IsNullOrEmpty(path))
+                    dir = null;
+                else
+                {
+                    dir = System.IO.Path.GetDirectoryName(path);
+                    if (Directory.Exists(dir) == false)
+                        dir = null;
+                }
+            }
+
             var message = new FileOrFolderSelectMessage
             {
                 IsFolderPicker = false,
+                InitialDirectory = dir,
                 Filters =
                     new[]
                     {

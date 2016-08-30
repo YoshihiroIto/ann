@@ -135,10 +135,11 @@ namespace Ann.SettingWindow.SettingPage.TargetFolders
             ValidateAll();
         }
 
-        private string DialogOpeningAction()
+        private string DialogOpeningAction(string path)
         {
             var message = new FileOrFolderSelectMessage
             {
+                InitialDirectory = Directory.Exists(path) ? path : null,
                 IsFolderPicker = true
             };
 
