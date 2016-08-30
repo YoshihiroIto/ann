@@ -11,15 +11,15 @@ namespace Ann.Foundation.Test
         [InlineData("a", null)]
         [InlineData(null, "a")]
         [InlineData(null, null)]
-        //[InlineData("a", "a")]        todo:appveyor で終了しない
-        public void Error(string clientId, string clientSecret)
+        [InlineData("a", "a")]
+        public async void Error(string clientId, string clientSecret)
         {
             var s = new TranslateService(clientId, clientSecret);
 
-            var r = s.TranslateAsync(
+            var r = await s.TranslateAsync(
                 "Apple",
                 TranslateService.LanguageCodes.en,
-                TranslateService.LanguageCodes.ja).Result;
+                TranslateService.LanguageCodes.ja);
 
             Assert.Null(r);
         }
