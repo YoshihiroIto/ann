@@ -24,11 +24,10 @@ namespace Ann.Core.Test.Candidate
         {
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
             {
                 var c = new Calculator();
 
-                var r = c.Calculate(app, "4*5");
+                var r = c.Calculate("4*5", languagesService);
 
                 Assert.Equal(r.Name, "20");
             }
@@ -39,11 +38,10 @@ namespace Ann.Core.Test.Candidate
         {
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
             {
                 var c = new Calculator();
 
-                var r = c.Calculate(app, "(123");
+                var r = c.Calculate("(123", languagesService);
 
                 Assert.Null(r);
             }
@@ -57,11 +55,10 @@ namespace Ann.Core.Test.Candidate
         {
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
             {
                 var c = new Calculator();
 
-                var actual = c.Calculate(app, input);
+                var actual = c.Calculate(input, languagesService);
 
                 Assert.Null(actual);
             }

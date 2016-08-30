@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Reactive.Disposables;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Ann.Foundation.Mvvm;
 using Newtonsoft.Json;
 
 namespace Ann.Foundation
 {
     // http://matatabi-ux.hateblo.jp/entry/2015/08/31/120000 を元にしました
-    public class TranslateService
+    public class TranslateService : NotificationObject
     {
         private readonly string _ClientId;
         private readonly string _ClientSecret;
@@ -34,10 +36,25 @@ namespace Ann.Foundation
             _ClientSecret = clientSecret;
         }
 
-        private async Task InitializeAsync()
+        #region IsInAuthentication
+
+        private bool _IsInAuthentication;
+
+        public bool IsInAuthentication
         {
+            get { return _IsInAuthentication; }
+            private set { SetProperty(ref _IsInAuthentication, value); }
+        }
+
+        #endregion
+
+        private async Task<bool> AuthenticateAsync()
+        {
+            using (Disposable.Create(() => IsInAuthentication = false))
             using (var client = new HttpClient())
             {
+                IsInAuthentication = true;
+
                 var content = new FormUrlEncodedContent(new Dictionary<string, string>
                 {
                     {"client_id", _ClientId},
@@ -46,7 +63,12 @@ namespace Ann.Foundation
                     {"scope", "http://api.microsofttranslator.com"},
                 });
 
+                client.Timeout = TimeSpan.FromSeconds(10);
                 var result = await client.PostAsync(OAuthUri, content);
+
+                if (result.IsSuccessStatusCode == false)
+                    return false;
+
                 var json = await result.Content.ReadAsStringAsync();
                 var response = JsonConvert.DeserializeObject<Newtonsoft.Json.Linq.JContainer>(json);
                 var now = DateTime.Now;
@@ -54,15 +76,24 @@ namespace Ann.Foundation
                 _AccessToken = response.Value<string>("access_token");
                 var expiresIn = response.Value<long>("expires_in");
                 _AccessTokenExpires = now.AddSeconds(expiresIn);
+
+                return true;
             }
         }
 
         public async Task<string> TranslateAsync(string input, LanguageCodes from, LanguageCodes to)
         {
+            if (string.IsNullOrEmpty(_ClientId) || string.IsNullOrEmpty(_ClientSecret))
+                return null;
+
             try
             {
                 if (string.IsNullOrEmpty(_AccessToken) || _AccessTokenExpires.CompareTo(DateTime.Now) < 0)
-                    await InitializeAsync();
+                {
+                    var i = await AuthenticateAsync();
+                    if (i == false)
+                        return null;
+                }
 
                 using (var client = new HttpClient())
                 {

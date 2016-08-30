@@ -7,18 +7,28 @@ namespace Ann.Core.Candidate
 {
     public class CalculationResult : ICandidate
     {
-        public CalculationResult(string result, App app)
+        public CalculationResult(string result, LanguagesService languagesService)
         {
             _result = result;
-            _app = app;
+            _languagesService = languagesService;
 
-            _RunCommand = new DelegateCommand(() => Clipboard.SetText(result));
+            _RunCommand = new DelegateCommand(() =>
+            {
+                try
+                {
+                    Clipboard.SetText(result);
+                }
+                catch
+                {
+                    // ignored
+                }
+            });
         }
 
         private readonly string _result;
-        private readonly App _app;
+        private readonly LanguagesService _languagesService;
 
-        string ICandidate.Comment => _app.GetString(StringTags.Calculation);
+        string ICandidate.Comment => _languagesService.GetString(StringTags.Calculation);
         Brush ICandidate.Icon => Application.Current?.Resources["IconCalculator"] as Brush;
         string ICandidate.Name => _result;
         MenuCommand[] ICandidate.SubCommands => null;

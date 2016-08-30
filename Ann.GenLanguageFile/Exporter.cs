@@ -28,19 +28,25 @@ namespace Ann.GenLanguageFile
             public string DefaultXaml { get; set; }
         }
 
-        public async Task<Result> Export(OutputOptions options)
+        public static string ClientSecretFilePath
         {
-            var scopes = new[] {DriveService.Scope.DriveReadonly};
+            get
+            {
             var homePath = Environment.OSVersion.Platform == PlatformID.Unix ||
                            Environment.OSVersion.Platform == PlatformID.MacOSX
                 ? Environment.GetEnvironmentVariable("HOME")
                 : Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
 
-            var clientSecretFilePath =
-                Environment.ExpandEnvironmentVariables($@"{homePath}\client_secret_Ann-Localization.json");
+                return Environment.ExpandEnvironmentVariables($@"{homePath}\client_secret_Ann-Localization.json");
+            }
+        }
+
+        public async Task<Result> Export(OutputOptions options)
+        {
+            var scopes = new[] {DriveService.Scope.DriveReadonly};
 
             UserCredential credential;
-            using (var stream = new FileStream(clientSecretFilePath, FileMode.Open, FileAccess.Read))
+            using (var stream = new FileStream(ClientSecretFilePath, FileMode.Open, FileAccess.Read))
             {
                 var credPath =
                     Path.Combine(

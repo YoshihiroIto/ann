@@ -1,19 +1,36 @@
-﻿using System.Diagnostics;
+﻿using System;
 using System.Threading.Tasks;
 using Ann.Foundation;
+using Ann.Foundation.Mvvm;
+using Reactive.Bindings.Extensions;
 
 namespace Ann.Core.Candidate
 {
-    public class Translator
+    public class Translator : DisposableModelBase
     {
-        private readonly App _app;
+        private readonly LanguagesService _languagesService;
         private readonly TranslateService _service;
 
-        public Translator(App app, string clientId, string clientSecret)
+        #region IsInAuthentication
+
+        private bool _IsInAuthentication;
+
+        public bool IsInAuthentication
         {
-            Debug.Assert(app != null);
-            _app = app;
+            get { return _IsInAuthentication; }
+            private set { SetProperty(ref _IsInAuthentication, value); }
+        }
+
+        #endregion
+
+        public Translator(string clientId, string clientSecret, LanguagesService languagesService)
+        {
+            _languagesService = languagesService;
             _service = new TranslateService(clientId, clientSecret);
+
+            _service.ObserveProperty(i => i.IsInAuthentication)
+                .Subscribe(i => IsInAuthentication = i)
+                .AddTo(CompositeDisposable);
         }
 
         public async Task<TranslateResult> TranslateAsync(string input, TranslateService.LanguageCodes from, TranslateService.LanguageCodes to)
@@ -26,7 +43,7 @@ namespace Ann.Core.Candidate
             if (r == null)
                 return null;
 
-            return new TranslateResult(r, _app);
+            return new TranslateResult(r, _languagesService);
         }
     }
 }

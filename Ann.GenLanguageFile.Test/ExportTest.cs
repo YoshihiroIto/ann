@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net.NetworkInformation;
 using Ann.Foundation;
 using Xunit;
 
@@ -17,6 +18,12 @@ namespace Ann.GenLanguageFile.Test
         [Fact]
         public void Export()
         {
+            if (NetworkInterface.GetIsNetworkAvailable() == false)
+                return;
+
+            if (File.Exists(Exporter.ClientSecretFilePath) == false)
+                return;
+
             var options = new Exporter.OutputOptions
             {
                 Namespace = "ABC"
@@ -38,6 +45,12 @@ namespace Ann.GenLanguageFile.Test
         [Fact]
         public void Program()
         {
+            if (NetworkInterface.GetIsNetworkAvailable() == false)
+                return;
+
+            if (File.Exists(Exporter.ClientSecretFilePath) == false)
+                return;
+
             var classPath = Path.Combine(_context.RootPath, "class.cs");
             var defaultXamlPath = Path.Combine(_context.RootPath, "default.xaml");
             var nameSpace = "XYZ";

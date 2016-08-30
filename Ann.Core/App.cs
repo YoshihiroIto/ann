@@ -25,7 +25,7 @@ namespace Ann.Core
         public IEnumerable<ICandidate> Candidates
         {
             get { return _Candidates; }
-            set { SetProperty(ref _Candidates, value); }
+            private set { SetProperty(ref _Candidates, value); }
         }
 
         #endregion
@@ -41,29 +41,6 @@ namespace Ann.Core
         }
 
         #endregion
-
-        private readonly ConfigHolder _configHolder;
-        private Config.App Config => _configHolder.Config;
-        private Config.MostRecentUsedList MruList => _configHolder.MruList;
-
-        private readonly LanguagesService _languagesService;
-
-        public event EventHandler PriorityFilesChanged;
-        public event EventHandler ShortcutKeyChanged;
-
-        public void InvokePriorityFilesChanged() => PriorityFilesChanged?.Invoke(this, EventArgs.Empty);
-        public void InvokeShortcutKeyChanged() => ShortcutKeyChanged?.Invoke(this, EventArgs.Empty);
-
-        private readonly InputQueue _inputQueue;
-        private readonly ExecutableFileDataBase _executableFileDataBase;
-        private readonly Calculator _calculator = new Calculator();
-        private readonly Translator _translator;
-
-        private HashSet<string> _priorityFiles = new HashSet<string>();
-
-        private string IndexFilePath => System.IO.Path.Combine(_configHolder.ConfigDirPath, "index.dat");
-
-        public VersionUpdater VersionUpdater { get; }
 
         #region IndexOpeningResult
 
@@ -97,6 +74,41 @@ namespace Ann.Core
         {
             get { return _IsEnableActivateHotKey; }
             set { SetProperty(ref _IsEnableActivateHotKey, value); }
+        }
+
+        #endregion
+
+        #region IsInAuthentication
+
+        private readonly ConfigHolder _configHolder;
+        private Config.App Config => _configHolder.Config;
+        private Config.MostRecentUsedList MruList => _configHolder.MruList;
+
+        private readonly LanguagesService _languagesService;
+
+        public event EventHandler PriorityFilesChanged;
+        public event EventHandler ShortcutKeyChanged;
+
+        public void InvokePriorityFilesChanged() => PriorityFilesChanged?.Invoke(this, EventArgs.Empty);
+        public void InvokeShortcutKeyChanged() => ShortcutKeyChanged?.Invoke(this, EventArgs.Empty);
+
+        private readonly InputQueue _inputQueue;
+        private readonly ExecutableFileDataBase _executableFileDataBase;
+        private readonly Calculator _calculator = new Calculator();
+        private readonly Translator _translator;
+
+        private HashSet<string> _priorityFiles = new HashSet<string>();
+
+        private string IndexFilePath => System.IO.Path.Combine(_configHolder.ConfigDirPath, "index.dat");
+
+        public VersionUpdater VersionUpdater { get; }
+
+        private bool _IsInAuthentication;
+
+        public bool IsInAuthentication
+        {
+            get { return _IsInAuthentication; }
+            private set { SetProperty(ref _IsInAuthentication, value); }
         }
 
         #endregion
@@ -223,24 +235,19 @@ namespace Ann.Core
 
         public void Find(string input)
         {
+            input = input?.Trim();
             _currentInput = input;
 
-            if (input == null)
+            if (string.IsNullOrEmpty(input))
+            {
+                Candidates = new ICandidate[0];
                 return;
-
-            input = input.Trim();
-            _currentInput = input;
+            }
 
             _inputQueue.Push(() =>
             {
                 switch (MakeCommand(input))
                 {
-                    case CommandType.Nothing:
-                    {
-                        Candidates = new ICandidate[0];
-                        break;
-                    }
-
                     case CommandType.Translate:
                     {
                         if (input.Split(' ').Length >= 2)
@@ -253,7 +260,7 @@ namespace Ann.Core
 
                     case CommandType.Calculate:
                     {
-                        var r = _calculator.Calculate(this, input);
+                        var r = _calculator.Calculate(input, _languagesService);
                         Candidates = r != null ? new[] {r} : new ICandidate[0];
 
                         break;
@@ -278,7 +285,6 @@ namespace Ann.Core
 
         private enum CommandType
         {
-            Nothing,
             Translate,
             Calculate,
             ExecutableFile
@@ -286,9 +292,6 @@ namespace Ann.Core
 
         private CommandType MakeCommand(string input)
         {
-            if (string.IsNullOrWhiteSpace(input))
-                return CommandType.Nothing;
-
             var langs = Config.Translator.TranslatorSet.Select(x => x.Keyword.ToLower());
             if (langs.Any(l => input.StartsWith(l + " ")))
                 return CommandType.Translate;
@@ -363,10 +366,14 @@ namespace Ann.Core
                 .AddTo(CompositeDisposable);
 
             _translator = new Translator(
-                this,
                 configHolder.Config.Translator.MicrosoftTranslatorClientId,
-                configHolder.Config.Translator.MicrosoftTranslatorClientSecret
-            );
+                configHolder.Config.Translator.MicrosoftTranslatorClientSecret,
+                _languagesService
+            ).AddTo(CompositeDisposable);
+
+            _translator.ObserveProperty(i => i.IsInAuthentication)
+                .Subscribe(i => IsInAuthentication = i)
+                .AddTo(CompositeDisposable);
 
             SetupTranslatorSubject();
 

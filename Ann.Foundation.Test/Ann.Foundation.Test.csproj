@@ -103,6 +103,10 @@
       <HintPath>..\packages\Xunit.StaFact.0.1.36-beta\lib\net45\Xunit.StaFact.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="YamlDotNet, Version=3.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YamlDotNet.3.9.0\lib\net35\YamlDotNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -123,6 +127,7 @@
     <Compile Include="Control\Behavior\WindowDisposeDataContextOnClosedBehaviorTest.cs" />
     <Compile Include="Control\ShortcutKeyInputBoxTest.cs" />
     <Compile Include="Control\ValueConverter\TypeofConverterTest.cs" />
+    <Compile Include="TranslateServiceTest.cs" />
     <Compile Include="Mvvm\Message\FileOrFolderSelectMessageTest.cs" />
     <Compile Include="Mvvm\Message\WindowActionActionTest.cs" />
     <Compile Include="Mvvm\Message\WindowActionMessageTest.cs" />

@@ -18,6 +18,7 @@ AllFiles,
 Ann_Introduction,
 AutoUpdateStates_CloseAfter0Sec_Restart,
 AutoUpdateStates_CloseAfterNSec,
+Calculation,
 Download,
 ExecutableFile,
 File,
@@ -33,6 +34,7 @@ Message_ActivationShortcutKeyIsAlreadyInUse,
 Message_AlreadySetSameFile,
 Message_AlreadySetSameFolder,
 Message_AlreadySetSameKeyStroke,
+Message_DuringAuthentication,
 Message_FailedToStart,
 Message_FileNotFound,
 Message_FolderNotFound,
@@ -57,15 +59,14 @@ Settings_Shortcuts,
 Settings_StartOnSystemUpdate,
 Settings_TargetFolders,
 Settings_UserFolders,
+Translation,
 UseOpenSourceLibraries,
 Version,
 VersionChecker_Checking,
 VersionChecker_Downloaded,
 VersionChecker_Downloading,
 VersionChecker_Latest,
-VersionChecker_Unknown,
-Calculation,
-Translation
+VersionChecker_Unknown
 }
 
 public static class Localization
@@ -81,6 +82,7 @@ case StringTags.AllFiles: return "All files";
 case StringTags.Ann_Introduction: return "Simple implementation commandline launcher";
 case StringTags.AutoUpdateStates_CloseAfter0Sec_Restart: return "Restart.";
 case StringTags.AutoUpdateStates_CloseAfterNSec: return "Update is now ready. Restart after {0} seconds.";
+case StringTags.Calculation: return "Calculation";
 case StringTags.Download: return "Download";
 case StringTags.ExecutableFile: return "Executable file";
 case StringTags.File: return "File";
@@ -96,6 +98,7 @@ case StringTags.Message_ActivationShortcutKeyIsAlreadyInUse: return "Activation 
 case StringTags.Message_AlreadySetSameFile: return "Already set same file.";
 case StringTags.Message_AlreadySetSameFolder: return "Already set same folder.";
 case StringTags.Message_AlreadySetSameKeyStroke: return "Already set same key stroke.";
+case StringTags.Message_DuringAuthentication: return "During Authentication.";
 case StringTags.Message_FailedToStart: return "Failed to start.";
 case StringTags.Message_FileNotFound: return "File not found.";
 case StringTags.Message_FolderNotFound: return "Folder not found.";
@@ -120,6 +123,7 @@ case StringTags.Settings_Shortcuts: return "Shortcuts";
 case StringTags.Settings_StartOnSystemUpdate: return "Start on system update";
 case StringTags.Settings_TargetFolders: return "Target Folders";
 case StringTags.Settings_UserFolders: return "User Folders";
+case StringTags.Translation: return "Translation";
 case StringTags.UseOpenSourceLibraries: return "Use Open Source Libraries";
 case StringTags.Version: return "Version";
 case StringTags.VersionChecker_Checking: return "Checking for updates.";
@@ -127,8 +131,6 @@ case StringTags.VersionChecker_Downloaded: return "Download was completed. Versi
 case StringTags.VersionChecker_Downloading: return "Now downloading files...";
 case StringTags.VersionChecker_Latest: return "Ann is up to date.";
 case StringTags.VersionChecker_Unknown: return "Cannot confirm the version update. Check Internet connection.";
-case StringTags.Calculation: return "Calculation";
-case StringTags.Translation: return "Translation";
 
 default:
     throw new NotImplementedException();
@@ -140,6 +142,7 @@ case StringTags.AllFiles: return "すべてのファイル";
 case StringTags.Ann_Introduction: return "シンプルなコマンドラインランチャー";
 case StringTags.AutoUpdateStates_CloseAfter0Sec_Restart: return "再起動します。";
 case StringTags.AutoUpdateStates_CloseAfterNSec: return "更新の準備が整いました。{0}秒後に再起動します。";
+case StringTags.Calculation: return "計算";
 case StringTags.Download: return "ダウンロード";
 case StringTags.ExecutableFile: return "実行可能ファイル";
 case StringTags.File: return "ファイル";
@@ -155,6 +158,7 @@ case StringTags.Message_ActivationShortcutKeyIsAlreadyInUse: return "アクテ�
 case StringTags.Message_AlreadySetSameFile: return "すでに同じファイルが設定済みです。";
 case StringTags.Message_AlreadySetSameFolder: return "すでに同じフォルダーが設定済みです。";
 case StringTags.Message_AlreadySetSameKeyStroke: return "すでに同じキーストロークが設定済みです。";
+case StringTags.Message_DuringAuthentication: return "認証中です。";
 case StringTags.Message_FailedToStart: return "起動に失敗しました。";
 case StringTags.Message_FileNotFound: return "ファイルが見つかりません。";
 case StringTags.Message_FolderNotFound: return "フォルダーが見つかりません。";
@@ -179,6 +183,7 @@ case StringTags.Settings_Shortcuts: return "ショートカット";
 case StringTags.Settings_StartOnSystemUpdate: return "システム起動時に起動する";
 case StringTags.Settings_TargetFolders: return "対象フォルダー";
 case StringTags.Settings_UserFolders: return "フォルダー";
+case StringTags.Translation: return "翻訳";
 case StringTags.UseOpenSourceLibraries: return "利用オープンソースライブラリ";
 case StringTags.Version: return "バージョン";
 case StringTags.VersionChecker_Checking: return "新しいバージョンを確認しています。";
@@ -186,8 +191,6 @@ case StringTags.VersionChecker_Downloaded: return "ダウンロード完了し�
 case StringTags.VersionChecker_Downloading: return "ダウンロード中です...";
 case StringTags.VersionChecker_Latest: return "最新バージョンです。";
 case StringTags.VersionChecker_Unknown: return "バージョン更新の確認ができません。インターネット接続を確認してください。";
-case StringTags.Calculation: return "計算";
-case StringTags.Translation: return "翻訳";
 
 default:
     throw new NotImplementedException();
