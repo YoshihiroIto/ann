@@ -32,7 +32,7 @@ namespace Ann.Foundation.Test
             if (NetworkInterface.GetIsNetworkAvailable() == false)
                 return;
 
-            var authenticationFile = "../../TranslateServiceTest.yaml";
+            var authenticationFile = "../../../TestData/TranslateServiceTest.yaml";
 
             if (File.Exists(authenticationFile) == false)
                 return;

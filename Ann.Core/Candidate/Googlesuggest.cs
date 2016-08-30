@@ -4,11 +4,11 @@ using Ann.Foundation;
 
 namespace Ann.Core.Candidate
 {
-    public class Googlesuggest
+    public class GoogleSuggest
     {
         private readonly LanguagesService _languagesService;
 
-        public Googlesuggest(LanguagesService languagesService)
+        public GoogleSuggest(LanguagesService languagesService)
         {
             _languagesService = languagesService;
         }

@@ -96,7 +96,7 @@ namespace Ann.Core
         private readonly ExecutableFileDataBase _executableFileDataBase;
         private readonly Calculator _calculator = new Calculator();
         private readonly Translator _translator;
-        private readonly Googlesuggest _Googlesuggest;
+        private readonly GoogleSuggest _GoogleSuggest;
 
         private HashSet<string> _priorityFiles = new HashSet<string>();
 
@@ -270,7 +270,7 @@ namespace Ann.Core
                     case CommandType.GoogleSuggest:
                     {
                         // todo:config化
-                        var r = _Googlesuggest.SuggestAsync(input.Substring(2), "ja").Result;
+                        var r = _GoogleSuggest.SuggestAsync(input.Substring(2), "ja").Result;
                         Candidates = r ?? new ICandidate[0];
 
                         break;
@@ -390,7 +390,7 @@ namespace Ann.Core
                 .Subscribe(i => IsInAuthentication = i)
                 .AddTo(CompositeDisposable);
 
-            _Googlesuggest = new Googlesuggest(_languagesService);
+            _GoogleSuggest = new GoogleSuggest(_languagesService);
 
             SetupTranslatorSubject();
 

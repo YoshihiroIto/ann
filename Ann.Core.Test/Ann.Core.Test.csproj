@@ -121,6 +121,8 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Candidate\GoogleSuggestResultTest.cs" />
+    <Compile Include="Candidate\TranslatorTest.cs" />
     <Compile Include="Candidate\TranslateResultTest.cs" />
     <Compile Include="Candidate\CalculatorTest.cs" />
     <Compile Include="Candidate\CalculationResultTest.cs" />
