@@ -96,6 +96,7 @@ namespace Ann.Core
         private readonly ExecutableFileDataBase _executableFileDataBase;
         private readonly Calculator _calculator = new Calculator();
         private readonly Translator _translator;
+        private readonly Googlesuggest _Googlesuggest;
 
         private HashSet<string> _priorityFiles = new HashSet<string>();
 
@@ -266,6 +267,15 @@ namespace Ann.Core
                         break;
                     }
 
+                    case CommandType.GoogleSuggest:
+                    {
+                        // todo:config化
+                        var r = _Googlesuggest.SuggestAsync(input.Substring(2), "ja").Result;
+                        Candidates = r ?? new ICandidate[0];
+
+                        break;
+                    }
+
                     case CommandType.ExecutableFile:
                     {
                         Candidates = _executableFileDataBase
@@ -287,6 +297,7 @@ namespace Ann.Core
         {
             Translate,
             Calculate,
+            GoogleSuggest,
             ExecutableFile
         }
 
@@ -295,6 +306,10 @@ namespace Ann.Core
             var langs = Config.Translator.TranslatorSet.Select(x => x.Keyword.ToLower());
             if (langs.Any(l => input.StartsWith(l + " ")))
                 return CommandType.Translate;
+
+            // todo:config化
+            if (input.StartsWith("g "))
+                return  CommandType.GoogleSuggest;
 
             if (Calculator.CanAccepte(input))
                 return CommandType.Calculate;
@@ -374,6 +389,8 @@ namespace Ann.Core
             _translator.ObserveProperty(i => i.IsInAuthentication)
                 .Subscribe(i => IsInAuthentication = i)
                 .AddTo(CompositeDisposable);
+
+            _Googlesuggest = new Googlesuggest(_languagesService);
 
             SetupTranslatorSubject();
 

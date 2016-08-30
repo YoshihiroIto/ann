@@ -111,6 +111,7 @@
     <Compile Include="Evaluator.cs" />
     <Compile Include="Exception\UninitializedException.cs" />
     <Compile Include="Exception\NestingException.cs" />
+    <Compile Include="GoogleSuggestService.cs" />
     <Compile Include="MockKeyboardDevice.cs" />
     <Compile Include="Mvvm\DelegateCommand.cs" />
     <Compile Include="Mvvm\ModelHelper.cs" />
