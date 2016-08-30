@@ -9,10 +9,16 @@
             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             xmlns:shortcuts="clr-namespace:Ann.SettingWindow.SettingPage.Shortcuts"
+            xmlns:settingWindow="clr-namespace:Ann.SettingWindow"
+            xmlns:core="clr-namespace:Ann.Core;assembly=Ann.Core"
             d:DesignHeight="300"
             d:DesignWidth="300"
             Grid.IsSharedSizeScope="True"
             mc:Ignorable="d">
+    <StackPanel.Resources>
+        <core:StringTagToStringConverter x:Key="StringConverter" />
+    </StackPanel.Resources>
+
     <ListBox x:Name="ListBox"
              HorizontalContentAlignment="Stretch"
              dragDrop:DragDrop.DropHandler="{Binding DropTarget,
@@ -39,6 +45,7 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
+                    <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
                     <materialDesign:PackIcon Grid.Column="0"
                                              Margin="4,0,0,0"
                                              VerticalAlignment="Center"
@@ -46,7 +53,21 @@
                                              DataContext="{Binding}"
                                              Foreground="DodgerBlue"
                                              Kind="InformationOutline"
-                                             ToolTip="{Binding ValidationMessage.Value}">
+                                             Tag="{Binding DataContext.App,
+                                                           RelativeSource={RelativeSource FindAncestor,
+                                                                                          AncestorType={x:Type settingWindow:SettingWindow}}}">
+                        <materialDesign:PackIcon.ToolTip>
+                            <ToolTip>
+                                <MultiBinding Converter="{StaticResource StringConverter}">
+                                    <Binding Mode="OneWay" Path="ValidationMessage.Value" />
+                                    <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
+                                    <Binding Mode="OneWay"
+                                             Path="PlacementTarget.Tag"
+                                             RelativeSource="{RelativeSource Mode=Self}" />
+                                </MultiBinding>
+                            </ToolTip>
+                        </materialDesign:PackIcon.ToolTip>
+
                         <materialDesign:PackIcon.Style>
                             <Style TargetType="{x:Type materialDesign:PackIcon}">
                                 <Style.Triggers>

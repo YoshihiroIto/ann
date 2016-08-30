@@ -8,6 +8,15 @@ namespace Ann.Core
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
+            if (values?.Length != 2)
+                return null;
+
+            if (values[0] is StringTags == false)
+                return null;
+
+            if (values[1] is App == false)
+                return null;
+
             var tag = (StringTags) values[0];
             var app = (App) values[1];
 
