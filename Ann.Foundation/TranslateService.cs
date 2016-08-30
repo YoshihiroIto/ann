@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Reactive.Disposables;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Ann.Foundation.Mvvm;
 using Newtonsoft.Json;
 
 namespace Ann.Foundation
 {
     // http://matatabi-ux.hateblo.jp/entry/2015/08/31/120000 を元にしました
-    public class TranslateService
+    public class TranslateService : NotificationObject
     {
         private readonly string _ClientId;
         private readonly string _ClientSecret;
@@ -34,10 +36,25 @@ namespace Ann.Foundation
             _ClientSecret = clientSecret;
         }
 
-        private async Task<bool> InitializeAsync()
+        #region IsInAuthentication
+
+        private bool _IsInAuthentication;
+
+        public bool IsInAuthentication
         {
+            get { return _IsInAuthentication; }
+            private set { SetProperty(ref _IsInAuthentication, value); }
+        }
+
+        #endregion
+
+        private async Task<bool> AuthenticateAsync()
+        {
+            using (Disposable.Create(() => IsInAuthentication = false))
             using (var client = new HttpClient())
             {
+                IsInAuthentication = true;
+
                 var content = new FormUrlEncodedContent(new Dictionary<string, string>
                 {
                     {"client_id", _ClientId},
@@ -73,7 +90,7 @@ namespace Ann.Foundation
             {
                 if (string.IsNullOrEmpty(_AccessToken) || _AccessTokenExpires.CompareTo(DateTime.Now) < 0)
                 {
-                    var i = await InitializeAsync();
+                    var i = await AuthenticateAsync();
                     if (i == false)
                         return null;
                 }

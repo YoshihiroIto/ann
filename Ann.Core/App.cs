@@ -42,29 +42,6 @@ namespace Ann.Core
 
         #endregion
 
-        private readonly ConfigHolder _configHolder;
-        private Config.App Config => _configHolder.Config;
-        private Config.MostRecentUsedList MruList => _configHolder.MruList;
-
-        private readonly LanguagesService _languagesService;
-
-        public event EventHandler PriorityFilesChanged;
-        public event EventHandler ShortcutKeyChanged;
-
-        public void InvokePriorityFilesChanged() => PriorityFilesChanged?.Invoke(this, EventArgs.Empty);
-        public void InvokeShortcutKeyChanged() => ShortcutKeyChanged?.Invoke(this, EventArgs.Empty);
-
-        private readonly InputQueue _inputQueue;
-        private readonly ExecutableFileDataBase _executableFileDataBase;
-        private readonly Calculator _calculator = new Calculator();
-        private readonly Translator _translator;
-
-        private HashSet<string> _priorityFiles = new HashSet<string>();
-
-        private string IndexFilePath => System.IO.Path.Combine(_configHolder.ConfigDirPath, "index.dat");
-
-        public VersionUpdater VersionUpdater { get; }
-
         #region IndexOpeningResult
 
         private IndexOpeningResults _IndexOpeningResult;
@@ -97,6 +74,41 @@ namespace Ann.Core
         {
             get { return _IsEnableActivateHotKey; }
             set { SetProperty(ref _IsEnableActivateHotKey, value); }
+        }
+
+        #endregion
+
+        #region IsInAuthentication
+
+        private readonly ConfigHolder _configHolder;
+        private Config.App Config => _configHolder.Config;
+        private Config.MostRecentUsedList MruList => _configHolder.MruList;
+
+        private readonly LanguagesService _languagesService;
+
+        public event EventHandler PriorityFilesChanged;
+        public event EventHandler ShortcutKeyChanged;
+
+        public void InvokePriorityFilesChanged() => PriorityFilesChanged?.Invoke(this, EventArgs.Empty);
+        public void InvokeShortcutKeyChanged() => ShortcutKeyChanged?.Invoke(this, EventArgs.Empty);
+
+        private readonly InputQueue _inputQueue;
+        private readonly ExecutableFileDataBase _executableFileDataBase;
+        private readonly Calculator _calculator = new Calculator();
+        private readonly Translator _translator;
+
+        private HashSet<string> _priorityFiles = new HashSet<string>();
+
+        private string IndexFilePath => System.IO.Path.Combine(_configHolder.ConfigDirPath, "index.dat");
+
+        public VersionUpdater VersionUpdater { get; }
+
+        private bool _IsInAuthentication;
+
+        public bool IsInAuthentication
+        {
+            get { return _IsInAuthentication; }
+            private set { SetProperty(ref _IsInAuthentication, value); }
         }
 
         #endregion
@@ -356,8 +368,12 @@ namespace Ann.Core
             _translator = new Translator(
                 configHolder.Config.Translator.MicrosoftTranslatorClientId,
                 configHolder.Config.Translator.MicrosoftTranslatorClientSecret,
-_languagesService
-            );
+                _languagesService
+            ).AddTo(CompositeDisposable);
+
+            _translator.ObserveProperty(i => i.IsInAuthentication)
+                .Subscribe(i => IsInAuthentication = i)
+                .AddTo(CompositeDisposable);
 
             SetupTranslatorSubject();
 
@@ -407,7 +423,7 @@ _languagesService
 
         public bool IsEnableAutoUpdater { get; set; }
 
-#region AutoUpdateRemainingSeconds
+        #region AutoUpdateRemainingSeconds
 
         private int _AutoUpdateRemainingSeconds;
 
@@ -417,7 +433,7 @@ _languagesService
             private set { SetProperty(ref _AutoUpdateRemainingSeconds, value); }
         }
 
-#endregion
+        #endregion
 
         private void SetupAutoUpdater()
         {
@@ -460,7 +476,7 @@ _languagesService
 
         public bool IsRestartRequested => VersionUpdater.IsRestartRequested;
 
-#region AutoUpdateState
+        #region AutoUpdateState
 
         private AutoUpdateStates _AutoUpdateState;
 
@@ -470,7 +486,7 @@ _languagesService
             private set { SetProperty(ref _AutoUpdateState, value); }
         }
 
-#endregion
+        #endregion
 
         public int ExecutableFileDataBaseIconCacheSize
         {

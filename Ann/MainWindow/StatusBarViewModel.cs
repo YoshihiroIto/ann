@@ -169,6 +169,31 @@ namespace Ann.MainWindow
                     }
                 }).AddTo(CompositeDisposable);
 
+            app.ObserveProperty(x => x.IsInAuthentication)
+                .Subscribe(r =>
+                {
+                    if (r)
+                    {
+                        var item = new ProcessingStatusBarItemViewModel(
+                            app,
+                            StatusBarItemViewModel.SearchKey.IsInAuthentication,
+                            StringTags.Message_DuringAuthentication);
+                        Messages.Add(item);
+                    }
+                    else
+                    {
+                        lock (_messageRemoveLock)
+                        {
+                            var item = Messages
+                                .FirstOrDefault(
+                                    x => x.Key == StatusBarItemViewModel.SearchKey.IsInAuthentication);
+
+                            Messages.Remove(item);
+                            item?.Dispose();
+                        }
+                    }
+                }).AddTo(CompositeDisposable);
+
             SetupVersionUpdater(app);
         }
 

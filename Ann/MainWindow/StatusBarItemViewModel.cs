@@ -14,6 +14,7 @@ namespace Ann.MainWindow
             IndexUpdating,
             ActivationShortcutKeyIsAlreadyInUse,
             InOpening,
+            IsInAuthentication,
             //
             NoKey
         }
