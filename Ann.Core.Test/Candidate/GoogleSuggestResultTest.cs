@@ -5,11 +5,11 @@ using Xunit;
 
 namespace Ann.Core.Test.Candidate
 {
-    public class TranslateResultTest : IDisposable
+    public class GoogleSuggestResultTest : IDisposable
     {
         private readonly DisposableFileSystem _config = new DisposableFileSystem();
 
-        public TranslateResultTest()
+        public GoogleSuggestResultTest()
         {
             TestHelper.CleanTestEnv();
         }
@@ -25,7 +25,7 @@ namespace Ann.Core.Test.Candidate
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
             {
-                var r = new TranslateResult("ABC", languagesService);
+                var r = new GoogleSuggestResult("c#", languagesService);
 
                 // ReSharper disable once IsExpressionAlwaysTrue
                 Assert.True(r is ICandidate);
@@ -39,25 +39,13 @@ namespace Ann.Core.Test.Candidate
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
             {
-                var i = new TranslateResult("ABC", languagesService) as ICandidate;
+                var i = new GoogleSuggestResult("c#", languagesService) as ICandidate;
 
-                Assert.Equal(app.GetString(StringTags.Translation), i.Comment);
-                Assert.Equal("ABC", i.Name);
+                Assert.Equal(app.GetString(StringTags.GoogleSuggest), i.Comment);
+                Assert.Equal("c#", i.Name);
                 Assert.NotNull(i.RunCommand);
                 Assert.Null(i.SubCommands);
                 Assert.False(i.CanSetPriority);
-            }
-        }
-
-        [StaFact]
-        public void RunCommand()
-        {
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            {
-                var r = new TranslateResult("ABC", languagesService) as ICandidate;
-
-                r.RunCommand.Execute(null);
             }
         }
     }

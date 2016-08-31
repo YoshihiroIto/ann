@@ -317,13 +317,13 @@ namespace Ann.Core.Test
         }
 
         [Fact]
-        public void RunAsync()
+        public async void RunAsync()
         {
             var configHolder = new ConfigHolder(_config.RootPath);
             using (var languagesService = new LanguagesService(configHolder.Config))
             using (var app = new App(configHolder, languagesService))
             {
-                var i = app.RunAsync("notepad", false).Result;
+                var i = await app.RunAsync("notepad", false);
 
                 Assert.True(i);
 
