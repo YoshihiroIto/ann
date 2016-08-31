@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Ann.Foundation;
 
@@ -13,14 +14,14 @@ namespace Ann.Core.Candidate
             _languagesService = languagesService;
         }
 
-        public async Task<GoogleSuggestResult[]> SuggestAsync(string input, string language)
+        public async Task<IEnumerable<GoogleSearchResult>> SuggestAsync(string input, string language)
         {
             if (string.IsNullOrWhiteSpace(input))
                 return null;
 
             var result = await GoogleSuggestService.SuggestAsync(input, language);
 
-            return result?.Select(r => new GoogleSuggestResult(r, _languagesService)).ToArray();
+            return result?.Select(r => new GoogleSearchResult(r, _languagesService, StringTags.GoogleSuggest));
         }
     }
 }

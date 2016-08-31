@@ -23,6 +23,7 @@ Download,
 ExecutableFile,
 File,
 Folder,
+GoogleSearch,
 GoogleSuggest,
 HelpTranslate,
 MaxCandidateLines,
@@ -88,7 +89,8 @@ case StringTags.Download: return "Download";
 case StringTags.ExecutableFile: return "Executable file";
 case StringTags.File: return "File";
 case StringTags.Folder: return "Folder";
-case StringTags.GoogleSuggest: return "Google Suggest";
+case StringTags.GoogleSearch: return "Google search";
+case StringTags.GoogleSuggest: return "Google suggest";
 case StringTags.HelpTranslate: return "Help translate.";
 case StringTags.MaxCandidateLines: return "Max Candidate Lines";
 case StringTags.MenuItem_Exit: return "Exit";
@@ -149,6 +151,7 @@ case StringTags.Download: return "ダウンロード";
 case StringTags.ExecutableFile: return "実行可能ファイル";
 case StringTags.File: return "ファイル";
 case StringTags.Folder: return "フォルダー";
+case StringTags.GoogleSearch: return "Google 検索";
 case StringTags.GoogleSuggest: return "Google サジェスト";
 case StringTags.HelpTranslate: return "翻訳にご協力ください。";
 case StringTags.MaxCandidateLines: return "表示候補数";

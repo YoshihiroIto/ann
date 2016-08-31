@@ -140,7 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
-    <Compile Include="Candidate\GoogleSuggestResult.cs" />
+    <Compile Include="Candidate\GoogleSearchResult.cs" />
     <Compile Include="Candidate\TranslateResult.cs" />
     <Compile Include="Candidate\CalculationResult.cs" />
     <Compile Include="Candidate\GoogleSuggest.cs" />

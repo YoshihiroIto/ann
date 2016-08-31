@@ -269,10 +269,16 @@ namespace Ann.Core
 
                     case CommandType.GoogleSuggest:
                     {
-                        // todo:config化
-                        var r = await _GoogleSuggest.SuggestAsync(input.Substring(2), "ja");
-                        Candidates = r ?? new ICandidate[0];
+                        var inputWord = input.Substring(2);
 
+                        // todo:config化
+                        var r = await _GoogleSuggest.SuggestAsync(inputWord, "ja");
+
+                        var search = new[]
+                            {new GoogleSearchResult(inputWord, _languagesService, StringTags.GoogleSearch)};
+                        var suggests = r.Take(Config.MaxCandidateLinesCount - 1);
+
+                        Candidates = search.Concat(suggests).ToArray();
                         break;
                     }
 
