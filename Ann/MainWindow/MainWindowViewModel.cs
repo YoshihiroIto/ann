@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Ann.Core;
+using Ann.Core.Candidate;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 using Ann.Foundation.Mvvm.Message;
@@ -20,6 +21,7 @@ namespace Ann.MainWindow
     public class MainWindowViewModel : ViewModelBase
     {
         public ReactiveProperty<string> Input { get; }
+        public ReactiveProperty<bool> IsIgnoreInputChanging { get; }
 
         public ReactiveCommand IndexUpdateCommand { get; }
 
@@ -78,6 +80,7 @@ namespace Ann.MainWindow
                 Top = configHolder.MainWindow.ToReactivePropertyAsSynchronized(x => x.Top).AddTo(CompositeDisposable);
 
                 Input = new ReactiveProperty<string>().AddTo(CompositeDisposable);
+                IsIgnoreInputChanging = new ReactiveProperty<bool>().AddTo(CompositeDisposable);
 
                 MaxCandidatesLinesCount = configHolder.Config
                     .ToReactivePropertyAsSynchronized(x => x.MaxCandidateLinesCount)
@@ -112,6 +115,7 @@ namespace Ann.MainWindow
                 Observable
                     .Merge(Input.ToUnit())
                     .Merge(configHolder.Config.ObserveProperty(x => x.MaxCandidateLinesCount).ToUnit())
+                    .Where(x => IsIgnoreInputChanging.Value == false)
                     .Subscribe(_ => _app.Find(Input.Value))
                     .AddTo(CompositeDisposable);
 
@@ -174,6 +178,8 @@ namespace Ann.MainWindow
 
                         SelectedCandidate.Value = Candidates.Value[next];
                         SelectedCandidate.Value.IsSelected = true;
+
+                        OnSelectedCandidate(SelectedCandidate.Value);
                     }).AddTo(CompositeDisposable);
 
                 RunCommand = SelectedCandidate
@@ -245,6 +251,27 @@ namespace Ann.MainWindow
                     .AddTo(CompositeDisposable);
 
                 StatusBar = new StatusBarViewModel(_app).AddTo(CompositeDisposable);
+            }
+        }
+
+        private void OnSelectedCandidate(CandidatePanelViewModel selectedCandidate)
+        {
+            switch (selectedCandidate.SelectedBehavior)
+            {
+                case SelectedBehavior.NotAnything:
+                    break;
+
+                case SelectedBehavior.UpdateInputWithCommandWord:
+                    using (Disposable.Create(() => IsIgnoreInputChanging.Value = false))
+                    {
+                        IsIgnoreInputChanging.Value = true;
+                        Input.Value = selectedCandidate.CommandWord + selectedCandidate.InputWord;
+                        Messenger.Publish(MessengerMessage.InputTextBoxSetCaretLast);
+                    }
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 

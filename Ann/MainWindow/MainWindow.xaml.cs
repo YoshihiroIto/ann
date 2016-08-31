@@ -210,6 +210,21 @@ namespace Ann.MainWindow
                 .Subscribe<WindowActionMessage>(WindowActionAction.InvokeAction)
                 .AddTo(_DataContext.CompositeDisposable);
 
+            _DataContext.Messenger
+                .Subscribe<MessengerMessage>(m =>
+                {
+                    switch (m)
+                    {
+                        case MessengerMessage.InputTextBoxSetCaretLast:
+                            _isInputTextBoxSetCaretLast = true;
+                            break;
+
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(m), m, null);
+                    }
+                })
+                .AddTo(_DataContext.CompositeDisposable);
+
             _DataContext.AsyncMessenger
                 .Subscribe<SettingViewModel>(
                     vm =>
@@ -302,6 +317,16 @@ namespace Ann.MainWindow
 
             _DataContext.SelectedCandidate.Value = item;
             _DataContext.RunCommand.Execute(null);
+        }
+
+        private bool _isInputTextBoxSetCaretLast;
+        private void InputTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (_isInputTextBoxSetCaretLast == false)
+                return;
+
+            InputTextBox.CaretIndex = InputTextBox.Text.Length;
+            _isInputTextBoxSetCaretLast = false;
         }
     }
 }

@@ -13,5 +13,8 @@ namespace Ann.Core.Candidate
         MenuCommand[] SubCommands { get; }
 
         bool CanSetPriority { get; }
+
+        SelectedBehavior SelectedBehavior { get; }
+        string CommandWord { get; }
     }
 }

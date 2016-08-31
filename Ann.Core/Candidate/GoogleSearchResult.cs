@@ -29,6 +29,8 @@ namespace Ann.Core.Candidate
             });
         }
 
+        public string CommandWord { get; set; }
+
         private readonly string _Input;
         private readonly LanguagesService _languagesService;
         private readonly string _url;
@@ -41,6 +43,8 @@ namespace Ann.Core.Candidate
         bool ICandidate.CanSetPriority => false;
 
         private readonly DelegateCommand _RunCommand;
+        
+        SelectedBehavior ICandidate.SelectedBehavior => SelectedBehavior.UpdateInputWithCommandWord;
         ICommand ICandidate.RunCommand => _RunCommand;
     }
 }

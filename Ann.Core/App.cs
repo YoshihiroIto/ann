@@ -236,7 +236,7 @@ namespace Ann.Core
 
         public void Find(string input)
         {
-            input = input?.Trim();
+            input = input?.TrimStart();
             _currentInput = input;
 
             if (string.IsNullOrEmpty(input))
@@ -269,16 +269,25 @@ namespace Ann.Core
 
                     case CommandType.GoogleSuggest:
                     {
+                        // todo:config化
+                        var commandWord = input.Substring(0, 2);
                         var inputWord = input.Substring(2);
 
-                        // todo:config化
                         var r = await _GoogleSuggest.SuggestAsync(inputWord, "ja");
 
-                        var search = new[]
-                            {new GoogleSearchResult(inputWord, _languagesService, StringTags.GoogleSearch)};
-                        var suggests = r.Take(Config.MaxCandidateLinesCount - 1);
+                        if (r == null)
+                            Candidates = new ICandidate[0];
 
-                        Candidates = search.Concat(suggests).ToArray();
+                        else
+                        {
+                            var search = new[]
+                                {new GoogleSearchResult(inputWord, _languagesService, StringTags.GoogleSearch)};
+                            var suggests = r.Take(Config.MaxCandidateLinesCount - 1);
+
+                            Candidates = search.Concat(suggests).ToArray();
+                            Candidates.Cast<GoogleSearchResult>().ForEach(c => c.CommandWord = commandWord);
+                        }
+
                         break;
                     }
 
@@ -315,7 +324,7 @@ namespace Ann.Core
 
             // todo:config化
             if (input.StartsWith("g "))
-                return  CommandType.GoogleSuggest;
+                return CommandType.GoogleSuggest;
 
             if (Calculator.CanAccepte(input))
                 return CommandType.Calculate;
