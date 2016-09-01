@@ -26,6 +26,7 @@ Folder,
 GoogleSearch,
 GoogleSuggest,
 HelpTranslate,
+LanguageCode,
 MaxCandidateLines,
 MenuItem_Exit,
 MenuItem_OpenContainingFolder,
@@ -92,6 +93,7 @@ case StringTags.Folder: return "Folder";
 case StringTags.GoogleSearch: return "Google search";
 case StringTags.GoogleSuggest: return "Google suggest";
 case StringTags.HelpTranslate: return "Help translate.";
+case StringTags.LanguageCode: return "Language code";
 case StringTags.MaxCandidateLines: return "Max Candidate Lines";
 case StringTags.MenuItem_Exit: return "Exit";
 case StringTags.MenuItem_OpenContainingFolder: return "Open containing folder";
@@ -154,6 +156,7 @@ case StringTags.Folder: return "フォルダー";
 case StringTags.GoogleSearch: return "Google 検索";
 case StringTags.GoogleSuggest: return "Google サジェスト";
 case StringTags.HelpTranslate: return "翻訳にご協力ください。";
+case StringTags.LanguageCode: return "言語コード";
 case StringTags.MaxCandidateLines: return "表示候補数";
 case StringTags.MenuItem_Exit: return "終了";
 case StringTags.MenuItem_OpenContainingFolder: return "フォルダーを開く";

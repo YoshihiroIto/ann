@@ -265,7 +265,7 @@ namespace Ann.MainWindow
                     using (Disposable.Create(() => IsIgnoreInputChanging.Value = false))
                     {
                         IsIgnoreInputChanging.Value = true;
-                        Input.Value = selectedCandidate.CommandWord + selectedCandidate.InputWord;
+                        Input.Value = $"{selectedCandidate.CommandWord} {selectedCandidate.InputWord}";
                         Messenger.Publish(MessengerMessage.InputTextBoxSetCaretLast);
                     }
                     break;

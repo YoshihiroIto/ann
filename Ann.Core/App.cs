@@ -12,7 +12,9 @@ using Ann.Foundation.Mvvm;
 using Reactive.Bindings.Extensions;
 using System.Threading;
 using Ann.Core.Candidate;
+using Ann.Core.Config;
 using Reactive.Bindings;
+using Translator = Ann.Core.Candidate.Translator;
 
 namespace Ann.Core
 {
@@ -82,7 +84,7 @@ namespace Ann.Core
 
         private readonly ConfigHolder _configHolder;
         private Config.App Config => _configHolder.Config;
-        private Config.MostRecentUsedList MruList => _configHolder.MruList;
+        private MostRecentUsedList MruList => _configHolder.MruList;
 
         private readonly LanguagesService _languagesService;
 
@@ -222,12 +224,18 @@ namespace Ann.Core
                     var parts = input.Split(' ');
                     var keyword = parts[0];
 
-                    var translatorSet = Config.Translator.TranslatorSet.First(x => x.Keyword.ToLower() == keyword);
+                    var func = Config.Functions
+                        .Where(x => x.Type == FunctionType.Translate)
+                        .First(x => x.Keyword.ToLower() == keyword);
 
                     var r = await _translator.TranslateAsync(
                         input.Substring(keyword.Length),
-                        translatorSet.From,
-                        translatorSet.To);
+                        (TranslateService.LanguageCodes)
+                        Enum.Parse(typeof(TranslateService.LanguageCodes),
+                            (string) func.Parameters[FunctionParameterKey.From]),
+                        (TranslateService.LanguageCodes)
+                        Enum.Parse(typeof(TranslateService.LanguageCodes),
+                            (string) func.Parameters[FunctionParameterKey.To]));
 
                     if (input == _currentInput)
                         Candidates = r != null ? new[] {r} : new ICandidate[0];
@@ -247,33 +255,45 @@ namespace Ann.Core
 
             _inputQueue.Push(async () =>
             {
-                switch (MakeCommand(input))
+                var func = FindFunction(input);
+
+                if (func == null)
                 {
-                    case CommandType.Translate:
+                    if (Calculator.CanAccepte(input))
                     {
+                        var r = _calculator.Calculate(input, _languagesService);
+                        Candidates = r != null ? new[] {r} : new ICandidate[0];
+                    }
+                    else
+                    {
+                        Candidates = _executableFileDataBase
+                            .Find(input, Config.ExecutableFileExts)
+                            .OrderBy(u => MakeOrder(u.Path))
+                            .Take(Config.MaxCandidateLinesCount)
+                            .ToArray();
+                    }
+
+                    return;
+                }
+
+                switch (func.Type)
+                {
+                    case FunctionType.Translate:
                         if (input.Split(' ').Length >= 2)
                             _translatorSubject.OnNext(input);
                         else
                             Candidates = new ICandidate[0];
 
                         break;
-                    }
 
-                    case CommandType.Calculate:
-                    {
-                        var r = _calculator.Calculate(input, _languagesService);
-                        Candidates = r != null ? new[] {r} : new ICandidate[0];
+                    case FunctionType.GoogleSearch:
+                        var commandWord = input.Substring(0, func.Keyword.Length);
+                        var inputWord = input.Substring(func.Keyword.Length);
 
-                        break;
-                    }
-
-                    case CommandType.GoogleSuggest:
-                    {
-                        // todo:config化
-                        var commandWord = input.Substring(0, 2);
-                        var inputWord = input.Substring(2);
-
-                        var r = await _GoogleSuggest.SuggestAsync(inputWord, "ja");
+                        var r =
+                            await
+                                _GoogleSuggest.SuggestAsync(inputWord,
+                                    (string) func.Parameters[FunctionParameterKey.LanguageCode]);
 
                         if (r == null)
                             Candidates = new ICandidate[0];
@@ -281,7 +301,7 @@ namespace Ann.Core
                         else
                         {
                             var search = new[]
-                                {new GoogleSearchResult(inputWord, _languagesService, StringTags.GoogleSearch)};
+                                {new GoogleSearchResult(inputWord.Trim(), _languagesService, StringTags.GoogleSearch)};
                             var suggests = r.Take(Config.MaxCandidateLinesCount - 1);
 
                             Candidates = search.Concat(suggests).ToArray();
@@ -289,18 +309,6 @@ namespace Ann.Core
                         }
 
                         break;
-                    }
-
-                    case CommandType.ExecutableFile:
-                    {
-                        Candidates = _executableFileDataBase
-                            .Find(input, Config.ExecutableFileExts)
-                            .OrderBy(u => MakeOrder(u.Path))
-                            .Take(Config.MaxCandidateLinesCount)
-                            .ToArray();
-
-                        break;
-                    }
 
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -308,28 +316,9 @@ namespace Ann.Core
             });
         }
 
-        private enum CommandType
+        private Function FindFunction(string input)
         {
-            Translate,
-            Calculate,
-            GoogleSuggest,
-            ExecutableFile
-        }
-
-        private CommandType MakeCommand(string input)
-        {
-            var langs = Config.Translator.TranslatorSet.Select(x => x.Keyword.ToLower());
-            if (langs.Any(l => input.StartsWith(l + " ")))
-                return CommandType.Translate;
-
-            // todo:config化
-            if (input.StartsWith("g "))
-                return CommandType.GoogleSuggest;
-
-            if (Calculator.CanAccepte(input))
-                return CommandType.Calculate;
-
-            return CommandType.ExecutableFile;
+            return Config.Functions.FirstOrDefault(f => input.StartsWith(f.Keyword + " "));
         }
 
         private const int MaxMruCount = 50;

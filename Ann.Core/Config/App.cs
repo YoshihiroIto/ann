@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -160,6 +161,45 @@ namespace Ann.Core.Config
         }
 
         #endregion
+
+        private ObservableCollection<Function> _Functions = new ObservableCollection<Function>
+        {
+            new Function
+            {
+                Type = FunctionType.Translate,
+                Keyword = "ja",
+                Parameters = new Dictionary<FunctionParameterKey, object>
+                {
+                    {FunctionParameterKey.From, TranslateService.LanguageCodes.AutoDetect},
+                    {FunctionParameterKey.To, TranslateService.LanguageCodes.ja}
+                }
+            },
+            new Function
+            {
+                Type = FunctionType.Translate,
+                Keyword = "en",
+                Parameters = new Dictionary<FunctionParameterKey, object>
+                {
+                    {FunctionParameterKey.From, TranslateService.LanguageCodes.AutoDetect},
+                    {FunctionParameterKey.To, TranslateService.LanguageCodes.en}
+                }
+            },
+            new Function
+            {
+                Type = FunctionType.GoogleSearch,
+                Keyword = "g",
+                Parameters = new Dictionary<FunctionParameterKey, object>
+                {
+                    {FunctionParameterKey.LanguageCode, "ja"}
+                }
+            }
+        };
+
+        public ObservableCollection<Function> Functions
+        {
+            get { return _Functions; }
+            set { SetProperty(ref _Functions, value); }
+        }
     }
 
     public class TargetFolder : ModelBase
@@ -352,34 +392,28 @@ namespace Ann.Core.Config
         }
 
         #endregion
+    }
 
-        #region TranslatorSet
+    public enum FunctionType
+    {
+        Translate,
+        GoogleSearch
+    }
 
-        private ObservableCollection<TranslatorSet> _TranslatorSet = new ObservableCollection<TranslatorSet>
+    public class Function : ModelBase
+    {
+        #region Type
+
+        private FunctionType _Type;
+
+        public FunctionType Type
         {
-            new TranslatorSet
-            {
-                Keyword = "ja",
-                To = TranslateService.LanguageCodes.ja
-            },
-            new TranslatorSet
-            {
-                Keyword = "en",
-                To = TranslateService.LanguageCodes.en
-            }
-        };
-
-        public ObservableCollection<TranslatorSet> TranslatorSet
-        {
-            get { return _TranslatorSet; }
-            set { SetProperty(ref _TranslatorSet, value); }
+            get { return _Type; }
+            set { SetProperty(ref _Type, value); }
         }
 
         #endregion
-    }
 
-    public class TranslatorSet : ModelBase
-    {
         #region Keyword
 
         private string _Keyword;
@@ -392,28 +426,23 @@ namespace Ann.Core.Config
 
         #endregion
 
-        #region From
+        #region Parameters
 
-        private TranslateService.LanguageCodes _From = TranslateService.LanguageCodes.AutoDetect;
+        private Dictionary<FunctionParameterKey, object> _Parameters = new Dictionary<FunctionParameterKey, object>();
 
-        public TranslateService.LanguageCodes From
+        public Dictionary<FunctionParameterKey, object> Parameters
         {
-            get { return _From; }
-            set { SetProperty(ref _From, value); }
+            get { return _Parameters; }
+            set { SetProperty(ref _Parameters, value); }
         }
 
         #endregion
+    }
 
-        #region To
-
-        private TranslateService.LanguageCodes _To;
-
-        public TranslateService.LanguageCodes To
-        {
-            get { return _To; }
-            set { SetProperty(ref _To, value); }
-        }
-
-        #endregion
+    public enum FunctionParameterKey
+    {
+        From,
+        To,
+        LanguageCode
     }
 }
