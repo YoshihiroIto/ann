@@ -122,15 +122,14 @@ namespace Ann.MainWindow
                     .Subscribe(_ => _app.Find(Input.Value))
                     .AddTo(CompositeDisposable);
 
-                Candidates = new ReactiveProperty<CandidatePanelViewModel[]>().AddTo(CompositeDisposable);
+                Candidates = new ReactiveProperty<CandidatePanelViewModel[]>(new CandidatePanelViewModel[0]).AddTo(CompositeDisposable);
                 
                 _app.ObserveProperty(x => x.Candidates, false)
                     .ObserveOn(ReactivePropertyScheduler.Default)
                     .Subscribe(c =>
                     {
-                        if (Candidates.Value != null)
-                            lock(_OldCandidatesLock)
-                                _OldCandidates.Add(Candidates.Value);
+                        lock (_OldCandidatesLock)
+                            _OldCandidates.Add(Candidates.Value);
 
                         Candidates.Value =
                             c.Select(u => new CandidatePanelViewModel(u, _app, configHolder.Config)).ToArray();

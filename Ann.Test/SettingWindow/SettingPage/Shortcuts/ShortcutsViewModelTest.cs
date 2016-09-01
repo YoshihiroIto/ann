@@ -29,11 +29,11 @@ namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
             var model = new App();
             using (var vm = new ShortcutsViewModel(model))
             {
-                Assert.False(vm.Activate.IsControl.Value);
+                Assert.True(vm.Activate.IsControl.Value);
                 Assert.False(vm.Activate.IsAlt.Value);
                 Assert.False(vm.Activate.IsShift.Value);
-                Assert.Equal(Key.None, vm.Activate.Key.Value);
-                Assert.Equal(ModifierKeys.None, vm.Activate.Modifiers);
+                Assert.Equal(Key.Space, vm.Activate.Key.Value);
+                Assert.Equal(ModifierKeys.Control, vm.Activate.Modifiers);
             }
         }
 

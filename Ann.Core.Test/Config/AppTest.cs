@@ -16,8 +16,8 @@ namespace Ann.Core.Test.Config
 
             var c = new Core.Config.App();
 
-            Assert.Equal(Key.None, c.ShortcutKeys.Activate.Key);
-            Assert.Equal(ModifierKeys.None, c.ShortcutKeys.Activate.Modifiers);
+            Assert.Equal(Key.Space, c.ShortcutKeys.Activate.Key);
+            Assert.Equal(ModifierKeys.Control, c.ShortcutKeys.Activate.Modifiers);
 
             c.ShortcutKeys.Activate = new ShortcutKey
             {
@@ -39,8 +39,8 @@ namespace Ann.Core.Test.Config
             Assert.Equal(ModifierKeys.Control, c.ShortcutKeys.Hide[0].Modifiers);
 
             c.ShortcutKeys = new ShortcutKeys();
-            Assert.Equal(Key.None, c.ShortcutKeys.Activate.Key);
-            Assert.Equal(ModifierKeys.None, c.ShortcutKeys.Activate.Modifiers);
+            Assert.Equal(Key.Space, c.ShortcutKeys.Activate.Key);
+            Assert.Equal(ModifierKeys.Control, c.ShortcutKeys.Activate.Modifiers);
             Assert.NotNull(c.ShortcutKeys.Hide);
             Assert.Equal(0, c.ShortcutKeys.Hide.Count);
 
@@ -177,9 +177,9 @@ namespace Ann.Core.Test.Config
             var s = new ShortcutKeys();
 
             Assert.NotNull(s.Activate);
-            Assert.Equal(Key.None, s.Activate.Key);
-            Assert.Equal(ModifierKeys.None, s.Activate.Modifiers);
-            Assert.Equal(string.Empty, s.Activate.Text);
+            Assert.Equal(Key.Space, s.Activate.Key);
+            Assert.Equal(ModifierKeys.Control, s.Activate.Modifiers);
+            Assert.Equal("Ctrl + Space", s.Activate.Text);
 
             Assert.NotNull(s.Hide);
             Assert.Equal(0, s.Hide.Count);

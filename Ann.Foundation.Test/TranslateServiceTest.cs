@@ -14,20 +14,22 @@ namespace Ann.Foundation.Test
         [InlineData("a", "a")]
         public async void Error(string clientId, string clientSecret)
         {
-            var s = new TranslateService(clientId, clientSecret);
+            using (var s = new TranslateService(clientId, clientSecret))
+            {
+                var r = await s.TranslateAsync(
+                    "Apple",
+                    TranslateService.LanguageCodes.en,
+                    TranslateService.LanguageCodes.ja);
 
-            var r = await s.TranslateAsync(
-                "Apple",
-                TranslateService.LanguageCodes.en,
-                TranslateService.LanguageCodes.ja);
-
-            Assert.Null(r);
+                Assert.Null(r);
+            }
         }
 
         [Theory]
-        [InlineData("Water", "水", TranslateService.LanguageCodes.en,TranslateService.LanguageCodes.ja)]
-        [InlineData("水","Water",TranslateService.LanguageCodes.ja,  TranslateService.LanguageCodes.en)]
-        public async void Basic(string fromWord, string toWord, TranslateService.LanguageCodes from, TranslateService.LanguageCodes to)
+        [InlineData("Water", "水", TranslateService.LanguageCodes.en, TranslateService.LanguageCodes.ja)]
+        [InlineData("水", "Water", TranslateService.LanguageCodes.ja, TranslateService.LanguageCodes.en)]
+        public async void Basic(string fromWord, string toWord, TranslateService.LanguageCodes from,
+            TranslateService.LanguageCodes to)
         {
             if (NetworkInterface.GetIsNetworkAvailable() == false)
                 return;
@@ -41,17 +43,18 @@ namespace Ann.Foundation.Test
             using (var reader = new StringReader(File.ReadAllText(authenticationFile)))
                 auth = new Deserializer(ignoreUnmatched: true).Deserialize<AuthenticationFile>(reader);
 
-            var s = new TranslateService(
-                auth.MicrosoftTranslatorClientId, 
-                auth.MicrosoftTranslatorClientSecret);
-
-            var r = await s.TranslateAsync(fromWord, from, to);
-            Assert.Equal(toWord, r);
+            using (var s = new TranslateService(
+                auth.MicrosoftTranslatorClientId,
+                auth.MicrosoftTranslatorClientSecret))
+            {
+                var r = await s.TranslateAsync(fromWord, from, to);
+                Assert.Equal(toWord, r);
+            }
         }
 
         [Theory]
         [InlineData("Water", "水", TranslateService.LanguageCodes.ja)]
-        [InlineData("水","Water", TranslateService.LanguageCodes.en)]
+        [InlineData("水", "Water", TranslateService.LanguageCodes.en)]
         public async void Auto(string fromWord, string toWord, TranslateService.LanguageCodes to)
         {
             if (NetworkInterface.GetIsNetworkAvailable() == false)
@@ -66,12 +69,13 @@ namespace Ann.Foundation.Test
             using (var reader = new StringReader(File.ReadAllText(authFile)))
                 auth = new Deserializer(ignoreUnmatched: true).Deserialize<AuthenticationFile>(reader);
 
-            var s = new TranslateService(
-                auth.MicrosoftTranslatorClientId, 
-                auth.MicrosoftTranslatorClientSecret);
-
-            var r = await s.TranslateAsync(fromWord, TranslateService.LanguageCodes.AutoDetect, to);
-            Assert.Equal(toWord, r);
+            using (var s = new TranslateService(
+                auth.MicrosoftTranslatorClientId,
+                auth.MicrosoftTranslatorClientSecret))
+            {
+                var r = await s.TranslateAsync(fromWord, TranslateService.LanguageCodes.AutoDetect, to);
+                Assert.Equal(toWord, r);
+            }
         }
 
         public class AuthenticationFile
