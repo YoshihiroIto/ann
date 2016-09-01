@@ -272,6 +272,9 @@ namespace Ann.Core
             if (func?.Type != FunctionType.GoogleSearch)
                 _googleSuggest.CancelSuggest();
 
+            if (func?.Type != FunctionType.Translate)
+                _translator.CancelTranslate();
+
             _inputQueue.Push(() =>
             {
                 if (func == null)

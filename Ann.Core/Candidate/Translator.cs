@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm;
+using Reactive.Bindings.Extensions;
 
 namespace Ann.Core.Candidate
 {
@@ -37,7 +38,12 @@ namespace Ann.Core.Candidate
         public Translator(string clientId, string clientSecret, LanguagesService languagesService)
         {
             _languagesService = languagesService;
-            _service = new TranslateService(clientId, clientSecret);
+            _service = new TranslateService(clientId, clientSecret).AddTo(CompositeDisposable);
+        }
+
+        public void CancelTranslate()
+        {
+            _service.CancelTranslate();
         }
 
         public async Task<TranslateResult> TranslateAsync(string input, TranslateService.LanguageCodes from, TranslateService.LanguageCodes to)

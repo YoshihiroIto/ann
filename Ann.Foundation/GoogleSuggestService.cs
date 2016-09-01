@@ -22,7 +22,7 @@ namespace Ann.Foundation
         public GoogleSuggestService()
         {
             _httpClient = new HttpClient().AddTo(CompositeDisposable);
-            _cts = new CancellationTokenSource();
+            _cts = new CancellationTokenSource().AddTo(CompositeDisposable);
         }
 
         public void CancelSuggest()
