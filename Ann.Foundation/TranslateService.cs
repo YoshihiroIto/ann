@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Reactive.Disposables;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -34,6 +35,8 @@ namespace Ann.Foundation
         private readonly HttpClient _httpClient;
         private CancellationTokenSource _cts;
 
+        private bool _isDownloading;
+
         public TranslateService(string clientId, string clientSecret)
         {
             _ClientId = clientId;
@@ -47,33 +50,42 @@ namespace Ann.Foundation
 
         public void CancelTranslate()
         {
+            if (_isDownloading == false)
+                return;
+
             _cts.Cancel();
+            _cts.Dispose();
+            _cts = new CancellationTokenSource();
         }
 
         public async Task<bool> AuthenticateAsync()
         {
-            var content = new FormUrlEncodedContent(new Dictionary<string, string>
+            using (Disposable.Create(() => _isDownloading = false))
             {
-                {"client_id", _ClientId},
-                {"client_secret", _ClientSecret},
-                {"grant_type", "client_credentials"},
-                {"scope", "http://api.microsofttranslator.com"},
-            });
+                _isDownloading = true;
 
-            var result = await _httpClient.PostAsync(OAuthUri, content);
+                var content = new FormUrlEncodedContent(new Dictionary<string, string>
+                {
+                    {"client_id", _ClientId},
+                    {"client_secret", _ClientSecret},
+                    {"grant_type", "client_credentials"},
+                    {"scope", "http://api.microsofttranslator.com"},
+                });
 
-            if (result.IsSuccessStatusCode == false)
-                return false;
+                var result = await _httpClient.PostAsync(OAuthUri, content, _cts.Token);
+                if (result.IsSuccessStatusCode == false)
+                    return false;
 
-            var json = await result.Content.ReadAsStringAsync();
-            var response = JsonConvert.DeserializeObject<Newtonsoft.Json.Linq.JContainer>(json);
-            var now = DateTime.Now;
+                var json = await result.Content.ReadAsStringAsync();
+                var response = JsonConvert.DeserializeObject<Newtonsoft.Json.Linq.JContainer>(json);
+                var now = DateTime.Now;
 
-            _AccessToken = response.Value<string>("access_token");
-            var expiresIn = response.Value<long>("expires_in");
-            _AccessTokenExpires = now.AddSeconds(expiresIn);
+                _AccessToken = response.Value<string>("access_token");
+                var expiresIn = response.Value<long>("expires_in");
+                _AccessTokenExpires = now.AddSeconds(expiresIn);
 
-            return true;
+                return true;
+            }
         }
 
         public bool IsExpierd => string.IsNullOrEmpty(_AccessToken) || _AccessTokenExpires.CompareTo(DateTime.Now) < 0;
@@ -94,22 +106,27 @@ namespace Ann.Foundation
 
                 string translated;
                 {
-                    _httpClient.DefaultRequestHeaders.Remove("Authorization");
-                    _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_AccessToken}");
-
-                    var url = @from == LanguageCodes.AutoDetect
-                        ? string.Format(TranslateUriTo, WebUtility.UrlEncode(input), ToString(to))
-                        : string.Format(TranslateUriFromTo, WebUtility.UrlEncode(input), ToString(@from),
-                            ToString(to));
-
-                    string xml;
-                    using (var response = await _httpClient.GetAsync(url, _cts.Token))
-                        xml = await response.Content.ReadAsStringAsync();
-
-                    using (var sr = new StringReader(xml))
+                    using (Disposable.Create(() => _isDownloading = false))
                     {
-                        var xdoc = XDocument.Load(sr);
-                        translated = xdoc.Root?.Value;
+                        _isDownloading = true;
+
+                        _httpClient.DefaultRequestHeaders.Remove("Authorization");
+                        _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_AccessToken}");
+
+                        var url = @from == LanguageCodes.AutoDetect
+                            ? string.Format(TranslateUriTo, WebUtility.UrlEncode(input), ToString(to))
+                            : string.Format(TranslateUriFromTo, WebUtility.UrlEncode(input), ToString(@from),
+                                ToString(to));
+
+                        string xml;
+                        using (var response = await _httpClient.GetAsync(url, _cts.Token))
+                            xml = await response.Content.ReadAsStringAsync();
+
+                        using (var sr = new StringReader(xml))
+                        {
+                            var xdoc = XDocument.Load(sr);
+                            translated = xdoc.Root?.Value;
+                        }
                     }
                 }
 
@@ -117,9 +134,6 @@ namespace Ann.Foundation
             }
             catch
             {
-                _cts.Dispose();
-                _cts = new CancellationTokenSource();
-
                 return null;
             }
         }

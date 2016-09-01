@@ -27,8 +27,12 @@ namespace Ann.Foundation
 
         public void CancelSuggest()
         {
-            if (_isDownloading)
-                _cts.Cancel();
+            if (_isDownloading == false)
+                return;
+
+            _cts.Cancel();
+            _cts.Dispose();
+            _cts = new CancellationTokenSource();
         }
 
         public async Task<IEnumerable<string>> SuggestAsync(string input, string language)
@@ -39,9 +43,9 @@ namespace Ann.Foundation
                 {
                     using (Disposable.Create(() => _isDownloading = false))
                     {
-                        var url = $"http://www.google.com/complete/search?hl={language}&output=toolbar&q={WebUtility.UrlEncode(input)}";
-
                         _isDownloading = true;
+
+                        var url = $"http://www.google.com/complete/search?hl={language}&output=toolbar&q={WebUtility.UrlEncode(input)}";
 
                         using (var response = await _httpClient.GetAsync(url, _cts.Token))
                             xml = await response.Content.ReadAsStringAsync();
@@ -58,9 +62,6 @@ namespace Ann.Foundation
             }
             catch
             {
-                _cts.Dispose();
-                _cts = new CancellationTokenSource();
-
                 return Enumerable.Empty<string>();
             }
         }

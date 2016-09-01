@@ -243,7 +243,7 @@ namespace Ann.Core
                         .First(x => x.Keyword.ToLower() == keyword);
 
                     var r = await _translator.TranslateAsync(
-                        input.Substring(keyword.Length),
+                        input.Substring(keyword.Length).Trim(),
                         (TranslateService.LanguageCodes)
                         Enum.Parse(typeof(TranslateService.LanguageCodes),
                             (string) func.Parameters[FunctionParameterKey.From]),
