@@ -10,6 +10,7 @@ using Ann.Core;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm.Message;
 using Ann.SettingWindow;
+using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 
 namespace Ann.MainWindow
@@ -54,21 +55,21 @@ namespace Ann.MainWindow
                     h => StatusBar.IsVisibleChanged += h,
                     h => StatusBar.IsVisibleChanged -= h)
                 .Throttle(TimeSpan.FromMilliseconds(5))
-                .ObserveOnUIDispatcher()
+                .ObserveOn(ReactivePropertyScheduler.Default)
                 .Subscribe(_ => UpdateSize())
                 .AddTo(_DataContext.CompositeDisposable);
 
             Observable.FromEventPattern<SizeChangedEventHandler, SizeChangedEventArgs>(
                     h => StatusBar.SizeChanged += h,
                     h => StatusBar.SizeChanged -= h)
-                .ObserveOnUIDispatcher()
+                .ObserveOn(ReactivePropertyScheduler.Default)
                 .Subscribe(_ => UpdateSize())
                 .AddTo(_DataContext.CompositeDisposable);
 
             Observable.FromEventPattern<SizeChangedEventHandler, SizeChangedEventArgs>(
                     h => SizeChanged += h,
                     h => SizeChanged -= h)
-                .ObserveOnUIDispatcher()
+                .ObserveOn(ReactivePropertyScheduler.Default)
                 .Subscribe(_ => UpdateSize())
                 .AddTo(_DataContext.CompositeDisposable);
         }
@@ -237,9 +238,12 @@ namespace Ann.MainWindow
 
         private void UpdateSize()
         {
+            if (_DataContext.Candidates.Value == null)
+                return;
+
             BasePanel.Height =
                 InputLineHeight +
-                _DataContext.Candidates.Value.Length*ViewConstants.CandidatePanelHeight;
+                _DataContext.Candidates.Value.Length * ViewConstants.CandidatePanelHeight;
 
             var height = BasePanel.Height;
 
@@ -281,7 +285,7 @@ namespace Ann.MainWindow
             }
 
             _DataContext.Candidates
-                .ObserveOnUIDispatcher()
+                .ObserveOn(ReactivePropertyScheduler.Default)
                 .Subscribe(candidates =>
                 {
                     var index = 0;
@@ -301,6 +305,8 @@ namespace Ann.MainWindow
                     }
 
                     UpdateSize();
+
+                    _DataContext.DisposeOldCandidates();
                 }).AddTo(_DataContext.CompositeDisposable);
         }
 

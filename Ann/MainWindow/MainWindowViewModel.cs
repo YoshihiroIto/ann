@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using Ann.Core;
 using Ann.Core.Candidate;
@@ -58,6 +58,9 @@ namespace Ann.MainWindow
         private readonly App _app;
 
         private const double CandidateItemHeight = 64;
+
+        private readonly HashSet<CandidatePanelViewModel[]> _OldCandidates = new HashSet<CandidatePanelViewModel[]>();
+        private readonly object _OldCandidatesLock = new object();
 
         public MainWindowViewModel(App app, ConfigHolder configHolder)
         {
@@ -120,26 +123,17 @@ namespace Ann.MainWindow
                     .AddTo(CompositeDisposable);
 
                 Candidates = new ReactiveProperty<CandidatePanelViewModel[]>().AddTo(CompositeDisposable);
-                _app.ObserveProperty(x => x.Candidates)
-                    .Subscribe(async c =>
+                
+                _app.ObserveProperty(x => x.Candidates, false)
+                    .ObserveOn(ReactivePropertyScheduler.Default)
+                    .Subscribe(c =>
                     {
-                        var old = Candidates.Value;
+                        if (Candidates.Value != null)
+                            lock(_OldCandidatesLock)
+                                _OldCandidates.Add(Candidates.Value);
 
                         Candidates.Value =
                             c.Select(u => new CandidatePanelViewModel(u, _app, configHolder.Config)).ToArray();
-
-                        if (old == null)
-                            return;
-
-                        if (Splat.ModeDetector.InUnitTestRunner())
-                            foreach (var o in old)
-                                o.Dispose();
-                        else
-                            await Application.Current.Dispatcher.InvokeAsync(() =>
-                            {
-                                foreach (var o in old)
-                                    o.Dispose();
-                            });
                     })
                     .AddTo(CompositeDisposable);
 
@@ -289,12 +283,25 @@ namespace Ann.MainWindow
                 .AddTo(CompositeDisposable);
 
             CompositeDisposable.Add(DisposeCandidates);
+            CompositeDisposable.Add(DisposeOldCandidates);
 
             await _app.OpenIndexAsync();
 
             if ((IndexOpeningResult.Value == IndexOpeningResults.NotFound) ||
                 (IndexOpeningResult.Value == IndexOpeningResults.OldIndex))
                 await _app.UpdateIndexAsync();
+        }
+
+        public void DisposeOldCandidates()
+        {
+            lock (_OldCandidatesLock)
+            {
+                foreach (var old in _OldCandidates)
+                    foreach (var c in old)
+                        c.Dispose();
+
+                _OldCandidates.Clear();
+            }
         }
 
         private void DisposeCandidates()
