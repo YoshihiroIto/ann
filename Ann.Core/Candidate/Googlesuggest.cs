@@ -31,6 +31,11 @@ namespace Ann.Core.Candidate
             _service = new GoogleSuggestService().AddTo(CompositeDisposable);
         }
 
+        public void CancelSuggest()
+        {
+            _service.CancelSuggest();
+        }
+
         public async Task<IEnumerable<GoogleSearchResult>> SuggestAsync(string input, string language)
         {
             if (string.IsNullOrWhiteSpace(input))

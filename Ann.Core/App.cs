@@ -267,10 +267,13 @@ namespace Ann.Core
                 return;
             }
 
+            var func = FindFunction(input);
+
+            if (func?.Type != FunctionType.GoogleSearch)
+                _googleSuggest.CancelSuggest();
+
             _inputQueue.Push(() =>
             {
-                var func = FindFunction(input);
-
                 if (func == null)
                 {
                     if (Calculator.CanAccepte(input))
@@ -313,10 +316,10 @@ namespace Ann.Core
 
                         else
                         {
-                            var search = new[]
-                                {new GoogleSearchResult(inputWord.Trim(), _languagesService, StringTags.GoogleSearch)};
                             var suggests = r.Take(Config.MaxCandidateLinesCount - 1);
 
+                            var search = new[]
+                                {new GoogleSearchResult(inputWord.Trim(), _languagesService, StringTags.GoogleSearch)};
                             var candidates = search.Concat(suggests).ToArray();
                             candidates.ForEach(c => c.CommandWord = commandWord);
 
