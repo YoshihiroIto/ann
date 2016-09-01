@@ -253,7 +253,7 @@ namespace Ann.Core
                 return;
             }
 
-            _inputQueue.Push(async () =>
+            _inputQueue.Push(() =>
             {
                 var func = FindFunction(input);
 
@@ -291,9 +291,8 @@ namespace Ann.Core
                         var inputWord = input.Substring(func.Keyword.Length);
 
                         var r =
-                            await
-                                _GoogleSuggest.SuggestAsync(inputWord,
-                                    (string) func.Parameters[FunctionParameterKey.LanguageCode]);
+                            _GoogleSuggest.SuggestAsync(inputWord,
+                                (string) func.Parameters[FunctionParameterKey.LanguageCode]).Result;
 
                         if (r == null)
                             Candidates = new ICandidate[0];
@@ -304,8 +303,10 @@ namespace Ann.Core
                                 {new GoogleSearchResult(inputWord.Trim(), _languagesService, StringTags.GoogleSearch)};
                             var suggests = r.Take(Config.MaxCandidateLinesCount - 1);
 
-                            Candidates = search.Concat(suggests).ToArray();
-                            Candidates.Cast<GoogleSearchResult>().ForEach(c => c.CommandWord = commandWord);
+                            var candidates = search.Concat(suggests).ToArray();
+                            candidates.ForEach(c => c.CommandWord = commandWord);
+
+                            Candidates = candidates;
                         }
 
                         break;
