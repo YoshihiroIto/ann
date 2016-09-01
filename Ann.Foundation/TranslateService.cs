@@ -62,29 +62,36 @@ namespace Ann.Foundation
         {
             using (Disposable.Create(() => _isDownloading = false))
             {
-                _isDownloading = true;
-
-                var content = new FormUrlEncodedContent(new Dictionary<string, string>
+                try
                 {
-                    {"client_id", _ClientId},
-                    {"client_secret", _ClientSecret},
-                    {"grant_type", "client_credentials"},
-                    {"scope", "http://api.microsofttranslator.com"},
-                });
+                    _isDownloading = true;
 
-                var result = await _httpClient.PostAsync(OAuthUri, content, _cts.Token);
-                if (result.IsSuccessStatusCode == false)
+                    var content = new FormUrlEncodedContent(new Dictionary<string, string>
+                    {
+                        {"client_id", _ClientId},
+                        {"client_secret", _ClientSecret},
+                        {"grant_type", "client_credentials"},
+                        {"scope", "http://api.microsofttranslator.com"},
+                    });
+
+                    var result = await _httpClient.PostAsync(OAuthUri, content, _cts.Token);
+                    if (result.IsSuccessStatusCode == false)
+                        return false;
+
+                    var json = await result.Content.ReadAsStringAsync();
+                    var response = JsonConvert.DeserializeObject<Newtonsoft.Json.Linq.JContainer>(json);
+                    var now = DateTime.Now;
+
+                    _AccessToken = response.Value<string>("access_token");
+                    var expiresIn = response.Value<long>("expires_in");
+                    _AccessTokenExpires = now.AddSeconds(expiresIn);
+
+                    return true;
+                }
+                catch
+                {
                     return false;
-
-                var json = await result.Content.ReadAsStringAsync();
-                var response = JsonConvert.DeserializeObject<Newtonsoft.Json.Linq.JContainer>(json);
-                var now = DateTime.Now;
-
-                _AccessToken = response.Value<string>("access_token");
-                var expiresIn = response.Value<long>("expires_in");
-                _AccessTokenExpires = now.AddSeconds(expiresIn);
-
-                return true;
+                }
             }
         }
 
