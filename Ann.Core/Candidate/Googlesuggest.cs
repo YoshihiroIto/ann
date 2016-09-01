@@ -42,7 +42,7 @@ namespace Ann.Core.Candidate
 
                 var result = await _service.SuggestAsync(input, language);
 
-                return result?.Select(r => new GoogleSearchResult(r, _languagesService, StringTags.GoogleSuggest));
+                return result.Select(r => new GoogleSearchResult(r, _languagesService, StringTags.GoogleSuggest));
             }
         }
     }

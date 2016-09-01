@@ -36,7 +36,7 @@ namespace Ann.Foundation
             }
             catch
             {
-                return null;
+                return Enumerable.Empty<string>();
             }
         }
     }
