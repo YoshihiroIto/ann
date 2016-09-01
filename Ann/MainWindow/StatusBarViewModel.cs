@@ -194,6 +194,31 @@ namespace Ann.MainWindow
                     }
                 }).AddTo(CompositeDisposable);
 
+            app.ObserveProperty(x => x.IsInConnecting)
+                .Subscribe(r =>
+                {
+                    if (r)
+                    {
+                        var item = new ProcessingStatusBarItemViewModel(
+                            app,
+                            StatusBarItemViewModel.SearchKey.IsInConnecting,
+                            StringTags.Message_Connecting);
+                        Messages.Add(item);
+                    }
+                    else
+                    {
+                        lock (_messageRemoveLock)
+                        {
+                            var item = Messages
+                                .FirstOrDefault(
+                                    x => x.Key == StatusBarItemViewModel.SearchKey.IsInConnecting);
+
+                            Messages.Remove(item);
+                            item?.Dispose();
+                        }
+                    }
+                }).AddTo(CompositeDisposable);
+
             SetupVersionUpdater(app);
         }
 

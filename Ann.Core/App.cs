@@ -82,6 +82,30 @@ namespace Ann.Core
 
         #region IsInAuthentication
 
+        private bool _IsInAuthentication;
+
+        public bool IsInAuthentication
+        {
+            get { return _IsInAuthentication; }
+            private set { SetProperty(ref _IsInAuthentication, value); }
+        }
+
+        #endregion
+
+        #region IsInConnecting
+
+        private bool _IsInConnecting;
+
+        public bool IsInConnecting
+        {
+            get { return _IsInConnecting; }
+            set { SetProperty(ref _IsInConnecting, value); }
+        }
+
+        #endregion
+
+
+
         private readonly ConfigHolder _configHolder;
         private Config.App Config => _configHolder.Config;
         private MostRecentUsedList MruList => _configHolder.MruList;
@@ -98,23 +122,13 @@ namespace Ann.Core
         private readonly ExecutableFileDataBase _executableFileDataBase;
         private readonly Calculator _calculator = new Calculator();
         private readonly Translator _translator;
-        private readonly GoogleSuggest _GoogleSuggest;
+        private readonly GoogleSuggest _googleSuggest;
 
         private HashSet<string> _priorityFiles = new HashSet<string>();
 
         private string IndexFilePath => System.IO.Path.Combine(_configHolder.ConfigDirPath, "index.dat");
 
         public VersionUpdater VersionUpdater { get; }
-
-        private bool _IsInAuthentication;
-
-        public bool IsInAuthentication
-        {
-            get { return _IsInAuthentication; }
-            private set { SetProperty(ref _IsInAuthentication, value); }
-        }
-
-        #endregion
 
         public bool IsPriorityFile(string path) => _priorityFiles.Contains(path.ToLower());
 
@@ -291,7 +305,7 @@ namespace Ann.Core
                         var inputWord = input.Substring(func.Keyword.Length);
 
                         var r =
-                            _GoogleSuggest.SuggestAsync(inputWord,
+                            _googleSuggest.SuggestAsync(inputWord,
                                 (string) func.Parameters[FunctionParameterKey.LanguageCode]).Result;
 
                         if (r == null)
@@ -394,8 +408,15 @@ namespace Ann.Core
             _translator.ObserveProperty(i => i.IsInAuthentication)
                 .Subscribe(i => IsInAuthentication = i)
                 .AddTo(CompositeDisposable);
+            _translator.ObserveProperty(i => i.IsInConnecting)
+                .Subscribe(i => IsInConnecting = i)
+                .AddTo(CompositeDisposable);
 
-            _GoogleSuggest = new GoogleSuggest(_languagesService);
+            _googleSuggest = new GoogleSuggest(_languagesService)
+                .AddTo(CompositeDisposable);
+            _googleSuggest.ObserveProperty(x => x.IsInConnecting)
+                .Subscribe(i => IsInConnecting = i)
+                .AddTo(CompositeDisposable);
 
             SetupTranslatorSubject();
 

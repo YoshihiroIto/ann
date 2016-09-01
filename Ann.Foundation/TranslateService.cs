@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Reactive.Disposables;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Ann.Foundation.Mvvm;
@@ -36,25 +35,10 @@ namespace Ann.Foundation
             _ClientSecret = clientSecret;
         }
 
-        #region IsInAuthentication
-
-        private bool _IsInAuthentication;
-
-        public bool IsInAuthentication
+        public async Task<bool> AuthenticateAsync()
         {
-            get { return _IsInAuthentication; }
-            private set { SetProperty(ref _IsInAuthentication, value); }
-        }
-
-        #endregion
-
-        private async Task<bool> AuthenticateAsync()
-        {
-            using (Disposable.Create(() => IsInAuthentication = false))
             using (var client = new HttpClient())
             {
-                IsInAuthentication = true;
-
                 var content = new FormUrlEncodedContent(new Dictionary<string, string>
                 {
                     {"client_id", _ClientId},
@@ -81,6 +65,8 @@ namespace Ann.Foundation
             }
         }
 
+        public bool IsExpierd => string.IsNullOrEmpty(_AccessToken) || _AccessTokenExpires.CompareTo(DateTime.Now) < 0;
+
         public async Task<string> TranslateAsync(string input, LanguageCodes from, LanguageCodes to)
         {
             if (string.IsNullOrEmpty(_ClientId) || string.IsNullOrEmpty(_ClientSecret))
@@ -88,7 +74,7 @@ namespace Ann.Foundation
 
             try
             {
-                if (string.IsNullOrEmpty(_AccessToken) || _AccessTokenExpires.CompareTo(DateTime.Now) < 0)
+                if (IsExpierd)
                 {
                     var i = await AuthenticateAsync();
                     if (i == false)

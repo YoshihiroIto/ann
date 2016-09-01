@@ -3,29 +3,35 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Ann.Foundation.Mvvm;
+using Reactive.Bindings.Extensions;
 
 namespace Ann.Foundation
 {
-    public static class GoogleSuggestService
+    public class GoogleSuggestService: DisposableNotificationObject
     {
-        public static async Task<string[]> SuggestAsync(string input, string language)
+        private readonly WebClient _webClient;
+
+        public GoogleSuggestService()
+        {
+            _webClient = new WebClient().AddTo(CompositeDisposable);
+        }
+
+        public async Task<string[]> SuggestAsync(string input, string language)
         {
             try
             {
                 var url = $"http://www.google.com/complete/search?hl={language}&output=toolbar&q={WebUtility.UrlEncode(input)}";
 
-                using (var wc = new WebClient())
-                {
-                    var xml = await wc.DownloadStringTaskAsync(url);
+                var xml = await _webClient.DownloadStringTaskAsync(url);
 
-                    using (var sr = new StringReader(xml))
-                    {
-                        return XDocument.Load(sr).Root?
-                            .Descendants("suggestion")
-                            .Select(x => x.Attribute("data")?.Value)
-                            .Where(x => x != null)
-                            .ToArray();
-                    }
+                using (var sr = new StringReader(xml))
+                {
+                    return XDocument.Load(sr).Root?
+                        .Descendants("suggestion")
+                        .Select(x => x.Attribute("data")?.Value)
+                        .Where(x => x != null)
+                        .ToArray();
                 }
             }
             catch

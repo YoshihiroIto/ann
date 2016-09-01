@@ -15,6 +15,7 @@ namespace Ann.MainWindow
             ActivationShortcutKeyIsAlreadyInUse,
             InOpening,
             IsInAuthentication,
+            IsInConnecting,
             //
             NoKey
         }

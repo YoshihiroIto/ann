@@ -37,6 +37,7 @@ Message_ActivationShortcutKeyIsAlreadyInUse,
 Message_AlreadySetSameFile,
 Message_AlreadySetSameFolder,
 Message_AlreadySetSameKeyStroke,
+Message_Connecting,
 Message_DuringAuthentication,
 Message_FailedToStart,
 Message_FileNotFound,
@@ -104,6 +105,7 @@ case StringTags.Message_ActivationShortcutKeyIsAlreadyInUse: return "Activation 
 case StringTags.Message_AlreadySetSameFile: return "Already set same file.";
 case StringTags.Message_AlreadySetSameFolder: return "Already set same folder.";
 case StringTags.Message_AlreadySetSameKeyStroke: return "Already set same key stroke.";
+case StringTags.Message_Connecting: return "Connecting.";
 case StringTags.Message_DuringAuthentication: return "During Authentication.";
 case StringTags.Message_FailedToStart: return "Failed to start.";
 case StringTags.Message_FileNotFound: return "File not found.";
@@ -167,6 +169,7 @@ case StringTags.Message_ActivationShortcutKeyIsAlreadyInUse: return "アクテ�
 case StringTags.Message_AlreadySetSameFile: return "すでに同じファイルが設定済みです。";
 case StringTags.Message_AlreadySetSameFolder: return "すでに同じフォルダーが設定済みです。";
 case StringTags.Message_AlreadySetSameKeyStroke: return "すでに同じキーストロークが設定済みです。";
+case StringTags.Message_Connecting: return "接続中です。";
 case StringTags.Message_DuringAuthentication: return "認証中です。";
 case StringTags.Message_FailedToStart: return "起動に失敗しました。";
 case StringTags.Message_FileNotFound: return "ファイルが見つかりません。";
