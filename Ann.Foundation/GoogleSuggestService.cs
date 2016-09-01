@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace Ann.Foundation
             _webClient = new WebClient().AddTo(CompositeDisposable);
         }
 
-        public async Task<string[]> SuggestAsync(string input, string language)
+        public async Task<IEnumerable<string>> SuggestAsync(string input, string language)
         {
             try
             {
@@ -30,8 +31,7 @@ namespace Ann.Foundation
                     return XDocument.Load(sr).Root?
                         .Descendants("suggestion")
                         .Select(x => x.Attribute("data")?.Value)
-                        .Where(x => x != null)
-                        .ToArray();
+                        .Where(x => x != null);
                 }
             }
             catch
