@@ -16,11 +16,7 @@
               mc:Ignorable="d">
     <ItemsControl.Template>
         <ControlTemplate>
-            <Border Background="#60EE3030"
-                    BorderThickness="0"
-                    Padding="16,4,16,4">
-                <ItemsPresenter />
-            </Border>
+            <ItemsPresenter />
         </ControlTemplate>
     </ItemsControl.Template>
 
@@ -33,7 +29,7 @@
     <ItemsControl.Resources>
         <mainWindow:MessagesConverter x:Key="MessagesConverter" />
         <DataTemplate DataType="{x:Type mainWindow:StatusBarItemViewModel}">
-            <TextBlock Height="14" Margin="0,2">
+            <TextBlock Height="14" Margin="16,4,16,4">
                 <TextBlock.Text>
                     <MultiBinding Converter="{StaticResource MessagesConverter}">
                         <Binding Mode="OneWay" Path="Messages.Value" />
@@ -44,10 +40,10 @@
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type mainWindow:ProcessingStatusBarItemViewModel}">
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Margin="16,4,16,4" Orientation="Horizontal">
                 <ProgressBar Width="14"
                              Height="14"
-                             Margin="0,2,2,2"
+                             Margin="0,2,4,2"
                              HorizontalAlignment="Right"
                              VerticalAlignment="Center"
                              DockPanel.Dock="Right"
@@ -67,10 +63,10 @@
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type mainWindow:WaitingStatusBarItemViewModel}">
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Margin="16,4,16,4" Orientation="Horizontal">
                 <materialDesign:PackIcon Width="14"
                                          Height="14"
-                                         Margin="0,2,2,2"
+                                         Margin="0,2,4,2"
                                          HorizontalAlignment="Right"
                                          VerticalAlignment="Center"
                                          DockPanel.Dock="Right"
