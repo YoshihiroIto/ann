@@ -51,24 +51,26 @@ namespace Ann.MainWindow
 
             UpdateSize();
 
-            Observable.FromEventPattern<DependencyPropertyChangedEventHandler, DependencyPropertyChangedEventArgs>(
+            var statusBarIsVisibleChanged =
+                Observable.FromEventPattern<DependencyPropertyChangedEventHandler, DependencyPropertyChangedEventArgs>(
                     h => StatusBar.IsVisibleChanged += h,
-                    h => StatusBar.IsVisibleChanged -= h)
-                .Throttle(TimeSpan.FromMilliseconds(5))
-                .ObserveOn(ReactivePropertyScheduler.Default)
-                .Subscribe(_ => UpdateSize())
-                .AddTo(_DataContext.CompositeDisposable);
+                    h => StatusBar.IsVisibleChanged -= h);
 
-            Observable.FromEventPattern<SizeChangedEventHandler, SizeChangedEventArgs>(
+            var statusBarSizeChanged =
+                Observable.FromEventPattern<SizeChangedEventHandler, SizeChangedEventArgs>(
                     h => StatusBar.SizeChanged += h,
-                    h => StatusBar.SizeChanged -= h)
-                .ObserveOn(ReactivePropertyScheduler.Default)
-                .Subscribe(_ => UpdateSize())
-                .AddTo(_DataContext.CompositeDisposable);
+                    h => StatusBar.SizeChanged -= h);
 
-            Observable.FromEventPattern<SizeChangedEventHandler, SizeChangedEventArgs>(
+            var sizeChanged =
+                Observable.FromEventPattern<SizeChangedEventHandler, SizeChangedEventArgs>(
                     h => SizeChanged += h,
-                    h => SizeChanged -= h)
+                    h => SizeChanged -= h);
+
+            Observable
+                .Merge(statusBarIsVisibleChanged.ToUnit())
+                .Merge(statusBarSizeChanged.ToUnit())
+                .Merge(sizeChanged.ToUnit())
+                .Throttle(TimeSpan.FromMilliseconds(500))
                 .ObserveOn(ReactivePropertyScheduler.Default)
                 .Subscribe(_ => UpdateSize())
                 .AddTo(_DataContext.CompositeDisposable);
@@ -243,14 +245,13 @@ namespace Ann.MainWindow
 
             BasePanel.Height =
                 InputLineHeight +
-                _DataContext.Candidates.Value.Length * ViewConstants.CandidatePanelHeight;
+                _DataContext.Candidates.Value.Length*ViewConstants.CandidatePanelHeight;
 
             var height = BasePanel.Height;
 
             if (_DataContext.Candidates.Value.Any())
                 height += ViewConstants.BaseMarginUnit;
 
-            //if (StatusBar.Visibility == Visibility.Visible)
             {
                 height += StatusBar.ActualHeight;
                 Canvas.SetLeft(StatusBar, 0);
@@ -326,6 +327,7 @@ namespace Ann.MainWindow
         }
 
         private bool _isInputTextBoxSetCaretLast;
+
         private void InputTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (_isInputTextBoxSetCaretLast == false)
