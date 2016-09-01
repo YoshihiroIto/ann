@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Ann.Foundation.Mvvm;
@@ -36,5 +37,8 @@ namespace Ann.Core.Candidate
 
         private readonly DelegateCommand _RunCommand;
         ICommand ICandidate.RunCommand => _RunCommand;
+
+        SelectedBehavior ICandidate.SelectedBehavior => SelectedBehavior.NotAnything;
+        string ICandidate.CommandWord => null;
     }
 }

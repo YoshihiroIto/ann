@@ -169,5 +169,8 @@ namespace Ann.Core.Candidate
         MenuCommand[] ICandidate.SubCommands => _SubCommands;
 
         bool ICandidate.CanSetPriority => true;
+
+        SelectedBehavior ICandidate.SelectedBehavior => SelectedBehavior.NotAnything;
+        string ICandidate.CommandWord => null;
     }
 }

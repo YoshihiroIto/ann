@@ -158,6 +158,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MainWindow\MessengerMessage.cs" />
     <Compile Include="MainWindow\StatusBarViewModel.cs" />
     <Compile Include="MainWindow\StatusBarItemViewModel.cs" />
     <Compile Include="MainWindow\StatusBar.xaml.cs">

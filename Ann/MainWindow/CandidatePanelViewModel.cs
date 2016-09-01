@@ -83,6 +83,10 @@ namespace Ann.MainWindow
 
         private readonly ICandidate _model;
 
+        public SelectedBehavior SelectedBehavior => _model.SelectedBehavior;
+        public string CommandWord => _model.CommandWord;
+        public string InputWord => _model.Name;
+
         public CandidatePanelViewModel(ICandidate model, App app, Core.Config.App config)
         {
             Debug.Assert(model != null);

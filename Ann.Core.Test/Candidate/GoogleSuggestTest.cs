@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net.NetworkInformation;
 using Ann.Core.Candidate;
 using Ann.Foundation;
@@ -33,10 +34,12 @@ namespace Ann.Core.Test.Candidate
 
                 var results = await g.SuggestAsync("c#", "ja");
 
-                Assert.Equal(10, results.Length);
-                Assert.Equal("c#", (results[0] as ICandidate).Name);
+                var a = results.ToArray();
 
-                foreach (var r in results)
+                Assert.Equal(10, a.Length);
+                Assert.Equal("c#", (a[0] as ICandidate).Name);
+
+                foreach (var r in a)
                     Assert.True(((ICandidate) r).Name.StartsWith("c#"));
             }
         }

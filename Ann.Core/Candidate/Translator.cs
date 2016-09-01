@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Reactive.Disposables;
 using System.Threading.Tasks;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm;
@@ -23,14 +23,27 @@ namespace Ann.Core.Candidate
 
         #endregion
 
+        #region IsInConnecting
+
+        private bool _IsInConnecting;
+
+        public bool IsInConnecting
+        {
+            get { return _IsInConnecting; }
+            set { SetProperty(ref _IsInConnecting, value); }
+        }
+
+        #endregion
+
         public Translator(string clientId, string clientSecret, LanguagesService languagesService)
         {
             _languagesService = languagesService;
-            _service = new TranslateService(clientId, clientSecret);
+            _service = new TranslateService(clientId, clientSecret).AddTo(CompositeDisposable);
+        }
 
-            _service.ObserveProperty(i => i.IsInAuthentication)
-                .Subscribe(i => IsInAuthentication = i)
-                .AddTo(CompositeDisposable);
+        public void CancelTranslate()
+        {
+            _service.CancelTranslate();
         }
 
         public async Task<TranslateResult> TranslateAsync(string input, TranslateService.LanguageCodes from, TranslateService.LanguageCodes to)
@@ -38,12 +51,28 @@ namespace Ann.Core.Candidate
             if (string.IsNullOrWhiteSpace(input))
                 return null;
 
-            var r = await _service.TranslateAsync(input, from, to);
+            if (_service.IsExpierd)
+            {
+                using (Disposable.Create(() => IsInAuthentication = false))
+                {
+                    IsInAuthentication = true;
 
-            if (r == null)
-                return null;
+                    var r = await _service.AuthenticateAsync();
+                    if (r == false)
+                        return null;
+                }
+            }
 
-            return new TranslateResult(r, _languagesService);
+            using (Disposable.Create(() => IsInConnecting = false))
+            {
+                IsInConnecting = true;
+
+                var r = await _service.TranslateAsync(input, from, to);
+                if (r == null)
+                    return null;
+
+                return new TranslateResult(r, _languagesService);
+            }
         }
     }
 }

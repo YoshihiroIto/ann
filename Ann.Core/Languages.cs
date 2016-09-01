@@ -23,8 +23,10 @@ Download,
 ExecutableFile,
 File,
 Folder,
+GoogleSearch,
 GoogleSuggest,
 HelpTranslate,
+LanguageCode,
 MaxCandidateLines,
 MenuItem_Exit,
 MenuItem_OpenContainingFolder,
@@ -35,6 +37,7 @@ Message_ActivationShortcutKeyIsAlreadyInUse,
 Message_AlreadySetSameFile,
 Message_AlreadySetSameFolder,
 Message_AlreadySetSameKeyStroke,
+Message_Connecting,
 Message_DuringAuthentication,
 Message_FailedToStart,
 Message_FileNotFound,
@@ -88,8 +91,10 @@ case StringTags.Download: return "Download";
 case StringTags.ExecutableFile: return "Executable file";
 case StringTags.File: return "File";
 case StringTags.Folder: return "Folder";
-case StringTags.GoogleSuggest: return "Google Suggest";
+case StringTags.GoogleSearch: return "Google search";
+case StringTags.GoogleSuggest: return "Google suggest";
 case StringTags.HelpTranslate: return "Help translate.";
+case StringTags.LanguageCode: return "Language code";
 case StringTags.MaxCandidateLines: return "Max Candidate Lines";
 case StringTags.MenuItem_Exit: return "Exit";
 case StringTags.MenuItem_OpenContainingFolder: return "Open containing folder";
@@ -100,6 +105,7 @@ case StringTags.Message_ActivationShortcutKeyIsAlreadyInUse: return "Activation 
 case StringTags.Message_AlreadySetSameFile: return "Already set same file.";
 case StringTags.Message_AlreadySetSameFolder: return "Already set same folder.";
 case StringTags.Message_AlreadySetSameKeyStroke: return "Already set same key stroke.";
+case StringTags.Message_Connecting: return "Connecting.";
 case StringTags.Message_DuringAuthentication: return "During Authentication.";
 case StringTags.Message_FailedToStart: return "Failed to start.";
 case StringTags.Message_FileNotFound: return "File not found.";
@@ -149,8 +155,10 @@ case StringTags.Download: return "ダウンロード";
 case StringTags.ExecutableFile: return "実行可能ファイル";
 case StringTags.File: return "ファイル";
 case StringTags.Folder: return "フォルダー";
+case StringTags.GoogleSearch: return "Google 検索";
 case StringTags.GoogleSuggest: return "Google サジェスト";
 case StringTags.HelpTranslate: return "翻訳にご協力ください。";
+case StringTags.LanguageCode: return "言語コード";
 case StringTags.MaxCandidateLines: return "表示候補数";
 case StringTags.MenuItem_Exit: return "終了";
 case StringTags.MenuItem_OpenContainingFolder: return "フォルダーを開く";
@@ -161,6 +169,7 @@ case StringTags.Message_ActivationShortcutKeyIsAlreadyInUse: return "アクテ�
 case StringTags.Message_AlreadySetSameFile: return "すでに同じファイルが設定済みです。";
 case StringTags.Message_AlreadySetSameFolder: return "すでに同じフォルダーが設定済みです。";
 case StringTags.Message_AlreadySetSameKeyStroke: return "すでに同じキーストロークが設定済みです。";
+case StringTags.Message_Connecting: return "接続中です。";
 case StringTags.Message_DuringAuthentication: return "認証中です。";
 case StringTags.Message_FailedToStart: return "起動に失敗しました。";
 case StringTags.Message_FileNotFound: return "ファイルが見つかりません。";

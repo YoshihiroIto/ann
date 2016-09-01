@@ -36,5 +36,8 @@ namespace Ann.Core.Candidate
 
         private readonly DelegateCommand _RunCommand;
         ICommand ICandidate.RunCommand => _RunCommand;
+
+        SelectedBehavior ICandidate.SelectedBehavior => SelectedBehavior.NotAnything;
+        string ICandidate.CommandWord => null;
     }
 }

@@ -12,7 +12,9 @@ using Ann.Foundation.Mvvm;
 using Reactive.Bindings.Extensions;
 using System.Threading;
 using Ann.Core.Candidate;
+using Ann.Core.Config;
 using Reactive.Bindings;
+using Translator = Ann.Core.Candidate.Translator;
 
 namespace Ann.Core
 {
@@ -80,9 +82,33 @@ namespace Ann.Core
 
         #region IsInAuthentication
 
+        private bool _IsInAuthentication;
+
+        public bool IsInAuthentication
+        {
+            get { return _IsInAuthentication; }
+            private set { SetProperty(ref _IsInAuthentication, value); }
+        }
+
+        #endregion
+
+        #region IsInConnecting
+
+        private bool _IsInConnecting;
+
+        public bool IsInConnecting
+        {
+            get { return _IsInConnecting; }
+            set { SetProperty(ref _IsInConnecting, value); }
+        }
+
+        #endregion
+
+
+
         private readonly ConfigHolder _configHolder;
         private Config.App Config => _configHolder.Config;
-        private Config.MostRecentUsedList MruList => _configHolder.MruList;
+        private MostRecentUsedList MruList => _configHolder.MruList;
 
         private readonly LanguagesService _languagesService;
 
@@ -96,23 +122,13 @@ namespace Ann.Core
         private readonly ExecutableFileDataBase _executableFileDataBase;
         private readonly Calculator _calculator = new Calculator();
         private readonly Translator _translator;
-        private readonly GoogleSuggest _GoogleSuggest;
+        private readonly GoogleSuggest _googleSuggest;
 
         private HashSet<string> _priorityFiles = new HashSet<string>();
 
         private string IndexFilePath => System.IO.Path.Combine(_configHolder.ConfigDirPath, "index.dat");
 
         public VersionUpdater VersionUpdater { get; }
-
-        private bool _IsInAuthentication;
-
-        public bool IsInAuthentication
-        {
-            get { return _IsInAuthentication; }
-            private set { SetProperty(ref _IsInAuthentication, value); }
-        }
-
-        #endregion
 
         public bool IsPriorityFile(string path) => _priorityFiles.Contains(path.ToLower());
 
@@ -222,12 +238,18 @@ namespace Ann.Core
                     var parts = input.Split(' ');
                     var keyword = parts[0];
 
-                    var translatorSet = Config.Translator.TranslatorSet.First(x => x.Keyword.ToLower() == keyword);
+                    var func = Config.Functions
+                        .Where(x => x.Type == FunctionType.Translate)
+                        .First(x => x.Keyword.ToLower() == keyword);
 
                     var r = await _translator.TranslateAsync(
                         input.Substring(keyword.Length),
-                        translatorSet.From,
-                        translatorSet.To);
+                        (TranslateService.LanguageCodes)
+                        Enum.Parse(typeof(TranslateService.LanguageCodes),
+                            (string) func.Parameters[FunctionParameterKey.From]),
+                        (TranslateService.LanguageCodes)
+                        Enum.Parse(typeof(TranslateService.LanguageCodes),
+                            (string) func.Parameters[FunctionParameterKey.To]));
 
                     if (input == _currentInput)
                         Candidates = r != null ? new[] {r} : new ICandidate[0];
@@ -236,7 +258,7 @@ namespace Ann.Core
 
         public void Find(string input)
         {
-            input = input?.Trim();
+            input = input?.TrimStart();
             _currentInput = input;
 
             if (string.IsNullOrEmpty(input))
@@ -245,47 +267,69 @@ namespace Ann.Core
                 return;
             }
 
-            _inputQueue.Push(async () =>
+            var func = FindFunction(input);
+
+            if (func?.Type != FunctionType.GoogleSearch)
+                _googleSuggest.CancelSuggest();
+
+            if (func?.Type != FunctionType.Translate)
+                _translator.CancelTranslate();
+
+            _inputQueue.Push(() =>
             {
-                switch (MakeCommand(input))
+                if (func == null)
                 {
-                    case CommandType.Translate:
-                    {
-                        if (input.Split(' ').Length >= 2)
-                            _translatorSubject.OnNext(input);
-                        else
-                            Candidates = new ICandidate[0];
-
-                        break;
-                    }
-
-                    case CommandType.Calculate:
+                    if (Calculator.CanAccepte(input))
                     {
                         var r = _calculator.Calculate(input, _languagesService);
                         Candidates = r != null ? new[] {r} : new ICandidate[0];
-
-                        break;
                     }
-
-                    case CommandType.GoogleSuggest:
-                    {
-                        // todo:config化
-                        var r = await _GoogleSuggest.SuggestAsync(input.Substring(2), "ja");
-                        Candidates = r ?? new ICandidate[0];
-
-                        break;
-                    }
-
-                    case CommandType.ExecutableFile:
+                    else
                     {
                         Candidates = _executableFileDataBase
                             .Find(input, Config.ExecutableFileExts)
                             .OrderBy(u => MakeOrder(u.Path))
                             .Take(Config.MaxCandidateLinesCount)
                             .ToArray();
+                    }
+
+                    return;
+                }
+
+                switch (func.Type)
+                {
+                    case FunctionType.Translate:
+                        if (input.Split(' ').Length >= 2)
+                            _translatorSubject.OnNext(input);
+                        else
+                            Candidates = new ICandidate[0];
 
                         break;
-                    }
+
+                    case FunctionType.GoogleSearch:
+                        var commandWord = input.Substring(0, func.Keyword.Length);
+                        var inputWord = input.Substring(func.Keyword.Length);
+
+                        var r =
+                            _googleSuggest.SuggestAsync(inputWord,
+                                (string) func.Parameters[FunctionParameterKey.LanguageCode]).Result;
+
+                        if (r == null)
+                            Candidates = new ICandidate[0];
+
+                        else
+                        {
+                            var suggests = r.Take(Config.MaxCandidateLinesCount - 1);
+
+                            var search = new[]
+                                {new GoogleSearchResult(inputWord.Trim(), _languagesService, StringTags.GoogleSearch)};
+                            var candidates = search.Concat(suggests).ToArray();
+                            candidates.ForEach(c => c.CommandWord = commandWord);
+
+                            Candidates = candidates;
+                        }
+
+                        break;
 
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -293,28 +337,9 @@ namespace Ann.Core
             });
         }
 
-        private enum CommandType
+        private Function FindFunction(string input)
         {
-            Translate,
-            Calculate,
-            GoogleSuggest,
-            ExecutableFile
-        }
-
-        private CommandType MakeCommand(string input)
-        {
-            var langs = Config.Translator.TranslatorSet.Select(x => x.Keyword.ToLower());
-            if (langs.Any(l => input.StartsWith(l + " ")))
-                return CommandType.Translate;
-
-            // todo:config化
-            if (input.StartsWith("g "))
-                return  CommandType.GoogleSuggest;
-
-            if (Calculator.CanAccepte(input))
-                return CommandType.Calculate;
-
-            return CommandType.ExecutableFile;
+            return Config.Functions.FirstOrDefault(f => input.StartsWith(f.Keyword + " "));
         }
 
         private const int MaxMruCount = 50;
@@ -389,8 +414,15 @@ namespace Ann.Core
             _translator.ObserveProperty(i => i.IsInAuthentication)
                 .Subscribe(i => IsInAuthentication = i)
                 .AddTo(CompositeDisposable);
+            _translator.ObserveProperty(i => i.IsInConnecting)
+                .Subscribe(i => IsInConnecting = i)
+                .AddTo(CompositeDisposable);
 
-            _GoogleSuggest = new GoogleSuggest(_languagesService);
+            _googleSuggest = new GoogleSuggest(_languagesService)
+                .AddTo(CompositeDisposable);
+            _googleSuggest.ObserveProperty(x => x.IsInConnecting)
+                .Subscribe(i => IsInConnecting = i)
+                .AddTo(CompositeDisposable);
 
             SetupTranslatorSubject();
 

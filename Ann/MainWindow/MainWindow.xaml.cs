@@ -10,6 +10,7 @@ using Ann.Core;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm.Message;
 using Ann.SettingWindow;
+using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 
 namespace Ann.MainWindow
@@ -50,25 +51,27 @@ namespace Ann.MainWindow
 
             UpdateSize();
 
-            Observable.FromEventPattern<DependencyPropertyChangedEventHandler, DependencyPropertyChangedEventArgs>(
+            var statusBarIsVisibleChanged =
+                Observable.FromEventPattern<DependencyPropertyChangedEventHandler, DependencyPropertyChangedEventArgs>(
                     h => StatusBar.IsVisibleChanged += h,
-                    h => StatusBar.IsVisibleChanged -= h)
-                .Throttle(TimeSpan.FromMilliseconds(5))
-                .ObserveOnUIDispatcher()
-                .Subscribe(_ => UpdateSize())
-                .AddTo(_DataContext.CompositeDisposable);
+                    h => StatusBar.IsVisibleChanged -= h);
 
-            Observable.FromEventPattern<SizeChangedEventHandler, SizeChangedEventArgs>(
+            var statusBarSizeChanged =
+                Observable.FromEventPattern<SizeChangedEventHandler, SizeChangedEventArgs>(
                     h => StatusBar.SizeChanged += h,
-                    h => StatusBar.SizeChanged -= h)
-                .ObserveOnUIDispatcher()
-                .Subscribe(_ => UpdateSize())
-                .AddTo(_DataContext.CompositeDisposable);
+                    h => StatusBar.SizeChanged -= h);
 
-            Observable.FromEventPattern<SizeChangedEventHandler, SizeChangedEventArgs>(
+            var sizeChanged =
+                Observable.FromEventPattern<SizeChangedEventHandler, SizeChangedEventArgs>(
                     h => SizeChanged += h,
-                    h => SizeChanged -= h)
-                .ObserveOnUIDispatcher()
+                    h => SizeChanged -= h);
+
+            Observable
+                .Merge(statusBarIsVisibleChanged.ToUnit())
+                .Merge(statusBarSizeChanged.ToUnit())
+                .Merge(sizeChanged.ToUnit())
+                .Throttle(TimeSpan.FromMilliseconds(500))
+                .ObserveOn(ReactivePropertyScheduler.Default)
                 .Subscribe(_ => UpdateSize())
                 .AddTo(_DataContext.CompositeDisposable);
         }
@@ -210,6 +213,21 @@ namespace Ann.MainWindow
                 .Subscribe<WindowActionMessage>(WindowActionAction.InvokeAction)
                 .AddTo(_DataContext.CompositeDisposable);
 
+            _DataContext.Messenger
+                .Subscribe<MessengerMessage>(m =>
+                {
+                    switch (m)
+                    {
+                        case MessengerMessage.InputTextBoxSetCaretLast:
+                            _isInputTextBoxSetCaretLast = true;
+                            break;
+
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(m), m, null);
+                    }
+                })
+                .AddTo(_DataContext.CompositeDisposable);
+
             _DataContext.AsyncMessenger
                 .Subscribe<SettingViewModel>(
                     vm =>
@@ -222,6 +240,9 @@ namespace Ann.MainWindow
 
         private void UpdateSize()
         {
+            if (_DataContext.Candidates.Value == null)
+                return;
+
             BasePanel.Height =
                 InputLineHeight +
                 _DataContext.Candidates.Value.Length*ViewConstants.CandidatePanelHeight;
@@ -231,7 +252,6 @@ namespace Ann.MainWindow
             if (_DataContext.Candidates.Value.Any())
                 height += ViewConstants.BaseMarginUnit;
 
-            //if (StatusBar.Visibility == Visibility.Visible)
             {
                 height += StatusBar.ActualHeight;
                 Canvas.SetLeft(StatusBar, 0);
@@ -266,7 +286,7 @@ namespace Ann.MainWindow
             }
 
             _DataContext.Candidates
-                .ObserveOnUIDispatcher()
+                .ObserveOn(ReactivePropertyScheduler.Default)
                 .Subscribe(candidates =>
                 {
                     var index = 0;
@@ -286,6 +306,8 @@ namespace Ann.MainWindow
                     }
 
                     UpdateSize();
+
+                    _DataContext.DisposeOldCandidates();
                 }).AddTo(_DataContext.CompositeDisposable);
         }
 
@@ -302,6 +324,17 @@ namespace Ann.MainWindow
 
             _DataContext.SelectedCandidate.Value = item;
             _DataContext.RunCommand.Execute(null);
+        }
+
+        private bool _isInputTextBoxSetCaretLast;
+
+        private void InputTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (_isInputTextBoxSetCaretLast == false)
+                return;
+
+            InputTextBox.CaretIndex = InputTextBox.Text.Length;
+            _isInputTextBoxSetCaretLast = false;
         }
     }
 }
