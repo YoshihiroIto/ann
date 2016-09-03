@@ -96,7 +96,7 @@ namespace Ann.MainWindow
                     }
                 }).AddTo(CompositeDisposable);
 
-            app.ObserveProperty(c => c.Crawling)
+            app.ObserveProperty(c => c.CrawlingCount)
                 .Subscribe(c =>
                 {
                     lock (_messageRemoveLock)
@@ -168,6 +168,29 @@ namespace Ann.MainWindow
                         }
                     }
                 }).AddTo(CompositeDisposable);
+
+            app.ObserveProperty(c => c.IndexOpeningProgress)
+                .Subscribe(c =>
+                {
+                    lock (_messageRemoveLock)
+                    {
+                        var item = Messages
+                            .FirstOrDefault(
+                                x => x.Key == StatusBarItemViewModel.SearchKey.InOpening);
+
+                        if (item != null)
+                            item.Messages.Value =
+                                new[]
+                                {
+                                    new StatusBarItemViewModel.Message
+                                    {
+                                        String = StringTags.Message_InOpening,
+                                        Options = new object[] {c}
+                                    }
+                                };
+                    }
+                })
+                .AddTo(CompositeDisposable);
 
             app.ObserveProperty(x => x.IsInAuthentication)
                 .Subscribe(r =>
