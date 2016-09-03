@@ -50,6 +50,18 @@ namespace Ann.Core.Candidate
 
         #endregion
 
+        #region IndexOpeningProgress
+
+        private int _IndexOpeningProgress;
+
+        public int IndexOpeningProgress
+        {
+            get { return _IndexOpeningProgress; }
+            set { SetProperty(ref _IndexOpeningProgress, value); }
+        }
+
+        #endregion
+
         public int IconCacheSize
         {
             get { return _iconDecoder.IconCacheSize; }
@@ -289,9 +301,12 @@ namespace Ann.Core.Candidate
                         if (root.Version != CurrentIndexVersion)
                             return IndexOpeningResults.OldIndex;
 
-                        var tempExecutableFiles = new ExecutableFile[root.RowsLength];
+                        var fileCount = root.RowsLength;
+                        var tempExecutableFiles = new ExecutableFile[fileCount];
                         var isContainsInvalid = false;
                         var stringPool = new ConcurrentDictionary<string, string>();
+
+                        var count = 0;
 
                         Parallel.For(
                             0,
@@ -309,6 +324,8 @@ namespace Ann.Core.Candidate
 
                                 try
                                 {
+                                    IndexOpeningProgress = 100*Interlocked.Increment(ref count)/fileCount;
+
                                     tempExecutableFiles[i] = new ExecutableFile(i, root.RowsLength, rowTemp.Path,
                                         _app, _iconDecoder, stringPool, targetFoldersArray);
                                 }

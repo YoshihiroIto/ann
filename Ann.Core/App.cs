@@ -34,12 +34,24 @@ namespace Ann.Core
 
         #region CrawlingCount
 
-        private int _Crawling;
+        private int _CrawlingCount;
 
-        public int Crawling
+        public int CrawlingCount
         {
-            get { return _Crawling; }
-            set { SetProperty(ref _Crawling, value); }
+            get { return _CrawlingCount; }
+            set { SetProperty(ref _CrawlingCount, value); }
+        }
+
+        #endregion
+
+        #region IndexOpeningProgress
+
+        private int _IndexOpeningProgress;
+
+        public int IndexOpeningProgress
+        {
+            get { return _IndexOpeningProgress; }
+            set { SetProperty(ref _IndexOpeningProgress, value); }
         }
 
         #endregion
@@ -103,8 +115,6 @@ namespace Ann.Core
         }
 
         #endregion
-
-
 
         private readonly ConfigHolder _configHolder;
         private Config.App Config => _configHolder.Config;
@@ -399,7 +409,10 @@ namespace Ann.Core
 
             _executableFileDataBase = new ExecutableFileDataBase(this, IndexFilePath);
             _executableFileDataBase.ObserveProperty(x => x.CrawlingCount)
-                .Subscribe(c => Crawling = c)
+                .Subscribe(c => CrawlingCount = c)
+                .AddTo(CompositeDisposable);
+            _executableFileDataBase.ObserveProperty(x => x.IndexOpeningProgress)
+                .Subscribe(c => IndexOpeningProgress = c)
                 .AddTo(CompositeDisposable);
 
             _translator = new Translator(

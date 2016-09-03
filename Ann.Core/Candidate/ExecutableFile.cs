@@ -61,11 +61,12 @@ namespace Ann.Core.Candidate
             _app = app;
             _iconDecoder = iconDecoder;
 
-            var fvi = FileVersionInfo.GetVersionInfo(path);
+            var ext = System.IO.Path.GetExtension(path)?.ToLower();
+            var fileDescription = ext == ".exe" ? FileVersionInfo.GetVersionInfo(path).FileDescription : null;
 
-            var name = string.IsNullOrWhiteSpace(fvi.FileDescription)
-                ? System.IO.Path.GetFileNameWithoutExtension(path)
-                : fvi.FileDescription;
+            var name = string.IsNullOrWhiteSpace(fileDescription)
+                ? System.IO.Path.GetFileNameWithoutExtension(path) ?? string.Empty
+                : fileDescription;
 
             Path = stringPool.GetOrAdd(path, path);
             Name = stringPool.GetOrAdd(name, name);

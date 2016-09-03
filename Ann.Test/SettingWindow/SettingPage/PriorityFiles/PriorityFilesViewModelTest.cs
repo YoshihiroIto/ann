@@ -1,6 +1,5 @@
 ﻿using System;
 using Ann.Core;
-using Ann.Foundation;
 using Ann.Foundation.Mvvm.Message;
 using Ann.SettingWindow.SettingPage.PriorityFiles;
 using Xunit;
@@ -9,26 +8,19 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
 {
     public class PriorityFilesViewModelTest : IDisposable
     {
-        private readonly DisposableFileSystem _config = new DisposableFileSystem();
-
-        public PriorityFilesViewModelTest()
-        {
-            TestHelper.CleanTestEnv();
-        }
+        private readonly TestContext _context = new TestContext();
 
         public void Dispose()
         {
-            _config.Dispose();
+            _context.Dispose();
         }
 
         [Fact]
         public void Basic()
         {
             var model = new Core.Config.App();
+            var app = _context.GetInstance<App>();
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
             using (var messenger = new WindowMessageBroker())
             using (new PriorityFilesViewModel(model, app, messenger))
             {
@@ -39,10 +31,8 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
         public void Files()
         {
             var model = new Core.Config.App();
+            var app = _context.GetInstance<App>();
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
             using (var messenger = new WindowMessageBroker())
             using (var vm = new PriorityFilesViewModel(model, app, messenger))
             {
@@ -67,10 +57,8 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
         public void FileAddCommand()
         {
             var model = new Core.Config.App();
+            var app = _context.GetInstance<App>();
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
             using (var messenger = new WindowMessageBroker())
             using (var vm = new PriorityFilesViewModel(model, app, messenger))
             {
@@ -88,10 +76,8 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
         public void FileRemoveCommand()
         {
             var model = new Core.Config.App();
+            var app = _context.GetInstance<App>();
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
             using (var messenger = new WindowMessageBroker())
             using (var vm = new PriorityFilesViewModel(model, app, messenger))
             {
@@ -121,10 +107,8 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
         public void PathFolderSelect()
         {
             var model = new Core.Config.App();
+            var app = _context.GetInstance<App>();
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
             using (var messenger = new WindowMessageBroker())
             using (var vm = new PriorityFilesViewModel(model, app, messenger))
             {
@@ -137,10 +121,8 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
         public void IsFocused_Empty_AutoRemove()
         {
             var model = new Core.Config.App();
+            var app = _context.GetInstance<App>();
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
             using (var messenger = new WindowMessageBroker())
             using (var vm = new PriorityFilesViewModel(model, app, messenger))
             {
@@ -161,10 +143,8 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
         public void Validate_AlreadySetSameFile()
         {
             var model = new Core.Config.App();
+            var app = _context.GetInstance<App>();
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
             using (var messenger = new WindowMessageBroker())
             using (var vm = new PriorityFilesViewModel(model, app, messenger))
             {

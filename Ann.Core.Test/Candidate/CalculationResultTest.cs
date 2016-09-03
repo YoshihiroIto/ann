@@ -7,23 +7,17 @@ namespace Ann.Core.Test.Candidate
 {
     public class CalculationResultTest : IDisposable
     {
-        private readonly DisposableFileSystem _config = new DisposableFileSystem();
-
-        public CalculationResultTest()
-        {
-            TestHelper.CleanTestEnv();
-        }
+        private readonly TestContext _context = new TestContext();
 
         public void Dispose()
         {
-            _config.Dispose();
+            _context.Dispose();
         }
 
         [Fact]
         public void Basic()
         {
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
+            var languagesService = _context.GetInstance<LanguagesService>();
             {
                 var r = new CalculationResult("ABC", languagesService);
 
@@ -35,9 +29,8 @@ namespace Ann.Core.Test.Candidate
         [Fact]
         public void Interface()
         {
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
+            var app = _context.GetInstance<App>();
+            var languagesService = _context.GetInstance<LanguagesService>();
             {
                 var i = new CalculationResult("ABC", languagesService) as ICandidate;
 
@@ -52,8 +45,7 @@ namespace Ann.Core.Test.Candidate
         [StaFact]
         public void RunCommand()
         {
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
+            var languagesService = _context.GetInstance<LanguagesService>();
             {
                 var r = new CalculationResult("ABC", languagesService) as ICandidate;
 

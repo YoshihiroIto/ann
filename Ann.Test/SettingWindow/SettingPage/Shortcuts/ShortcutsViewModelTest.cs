@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 using Ann.Core;
 using Ann.Core.Config;
 using Ann.SettingWindow.SettingPage.Shortcuts;
@@ -7,11 +8,13 @@ using App = Ann.Core.Config.App;
 
 namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
 {
-    public class ShortcutsViewModelTest
+    public class ShortcutsViewModelTest : IDisposable
     {
-        public ShortcutsViewModelTest()
+        private readonly TestContext _context = new TestContext();
+
+        public void Dispose()
         {
-            TestHelper.CleanTestEnv();
+            _context.Dispose();
         }
         
         [Fact]

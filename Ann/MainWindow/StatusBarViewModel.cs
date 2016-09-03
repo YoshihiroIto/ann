@@ -20,15 +20,11 @@ namespace Ann.MainWindow
         public ObservableCollection<StatusBarItemViewModel> Messages { get; }
         public ReadOnlyReactiveProperty<Visibility> Visibility { get; }
 
-        private readonly App _app;
-
         private readonly object _messageRemoveLock = new object();
 
         public StatusBarViewModel(App app)
         {
             Debug.Assert(app != null);
-
-            _app = app;
 
             Messages = new ObservableCollection<StatusBarItemViewModel>();
 
@@ -55,8 +51,8 @@ namespace Ann.MainWindow
             Observable.FromEventPattern<
                     EventHandler<App.NotificationEventArgs>,
                     App.NotificationEventArgs>(
-                    h => _app.Notification += h,
-                    h => _app.Notification -= h)
+                    h => app.Notification += h,
+                    h => app.Notification -= h)
                 .Subscribe(async e =>
                 {
                     var item = new StatusBarItemViewModel(app, e.EventArgs.Messages);
@@ -96,7 +92,7 @@ namespace Ann.MainWindow
                     }
                 }).AddTo(CompositeDisposable);
 
-            app.ObserveProperty(c => c.Crawling)
+            app.ObserveProperty(c => c.CrawlingCount)
                 .Subscribe(c =>
                 {
                     lock (_messageRemoveLock)
@@ -169,6 +165,29 @@ namespace Ann.MainWindow
                     }
                 }).AddTo(CompositeDisposable);
 
+            app.ObserveProperty(c => c.IndexOpeningProgress)
+                .Subscribe(c =>
+                {
+                    lock (_messageRemoveLock)
+                    {
+                        var item = Messages
+                            .FirstOrDefault(
+                                x => x.Key == StatusBarItemViewModel.SearchKey.InOpening);
+
+                        if (item != null)
+                            item.Messages.Value =
+                                new[]
+                                {
+                                    new StatusBarItemViewModel.Message
+                                    {
+                                        String = StringTags.Message_InOpening,
+                                        Options = new object[] {c}
+                                    }
+                                };
+                    }
+                })
+                .AddTo(CompositeDisposable);
+
             app.ObserveProperty(x => x.IsInAuthentication)
                 .Subscribe(r =>
                 {
@@ -228,7 +247,7 @@ namespace Ann.MainWindow
         {
             CompositeDisposable.Add(() => _autoUpdaterItem?.Dispose());
 
-            _app.ObserveProperty(x => x.AutoUpdateState)
+            app.ObserveProperty(x => x.AutoUpdateState)
                 .Subscribe(s =>
                 {
                     if (_autoUpdaterItem != null)
@@ -250,10 +269,10 @@ namespace Ann.MainWindow
                         Messages.Add(_autoUpdaterItem);
                 }).AddTo(CompositeDisposable);
 
-            _app.ObserveProperty(x => x.AutoUpdateRemainingSeconds)
+            app.ObserveProperty(x => x.AutoUpdateRemainingSeconds)
                 .Subscribe(p =>
                 {
-                    if (_app.AutoUpdateState == App.AutoUpdateStates.CloseAfterNSec)
+                    if (app.AutoUpdateState == App.AutoUpdateStates.CloseAfterNSec)
                     {
                         _autoUpdaterItem.Messages.Value =
                             p == 0

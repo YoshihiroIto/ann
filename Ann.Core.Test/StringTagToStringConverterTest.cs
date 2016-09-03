@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Threading;
 using Ann.Foundation;
 using Xunit;
 
@@ -7,29 +6,22 @@ namespace Ann.Core.Test
 {
     public class StringTagToStringConverterTest : IDisposable
     {
+        private readonly TestContext _context = new TestContext();
         private readonly DisposableFileSystem _config = new DisposableFileSystem();
-
-        public StringTagToStringConverterTest()
-        {
-            TestHelper.CleanTestEnv();
-        }
 
         public void Dispose()
         {
+            _context.Dispose();
             _config.Dispose();
-
-            // for appveyor 
-            Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
 
         [Fact]
         public void Convert()
         {
-            var configHolder = new ConfigHolder(_config.RootPath) {Config = {Culture = "en"}};
-
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
+            var app = _context.GetInstance<App>();
             {
+                _context.GetInstance<Core.Config.App>().Culture = "en";
+
                 var c = new StringTagToStringConverter();
 
                 var expected = Localization.GetString(Languages.en, StringTags.AllFiles);

@@ -9,17 +9,13 @@ namespace Ann.Core.Test.Candidate
 {
     public class GoogleSuggestTest : IDisposable
     {
-        private readonly DisposableFileSystem _config = new DisposableFileSystem();
-
-        public GoogleSuggestTest()
-        {
-            TestHelper.CleanTestEnv();
-        }
+        private readonly TestContext _context = new TestContext();
 
         public void Dispose()
         {
-            _config.Dispose();
+            _context.Dispose();
         }
+
 
         [Fact]
         public async void Basic()
@@ -27,8 +23,7 @@ namespace Ann.Core.Test.Candidate
             if (NetworkInterface.GetIsNetworkAvailable() == false)
                 return;
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
+            var languagesService = _context.GetInstance<LanguagesService>();
             {
                 var g = new GoogleSuggest(languagesService);
 

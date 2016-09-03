@@ -11,27 +11,19 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
 {
     public class TargetFoldersViewModelTest : IDisposable
     {
-        private readonly DisposableFileSystem _config = new DisposableFileSystem();
-
-        public TargetFoldersViewModelTest()
-        {
-            TestHelper.CleanTestEnv();
-        }
+        private readonly TestContext _context = new TestContext();
 
         public void Dispose()
         {
-            _config.Dispose();
+            _context.Dispose();
         }
 
         [Fact]
         public void Basic()
         {
             var model = new Core.Config.App();
+            var app = _context.GetInstance<App>();
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
             using (var messenger = new WindowMessageBroker())
             using (var vm = new TargetFoldersViewModel(model, app, messenger))
             {
@@ -74,10 +66,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         public void FolderAddCommand()
         {
             var model = new Core.Config.App();
+            var app = _context.GetInstance<App>();
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
             using (var messenger = new WindowMessageBroker())
             using (var vm = new TargetFoldersViewModel(model, app, messenger))
             {
@@ -102,10 +92,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         public void FolderRemoveCommand()
         {
             var model = new Core.Config.App();
+            var app = _context.GetInstance<App>();
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
             using (var messenger = new WindowMessageBroker())
             using (var vm = new TargetFoldersViewModel(model, app, messenger))
             {
@@ -139,10 +127,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         public void FoldersValidate_FolderNotFound()
         {
             var model = new Core.Config.App();
+            var app = _context.GetInstance<App>();
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
             using (var messenger = new WindowMessageBroker())
             using (var vm = new TargetFoldersViewModel(model, app, messenger))
             {
@@ -166,10 +152,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         public void FoldersValidate_FolderFound()
         {
             var model = new Core.Config.App();
+            var app = _context.GetInstance<App>();
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
             using (var messenger = new WindowMessageBroker())
             using (var vm = new TargetFoldersViewModel(model, app, messenger))
             {
@@ -193,10 +177,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         public void FoldersValidate_FolderNotFoundToFound()
         {
             var model = new Core.Config.App();
+            var app = _context.GetInstance<App>();
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
             using (var messenger = new WindowMessageBroker())
             using (var vm = new TargetFoldersViewModel(model, app, messenger))
             {
@@ -233,10 +215,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         public void FoldersValidate_FolderFoundToNotFound()
         {
             var model = new Core.Config.App();
+            var app = _context.GetInstance<App>();
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
             using (var messenger = new WindowMessageBroker())
             using (var vm = new TargetFoldersViewModel(model, app, messenger))
             {
@@ -271,10 +251,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         public void IsFocused_Empty_AutoRemove()
         {
             var model = new Core.Config.App();
+            var app = _context.GetInstance<App>();
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
             using (var messenger = new WindowMessageBroker())
             using (var vm = new TargetFoldersViewModel(model, app, messenger))
             {
@@ -302,10 +280,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
         public void Validate_AlreadySetSameFolder()
         {
             var model = new Core.Config.App();
+            var app = _context.GetInstance<App>();
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
             using (var messenger = new WindowMessageBroker())
             using (var vm = new TargetFoldersViewModel(model, app, messenger))
             {

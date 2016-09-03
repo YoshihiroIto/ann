@@ -11,8 +11,8 @@
   Summry: A managed wrapper around Microsoft's delta compression application programming interfaces.
   Url: 
 - Name: gong-wpf-dragdrop
-  Auther: Jan Karger (punker76),  Steven Kirk,  mitchell.jon
-  Summry: A Drag'n'Drop Framework for WPF
+  Auther: Jan Karger (punker76), Steven Kirk, mitchell.jon
+  Summry: An easy to use drag'n'drop framework for WPF applications.
   Url: https://github.com/punker76/gong-wpf-dragdrop
 - Name: Google APIs Auth Client Library
   Auther: Google Inc.
@@ -96,6 +96,10 @@
   Auther: neuecc xin9le okazuki
   Summry: ReactiveProperty is MVVM and Asynchronous Extensions for Reactive Extensions(System.Reactive). Target is .NET 4.5, .NET 4.6, UWP ,Xamarin(Android, iOS, Forms) and .NET Standard 1.1.
   Url: https://github.com/runceel/ReactiveProperty
+- Name: Simple Injector
+  Auther: Simple Injector Contributors
+  Summry: Simple Injector is an easy-to-use Dependency Injection (DI) library for .NET 4+ that supports Silverlight 4+, Windows Phone 8, Windows 8 including Universal apps and Mono.
+  Url: https://simpleinjector.org/
 - Name: Splat
   Auther: Paul Betts
   Summry: A library to make things cross-platform that should be

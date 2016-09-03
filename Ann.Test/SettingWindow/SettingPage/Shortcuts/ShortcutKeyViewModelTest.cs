@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 using Ann.Core;
 using Ann.Core.Config;
 using Ann.SettingWindow.SettingPage.Shortcuts;
@@ -6,11 +7,13 @@ using Xunit;
 
 namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
 {
-    public class ShortcutKeyViewModelTest
+    public class ShortcutKeyViewModelTest : IDisposable
     {
-        public ShortcutKeyViewModelTest()
+        private readonly TestContext _context = new TestContext();
+
+        public void Dispose()
         {
-            TestHelper.CleanTestEnv();
+            _context.Dispose();
         }
 
         [Fact]

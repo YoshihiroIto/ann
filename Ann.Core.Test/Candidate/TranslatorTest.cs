@@ -10,16 +10,11 @@ namespace Ann.Core.Test.Candidate
 {
     public class TranslatorTest : IDisposable
     {
-        private readonly DisposableFileSystem _config = new DisposableFileSystem();
-
-        public TranslatorTest()
-        {
-            TestHelper.CleanTestEnv();
-        }
+        private readonly TestContext _context = new TestContext();
 
         public void Dispose()
         {
-            _config.Dispose();
+            _context.Dispose();
         }
 
         [Theory]
@@ -35,8 +30,7 @@ namespace Ann.Core.Test.Candidate
             if (File.Exists(authenticationFile) == false)
                 return;
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
+            var languagesService = _context.GetInstance<LanguagesService>();
             {
                 AuthenticationFile auth;
                 using (var reader = new StringReader(File.ReadAllText(authenticationFile)))
