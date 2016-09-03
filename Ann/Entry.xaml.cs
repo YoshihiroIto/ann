@@ -72,7 +72,9 @@ namespace Ann
             _DiContainer.GetRegistration(typeof(VersionUpdater)).Registration
                 .SuppressDiagnosticWarning(DiagnosticType.DisposableTransientComponent, "suppress");
 
+#if DEBUG
             _DiContainer.Verify();
+#endif
         }
 
         private readonly Container _DiContainer = new Container();
