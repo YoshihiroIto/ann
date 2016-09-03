@@ -9,29 +9,22 @@ namespace Ann.Core.Test.Candidate
 {
     public class ExecutableFileDataBaseBasicTest : IDisposable
     {
-        private readonly DisposableFileSystem _config = new DisposableFileSystem();
-        private readonly DisposableFileSystem _context = new DisposableFileSystem();
+        private readonly TestContext _context = new TestContext();
+        private readonly DisposableFileSystem _dataFs = new DisposableFileSystem();
 
-        public ExecutableFileDataBaseBasicTest()
-        {
-            TestHelper.CleanTestEnv();
-        }
-        
         public void Dispose()
         {
-            _config.Dispose();
             _context.Dispose();
+            _dataFs.Dispose();
         }
 
         [Fact]
         public async void NotFoundOpenIndex()
         {
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
+            var app = _context.GetInstance<App>();
             {
-                var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
-                var targetPaths = new[] { System.IO.Path.Combine(_context.RootPath, "target1") };
+                var dbFilePath = System.IO.Path.Combine(_dataFs.RootPath, "index.dat");
+                var targetPaths = new[] {System.IO.Path.Combine(_dataFs.RootPath, "target1")};
 
                 var db = new ExecutableFileDataBase(app, dbFilePath);
 
@@ -45,14 +38,12 @@ namespace Ann.Core.Test.Candidate
         [InlineData(new[] {"exe"}, new[] {"target1/aaa.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
         public async void OpenIndex(string[] executableFileExts, string[] targetFiles)
         {
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
+            var app = _context.GetInstance<App>();
             {
-                _context.CreateFiles(targetFiles);
+                _dataFs.CreateFiles(targetFiles);
 
-                var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
-                var targetPaths = new[] { System.IO.Path.Combine(_context.RootPath, "target1") };
+                var dbFilePath = System.IO.Path.Combine(_dataFs.RootPath, "index.dat");
+                var targetPaths = new[] {System.IO.Path.Combine(_dataFs.RootPath, "target1")};
 
                 var db = new ExecutableFileDataBase(app, dbFilePath);
                 var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
@@ -66,16 +57,13 @@ namespace Ann.Core.Test.Candidate
         [InlineData(new[] {"exe"}, new[] {"target1/aaa.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
         public async void ReopenIndex(string[] executableFileExts, string[] targetFiles)
         {
-            _context.CreateFiles(targetFiles);
+            _dataFs.CreateFiles(targetFiles);
 
             {
-
-                var configHolder = new ConfigHolder(_config.RootPath);
-                using (var languagesService = new LanguagesService(configHolder.Config))
-                using (var app = new App(configHolder, languagesService))
+                var app = _context.GetInstance<App>();
                 {
-                    var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
-                    var targetPaths = new[] { System.IO.Path.Combine(_context.RootPath, "target1") };
+                    var dbFilePath = System.IO.Path.Combine(_dataFs.RootPath, "index.dat");
+                    var targetPaths = new[] {System.IO.Path.Combine(_dataFs.RootPath, "target1")};
 
                     var db = new ExecutableFileDataBase(app, dbFilePath);
                     var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
@@ -86,12 +74,10 @@ namespace Ann.Core.Test.Candidate
             }
 
             {
-                var configHolder = new ConfigHolder(_config.RootPath);
-                using (var languagesService = new LanguagesService(configHolder.Config))
-                using (var app = new App(configHolder, languagesService))
+                var app = _context.GetInstance<App>();
                 {
-                    var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
-                    var targetPaths = new[] { System.IO.Path.Combine(_context.RootPath, "target1") };
+                    var dbFilePath = System.IO.Path.Combine(_dataFs.RootPath, "index.dat");
+                    var targetPaths = new[] {System.IO.Path.Combine(_dataFs.RootPath, "target1")};
 
                     var db = new ExecutableFileDataBase(app, dbFilePath);
                     var r = await db.OpenIndexAsync(targetPaths);
@@ -105,15 +91,13 @@ namespace Ann.Core.Test.Candidate
         [InlineData(new[] {"exe"}, new[] {"target1/aaa.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
         public async void ReopenIndexNotFound(string[] executableFileExts, string[] targetFiles)
         {
-            _context.CreateFiles(targetFiles);
+            _dataFs.CreateFiles(targetFiles);
 
             {
-                var configHolder = new ConfigHolder(_config.RootPath);
-                using (var languagesService = new LanguagesService(configHolder.Config))
-                using (var app = new App(configHolder, languagesService))
+                var app = _context.GetInstance<App>();
                 {
-                    var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
-                    var targetPaths = new[] { System.IO.Path.Combine(_context.RootPath, "target1") };
+                    var dbFilePath = System.IO.Path.Combine(_dataFs.RootPath, "index.dat");
+                    var targetPaths = new[] {System.IO.Path.Combine(_dataFs.RootPath, "target1")};
 
                     var db = new ExecutableFileDataBase(app, dbFilePath);
                     var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
@@ -124,15 +108,13 @@ namespace Ann.Core.Test.Candidate
             }
 
             foreach (var f in targetFiles)
-                File.Delete(System.IO.Path.Combine(_context.RootPath, f));
+                File.Delete(System.IO.Path.Combine(_dataFs.RootPath, f));
 
             {
-                var configHolder = new ConfigHolder(_config.RootPath);
-                using (var languagesService = new LanguagesService(configHolder.Config))
-                using (var app = new App(configHolder, languagesService))
+                var app = _context.GetInstance<App>();
                 {
-                    var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
-                    var targetPaths = new[] { System.IO.Path.Combine(_context.RootPath, "target1") };
+                    var dbFilePath = System.IO.Path.Combine(_dataFs.RootPath, "index.dat");
+                    var targetPaths = new[] {System.IO.Path.Combine(_dataFs.RootPath, "target1")};
 
                     var db = new ExecutableFileDataBase(app, dbFilePath);
                     var r = await db.OpenIndexAsync(targetPaths);
@@ -147,17 +129,16 @@ namespace Ann.Core.Test.Candidate
 
         [Theory]
         [InlineData(new[] {"exe"}, new[] {"target1/aaa.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
-        [InlineData(new[] {".exe"}, new[] {"target1/aaa.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
+        [InlineData(new[] {".exe"}, new[] {"target1/aaa.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})
+        ]
         public async void UpdateIndex(string[] executableFileExts, string[] targetFiles)
         {
-            _context.CreateFiles(targetFiles);
+            _dataFs.CreateFiles(targetFiles);
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
+            var app = _context.GetInstance<App>();
             {
-                var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
-                var targetPaths = new[] { System.IO.Path.Combine(_context.RootPath, "target1") };
+                var dbFilePath = System.IO.Path.Combine(_dataFs.RootPath, "index.dat");
+                var targetPaths = new[] {System.IO.Path.Combine(_dataFs.RootPath, "target1")};
 
                 var db = new ExecutableFileDataBase(app, dbFilePath);
                 var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
@@ -171,14 +152,12 @@ namespace Ann.Core.Test.Candidate
         [InlineData(new[] {"exe"}, new[] {"target1/aAa.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
         public async void CrawingData1(string[] executableFileExts, string[] targetFiles)
         {
-            _context.CreateFiles(targetFiles);
+            _dataFs.CreateFiles(targetFiles);
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
+            var app = _context.GetInstance<App>();
             {
-                var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
-                var targetPaths = new[] { System.IO.Path.Combine(_context.RootPath, "target1") };
+                var dbFilePath = System.IO.Path.Combine(_dataFs.RootPath, "index.dat");
+                var targetPaths = new[] {System.IO.Path.Combine(_dataFs.RootPath, "target1")};
 
                 var db = new ExecutableFileDataBase(app, dbFilePath);
                 var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
@@ -190,7 +169,7 @@ namespace Ann.Core.Test.Candidate
 
                 Assert.Equal(1, f.Length);
 
-                Assert.Equal(System.IO.Path.Combine(_context.RootPath, @"target1\aAa.exe"), f[0].Path);
+                Assert.Equal(System.IO.Path.Combine(_dataFs.RootPath, @"target1\aAa.exe"), f[0].Path);
                 Assert.Equal(string.Empty, f[0].LowerDirectory);
                 Assert.Equal("aaa", f[0].LowerFileName);
                 Assert.Equal("aaa", f[0].LowerName);
@@ -203,17 +182,16 @@ namespace Ann.Core.Test.Candidate
         }
 
         [Theory]
-        [InlineData(new[] {"exe"}, new[] {"target1/xxx/YYY/zzz/aAa 123.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
+        [InlineData(new[] {"exe"},
+             new[] {"target1/xxx/YYY/zzz/aAa 123.exe", @"target1\bbb.exe", "target1/ccc.exe", "target1/ddd.bin"})]
         public async void CrawingData2(string[] executableFileExts, string[] targetFiles)
         {
-            _context.CreateFiles(targetFiles);
+            _dataFs.CreateFiles(targetFiles);
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
+            var app = _context.GetInstance<App>();
             {
-                var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
-                var targetPaths = new[] { System.IO.Path.Combine(_context.RootPath, "target1") };
+                var dbFilePath = System.IO.Path.Combine(_dataFs.RootPath, "index.dat");
+                var targetPaths = new[] {System.IO.Path.Combine(_dataFs.RootPath, "target1")};
 
                 var db = new ExecutableFileDataBase(app, dbFilePath);
                 var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
@@ -225,7 +203,7 @@ namespace Ann.Core.Test.Candidate
 
                 Assert.Equal(1, f.Length);
 
-                Assert.Equal(System.IO.Path.Combine(_context.RootPath, @"target1\xxx\YYY\zzz\aAa 123.exe"), f[0].Path);
+                Assert.Equal(System.IO.Path.Combine(_dataFs.RootPath, @"target1\xxx\YYY\zzz\aAa 123.exe"), f[0].Path);
                 Assert.Equal(@"\xxx\yyy\zzz", f[0].LowerDirectory);
                 Assert.Equal("aaa 123", f[0].LowerFileName);
                 Assert.Equal("aaa 123", f[0].LowerName);

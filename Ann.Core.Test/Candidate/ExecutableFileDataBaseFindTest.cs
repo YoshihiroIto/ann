@@ -8,18 +8,13 @@ namespace Ann.Core.Test.Candidate
 {
     public class ExecutableFileDataBaseFindTest : IDisposable
     {
-        private readonly DisposableFileSystem _config = new DisposableFileSystem();
-        private readonly DisposableFileSystem _context = new DisposableFileSystem();
-
-        public ExecutableFileDataBaseFindTest()
-        {
-            TestHelper.CleanTestEnv();
-        }
+        private readonly TestContext _context = new TestContext();
+        private readonly DisposableFileSystem _dataFs = new DisposableFileSystem();
 
         public void Dispose()
         {
-            _config.Dispose();
             _context.Dispose();
+            _dataFs.Dispose();
         }
 
         [Theory]
@@ -27,15 +22,13 @@ namespace Ann.Core.Test.Candidate
         [InlineData("BBB", new[] {"target1/aaa.exe", @"target1\BBB.exe", "target1/ccc.exe", "target1/ddd.bin"})]
         public async void Basic(string name, string[] targetFiles)
         {
-            _context.CreateFiles(targetFiles);
+            _dataFs.CreateFiles(targetFiles);
 
-            var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
-            var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
+            var dbFilePath = System.IO.Path.Combine(_dataFs.RootPath, "index.dat");
+            var targetPaths = new[] {System.IO.Path.Combine(_dataFs.RootPath, "target1")};
             var executableFileExts = new[] {"exe"};
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
+            var app = _context.GetInstance<App>();
             {
                 var db = new ExecutableFileDataBase(app, dbFilePath);
                 var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
@@ -48,7 +41,7 @@ namespace Ann.Core.Test.Candidate
                 Assert.Equal(1, f.Length);
                 Assert.Equal(name, f[0].Name);
                 Assert.Equal(
-                    System.IO.Path.Combine(_context.RootPath, @"target1\bbb.exe").ToLower(),
+                    System.IO.Path.Combine(_dataFs.RootPath, @"target1\bbb.exe").ToLower(),
                     f[0].Path.ToLower());
             }
         }
@@ -59,15 +52,13 @@ namespace Ann.Core.Test.Candidate
         [InlineData(null, new[] {"target1/aaa.exe", @"target1\BBB.exe", "target1/ccc.exe", "target1/ddd.bin"})]
         public async void InputEmpty(string input, string[] targetFiles)
         {
-            _context.CreateFiles(targetFiles);
+            _dataFs.CreateFiles(targetFiles);
 
-            var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
-            var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
+            var dbFilePath = System.IO.Path.Combine(_dataFs.RootPath, "index.dat");
+            var targetPaths = new[] {System.IO.Path.Combine(_dataFs.RootPath, "target1")};
             var executableFileExts = new[] {"exe"};
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
+            var app = _context.GetInstance<App>();
             {
                 var db = new ExecutableFileDataBase(app, dbFilePath);
                 var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
@@ -134,20 +125,18 @@ namespace Ann.Core.Test.Candidate
             "aaa")]
         public async void InputScore(string[] expected, string[] targetFiles, string input)
         {
-            _context.CreateFiles(targetFiles);
+            _dataFs.CreateFiles(targetFiles);
 
-            var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
+            var dbFilePath = System.IO.Path.Combine(_dataFs.RootPath, "index.dat");
             var targetPaths = new[]
             {
-                System.IO.Path.Combine(_context.RootPath, "target1"),
-                System.IO.Path.Combine(_context.RootPath, "target2"),
-                System.IO.Path.Combine(_context.RootPath, "target3")
+                System.IO.Path.Combine(_dataFs.RootPath, "target1"),
+                System.IO.Path.Combine(_dataFs.RootPath, "target2"),
+                System.IO.Path.Combine(_dataFs.RootPath, "target3")
             };
             var executableFileExts = new[] {"exe"};
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
+            var app = _context.GetInstance<App>();
             {
                 var db = new ExecutableFileDataBase(app, dbFilePath);
                 var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
@@ -155,7 +144,7 @@ namespace Ann.Core.Test.Candidate
                 Assert.Equal(IndexOpeningResults.Ok, r);
                 Assert.Equal(3, db.ExecutableFileCount);
 
-                var baseLength = _context.RootPath.Length + 1;
+                var baseLength = _dataFs.RootPath.Length + 1;
                 var candidates = db.Find(input, executableFileExts).ToArray();
 
                 Assert.Equal(
@@ -188,22 +177,20 @@ namespace Ann.Core.Test.Candidate
             new[] {".exe", ".bat", ".lnk"})]
         public async void ExtScore(string[] expected, string[] targetFiles, string[] exts)
         {
-            _context.CreateFiles(targetFiles);
+            _dataFs.CreateFiles(targetFiles);
 
-            var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
-            var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
+            var dbFilePath = System.IO.Path.Combine(_dataFs.RootPath, "index.dat");
+            var targetPaths = new[] {System.IO.Path.Combine(_dataFs.RootPath, "target1")};
             var executableFileExts = exts;
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
+            var app = _context.GetInstance<App>();
             {
                 var db = new ExecutableFileDataBase(app, dbFilePath);
                 var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
                 Assert.Equal(IndexOpeningResults.Ok, r);
 
-                var baseLength = _context.RootPath.Length + 1;
+                var baseLength = _dataFs.RootPath.Length + 1;
                 var candidates = db.Find("abc", executableFileExts).ToArray();
 
                 Assert.Equal(
@@ -233,22 +220,20 @@ namespace Ann.Core.Test.Candidate
             "xxx qqq")]
         public async void InputDirectory(string[] expected, string[] targetFiles, string input)
         {
-            _context.CreateFiles(targetFiles);
+            _dataFs.CreateFiles(targetFiles);
 
-            var dbFilePath = System.IO.Path.Combine(_context.RootPath, "index.dat");
-            var targetPaths = new[] {System.IO.Path.Combine(_context.RootPath, "target1")};
+            var dbFilePath = System.IO.Path.Combine(_dataFs.RootPath, "index.dat");
+            var targetPaths = new[] {System.IO.Path.Combine(_dataFs.RootPath, "target1")};
             var executableFileExts = new[] {"exe"};
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
+            var app = _context.GetInstance<App>();
             {
                 var db = new ExecutableFileDataBase(app, dbFilePath);
                 var r = await db.UpdateIndexAsync(targetPaths, executableFileExts);
 
                 Assert.Equal(IndexOpeningResults.Ok, r);
 
-                var baseLength = _context.RootPath.Length + 1;
+                var baseLength = _dataFs.RootPath.Length + 1;
                 var candidates = db.Find(input, executableFileExts).ToArray();
 
                 Assert.Equal(

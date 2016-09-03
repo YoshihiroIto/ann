@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Threading;
+using Ann.Core;
 using Xunit;
 
 namespace Ann.Test
@@ -11,9 +12,6 @@ namespace Ann.Test
         public void Dispose()
         {
             _context.Dispose();
-
-            // for appveyor 
-            Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
 
         [WpfFact]

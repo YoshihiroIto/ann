@@ -143,7 +143,6 @@
     <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutkeyListBoxTest.cs" />
     <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutsViewTest.cs" />
     <Compile Include="SettingWindow\SettingPage\TargetFolders\TargetFoldersViewTest.cs" />
-    <Compile Include="TestContext.cs" />
     <Compile Include="ViewManagerTest.cs" />
     <Compile Include="SettingWindow\SettingViewModelTest.cs" />
     <Compile Include="SettingWindow\SettingPage\PathViewModelTest.cs" />

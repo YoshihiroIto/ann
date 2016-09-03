@@ -1,29 +1,22 @@
 ﻿using System;
 using Ann.Core.Candidate;
-using Ann.Foundation;
 using Xunit;
 
 namespace Ann.Core.Test.Candidate
 {
     public class CalculatorTest : IDisposable
     {
-        private readonly DisposableFileSystem _config = new DisposableFileSystem();
-
-        public CalculatorTest()
-        {
-            TestHelper.CleanTestEnv();
-        }
+        private readonly TestContext _context = new TestContext();
 
         public void Dispose()
         {
-            _config.Dispose();
+            _context.Dispose();
         }
 
         [Fact]
         public void Basic()
         {
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
+            var languagesService = _context.GetInstance<LanguagesService>();
             {
                 var c = new Calculator();
 
@@ -36,8 +29,7 @@ namespace Ann.Core.Test.Candidate
         [Fact]
         public void Error()
         {
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
+            var languagesService = _context.GetInstance<LanguagesService>();
             {
                 var c = new Calculator();
 
@@ -53,8 +45,7 @@ namespace Ann.Core.Test.Candidate
         [InlineData("a")]
         public void Null(string input)
         {
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
+            var languagesService = _context.GetInstance<LanguagesService>();
             {
                 var c = new Calculator();
 

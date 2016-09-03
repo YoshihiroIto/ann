@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Windows.Threading;
-using Ann.Core;
 using Ann.Foundation;
 using SimpleInjector;
 
-namespace Ann.Test
+namespace Ann.Core
 {
     public class TestContext : IDisposable
     {
@@ -22,7 +21,6 @@ namespace Ann.Test
             _DiContainer.RegisterSingleton(() => _DiContainer.GetInstance<ConfigHolder>().Config);
             _DiContainer.RegisterSingleton<App>();
             _DiContainer.RegisterSingleton<LanguagesService>();
-            _DiContainer.RegisterSingleton<ViewManager>();
             _DiContainer.Register(() => _DiContainer.GetInstance<App>().VersionUpdater);
 
             TestHelper.CleanTestEnv();

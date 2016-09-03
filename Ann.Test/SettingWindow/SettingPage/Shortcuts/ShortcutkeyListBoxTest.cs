@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Windows;
+using Ann.Core;
 using Ann.Foundation;
 using Ann.SettingWindow.SettingPage.Shortcuts;
 using Reactive.Bindings;

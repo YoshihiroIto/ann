@@ -1,4 +1,5 @@
 ﻿using System;
+using Ann.Core;
 using Ann.Foundation;
 using Ann.MainWindow;
 using Xunit;

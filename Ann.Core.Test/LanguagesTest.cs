@@ -10,12 +10,8 @@ namespace Ann.Core.Test
         public void Basic()
         {
             foreach (var s in Enum.GetValues(typeof(StringTags)).Cast<StringTags>())
-            {
                 foreach (var l in Enum.GetValues(typeof(Languages)).Cast<Languages>())
-                {
                     Assert.NotNull(Localization.GetString(l, s));
-                }
-            }
         }
     }
 }
