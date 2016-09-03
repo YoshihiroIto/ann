@@ -69,6 +69,10 @@
       <HintPath>..\packages\ReactiveProperty.3.0.1\lib\net46\ReactiveProperty.NET46.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SimpleInjector, Version=3.2.2.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleInjector.3.2.2\lib\net45\SimpleInjector.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Reactive.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
@@ -139,6 +143,7 @@
     <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutkeyListBoxTest.cs" />
     <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutsViewTest.cs" />
     <Compile Include="SettingWindow\SettingPage\TargetFolders\TargetFoldersViewTest.cs" />
+    <Compile Include="TestContext.cs" />
     <Compile Include="ViewManagerTest.cs" />
     <Compile Include="SettingWindow\SettingViewModelTest.cs" />
     <Compile Include="SettingWindow\SettingPage\PathViewModelTest.cs" />

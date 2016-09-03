@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -15,6 +14,7 @@ using Ann.SettingWindow;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using Reactive.Bindings.Notifiers;
+using SimpleInjector;
 
 namespace Ann.MainWindow
 {
@@ -62,11 +62,8 @@ namespace Ann.MainWindow
         private readonly HashSet<CandidatePanelViewModel[]> _OldCandidates = new HashSet<CandidatePanelViewModel[]>();
         private readonly object _OldCandidatesLock = new object();
 
-        public MainWindowViewModel(App app, ConfigHolder configHolder)
+        public MainWindowViewModel(Container diContainer, App app, ConfigHolder configHolder)
         {
-            Debug.Assert(app != null);
-            Debug.Assert(configHolder != null);
-
             _app = app;
 
             using (new TimeMeasure("MainWindowViewModel.ctor"))
@@ -122,8 +119,10 @@ namespace Ann.MainWindow
                     .Subscribe(_ => _app.Find(Input.Value))
                     .AddTo(CompositeDisposable);
 
-                Candidates = new ReactiveProperty<CandidatePanelViewModel[]>(new CandidatePanelViewModel[0]).AddTo(CompositeDisposable);
-                
+                Candidates =
+                    new ReactiveProperty<CandidatePanelViewModel[]>(new CandidatePanelViewModel[0]).AddTo(
+                        CompositeDisposable);
+
                 _app.ObserveProperty(x => x.Candidates, false)
                     .ObserveOn(ReactivePropertyScheduler.Default)
                     .Subscribe(c =>
@@ -132,7 +131,12 @@ namespace Ann.MainWindow
                             _OldCandidates.Add(Candidates.Value);
 
                         Candidates.Value =
-                            c.Select(u => new CandidatePanelViewModel(u, _app, configHolder.Config)).ToArray();
+                            c.Select(u =>
+                            {
+                                var p = diContainer.GetInstance<CandidatePanelViewModel>();
+                                p.Model = u;
+                                return p;
+                            }).ToArray();
                     })
                     .AddTo(CompositeDisposable);
 
@@ -205,11 +209,7 @@ namespace Ann.MainWindow
                         configHolder.Config.ShortcutKeys.Activate.Key = key;
 
                         IsShowingSettingShow.Value = true;
-                        await AsyncMessenger.PublishAsync(
-                            new SettingViewModel(
-                                configHolder.Config,
-                                _app.VersionUpdater,
-                                _app));
+                        await AsyncMessenger.PublishAsync(diContainer.GetInstance<SettingViewModel>());
                     }
                 }).AddTo(CompositeDisposable);
 
@@ -243,7 +243,7 @@ namespace Ann.MainWindow
                     .Subscribe(_ => Input.ForceNotify())
                     .AddTo(CompositeDisposable);
 
-                StatusBar = new StatusBarViewModel(_app).AddTo(CompositeDisposable);
+                StatusBar = diContainer.GetInstance<StatusBarViewModel>().AddTo(CompositeDisposable);
             }
         }
 

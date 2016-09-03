@@ -116,8 +116,6 @@ namespace Ann.Core
 
         #endregion
 
-
-
         private readonly ConfigHolder _configHolder;
         private Config.App Config => _configHolder.Config;
         private MostRecentUsedList MruList => _configHolder.MruList;

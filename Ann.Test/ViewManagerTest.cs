@@ -1,23 +1,16 @@
 ﻿using System;
 using System.Windows.Threading;
-using Ann.Core;
-using Ann.Foundation;
 using Xunit;
 
 namespace Ann.Test
 {
     public class ViewManagerTest :  IDisposable
     {
-        private readonly DisposableFileSystem _config = new DisposableFileSystem();
-
-        public ViewManagerTest()
-        {
-            TestHelper.CleanTestEnv();
-        }
+        private readonly TestContext _context = new TestContext();
 
         public void Dispose()
         {
-            _config.Dispose();
+            _context.Dispose();
 
             // for appveyor 
             Dispatcher.CurrentDispatcher.InvokeShutdown();
@@ -26,9 +19,7 @@ namespace Ann.Test
         [WpfFact]
         public void Basic()
         {
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languageService = new LanguagesService(configHolder.Config))
-            using (new ViewManager(languageService))
+            using (_context.GetInstance<ViewManager>())
             {
             }
         }

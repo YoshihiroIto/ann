@@ -13,14 +13,14 @@ namespace Ann.MainWindow
 {
     public class CandidatePanelViewModel : ViewModelBase
     {
-        public string Name => _model.Name;
-        public string Comment => _model.Comment;
-        public Brush Icon => _model.Icon;
+        public string Name => Model.Name;
+        public string Comment => Model.Comment;
+        public Brush Icon => Model.Icon;
 
-        public ICommand RunCommand => _model.RunCommand;
-        public MenuCommand[] SubCommands => _model.SubCommands;
+        public ICommand RunCommand => Model.RunCommand;
+        public MenuCommand[] SubCommands => Model.SubCommands;
 
-        public bool CanSetPriority => _model.CanSetPriority;
+        public bool CanSetPriority => Model.CanSetPriority;
 
         public App App { get; }
 
@@ -38,7 +38,7 @@ namespace Ann.MainWindow
         {
             get
             {
-                if (_model.CanSetPriority == false)
+                if (Model.CanSetPriority == false)
                     return false;
 
                 if (_isSubscribedPriorityFilesChanged == false)
@@ -52,7 +52,7 @@ namespace Ann.MainWindow
 
             set
             {
-                if (_model.CanSetPriority == false)
+                if (Model.CanSetPriority == false)
                     return;
 
                 if (value)
@@ -81,19 +81,17 @@ namespace Ann.MainWindow
             }
         }
 
-        private readonly ICandidate _model;
+        public ICandidate Model { get; set; }
 
-        public SelectedBehavior SelectedBehavior => _model.SelectedBehavior;
-        public string CommandWord => _model.CommandWord;
-        public string InputWord => _model.Name;
+        public SelectedBehavior SelectedBehavior => Model.SelectedBehavior;
+        public string CommandWord => Model.CommandWord;
+        public string InputWord => Model.Name;
 
-        public CandidatePanelViewModel(ICandidate model, App app, Core.Config.App config)
+        public CandidatePanelViewModel(App app, Core.Config.App config)
         {
-            Debug.Assert(model != null);
             Debug.Assert(app != null);
             Debug.Assert(config != null);
 
-            _model = model;
             App = app;
 
             config.ObserveProperty(c => c.Culture)

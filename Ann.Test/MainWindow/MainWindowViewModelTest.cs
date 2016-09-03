@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Windows.Threading;
-using Ann.Core;
 using Ann.Foundation;
 using Ann.MainWindow;
 using Xunit;
@@ -9,28 +7,17 @@ namespace Ann.Test.MainWindow
 {
     public class MainWindowViewModelTest : IDisposable
     {
-        private readonly DisposableFileSystem _config = new DisposableFileSystem();
-
-        public MainWindowViewModelTest()
-        {
-            TestHelper.CleanTestEnv();
-        }
+        private readonly TestContext _context = new TestContext();
 
         public void Dispose()
         {
-            _config.Dispose();
-
-            // for appveyor 
-            Dispatcher.CurrentDispatcher.InvokeShutdown();
+            _context.Dispose();
         }
 
         [Fact]
         public void Basic()
         {
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
-            using (var vm = new MainWindowViewModel(app, configHolder))
+            using (var vm = _context.GetInstance<MainWindowViewModel>())
             {
                 Assert.True(double.IsNaN(vm.Left.Value));
                 Assert.True(double.IsNaN(vm.Top.Value));
@@ -44,10 +31,7 @@ namespace Ann.Test.MainWindow
         [Fact]
         public void SettingShowCommand()
         {
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
-            using (var vm = new MainWindowViewModel(app, configHolder))
+            using (var vm = _context.GetInstance<MainWindowViewModel>())
             {
                 vm.SettingShowCommand.Execute(null);
             }
@@ -56,10 +40,7 @@ namespace Ann.Test.MainWindow
         [Fact]
         public void ShowCommand()
         {
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
-            using (var vm = new MainWindowViewModel(app, configHolder))
+            using (var vm = _context.GetInstance<MainWindowViewModel>())
             {
                 vm.ShowCommand.Execute(null);
             }
@@ -68,10 +49,7 @@ namespace Ann.Test.MainWindow
         [Fact]
         public void HideCommand()
         {
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
-            using (var vm = new MainWindowViewModel(app, configHolder))
+            using (var vm = _context.GetInstance<MainWindowViewModel>())
             {
                 vm.HideCommand.Execute(null);
             }
@@ -80,10 +58,7 @@ namespace Ann.Test.MainWindow
         [Fact]
         public void ExitCommand()
         {
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
-            using (var vm = new MainWindowViewModel(app, configHolder))
+            using (var vm = _context.GetInstance<MainWindowViewModel>())
             {
                 vm.ExitCommand.Execute(null);
             }
@@ -92,10 +67,7 @@ namespace Ann.Test.MainWindow
         [Fact]
         public void Candidates()
         {
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
-            using (var vm = new MainWindowViewModel(app, configHolder))
+            using (var vm = _context.GetInstance<MainWindowViewModel>())
             {
                 Assert.Equal(0, vm.Candidates.Value.Length);
             }

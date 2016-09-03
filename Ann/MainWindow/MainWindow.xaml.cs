@@ -12,6 +12,7 @@ using Ann.Foundation.Mvvm.Message;
 using Ann.SettingWindow;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using SimpleInjector;
 
 namespace Ann.MainWindow
 {
@@ -24,7 +25,7 @@ namespace Ann.MainWindow
         private readonly App _app;
         private readonly ConfigHolder _configHolder;
 
-        public MainWindow(App app, ConfigHolder configHolder)
+        public MainWindow(Container diContainer, App app, ConfigHolder configHolder)
         {
             Debug.Assert(app != null);
             Debug.Assert(configHolder != null);
@@ -32,7 +33,7 @@ namespace Ann.MainWindow
             _app = app;
             _configHolder = configHolder;
 
-            _DataContext = new MainWindowViewModel(_app, _configHolder);
+            _DataContext = diContainer.GetInstance<MainWindowViewModel>();
             DataContext = _DataContext;
 
             SetupMessenger();

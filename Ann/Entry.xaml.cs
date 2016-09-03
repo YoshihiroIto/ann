@@ -4,6 +4,8 @@ using System.Runtime;
 using System.Windows;
 using Ann.Core;
 using Ann.Foundation;
+using SimpleInjector;
+using SimpleInjector.Diagnostics;
 
 namespace Ann
 {
@@ -36,14 +38,11 @@ namespace Ann
         {
             base.OnStartup(e);
 
-            _configHolder = new ConfigHolder(Constants.ConfigDirPath);
-            _languagesService = new LanguagesService(_configHolder.Config);
-            _app = new App(_configHolder, _languagesService);
-            _viewManager = new ViewManager(_languagesService);
+            SetupDiContainer();
 
             Reactive.Bindings.UIDispatcherScheduler.Initialize();
 
-            MainWindow = new MainWindow.MainWindow(_app, _configHolder);
+            MainWindow = _DiContainer.GetInstance<MainWindow.MainWindow>();
             MainWindow.Show();
         }
 
@@ -51,17 +50,36 @@ namespace Ann
         {
             base.OnExit(e);
 
-            _isRestartRequested = _app.VersionUpdater.IsRestartRequested;
+            _isRestartRequested = _DiContainer.GetInstance<App>().VersionUpdater.IsRestartRequested;
 
-            _viewManager.Dispose();
-            _app.Dispose();
-            _languagesService.Dispose();
+            _DiContainer.Dispose();
         }
 
-        private ConfigHolder _configHolder;
-        private LanguagesService _languagesService;
-        private App _app;
-        private ViewManager _viewManager;
+        public class Dummy
+        {
+        }
+
+        private void SetupDiContainer()
+        {
+            _DiContainer.Register(() => _DiContainer);
+
+            _DiContainer.RegisterSingleton(() => new ConfigHolder(Constants.ConfigDirPath));
+            _DiContainer.RegisterSingleton(() => _DiContainer.GetInstance<ConfigHolder>().Config);
+            _DiContainer.RegisterSingleton<App>();
+            _DiContainer.RegisterSingleton<LanguagesService>();
+            _DiContainer.RegisterSingleton<ViewManager>();
+            _DiContainer.Register(() => _DiContainer.GetInstance<App>().VersionUpdater);
+
+            _DiContainer.GetRegistration(typeof(Container)).Registration
+                .SuppressDiagnosticWarning(DiagnosticType.DisposableTransientComponent, "suppress");
+
+            _DiContainer.GetRegistration(typeof(VersionUpdater)).Registration
+                .SuppressDiagnosticWarning(DiagnosticType.DisposableTransientComponent, "suppress");
+
+            _DiContainer.Verify();
+        }
+
+        private readonly Container _DiContainer = new Container();
 
         private static bool _isRestartRequested;
     }
