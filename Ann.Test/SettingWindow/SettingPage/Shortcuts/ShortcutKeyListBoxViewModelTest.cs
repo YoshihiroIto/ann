@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Ann.Core;
 using Ann.Core.Config;
@@ -7,11 +8,13 @@ using Xunit;
 
 namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
 {
-    public class ShortcutKeyListBoxViewModelTest
+    public class ShortcutKeyListBoxViewModelTest : IDisposable
     {
-        public ShortcutKeyListBoxViewModelTest()
+        private readonly TestContext _context = new TestContext();
+
+        public void Dispose()
         {
-            TestHelper.CleanTestEnv();
+            _context.Dispose();
         }
 
         [Fact]
@@ -60,7 +63,6 @@ namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
                 Assert.Equal(Key.C, model[1].Key);
             }
         }
-
 
         [Fact]
         public void IsFocused_Empty_AutoRemove()

@@ -1,21 +1,25 @@
-﻿using Ann.Core;
+﻿using System;
+using Ann.Core;
 using Ann.Foundation.Mvvm.Message;
 using Ann.SettingWindow.SettingPage.About;
 using Xunit;
 
 namespace Ann.Test.SettingWindow.SettingPage.About
 {
-    public class AboutViewModelTest
+    public class AboutViewModelTest : IDisposable
     {
-        public AboutViewModelTest()
+        private readonly TestContext _context = new TestContext();
+
+        public void Dispose()
         {
-            TestHelper.CleanTestEnv();
+            _context.Dispose();
         }
 
         [Fact]
         public void Basic()
         {
-            using (var versionUpdater = new VersionUpdater(null))
+            var versionUpdater = _context.GetInstance<VersionUpdater>();
+
             using (var messenger = new WindowMessageBroker())
             using (var vm = new AboutViewModel(versionUpdater, messenger))
             {
@@ -27,7 +31,8 @@ namespace Ann.Test.SettingWindow.SettingPage.About
         [Fact]
         public void RestartCommand()
         {
-            using (var versionUpdater = new VersionUpdater(null))
+            var versionUpdater = _context.GetInstance<VersionUpdater>();
+
             using (var messenger = new WindowMessageBroker())
             using (var vm = new AboutViewModel(versionUpdater, messenger))
             {

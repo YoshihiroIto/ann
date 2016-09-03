@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Threading;
 using Ann.Core;
 using Ann.SettingWindow.SettingPage.General;
@@ -6,19 +7,21 @@ using Xunit;
 
 namespace Ann.Test.SettingWindow.SettingPage.General
 {
-    public class GeneralViewModelTest
+    public class GeneralViewModelTest : IDisposable
     {
-        public GeneralViewModelTest()
+        private readonly TestContext _context = new TestContext();
+
+        public void Dispose()
         {
-            TestHelper.CleanTestEnv();
+            _context.Dispose();
         }
 
         [Fact]
         public void Basic()
         {
-            var app = new Core.Config.App();
+            var app = _context.GetInstance<Core.Config.App>();
+            var versionUpdater = _context.GetInstance<VersionUpdater>();
 
-            using (var versionUpdater = new VersionUpdater(null))
             using (new GeneralViewModel(app, versionUpdater))
             {
             }
@@ -27,9 +30,9 @@ namespace Ann.Test.SettingWindow.SettingPage.General
         [Fact]
         public void MaxCandidateLinesCount()
         {
-            var app = new Core.Config.App();
+            var app = _context.GetInstance<Core.Config.App>();
+            var versionUpdater = _context.GetInstance<VersionUpdater>();
 
-            using (var versionUpdater = new VersionUpdater(null))
             using (var vm = new GeneralViewModel(app, versionUpdater))
             {
                 Assert.Equal(10, vm.MaxCandidateLinesCount.Value);
@@ -53,9 +56,9 @@ namespace Ann.Test.SettingWindow.SettingPage.General
             {
                 CultureInfo.CurrentUICulture = new CultureInfo("ja");
 
-                var app = new Core.Config.App();
+            var app = _context.GetInstance<Core.Config.App>();
+            var versionUpdater = _context.GetInstance<VersionUpdater>();
 
-                using (var versionUpdater = new VersionUpdater(null))
                 using (var vm = new GeneralViewModel(app, versionUpdater))
                 {
                     cultureName = vm.SelectedCulture.Value.CultureName;
@@ -81,9 +84,9 @@ namespace Ann.Test.SettingWindow.SettingPage.General
             {
                 CultureInfo.CurrentUICulture = new CultureInfo(cultureName);
 
-                var app = new Core.Config.App();
+            var app = _context.GetInstance<Core.Config.App>();
+            var versionUpdater = _context.GetInstance<VersionUpdater>();
 
-                using (var versionUpdater = new VersionUpdater(null))
                 using (var vm = new GeneralViewModel(app, versionUpdater))
                 {
                     expectedCultureName = vm.SelectedCulture.Value.CultureName;

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Threading;
 using Ann.Foundation;
 using Ann.SettingWindow.SettingPage.Shortcuts;
 using Xunit;
@@ -10,10 +9,11 @@ namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
 {
     public class ShortcutsViewTest : MarshalByRefObject, IDisposable
     {
+        private readonly TestContext _context = new TestContext();
+
         public void Dispose()
         {
-            // for appveyor 
-            Dispatcher.CurrentDispatcher.InvokeShutdown();
+            _context.Dispose();
         }
 
         [WpfFact]

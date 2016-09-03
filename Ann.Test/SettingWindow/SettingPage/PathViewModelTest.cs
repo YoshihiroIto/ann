@@ -1,15 +1,18 @@
-﻿using Ann.Core;
+﻿using System;
+using Ann.Core;
 using Ann.Foundation.Mvvm.Message;
 using Ann.SettingWindow.SettingPage;
 using Xunit;
 
 namespace Ann.Test.SettingWindow.SettingPage
 {
-    public class PathViewModelTest
+    public class PathViewModelTest : IDisposable
     {
-        public PathViewModelTest()
+        private readonly TestContext _context = new TestContext();
+
+        public void Dispose()
         {
-            TestHelper.CleanTestEnv();
+            _context.Dispose();
         }
 
         [Fact]

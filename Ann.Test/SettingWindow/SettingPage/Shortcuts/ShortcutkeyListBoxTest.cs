@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Threading;
 using Ann.Foundation;
 using Ann.SettingWindow.SettingPage.Shortcuts;
 using Reactive.Bindings;
@@ -12,10 +11,11 @@ namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
 {
     public class ShortcutkeyListBoxTest : MarshalByRefObject, IDisposable
     {
+        private readonly TestContext _context = new TestContext();
+
         public void Dispose()
         {
-            // for appveyor 
-            Dispatcher.CurrentDispatcher.InvokeShutdown();
+            _context.Dispose();
         }
 
         [WpfFact]

@@ -10,10 +10,11 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
 {
     public class PriorityFilesViewTest : MarshalByRefObject, IDisposable
     {
+        private readonly TestContext _context = new TestContext();
+
         public void Dispose()
         {
-            // for appveyor 
-            Dispatcher.CurrentDispatcher.InvokeShutdown();
+            _context.Dispose();
         }
 
         [WpfFact]

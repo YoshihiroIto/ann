@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Threading;
 using Ann.Foundation;
 using Xunit;
 
@@ -9,14 +8,11 @@ namespace Ann.Test.SettingWindow
 {
     public class SettingWindowTest : MarshalByRefObject, IDisposable
     {
-        private readonly DisposableFileSystem _config = new DisposableFileSystem();
+        private readonly TestContext _context = new TestContext();
 
         public void Dispose()
         {
-            _config.Dispose();
-
-            // for appveyor 
-            Dispatcher.CurrentDispatcher.InvokeShutdown();
+            _context.Dispose();
         }
 
         [WpfFact]

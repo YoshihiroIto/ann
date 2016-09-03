@@ -1,6 +1,5 @@
 ﻿using System;
 using Ann.Core;
-using Ann.Foundation;
 using Ann.SettingWindow;
 using Ann.SettingWindow.SettingPage.General;
 using Xunit;
@@ -9,27 +8,20 @@ namespace Ann.Test.SettingWindow
 {
     public class SettingViewModelTest : IDisposable
     {
-        private readonly DisposableFileSystem _config = new DisposableFileSystem();
-
-        public SettingViewModelTest()
-        {
-            TestHelper.CleanTestEnv();
-        }
+        private readonly TestContext _context = new TestContext();
 
         public void Dispose()
         {
-            _config.Dispose();
+            _context.Dispose();
         }
 
         [Fact]
         public void Basic()
         {
             var model = new Core.Config.App();
+            var app = _context.GetInstance<App>();
+            var versionUpdater = _context.GetInstance<VersionUpdater>();
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
-            using (var versionUpdater = new VersionUpdater(null))
             using (var vm = new SettingViewModel(model, versionUpdater, app))
             {
                 Assert.Equal(5, vm.Pages.Length);
@@ -41,11 +33,9 @@ namespace Ann.Test.SettingWindow
         public void InitializeCommand()
         {
             var model = new Core.Config.App();
+            var app = _context.GetInstance<App>();
+            var versionUpdater = _context.GetInstance<VersionUpdater>();
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
-            using (var versionUpdater = new VersionUpdater(null))
             using (var vm = new SettingViewModel(model, versionUpdater, app))
             {
                 vm.InitializeCommand.Execute(null);
@@ -56,11 +46,9 @@ namespace Ann.Test.SettingWindow
         public void CloseCommand()
         {
             var model = new Core.Config.App();
+            var app = _context.GetInstance<App>();
+            var versionUpdater = _context.GetInstance<VersionUpdater>();
 
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
-            using (var versionUpdater = new VersionUpdater(null))
             using (var vm = new SettingViewModel(model, versionUpdater, app))
             {
                 vm.CloseCommand.Execute(null);

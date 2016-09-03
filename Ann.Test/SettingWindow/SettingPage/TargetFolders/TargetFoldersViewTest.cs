@@ -10,14 +10,11 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
 {
     public class TargetFoldersViewTest : MarshalByRefObject, IDisposable
     {
-        private readonly DisposableFileSystem _config = new DisposableFileSystem();
+        private readonly TestContext _context = new TestContext();
 
         public void Dispose()
         {
-            _config.Dispose();
-
-            // for appveyor 
-            Dispatcher.CurrentDispatcher.InvokeShutdown();
+            _context.Dispose();
         }
 
         [WpfFact]

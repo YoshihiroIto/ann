@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Windows.Threading;
 using Ann.Core;
-using Ann.Foundation;
 using Ann.MainWindow;
 using Xunit;
 
@@ -9,27 +7,18 @@ namespace Ann.Test.MainWindow
 {
     public class StatusBarViewModelTest : IDisposable
     {
-        private readonly DisposableFileSystem _config = new DisposableFileSystem();
-
-        public StatusBarViewModelTest()
-        {
-            TestHelper.CleanTestEnv();
-        }
+        private readonly TestContext _context = new TestContext();
 
         public void Dispose()
         {
-            _config.Dispose();
-
-            // for appveyor 
-            Dispatcher.CurrentDispatcher.InvokeShutdown();
+            _context.Dispose();
         }
 
         [WpfFact]
         public void Basic()
         {
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
+            var app = _context.GetInstance<App>();
+            
             using (new StatusBarViewModel(app))
             {
             }
@@ -38,9 +27,9 @@ namespace Ann.Test.MainWindow
         [WpfFact]
         public void Messages()
         {
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
+            var app = _context.GetInstance<App>();
+            var configHolder = _context.GetInstance<ConfigHolder>();
+
             {
                 configHolder.Config.TargetFolder.IsIncludeSystemFolder = false;
                 configHolder.Config.TargetFolder.IsIncludeSystemX86Folder = false;
@@ -63,9 +52,9 @@ namespace Ann.Test.MainWindow
         [WpfFact]
         public void Visibility()
         {
-            var configHolder = new ConfigHolder(_config.RootPath);
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
+            var app = _context.GetInstance<App>();
+            var configHolder = _context.GetInstance<ConfigHolder>();
+
             {
                 configHolder.Config.TargetFolder.IsIncludeSystemFolder = false;
                 configHolder.Config.TargetFolder.IsIncludeSystemX86Folder = false;

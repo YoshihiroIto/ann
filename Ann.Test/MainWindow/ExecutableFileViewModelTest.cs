@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Windows.Threading;
 using Ann.Core;
 using Ann.Core.Candidate;
 using Ann.Foundation;
@@ -10,103 +9,83 @@ using Xunit;
 namespace Ann.Test.MainWindow
 {
     public class ExecutableFileViewModelTest : IDisposable
-    { 
-        private readonly DisposableFileSystem _config = new DisposableFileSystem();
-
-        public ExecutableFileViewModelTest()
-        {
-            TestHelper.CleanTestEnv();
-        }
+    {
+        private readonly TestContext _context = new TestContext();
 
         public void Dispose()
         {
-            _config.Dispose();
-
-            // for appveyor 
-            Dispatcher.CurrentDispatcher.InvokeShutdown();
+            _context.Dispose();
         }
 
         [WpfFact]
         public void Basic()
         {
-            var path = AssemblyConstants.EntryAssemblyLocation;
-            var stringPool = new ConcurrentDictionary<string, string>();
-            var targetFolders = new string[0];
-            var iconDecoder = new IconDecoder();
-            var configHolder = new ConfigHolder(_config.RootPath);
-
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
+            using (var vm = _context.GetInstance<CandidatePanelViewModel>())
             {
-                var model = new ExecutableFile(path, app, iconDecoder, stringPool, targetFolders);
+                var path = AssemblyConstants.EntryAssemblyLocation;
+                var stringPool = new ConcurrentDictionary<string, string>();
+                var targetFolders = new string[0];
+                var iconDecoder = new IconDecoder();
+                var app = _context.GetInstance<App>();
 
-                using (var vm = new CandidatePanelViewModel(app, configHolder.Config) {Model = model})
-                {
-                    Assert.Equal("Ann", vm.Name);
-                    Assert.Equal(path, vm.Comment);
-                    Assert.NotNull(vm.Icon);
-                }
+                vm.Model = new ExecutableFile(path, app, iconDecoder, stringPool, targetFolders);
+
+                Assert.Equal("Ann", vm.Name);
+                Assert.Equal(path, vm.Comment);
+                Assert.NotNull(vm.Icon);
             }
         }
 
         [WpfFact]
         public void PriorityFile()
         {
-            var path = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\Explorer.exe");
-            var stringPool = new ConcurrentDictionary<string, string>();
-            var targetFolders = new string[0];
-            var iconDecoder = new IconDecoder();
-            var configHolder = new ConfigHolder(_config.RootPath);
-
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
+            using (var vm = _context.GetInstance<CandidatePanelViewModel>())
             {
-                var model = new ExecutableFile(path, app, iconDecoder, stringPool, targetFolders);
+                var path = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\Explorer.exe");
+                var stringPool = new ConcurrentDictionary<string, string>();
+                var targetFolders = new string[0];
+                var iconDecoder = new IconDecoder();
+                var app = _context.GetInstance<App>();
 
-                using (var vm = new CandidatePanelViewModel(app, configHolder.Config) {Model = model} )
-                {
-                    Assert.False(vm.IsPriorityFile);
+                vm.Model = new ExecutableFile(path, app, iconDecoder, stringPool, targetFolders);
 
-                    vm.IsPriorityFile = true;
-                    Assert.True(vm.IsPriorityFile);
-                    Assert.True(app.IsPriorityFile(path));
+                Assert.False(vm.IsPriorityFile);
 
-                    vm.IsPriorityFile = false;
-                    Assert.False(vm.IsPriorityFile);
-                    Assert.False(app.IsPriorityFile(path));
-                }
+                vm.IsPriorityFile = true;
+                Assert.True(vm.IsPriorityFile);
+                Assert.True(app.IsPriorityFile(path));
+
+                vm.IsPriorityFile = false;
+                Assert.False(vm.IsPriorityFile);
+                Assert.False(app.IsPriorityFile(path));
             }
         }
 
         [WpfFact]
         public void IsPriorityFileFlipCommand()
         {
-            var path = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\Explorer.exe");
-            var stringPool = new ConcurrentDictionary<string, string>();
-            var targetFolders = new string[0];
-            var iconDecoder = new IconDecoder();
-            var configHolder = new ConfigHolder(_config.RootPath);
-
-            using (var languagesService = new LanguagesService(configHolder.Config))
-            using (var app = new App(configHolder, languagesService))
+            using (var vm = _context.GetInstance<CandidatePanelViewModel>())
             {
-                var model = new ExecutableFile(path, app, iconDecoder, stringPool, targetFolders);
+                var path = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\Explorer.exe");
+                var stringPool = new ConcurrentDictionary<string, string>();
+                var targetFolders = new string[0];
+                var iconDecoder = new IconDecoder();
+                var app = _context.GetInstance<App>();
 
-                using (var vm = new CandidatePanelViewModel(app, configHolder.Config) {Model = model})
-                {
-                    Assert.False(vm.IsPriorityFile);
-                    Assert.False(app.IsPriorityFile(path));
+                vm.Model = new ExecutableFile(path, app, iconDecoder, stringPool, targetFolders);
 
-                    vm.IsPriorityFileFlipCommand.Execute(null);
+                Assert.False(vm.IsPriorityFile);
+                Assert.False(app.IsPriorityFile(path));
 
-                    Assert.True(vm.IsPriorityFile);
-                    Assert.True(app.IsPriorityFile(path));
+                vm.IsPriorityFileFlipCommand.Execute(null);
 
-                    vm.IsPriorityFileFlipCommand.Execute(null);
+                Assert.True(vm.IsPriorityFile);
+                Assert.True(app.IsPriorityFile(path));
 
-                    Assert.False(vm.IsPriorityFile);
-                    Assert.False(app.IsPriorityFile(path));
-                }
+                vm.IsPriorityFileFlipCommand.Execute(null);
+
+                Assert.False(vm.IsPriorityFile);
+                Assert.False(app.IsPriorityFile(path));
             }
         }
     }
