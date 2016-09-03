@@ -55,10 +55,6 @@ namespace Ann
             _DiContainer.Dispose();
         }
 
-        public class Dummy
-        {
-        }
-
         private void SetupDiContainer()
         {
             _DiContainer.Register(() => _DiContainer);
