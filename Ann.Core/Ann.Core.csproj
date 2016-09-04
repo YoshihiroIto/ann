@@ -137,6 +137,9 @@
     <Reference Include="System.Xaml" />
     <Reference Include="System.Data" />
     <Reference Include="WindowsBase" />
+    <Reference Include="Wire">
+      <HintPath>..\Externals\Wire.dll</HintPath>
+    </Reference>
     <Reference Include="YamlDotNet, Version=3.9.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\YamlDotNet.3.9.0\lib\net35\YamlDotNet.dll</HintPath>
       <Private>True</Private>
@@ -161,9 +164,6 @@
     <Compile Include="Candidate\ExecutableFileDataBase.cs" />
     <Compile Include="Candidate\ICandidate.cs" />
     <Compile Include="IconDecoder.cs" />
-    <Compile Include="IndexFile\ExecutableFile.cs" />
-    <Compile Include="IndexFile\File.cs" />
-    <Compile Include="IndexFile\Versions.cs" />
     <Compile Include="MenuCommand.cs" />
     <Compile Include="Languages.cs" />
     <Compile Include="LanguagesService.cs" />
@@ -183,7 +183,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="IndexFile.fbs" />
     <None Include="OpenSourceListNonNuget.yaml" />
     <None Include="OpenSourceList.yaml" />
     <None Include="packages.config">

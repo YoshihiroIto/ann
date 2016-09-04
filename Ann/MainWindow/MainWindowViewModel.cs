@@ -287,6 +287,7 @@ namespace Ann.MainWindow
             await _app.OpenIndexAsync();
 
             if ((IndexOpeningResult.Value == IndexOpeningResults.NotFound) ||
+                (IndexOpeningResult.Value == IndexOpeningResults.CanNotOpen) ||
                 (IndexOpeningResult.Value == IndexOpeningResults.OldIndex))
                 await _app.UpdateIndexAsync();
         }
