@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Threading;
 using Ann.Core;
 using Ann.Foundation;
 using Ann.SettingWindow.SettingPage.TargetFolders;

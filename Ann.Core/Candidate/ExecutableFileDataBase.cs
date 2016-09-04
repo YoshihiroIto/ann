@@ -9,8 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm;
-using FlatBuffers;
-using IndexFile;
 using File = System.IO.File;
 
 namespace Ann.Core.Candidate
@@ -33,8 +31,6 @@ namespace Ann.Core.Candidate
         private string _prevKeyword;
 
         private bool IsOpend => _ExecutableFiles != null;
-
-        private const Versions CurrentIndexVersion = Versions.Version;
 
         public int ExecutableFileCount => IsOpend ? _ExecutableFiles.Length : 0;
 
@@ -61,6 +57,8 @@ namespace Ann.Core.Candidate
         }
 
         #endregion
+
+        private const int CurrentIndexVersion = 10;
 
         public int IconCacheSize
         {
@@ -247,36 +245,16 @@ namespace Ann.Core.Candidate
                 if (dir != null)
                     Directory.CreateDirectory(dir);
 
-                byte[] data;
-
                 using (new TimeMeasure("Index Serializing"))
                 {
-                    var fbb = new FlatBufferBuilder(1);
+                    var ser = new Wire.Serializer();
 
-                    var euOffsets = new Offset<IndexFile.ExecutableFile>[_ExecutableFiles.Length];
-
-                    for (var i = 0; i != _ExecutableFiles.Length; ++i)
+                    using (var stream = new FileStream(_indexFile, FileMode.Create))
                     {
-                        euOffsets[i] =
-                            IndexFile.ExecutableFile.CreateExecutableFile(
-                                fbb,
-                                fbb.CreateString(_ExecutableFiles[i].Path));
+                        ser.Serialize(CurrentIndexVersion, stream);
+                        ser.Serialize(_ExecutableFiles.Select(x => x.Path).ToArray(), stream);
                     }
-
-                    var rowsOffset = IndexFile.File.CreateRowsVector(fbb, euOffsets);
-
-                    IndexFile.File.StartFile(fbb);
-                    IndexFile.File.AddVersion(fbb, CurrentIndexVersion);
-                    IndexFile.File.AddRows(fbb, rowsOffset);
-
-                    var endFile = IndexFile.File.EndFile(fbb);
-
-                    fbb.Finish(endFile.Value);
-
-                    data = fbb.SizedByteArray();
                 }
-
-                File.WriteAllBytes(_indexFile, data);
             });
 
             return IndexOpeningResults.Ok;
@@ -295,53 +273,50 @@ namespace Ann.Core.Candidate
                 {
                     using (new TimeMeasure("Index Deserializing"))
                     {
-                        var data = new ByteBuffer(File.ReadAllBytes(_indexFile));
-                        var root = IndexFile.File.GetRootAsFile(data);
+                        var ser = new Wire.Serializer();
 
-                        if (root.Version != CurrentIndexVersion)
-                            return IndexOpeningResults.OldIndex;
+                        using (var stream = new FileStream(_indexFile, FileMode.Open))
+                        {
+                            var version = (int) ser.Deserialize(stream);
 
-                        var fileCount = root.RowsLength;
-                        var tempExecutableFiles = new ExecutableFile[fileCount];
-                        var isContainsInvalid = false;
-                        var stringPool = new ConcurrentDictionary<string, string>();
+                            if (version != CurrentIndexVersion)
+                                return IndexOpeningResults.OldIndex;
 
-                        var count = 0;
+                            var paths = (string[]) ser.Deserialize(stream);
 
-                        Parallel.For(
-                            0,
-                            root.RowsLength,
-                            () => new IndexFile.ExecutableFile(),
-                            (i, loop, rowTemp) =>
-                            {
-                                root.GetRows(rowTemp, i);
+                            var fileCount = paths.Length;
+                            var tempExecutableFiles = new ExecutableFile[fileCount];
+                            var isContainsInvalid = false;
+                            var stringPool = new ConcurrentDictionary<string, string>();
 
-                                if (File.Exists(rowTemp.Path) == false)
+                            var count = 0;
+
+                            Parallel.For(
+                                0,
+                                fileCount,
+                                i =>
                                 {
-                                    isContainsInvalid = true;
-                                    return rowTemp;
-                                }
+                                    if (File.Exists(paths[i]) == false)
+                                        isContainsInvalid = true;
 
-                                try
-                                {
-                                    IndexOpeningProgress = 100*Interlocked.Increment(ref count)/fileCount;
+                                    try
+                                    {
+                                        IndexOpeningProgress = 100*Interlocked.Increment(ref count)/fileCount;
 
-                                    tempExecutableFiles[i] = new ExecutableFile(i, root.RowsLength, rowTemp.Path,
-                                        _app, _iconDecoder, stringPool, targetFoldersArray);
-                                }
-                                catch
-                                {
-                                    isContainsInvalid = true;
-                                }
+                                        tempExecutableFiles[i] = new ExecutableFile(i, fileCount, paths[i],
+                                            _app, _iconDecoder, stringPool, targetFoldersArray);
+                                    }
+                                    catch
+                                    {
+                                        isContainsInvalid = true;
+                                    }
+                                });
 
-                                return rowTemp;
-                            },
-                            rowTemp => { });
-
-                        _ExecutableFiles =
-                            isContainsInvalid
-                                ? tempExecutableFiles.Where(t => t != null).ToArray()
-                                : tempExecutableFiles;
+                            _ExecutableFiles =
+                                isContainsInvalid
+                                    ? tempExecutableFiles.Where(t => t != null).ToArray()
+                                    : tempExecutableFiles;
+                        }
                     }
 
                     return IndexOpeningResults.Ok;

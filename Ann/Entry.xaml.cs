@@ -40,6 +40,8 @@ namespace Ann
 
             SetupDiContainer();
 
+            _DiContainer.GetInstance<ViewManager>().Initialize();
+
             Reactive.Bindings.UIDispatcherScheduler.Initialize();
 
             MainWindow = _DiContainer.GetInstance<MainWindow.MainWindow>();
@@ -53,10 +55,6 @@ namespace Ann
             _isRestartRequested = _DiContainer.GetInstance<App>().VersionUpdater.IsRestartRequested;
 
             _DiContainer.Dispose();
-        }
-
-        public class Dummy
-        {
         }
 
         private void SetupDiContainer()
@@ -76,7 +74,9 @@ namespace Ann
             _DiContainer.GetRegistration(typeof(VersionUpdater)).Registration
                 .SuppressDiagnosticWarning(DiagnosticType.DisposableTransientComponent, "suppress");
 
+#if DEBUG
             _DiContainer.Verify();
+#endif
         }
 
         private readonly Container _DiContainer = new Container();

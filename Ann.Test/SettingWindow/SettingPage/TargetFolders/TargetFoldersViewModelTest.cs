@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using Ann.Core;
-using Ann.Foundation;
 using Ann.Foundation.Mvvm.Message;
 using Ann.SettingWindow.SettingPage.TargetFolders;
 using Xunit;

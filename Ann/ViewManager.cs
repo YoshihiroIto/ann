@@ -14,6 +14,10 @@ namespace Ann
             SetupLanguagesService(languagesService);
         }
 
+        public void Initialize()
+        {
+        }
+
         private readonly ResourceDictionary _CurrentResourceDictionary = new ResourceDictionary();
 
         private void SetupLanguagesService(LanguagesService languagesService)
