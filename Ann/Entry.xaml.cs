@@ -40,6 +40,8 @@ namespace Ann
 
             SetupDiContainer();
 
+            _DiContainer.GetInstance<ViewManager>().Initialize();
+
             Reactive.Bindings.UIDispatcherScheduler.Initialize();
 
             MainWindow = _DiContainer.GetInstance<MainWindow.MainWindow>();
