@@ -1,6 +1,4 @@
 ﻿using System;
-using Ann.Foundation.Exception;
-using Ann.Foundation.Mvvm;
 using Xunit;
 
 namespace Ann.Foundation.Test

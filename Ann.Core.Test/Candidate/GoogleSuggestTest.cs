@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Net.NetworkInformation;
 using Ann.Core.Candidate;
-using Ann.Foundation;
 using Xunit;
 
 namespace Ann.Core.Test.Candidate
