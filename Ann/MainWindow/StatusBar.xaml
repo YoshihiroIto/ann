@@ -6,7 +6,7 @@
               xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
               d:DesignWidth="300"
-              Foreground="Gainsboro"
+              Foreground="#123"
               ItemsSource="{Binding Messages,
                                     Mode=OneTime}"
               Padding="0"
@@ -47,7 +47,6 @@
                              HorizontalAlignment="Right"
                              VerticalAlignment="Center"
                              DockPanel.Dock="Right"
-                             Foreground="White"
                              IsIndeterminate="True"
                              Style="{StaticResource MaterialDesignCircularProgressBar}"
                              Value="0" />
@@ -70,7 +69,6 @@
                                          HorizontalAlignment="Right"
                                          VerticalAlignment="Center"
                                          DockPanel.Dock="Right"
-                                         Foreground="White"
                                          Kind="Clock" />
                 <TextBlock VerticalAlignment="Center">
                     <TextBlock.Text>

@@ -9,12 +9,11 @@
         xmlns:mainWindow="clr-namespace:Ann.MainWindow"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        Width="{x:Static ann:ViewConstants.MainWindowWidth}"
+        Width="{x:Static ann:ViewConstants.MainWindowWithShadowWidth}"
         d:DataContext="{d:DesignData mainWindow:MainWindowViewModel}"
         Activated="Window_Activated"
         AllowsTransparency="True"
-        Background="#9000"
-        BorderBrush="#C000"
+        Background="Transparent"
         BorderThickness="{x:Static ann:ViewConstants.MainWindowBorderThickness}"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
         IsVisibleChanged="Window_IsVisibleChanged"
@@ -36,6 +35,22 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="CandidatePanel.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <SolidColorBrush x:Key="BackgroundBrush" Color="Snow" />
+
+            <DropShadowEffect x:Key="ShadowEffect"
+                              BlurRadius="{x:Static ann:ViewConstants.ShadowSize}"
+                              Direction="270"
+                              ShadowDepth="3"
+                              Color="#33000000" />
+
+            <BitmapCache x:Key="ShadowCache" RenderAtScale="0.2" />
+
+            <Style x:Key="ShadowBorderStyle" TargetType="{x:Type Border}">
+                <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
+                <Setter Property="Effect" Value="{StaticResource ShadowEffect}" />
+                <Setter Property="CacheMode" Value="{StaticResource ShadowCache}" />
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -64,62 +79,104 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <Canvas x:Name="BasePanel"
-            Width="{x:Static ann:ViewConstants.MainWindowWidth}"
-            VerticalAlignment="Top">
-        <mainWindow:StatusBar x:Name="StatusBar"
-                              Width="{x:Static ann:ViewConstants.StatusBarWidth}"
-                              DataContext="{Binding StatusBar,
-                                                    Mode=OneTime}" />
-        <DockPanel x:Name="InputLine"
-                   Canvas.Left="0"
-                   Canvas.Top="0"
-                   Width="{x:Static ann:ViewConstants.InputLineWidth}"
-                   Margin="{x:Static ann:ViewConstants.BaseMargin}"
-                   LastChildFill="True">
-            <materialDesign:PopupBox Margin="0,0,-12,0"
-                                     Closed="PopupBox_Closed"
-                                     DockPanel.Dock="Right"
-                                     Foreground="Gainsboro"
-                                     PlacementMode="BottomAndAlignRightEdges">
-                <StackPanel Margin="0,8">
-                    <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_UpdateIndex}" />
-                    <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_Settings}" />
-                    <Separator />
-                    <MenuItem Command="{Binding ExitCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_Exit}" />
-                </StackPanel>
-            </materialDesign:PopupBox>
+    <Border Margin="{x:Static ann:ViewConstants.MainWindowShadowMargin}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="6" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="6" />
+            </Grid.RowDefinitions>
 
-            <TextBox x:Name="InputTextBox"
-                     Background="Transparent"
-                     BorderThickness="0"
-                     CaretBrush="White"
-                     FontSize="32"
-                     Foreground="White"
-                     Text="{Binding Input.Value,
-                                    Mode=TwoWay,
-                                    UpdateSourceTrigger=PropertyChanged}"
-                     TextChanged="InputTextBox_TextChanged">
-                <TextBox.InputBindings>
-                    <KeyBinding Key="Up"
-                                Command="{Binding SelectedCandidateMoveCommand,
-                                                  Mode=OneTime}"
-                                CommandParameter="-1" />
-                    <KeyBinding Key="Down"
-                                Command="{Binding SelectedCandidateMoveCommand,
-                                                  Mode=OneTime}"
-                                CommandParameter="1" />
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="6" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="6" />
+            </Grid.ColumnDefinitions>
 
-                    <KeyBinding Key="Tab"
-                                Command="{Binding SelectedCandidateMoveCommand,
-                                                  Mode=OneTime}"
-                                CommandParameter="-1"
-                                Modifiers="Shift" />
-                    <KeyBinding Key="Tab"
-                                Command="{Binding SelectedCandidateMoveCommand}"
-                                CommandParameter="1" />
-                </TextBox.InputBindings>
-            </TextBox>
-        </DockPanel>
-    </Canvas>
+            <Border Grid.RowSpan="3"
+                    Grid.ColumnSpan="3"
+                    Panel.ZIndex="1"
+                    Background="{StaticResource BackgroundBrush}"
+                    CornerRadius="6">
+
+                <Canvas x:Name="BasePanel"
+                        Width="{x:Static ann:ViewConstants.MainWindowWidth}"
+                        VerticalAlignment="Top">
+                    <mainWindow:StatusBar x:Name="StatusBar"
+                                          Width="{x:Static ann:ViewConstants.StatusBarWidth}"
+                                          DataContext="{Binding StatusBar,
+                                                                Mode=OneTime}" />
+                    <DockPanel x:Name="InputLine"
+                               Canvas.Left="0"
+                               Canvas.Top="0"
+                               Width="{x:Static ann:ViewConstants.InputLineWidth}"
+                               Margin="{x:Static ann:ViewConstants.BaseMargin}"
+                               LastChildFill="True">
+                        <materialDesign:PopupBox Margin="0,0,-8,0"
+                                                 Closed="PopupBox_Closed"
+                                                 DockPanel.Dock="Right"
+                                                 Foreground="#789"
+                                                 PlacementMode="BottomAndAlignRightEdges">
+                            <StackPanel Margin="0,8">
+                                <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_UpdateIndex}" />
+                                <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_Settings}" />
+                                <Separator />
+                                <MenuItem Command="{Binding ExitCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_Exit}" />
+                            </StackPanel>
+                        </materialDesign:PopupBox>
+
+                        <TextBox x:Name="InputTextBox"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 CaretBrush="#123"
+                                 FontSize="32"
+                                 Foreground="#123"
+                                 Text="{Binding Input.Value,
+                                                Mode=TwoWay,
+                                                UpdateSourceTrigger=PropertyChanged}"
+                                 TextChanged="InputTextBox_TextChanged">
+                            <TextBox.InputBindings>
+                                <KeyBinding Key="Up"
+                                            Command="{Binding SelectedCandidateMoveCommand,
+                                                              Mode=OneTime}"
+                                            CommandParameter="-1" />
+                                <KeyBinding Key="Down"
+                                            Command="{Binding SelectedCandidateMoveCommand,
+                                                              Mode=OneTime}"
+                                            CommandParameter="1" />
+
+                                <KeyBinding Key="Tab"
+                                            Command="{Binding SelectedCandidateMoveCommand,
+                                                              Mode=OneTime}"
+                                            CommandParameter="-1"
+                                            Modifiers="Shift" />
+                                <KeyBinding Key="Tab"
+                                            Command="{Binding SelectedCandidateMoveCommand}"
+                                            CommandParameter="1" />
+                            </TextBox.InputBindings>
+                        </TextBox>
+                    </DockPanel>
+                </Canvas>
+            </Border>
+
+            <Border Grid.Row="0"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    CornerRadius="6,6,0,0"
+                    Style="{StaticResource ShadowBorderStyle}" />
+            <Border Grid.Row="1"
+                    Grid.Column="0"
+                    CornerRadius="0"
+                    Style="{StaticResource ShadowBorderStyle}" />
+            <Border Grid.Row="1"
+                    Grid.Column="2"
+                    CornerRadius="0"
+                    Style="{StaticResource ShadowBorderStyle}" />
+            <Border Grid.Row="2"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    CornerRadius="0,0,6,6"
+                    Style="{StaticResource ShadowBorderStyle}" />
+        </Grid>
+    </Border>
 </Window>

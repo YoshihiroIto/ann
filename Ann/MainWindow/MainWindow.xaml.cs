@@ -79,7 +79,6 @@ namespace Ann.MainWindow
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            WindowHelper.EnableBlur(this);
             InputTextBox.Focus();
             InitializeHotKey();
             InitializeShortcutKey();
@@ -250,13 +249,15 @@ namespace Ann.MainWindow
 
             var height = BasePanel.Height;
 
+            height += ViewConstants.ShadowSize * 2;     // 影
+
             if (_DataContext.Candidates.Value.Any())
                 height += ViewConstants.BaseMarginUnit;
 
             {
                 height += StatusBar.ActualHeight;
                 Canvas.SetLeft(StatusBar, 0);
-                Canvas.SetTop(StatusBar, height - StatusBar.ActualHeight - ViewConstants.MainWindowBorderThicknessUnit*2);
+                Canvas.SetTop(StatusBar, height - StatusBar.ActualHeight - ViewConstants.MainWindowBorderThicknessUnit*2 - ViewConstants.ShadowSize*2);
             }
 
             Height = height;
