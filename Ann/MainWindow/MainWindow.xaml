@@ -42,7 +42,8 @@
                               BlurRadius="{x:Static ann:ViewConstants.ShadowSize}"
                               Direction="270"
                               ShadowDepth="3"
-                              Color="#33000000" />
+                              Opacity="0.6"
+                              Color="Black" />
 
             <BitmapCache x:Key="ShadowCache" RenderAtScale="0.2" />
 
