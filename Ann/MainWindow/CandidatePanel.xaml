@@ -46,7 +46,7 @@
                 <Style BasedOn="{StaticResource MaterialDesignToolButton}" TargetType="{x:Type Button}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsPriorityFile, Mode=OneWay}" Value="True">
-                            <Setter Property="Foreground" Value="Yellow" />
+                            <Setter Property="Foreground" Value="DarkOrange" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding IsPriorityFile, Mode=OneWay}" Value="False">
                             <Setter Property="Foreground" Value="#888" />
@@ -69,7 +69,7 @@
         <materialDesign:PopupBox Canvas.Top="{x:Static ann:ViewConstants.CandidatePanel_Menu_Top}"
                                  Canvas.Right="{x:Static ann:ViewConstants.CandidatePanel_Menu_Right}"
                                  DockPanel.Dock="Right"
-                                 Foreground="Gainsboro"
+                                 Foreground="#789"
                                  PlacementMode="BottomAndAlignRightEdges">
             <ItemsControl ItemsSource="{Binding SubCommands, Mode=OneTime}">
                 <ItemsControl.Template>
@@ -117,8 +117,7 @@
                    Canvas.Top="{x:Static ann:ViewConstants.CandidatePanel_Comment_Top}"
                    Width="{x:Static ann:ViewConstants.CandidatePanel_Comment_Width}"
                    Height="16"
-                   Foreground="#AAA"
-                   Padding="0"
+                   Foreground="#789"
                    Text="{Binding Comment,
                                   Mode=OneWay}"
                    TextTrimming="CharacterEllipsis"
@@ -137,7 +136,7 @@
                    Width="{x:Static ann:ViewConstants.CandidatePanel_Name_Width}"
                    Height="30"
                    FontSize="24"
-                   Foreground="White"
+                   Foreground="#123"
                    Padding="0"
                    Text="{Binding Name,
                                   Mode=OneTime}"
@@ -149,7 +148,7 @@
                    Canvas.Bottom="0"
                    Width="{x:Static ann:ViewConstants.CandidatePanelWidth}"
                    Height="1"
-                   Fill="#20A0A0A0"
+                   Fill="#2777"
                    SnapsToDevicePixels="True" />
     </Canvas>
 </ResourceDictionary>

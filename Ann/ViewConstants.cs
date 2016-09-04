@@ -8,6 +8,11 @@ namespace Ann
     {
         public const int MaxCandidateCount = 10;
 
+        public const double ShadowSize = 10;
+        public static Thickness MainWindowShadowMargin = new Thickness(ShadowSize);
+
+        public const double MainWindowWithShadowWidth = 600+ShadowSize*2;
+
         public const double MainWindowWidth = 600;
         public const double MainWindowBorderThicknessUnit = 0;
         public static Thickness MainWindowBorderThickness = new Thickness(MainWindowBorderThicknessUnit);
