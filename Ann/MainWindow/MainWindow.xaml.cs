@@ -249,7 +249,7 @@ namespace Ann.MainWindow
 
             var height = BasePanel.Height;
 
-            height += ViewConstants.ShadowSize * 2;     // 影
+            height += ViewConstants.ShadowSize * 2;
 
             if (_DataContext.Candidates.Value.Any())
                 height += ViewConstants.BaseMarginUnit;
