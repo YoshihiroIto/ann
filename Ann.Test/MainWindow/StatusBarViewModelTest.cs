@@ -48,35 +48,5 @@ namespace Ann.Test.MainWindow
                 }
             }
         }
-
-        [WpfFact]
-        public void Visibility()
-        {
-            var app = _context.GetInstance<App>();
-            var configHolder = _context.GetInstance<ConfigHolder>();
-
-            {
-                configHolder.Config.TargetFolder.IsIncludeSystemFolder = false;
-                configHolder.Config.TargetFolder.IsIncludeSystemX86Folder = false;
-                configHolder.Config.TargetFolder.IsIncludeProgramsFolder = false;
-                configHolder.Config.TargetFolder.IsIncludeProgramFilesFolder = false;
-                configHolder.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
-                configHolder.Config.TargetFolder.IsIncludeCommonStartMenu = false;
-
-                app.OpenIndexAsync().Wait();
-
-                using (var vm = new StatusBarViewModel(app))
-                {
-                    Assert.Equal(System.Windows.Visibility.Collapsed, vm.Visibility.Value);
-
-                    var i = new ProcessingStatusBarItemViewModel(app, StringTags.AllFiles);
-                    vm.Messages.Add(i);
-                    Assert.Equal(System.Windows.Visibility.Visible, vm.Visibility.Value);
-
-                    vm.Messages.Remove(i);
-                    Assert.Equal(System.Windows.Visibility.Collapsed, vm.Visibility.Value);
-                }
-            }
-        }
     }
 }
