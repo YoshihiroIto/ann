@@ -71,7 +71,7 @@ namespace Ann.MainWindow
                 .Merge(statusBarMessagesChanged.ToUnit())
                 .Merge(statusBarSizeChanged.ToUnit())
                 .Merge(sizeChanged.ToUnit())
-                .Throttle(TimeSpan.FromMilliseconds(50))
+                .Throttle(TimeSpan.FromMilliseconds(250))
                 .ObserveOn(ReactivePropertyScheduler.Default)
                 .Subscribe(_ => UpdateView())
                 .AddTo(_DataContext.CompositeDisposable);
