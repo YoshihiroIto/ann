@@ -71,7 +71,7 @@ namespace Ann.MainWindow
                 .Merge(statusBarIsVisibleChanged.ToUnit())
                 .Merge(statusBarSizeChanged.ToUnit())
                 .Merge(sizeChanged.ToUnit())
-                .Throttle(TimeSpan.FromMilliseconds(500))
+                //.Throttle(TimeSpan.FromMilliseconds(500))
                 .ObserveOn(ReactivePropertyScheduler.Default)
                 .Subscribe(_ => UpdateSize())
                 .AddTo(_DataContext.CompositeDisposable);
@@ -243,24 +243,19 @@ namespace Ann.MainWindow
             if (_DataContext.Candidates.Value == null)
                 return;
 
-            BasePanel.Height =
-                InputLineHeight +
-                _DataContext.Candidates.Value.Length*ViewConstants.CandidatePanelHeight;
-
-            var height = BasePanel.Height;
-
-            height += ViewConstants.ShadowSize * 2;
+            var height = InputLineHeight;
+            height += _DataContext.Candidates.Value.Length *ViewConstants.CandidatePanelHeight;
 
             if (_DataContext.Candidates.Value.Any())
                 height += ViewConstants.BaseMarginUnit;
 
-            {
-                height += StatusBar.ActualHeight;
-                Canvas.SetLeft(StatusBar, 0);
-                Canvas.SetTop(StatusBar, height - StatusBar.ActualHeight - ViewConstants.MainWindowBorderThicknessUnit*2 - ViewConstants.ShadowSize*2);
-            }
+            ShadowLeft.Height = height - ViewConstants.MainWindowCournerCornerRadiusUnit*2;
+            ShadowRight.Height = height - ViewConstants.MainWindowCournerCornerRadiusUnit*2;
+            ShadowPanel.Height = height;
+            MainPanel.Height = height;
 
-            Height = height;
+            Canvas.SetTop(StatusBar, height);
+            Height = height + ViewConstants.ShadowSize*2 + StatusBar.ActualHeight;
         }
 
         private double InputLineHeight =>
@@ -284,7 +279,7 @@ namespace Ann.MainWindow
                 Canvas.SetLeft(_CandidatePanels[i], ViewConstants.BaseMarginUnit);
                 Canvas.SetTop(_CandidatePanels[i], InputLineHeight + i*ViewConstants.CandidatePanelHeight);
 
-                BasePanel.Children.Add(_CandidatePanels[i]);
+                MainPanel.Children.Add(_CandidatePanels[i]);
             }
 
             _DataContext.Candidates
