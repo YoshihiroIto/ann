@@ -4,12 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Data;
 using Ann.Core;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm;
-using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using Splat;
 
@@ -18,7 +16,6 @@ namespace Ann.MainWindow
     public class StatusBarViewModel : ViewModelBase
     {
         public ObservableCollection<StatusBarItemViewModel> Messages { get; }
-        public ReadOnlyReactiveProperty<Visibility> Visibility { get; }
 
         private readonly object _messageRemoveLock = new object();
 
@@ -40,13 +37,6 @@ namespace Ann.MainWindow
                     Messages.Clear();
                 }
             });
-
-            Visibility = Messages.CollectionChangedAsObservable()
-                .Select(_ => Messages.Any()
-                    ? System.Windows.Visibility.Visible
-                    : System.Windows.Visibility.Collapsed)
-                .ToReadOnlyReactiveProperty(System.Windows.Visibility.Collapsed)
-                .AddTo(CompositeDisposable);
 
             Observable.FromEventPattern<
                     EventHandler<App.NotificationEventArgs>,

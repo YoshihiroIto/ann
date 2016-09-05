@@ -44,18 +44,18 @@ namespace Ann.MainWindow
             InitializeComponent();
 
             Loaded += OnLoaded;
+
+            SizeChanged += OnSizeChanged;
         }
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
             SetupCandidatePanels();
 
-            UpdateSize();
+            UpdateView();
 
-            var statusBarIsVisibleChanged =
-                Observable.FromEventPattern<DependencyPropertyChangedEventHandler, DependencyPropertyChangedEventArgs>(
-                    h => StatusBar.IsVisibleChanged += h,
-                    h => StatusBar.IsVisibleChanged -= h);
+            var statusBarMessagesChanged =
+                _DataContext.StatusBar.Messages.CollectionChangedAsObservable();
 
             var statusBarSizeChanged =
                 Observable.FromEventPattern<SizeChangedEventHandler, SizeChangedEventArgs>(
@@ -68,12 +68,12 @@ namespace Ann.MainWindow
                     h => SizeChanged -= h);
 
             Observable
-                .Merge(statusBarIsVisibleChanged.ToUnit())
+                .Merge(statusBarMessagesChanged.ToUnit())
                 .Merge(statusBarSizeChanged.ToUnit())
                 .Merge(sizeChanged.ToUnit())
-                //.Throttle(TimeSpan.FromMilliseconds(500))
+                .Throttle(TimeSpan.FromMilliseconds(50))
                 .ObserveOn(ReactivePropertyScheduler.Default)
-                .Subscribe(_ => UpdateSize())
+                .Subscribe(_ => UpdateView())
                 .AddTo(_DataContext.CompositeDisposable);
         }
 
@@ -111,7 +111,7 @@ namespace Ann.MainWindow
 
         private async void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            UpdateSize();
+            UpdateView();
 
             InputTextBox.Text = string.Empty;
 
@@ -238,24 +238,40 @@ namespace Ann.MainWindow
                 ).AddTo(_DataContext.CompositeDisposable);
         }
 
-        private void UpdateSize()
+        private void UpdateView()
         {
             if (_DataContext.Candidates.Value == null)
                 return;
 
             var height = InputLineHeight;
-            height += _DataContext.Candidates.Value.Length *ViewConstants.CandidatePanelHeight;
+            height += _DataContext.Candidates.Value.Length*ViewConstants.CandidatePanelHeight;
 
             if (_DataContext.Candidates.Value.Any())
                 height += ViewConstants.BaseMarginUnit;
+
+            if (_DataContext.StatusBar.Messages.Any() && StatusBar.Visibility == Visibility.Collapsed)
+                StatusBar.Visibility = Visibility.Hidden;
+
+            height += StatusBar.ActualHeight;
 
             ShadowLeft.Height = height - ViewConstants.MainWindowCournerCornerRadiusUnit*2;
             ShadowRight.Height = height - ViewConstants.MainWindowCournerCornerRadiusUnit*2;
             ShadowPanel.Height = height;
             MainPanel.Height = height;
 
-            Canvas.SetTop(StatusBar, height);
-            Height = height + ViewConstants.ShadowSize*2 + StatusBar.ActualHeight;
+            _isReqStatusBarVisibility = true;
+            Height = height + ViewConstants.ShadowSize*2;
+        }
+
+        private bool _isReqStatusBarVisibility;
+
+        private void OnSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs)
+        {
+            if (_isReqStatusBarVisibility == false)
+                return;
+
+            _isReqStatusBarVisibility = false;
+            StatusBar.Visibility = _DataContext.StatusBar.Messages.Any() ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private double InputLineHeight =>
@@ -302,7 +318,7 @@ namespace Ann.MainWindow
                         _CandidatePanels[i].Visibility = Visibility.Collapsed;
                     }
 
-                    UpdateSize();
+                    UpdateView();
 
                     _DataContext.DisposeOldCandidates();
                 }).AddTo(_DataContext.CompositeDisposable);

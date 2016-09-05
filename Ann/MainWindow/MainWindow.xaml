@@ -144,12 +144,6 @@
             </Canvas>
         </Border>
 
-        <mainWindow:StatusBar x:Name="StatusBar"
-                              Width="{x:Static ann:ViewConstants.StatusBarWidth}"
-                              Panel.ZIndex="1"
-                              DataContext="{Binding StatusBar,
-                                                    Mode=OneTime}" />
-
         <Border x:Name="ShadowTop"
                 Width="{x:Static ann:ViewConstants.MainWindowWidth}"
                 Height="{x:Static ann:ViewConstants.MainWindowCournerCornerRadiusUnit}"
@@ -161,6 +155,13 @@
                 Height="{x:Static ann:ViewConstants.MainWindowCournerCornerRadiusUnit}"
                 CornerRadius="0,0,6,6"
                 Style="{StaticResource ShadowBorderStyle}" />
+
+        <mainWindow:StatusBar x:Name="StatusBar"
+                              Canvas.Bottom="2"
+                              Width="{x:Static ann:ViewConstants.StatusBarWidth}"
+                              Panel.ZIndex="1"
+                              DataContext="{Binding StatusBar,
+                                                    Mode=OneTime}" />
         <Border x:Name="ShadowRight"
                 Canvas.Top="{x:Static ann:ViewConstants.MainWindowCournerCornerRadiusUnit}"
                 Canvas.Right="0"
