@@ -13,6 +13,9 @@ namespace Ann
 
         public const double MainWindowWithShadowWidth = 600+ShadowSize*2;
 
+        public const double MainWindowCournerCornerRadiusUnit = 6;
+        public static CornerRadius MainWindowCornerRadius = new CornerRadius(MainWindowCournerCornerRadiusUnit);
+
         public const double MainWindowWidth = 600;
         public const double MainWindowBorderThicknessUnit = 0;
         public static Thickness MainWindowBorderThickness = new Thickness(MainWindowBorderThicknessUnit);

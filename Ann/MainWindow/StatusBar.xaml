@@ -11,8 +11,6 @@
                                     Mode=OneTime}"
               Padding="0"
               SnapsToDevicePixels="True"
-              Visibility="{Binding Visibility.Value,
-                                   Mode=OneWay}"
               mc:Ignorable="d">
     <ItemsControl.Template>
         <ControlTemplate>
