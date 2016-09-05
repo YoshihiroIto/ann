@@ -6,7 +6,7 @@
               xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
               d:DesignWidth="300"
-              Foreground="#123"
+              Foreground="#222"
               ItemsSource="{Binding Messages,
                                     Mode=OneTime}"
               Padding="0"

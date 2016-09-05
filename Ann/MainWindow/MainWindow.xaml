@@ -100,7 +100,7 @@
                     <materialDesign:PopupBox Margin="0,0,-8,0"
                                              Closed="PopupBox_Closed"
                                              DockPanel.Dock="Right"
-                                             Foreground="#789"
+                                             Foreground="#222"
                                              PlacementMode="BottomAndAlignRightEdges">
                         <StackPanel Margin="0,8">
                             <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_UpdateIndex}" />
@@ -113,9 +113,9 @@
                     <TextBox x:Name="InputTextBox"
                              Background="Transparent"
                              BorderThickness="0"
-                             CaretBrush="#123"
+                             CaretBrush="#222"
                              FontSize="32"
-                             Foreground="#123"
+                             Foreground="#222"
                              Text="{Binding Input.Value,
                                             Mode=TwoWay,
                                             UpdateSourceTrigger=PropertyChanged}"

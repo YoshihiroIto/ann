@@ -69,7 +69,7 @@
         <materialDesign:PopupBox Canvas.Top="{x:Static ann:ViewConstants.CandidatePanel_Menu_Top}"
                                  Canvas.Right="{x:Static ann:ViewConstants.CandidatePanel_Menu_Right}"
                                  DockPanel.Dock="Right"
-                                 Foreground="#789"
+                                 Foreground="#222"
                                  PlacementMode="BottomAndAlignRightEdges">
             <ItemsControl ItemsSource="{Binding SubCommands, Mode=OneTime}">
                 <ItemsControl.Template>
@@ -117,7 +117,7 @@
                    Canvas.Top="{x:Static ann:ViewConstants.CandidatePanel_Comment_Top}"
                    Width="{x:Static ann:ViewConstants.CandidatePanel_Comment_Width}"
                    Height="16"
-                   Foreground="#789"
+                   Foreground="#888"
                    Text="{Binding Comment,
                                   Mode=OneWay}"
                    TextTrimming="CharacterEllipsis"
@@ -136,7 +136,7 @@
                    Width="{x:Static ann:ViewConstants.CandidatePanel_Name_Width}"
                    Height="30"
                    FontSize="24"
-                   Foreground="#123"
+                   Foreground="#222"
                    Padding="0"
                    Text="{Binding Name,
                                   Mode=OneTime}"
