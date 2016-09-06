@@ -256,8 +256,8 @@ namespace Ann.MainWindow
 
             ShadowLeft.Height = height - ViewConstants.MainWindowCournerCornerRadiusUnit*2;
             ShadowRight.Height = height - ViewConstants.MainWindowCournerCornerRadiusUnit*2;
-            ShadowPanel.Height = height;
-            MainPanel.Height = height;
+            BasePanel.Height = height;
+            BackgroundPanel.Height = height;
 
             _isReqStatusBarVisibility = true;
             Height = height + ViewConstants.ShadowSize*2;
@@ -292,10 +292,11 @@ namespace Ann.MainWindow
                 _CandidatePanels[i].PreviewMouseLeftButtonUp += CandidatePanel_PreviewMouseLeftButtonUp;
                 _CandidatePanels[i].MouseLeftButtonDown += CandidatePanel_MouseLeftButtonDown;
 
+                Panel.SetZIndex(_CandidatePanels[i], 2);
                 Canvas.SetLeft(_CandidatePanels[i], ViewConstants.BaseMarginUnit);
                 Canvas.SetTop(_CandidatePanels[i], InputLineHeight + i*ViewConstants.CandidatePanelHeight);
 
-                MainPanel.Children.Add(_CandidatePanels[i]);
+                BasePanel.Children.Add(_CandidatePanels[i]);
             }
 
             _DataContext.Candidates
