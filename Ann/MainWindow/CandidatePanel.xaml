@@ -36,7 +36,7 @@
         </Canvas.Style>
 
         <Line SnapsToDevicePixels="True"
-              Stroke="#3777"
+              Stroke="{StaticResource PanelBorderLineBrush}"
               StrokeThickness="1"
               X1="0"
               X2="{x:Static ann:ViewConstants.CandidatePanelWidth}"
@@ -54,10 +54,10 @@
                 <Style BasedOn="{StaticResource MaterialDesignToolButton}" TargetType="{x:Type Button}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsPriorityFile, Mode=OneWay}" Value="True">
-                            <Setter Property="Foreground" Value="DarkOrange" />
+                            <Setter Property="Foreground" Value="{StaticResource StarOnBrush}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding IsPriorityFile, Mode=OneWay}" Value="False">
-                            <Setter Property="Foreground" Value="#888" />
+                            <Setter Property="Foreground" Value="{StaticResource StarOffBrush}" />
                         </DataTrigger>
 
                         <DataTrigger Binding="{Binding CanSetPriority, Mode=OneTime}" Value="False">
@@ -77,7 +77,7 @@
         <materialDesign:PopupBox Canvas.Top="{x:Static ann:ViewConstants.CandidatePanel_Menu_Top}"
                                  Canvas.Right="{x:Static ann:ViewConstants.CandidatePanel_Menu_Right}"
                                  DockPanel.Dock="Right"
-                                 Foreground="#222"
+                                 Foreground="{StaticResource CaptionBrush}"
                                  PlacementMode="BottomAndAlignRightEdges">
             <ItemsControl ItemsSource="{Binding SubCommands, Mode=OneTime}">
                 <ItemsControl.Template>
@@ -125,7 +125,7 @@
                    Canvas.Top="{x:Static ann:ViewConstants.CandidatePanel_Comment_Top}"
                    Width="{x:Static ann:ViewConstants.CandidatePanel_Comment_Width}"
                    Height="16"
-                   Foreground="#888"
+                   Foreground="{StaticResource CommentBrush}"
                    Text="{Binding Comment,
                                   Mode=OneWay}"
                    TextTrimming="CharacterEllipsis"
@@ -144,7 +144,7 @@
                    Width="{x:Static ann:ViewConstants.CandidatePanel_Name_Width}"
                    Height="30"
                    FontSize="24"
-                   Foreground="#222"
+                   Foreground="{StaticResource CaptionBrush}"
                    Padding="0"
                    Text="{Binding Name,
                                   Mode=OneTime}"

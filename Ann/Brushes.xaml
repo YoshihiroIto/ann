@@ -1,0 +1,19 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <SolidColorBrush x:Key="PanelBorderLineBrush" Color="#3777" />
+
+    <SolidColorBrush x:Key="StarOnBrush" Color="DarkOrange" />
+    <SolidColorBrush x:Key="StarOffBrush" Color="#888" />
+
+    <SolidColorBrush x:Key="CaptionBrush" Color="#222" />
+    <SolidColorBrush x:Key="CommentBrush" Color="#888" />
+
+    <SolidColorBrush x:Key="TransparentBrush" Color="Transparent" />
+    
+    <SolidColorBrush x:Key="MainWindowBackgroundBrush" Color="White" />
+    <SolidColorBrush x:Key="MainWindowDropShadowBrush" Color="Black" />
+
+    <SolidColorBrush x:Key="Item.MouseOver.Background" Color="#1F828282" />
+    <SolidColorBrush x:Key="Item.SelectedActive.Background" Color="#3D828282" />
+</ResourceDictionary>
