@@ -45,12 +45,9 @@
                               ShadowDepth="3"
                               Color="Black" />
 
-            <BitmapCache x:Key="ShadowCache" RenderAtScale="0.5" />
-
             <Style x:Key="ShadowBorderStyle" TargetType="{x:Type Border}">
                 <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
                 <Setter Property="Effect" Value="{StaticResource ShadowEffect}" />
-                <Setter Property="CacheMode" Value="{StaticResource ShadowCache}" />
             </Style>
         </ResourceDictionary>
     </Window.Resources>
