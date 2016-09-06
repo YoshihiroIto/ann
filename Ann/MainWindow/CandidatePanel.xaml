@@ -112,36 +112,5 @@
                 </Style>
             </materialDesign:PopupBox.Style>
         </materialDesign:PopupBox>
-
-        <TextBlock Canvas.Left="{x:Static ann:ViewConstants.CandidatePanel_Comment_Left}"
-                   Canvas.Top="{x:Static ann:ViewConstants.CandidatePanel_Comment_Top}"
-                   Width="{x:Static ann:ViewConstants.CandidatePanel_Comment_Width}"
-                   Height="16"
-                   Foreground="{StaticResource CommentBrush}"
-                   Text="{Binding Comment,
-                                  Mode=OneWay}"
-                   TextTrimming="CharacterEllipsis"
-                   ToolTip="{Binding Comment,
-                                     Mode=OneWay}" />
-
-        <Canvas Canvas.Left="{x:Static ann:ViewConstants.CandidatePanel_Image_Left}"
-                Canvas.Top="{x:Static ann:ViewConstants.CandidatePanel_Image_Top}"
-                Width="{x:Static core:Constants.IconSize}"
-                Height="{x:Static core:Constants.IconSize}"
-                Background="{Binding Icon,
-                                     Mode=OneTime}" />
-
-        <TextBlock Canvas.Left="{x:Static ann:ViewConstants.CandidatePanel_Name_Left}"
-                   Canvas.Top="{x:Static ann:ViewConstants.CandidatePanel_Name_Top}"
-                   Width="{x:Static ann:ViewConstants.CandidatePanel_Name_Width}"
-                   Height="30"
-                   FontSize="24"
-                   Foreground="{StaticResource CaptionBrush}"
-                   Padding="0"
-                   Text="{Binding Name,
-                                  Mode=OneTime}"
-                   TextTrimming="CharacterEllipsis"
-                   ToolTip="{Binding Name,
-                                     Mode=OneTime}" />
-    </mainWindow:CandidatePanelCanvas>
+   </mainWindow:CandidatePanelCanvas>
 </ResourceDictionary>

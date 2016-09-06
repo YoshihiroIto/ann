@@ -308,6 +308,7 @@ namespace Ann.MainWindow
                     foreach (var c in candidates)
                     {
                         _CandidatePanels[index].DataContext = c;
+                        _CandidatePanels[index].InvalidateVisual();
                         _CandidatePanels[index].Visibility = Visibility.Visible;
 
                         ++index;
