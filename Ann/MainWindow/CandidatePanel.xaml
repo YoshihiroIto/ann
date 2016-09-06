@@ -35,6 +35,14 @@
             </Style>
         </Canvas.Style>
 
+        <Line SnapsToDevicePixels="True"
+              Stroke="#3777"
+              StrokeThickness="1"
+              X1="0"
+              X2="{x:Static ann:ViewConstants.CandidatePanelWidth}"
+              Y1="{x:Static ann:ViewConstants.CandidatePanelHeight}"
+              Y2="{x:Static ann:ViewConstants.CandidatePanelHeight}" />
+
         <Button Canvas.Right="{x:Static ann:ViewConstants.CandidatePanel_Star_Right}"
                 Canvas.Bottom="{x:Static ann:ViewConstants.CandidatePanel_Star_Bottom}"
                 VerticalAlignment="Bottom"
@@ -143,12 +151,5 @@
                    TextTrimming="CharacterEllipsis"
                    ToolTip="{Binding Name,
                                      Mode=OneTime}" />
-
-        <Rectangle Canvas.Left="0"
-                   Canvas.Bottom="0"
-                   Width="{x:Static ann:ViewConstants.CandidatePanelWidth}"
-                   Height="1"
-                   Fill="#2777"
-                   SnapsToDevicePixels="True" />
     </Canvas>
 </ResourceDictionary>
