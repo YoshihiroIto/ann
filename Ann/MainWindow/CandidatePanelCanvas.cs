@@ -8,7 +8,7 @@ namespace Ann.MainWindow
 {
     public class CandidatePanelCanvas : Canvas
     {
-        private static readonly Typeface Typeface;
+        private static readonly Typeface Dummy = new Typeface(string.Empty);
 
         private static readonly Pen PanelBorderLinePen;
         private static readonly Brush CaptionBrush;
@@ -19,8 +19,6 @@ namespace Ann.MainWindow
             PanelBorderLinePen = new Pen(Application.Current.Resources["PanelBorderLineBrush"] as Brush, 1);
             if (PanelBorderLinePen.CanFreeze)
                 PanelBorderLinePen.Freeze();
-
-            Typeface = new Typeface("Verdana");
 
             CaptionBrush = Application.Current.Resources["CaptionBrush"] as Brush;
             CommentBrush = Application.Current.Resources["CommentBrush"] as Brush;
@@ -44,14 +42,16 @@ namespace Ann.MainWindow
                     d.Name,
                     CultureInfo.CurrentUICulture,
                     FlowDirection.LeftToRight,
-                    Typeface,
-                    24,
+                    Dummy,
+                    22,
                     CaptionBrush)
                 {
                     MaxTextWidth = ViewConstants.CandidatePanel_Name_Width,
                     MaxTextHeight = 30,
                     Trimming = TextTrimming.CharacterEllipsis
                 };
+
+                text.SetFontFamily(Application.Current.MainWindow.FontFamily);
 
                 var p = new Point(ViewConstants.CandidatePanel_Name_Left, ViewConstants.CandidatePanel_Name_Top);
                 dc.DrawText(text, p);
@@ -63,14 +63,16 @@ namespace Ann.MainWindow
                     d.Comment,
                     CultureInfo.CurrentUICulture,
                     FlowDirection.LeftToRight,
-                    Typeface,
-                    12,
+                    Dummy,
+                    11,
                     CommentBrush)
                 {
                     MaxTextWidth = ViewConstants.CandidatePanel_Comment_Width,
                     MaxTextHeight = 16,
                     Trimming = TextTrimming.CharacterEllipsis
                 };
+
+                text.SetFontFamily(Application.Current.MainWindow.FontFamily);
 
                 var p = new Point(ViewConstants.CandidatePanel_Comment_Left, ViewConstants.CandidatePanel_Comment_Top);
                 dc.DrawText(text, p);
