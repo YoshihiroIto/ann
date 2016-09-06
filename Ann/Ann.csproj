@@ -162,6 +162,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MainWindow\CandidatePanelCanvas.cs" />
     <Compile Include="MainWindow\MessengerMessage.cs" />
     <Compile Include="MainWindow\StatusBarViewModel.cs" />
     <Compile Include="MainWindow\StatusBarItemViewModel.cs" />
