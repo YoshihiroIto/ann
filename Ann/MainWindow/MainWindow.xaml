@@ -80,75 +80,22 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <Canvas x:Name="ShadowPanel"
+    <Canvas x:Name="BasePanel"
             Margin="{x:Static ann:ViewConstants.MainWindowShadowMargin}"
             VerticalAlignment="Top">
-        <Border x:Name="BasePanel"
+
+        <Border x:Name="BackgroundPanel"
+                Width="{x:Static ann:ViewConstants.MainWindowWidth}"
                 Panel.ZIndex="1"
                 Background="{StaticResource BackgroundBrush}"
-                CornerRadius="{x:Static ann:ViewConstants.MainWindowCornerRadius}">
-
-            <Canvas x:Name="MainPanel"
-                    Width="{x:Static ann:ViewConstants.MainWindowWidth}"
-                    VerticalAlignment="Top">
-                <DockPanel x:Name="InputLine"
-                           Canvas.Left="0"
-                           Canvas.Top="0"
-                           Width="{x:Static ann:ViewConstants.InputLineWidth}"
-                           Margin="{x:Static ann:ViewConstants.BaseMargin}"
-                           LastChildFill="True">
-                    <materialDesign:PopupBox Margin="0,0,-8,0"
-                                             Closed="PopupBox_Closed"
-                                             DockPanel.Dock="Right"
-                                             Foreground="#222"
-                                             PlacementMode="BottomAndAlignRightEdges">
-                        <StackPanel Margin="0,8">
-                            <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_UpdateIndex}" />
-                            <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_Settings}" />
-                            <Separator />
-                            <MenuItem Command="{Binding ExitCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_Exit}" />
-                        </StackPanel>
-                    </materialDesign:PopupBox>
-
-                    <TextBox x:Name="InputTextBox"
-                             Background="Transparent"
-                             BorderThickness="0"
-                             CaretBrush="#222"
-                             FontSize="32"
-                             Foreground="#222"
-                             Text="{Binding Input.Value,
-                                            Mode=TwoWay,
-                                            UpdateSourceTrigger=PropertyChanged}"
-                             TextChanged="InputTextBox_TextChanged">
-                        <TextBox.InputBindings>
-                            <KeyBinding Key="Up"
-                                        Command="{Binding SelectedCandidateMoveCommand,
-                                                          Mode=OneTime}"
-                                        CommandParameter="-1" />
-                            <KeyBinding Key="Down"
-                                        Command="{Binding SelectedCandidateMoveCommand,
-                                                          Mode=OneTime}"
-                                        CommandParameter="1" />
-
-                            <KeyBinding Key="Tab"
-                                        Command="{Binding SelectedCandidateMoveCommand,
-                                                          Mode=OneTime}"
-                                        CommandParameter="-1"
-                                        Modifiers="Shift" />
-                            <KeyBinding Key="Tab"
-                                        Command="{Binding SelectedCandidateMoveCommand}"
-                                        CommandParameter="1" />
-                        </TextBox.InputBindings>
-                    </TextBox>
-                </DockPanel>
-            </Canvas>
-        </Border>
+                CornerRadius="{x:Static ann:ViewConstants.MainWindowCornerRadius}" />
 
         <Border x:Name="ShadowTop"
                 Width="{x:Static ann:ViewConstants.MainWindowWidth}"
                 Height="{x:Static ann:ViewConstants.MainWindowCournerCornerRadiusUnit}"
                 CornerRadius="6,6,0,0"
                 Style="{StaticResource ShadowBorderStyle}" />
+
         <Border x:Name="ShadowBottom"
                 Canvas.Bottom="0"
                 Width="{x:Static ann:ViewConstants.MainWindowWidth}"
@@ -159,18 +106,72 @@
         <mainWindow:StatusBar x:Name="StatusBar"
                               Canvas.Bottom="2"
                               Width="{x:Static ann:ViewConstants.StatusBarWidth}"
-                              Panel.ZIndex="1"
+                              Panel.ZIndex="2"
                               DataContext="{Binding StatusBar,
                                                     Mode=OneTime}" />
+
         <Border x:Name="ShadowRight"
                 Canvas.Top="{x:Static ann:ViewConstants.MainWindowCournerCornerRadiusUnit}"
                 Canvas.Right="0"
                 Width="{x:Static ann:ViewConstants.MainWindowCournerCornerRadiusUnit}"
                 Style="{StaticResource ShadowBorderStyle}" />
+
         <Border x:Name="ShadowLeft"
                 Canvas.Left="0"
                 Canvas.Top="{x:Static ann:ViewConstants.MainWindowCournerCornerRadiusUnit}"
                 Width="{x:Static ann:ViewConstants.MainWindowCournerCornerRadiusUnit}"
                 Style="{StaticResource ShadowBorderStyle}" />
+
+        <DockPanel x:Name="InputLine"
+                   Canvas.Left="0"
+                   Canvas.Top="0"
+                   Width="{x:Static ann:ViewConstants.InputLineWidth}"
+                   Margin="{x:Static ann:ViewConstants.BaseMargin}"
+                   Panel.ZIndex="2"
+                   LastChildFill="True">
+            <materialDesign:PopupBox Margin="0,0,-8,0"
+                                     Closed="PopupBox_Closed"
+                                     DockPanel.Dock="Right"
+                                     Foreground="#222"
+                                     PlacementMode="BottomAndAlignRightEdges">
+                <StackPanel Margin="0,8">
+                    <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_UpdateIndex}" />
+                    <MenuItem Command="{Binding SettingShowCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_Settings}" />
+                    <Separator />
+                    <MenuItem Command="{Binding ExitCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_Exit}" />
+                </StackPanel>
+            </materialDesign:PopupBox>
+
+            <TextBox x:Name="InputTextBox"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     CaretBrush="#222"
+                     FontSize="32"
+                     Foreground="#222"
+                     Text="{Binding Input.Value,
+                                    Mode=TwoWay,
+                                    UpdateSourceTrigger=PropertyChanged}"
+                     TextChanged="InputTextBox_TextChanged">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Up"
+                                Command="{Binding SelectedCandidateMoveCommand,
+                                                  Mode=OneTime}"
+                                CommandParameter="-1" />
+                    <KeyBinding Key="Down"
+                                Command="{Binding SelectedCandidateMoveCommand,
+                                                  Mode=OneTime}"
+                                CommandParameter="1" />
+
+                    <KeyBinding Key="Tab"
+                                Command="{Binding SelectedCandidateMoveCommand,
+                                                  Mode=OneTime}"
+                                CommandParameter="-1"
+                                Modifiers="Shift" />
+                    <KeyBinding Key="Tab"
+                                Command="{Binding SelectedCandidateMoveCommand}"
+                                CommandParameter="1" />
+                </TextBox.InputBindings>
+            </TextBox>
+        </DockPanel>
     </Canvas>
 </Window>
