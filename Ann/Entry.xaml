@@ -6,6 +6,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles.xaml" />
                 <ResourceDictionary Source="Icons.xaml" />
+                <ResourceDictionary Source="Brushes.xaml" />
                 <ResourceDictionary Source="Language.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
 

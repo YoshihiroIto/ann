@@ -119,7 +119,4 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-
-    <SolidColorBrush x:Key="Item.MouseOver.Background" Color="#1F828282" />
-    <SolidColorBrush x:Key="Item.SelectedActive.Background" Color="#3D828282" />
 </ResourceDictionary>

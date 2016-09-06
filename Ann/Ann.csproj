@@ -162,6 +162,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MainWindow\CandidatePanelCanvas.cs" />
     <Compile Include="MainWindow\MessengerMessage.cs" />
     <Compile Include="MainWindow\StatusBarViewModel.cs" />
     <Compile Include="MainWindow\StatusBarItemViewModel.cs" />
@@ -204,6 +205,10 @@
     <Compile Include="SettingWindow\SettingPage\Shortcuts\ShortcutKeyViewModel.cs" />
     <Compile Include="ViewConstants.cs" />
     <Compile Include="ViewManager.cs" />
+    <Page Include="Brushes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Entry.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

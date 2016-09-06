@@ -13,7 +13,7 @@
         d:DataContext="{d:DesignData mainWindow:MainWindowViewModel}"
         Activated="Window_Activated"
         AllowsTransparency="True"
-        Background="Transparent"
+        Background="{StaticResource TransparentBrush}"
         BorderThickness="{x:Static ann:ViewConstants.MainWindowBorderThickness}"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
         IsVisibleChanged="Window_IsVisibleChanged"
@@ -36,8 +36,6 @@
                 <ResourceDictionary Source="CandidatePanel.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <SolidColorBrush x:Key="BackgroundBrush" Color="White" />
-
             <DropShadowEffect x:Key="ShadowEffect"
                               BlurRadius="{x:Static ann:ViewConstants.ShadowSize}"
                               Direction="270"
@@ -45,12 +43,9 @@
                               ShadowDepth="3"
                               Color="Black" />
 
-            <BitmapCache x:Key="ShadowCache" RenderAtScale="0.5" />
-
             <Style x:Key="ShadowBorderStyle" TargetType="{x:Type Border}">
-                <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
+                <Setter Property="Background" Value="{StaticResource MainWindowBackgroundBrush}" />
                 <Setter Property="Effect" Value="{StaticResource ShadowEffect}" />
-                <Setter Property="CacheMode" Value="{StaticResource ShadowCache}" />
             </Style>
         </ResourceDictionary>
     </Window.Resources>
@@ -87,7 +82,7 @@
         <Border x:Name="BackgroundPanel"
                 Width="{x:Static ann:ViewConstants.MainWindowWidth}"
                 Panel.ZIndex="1"
-                Background="{StaticResource BackgroundBrush}"
+                Background="{StaticResource MainWindowBackgroundBrush}"
                 CornerRadius="{x:Static ann:ViewConstants.MainWindowCornerRadius}" />
 
         <Border x:Name="ShadowTop"
@@ -132,7 +127,7 @@
             <materialDesign:PopupBox Margin="0,0,-8,0"
                                      Closed="PopupBox_Closed"
                                      DockPanel.Dock="Right"
-                                     Foreground="#222"
+                                     Foreground="{StaticResource CaptionBrush}"
                                      PlacementMode="BottomAndAlignRightEdges">
                 <StackPanel Margin="0,8">
                     <MenuItem Command="{Binding IndexUpdateCommand, Mode=OneTime}" Header="{DynamicResource MenuItem_UpdateIndex}" />
@@ -143,11 +138,11 @@
             </materialDesign:PopupBox>
 
             <TextBox x:Name="InputTextBox"
-                     Background="Transparent"
+                     Background="{StaticResource TransparentBrush}"
                      BorderThickness="0"
-                     CaretBrush="#222"
+                     CaretBrush="{StaticResource CaptionBrush}"
                      FontSize="32"
-                     Foreground="#222"
+                     Foreground="{StaticResource CaptionBrush}"
                      Text="{Binding Input.Value,
                                     Mode=TwoWay,
                                     UpdateSourceTrigger=PropertyChanged}"
