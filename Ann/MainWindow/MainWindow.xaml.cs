@@ -75,6 +75,13 @@ namespace Ann.MainWindow
                 .ObserveOn(ReactivePropertyScheduler.Default)
                 .Subscribe(_ => UpdateView())
                 .AddTo(_DataContext.CompositeDisposable);
+
+            _DataContext.SelectedCandidate
+                .Subscribe(_ =>
+                {
+                    foreach (var c in _CandidatePanels)
+                        c.InvalidateVisual();
+                }).AddTo(_DataContext.CompositeDisposable);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -291,6 +298,8 @@ namespace Ann.MainWindow
                 _CandidatePanels[i].DataContext = null;
                 _CandidatePanels[i].PreviewMouseLeftButtonUp += CandidatePanel_PreviewMouseLeftButtonUp;
                 _CandidatePanels[i].MouseLeftButtonDown += CandidatePanel_MouseLeftButtonDown;
+                _CandidatePanels[i].MouseEnter += CandidatePanel_OnMouseEnter;
+                _CandidatePanels[i].MouseLeave += CandidatePanel_OnMouseLeave;
 
                 Panel.SetZIndex(_CandidatePanels[i], 2);
                 Canvas.SetLeft(_CandidatePanels[i], ViewConstants.BaseMarginUnit);
@@ -324,6 +333,16 @@ namespace Ann.MainWindow
 
                     _DataContext.DisposeOldCandidates();
                 }).AddTo(_DataContext.CompositeDisposable);
+        }
+
+        private static void CandidatePanel_OnMouseLeave(object sender, MouseEventArgs mouseEventArgs)
+        {
+           (sender as FrameworkElement)?.InvalidateVisual();
+        }
+
+        private static void CandidatePanel_OnMouseEnter(object sender, MouseEventArgs mouseEventArgs)
+        {
+           (sender as FrameworkElement)?.InvalidateVisual();
         }
 
         private void CandidatePanel_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)

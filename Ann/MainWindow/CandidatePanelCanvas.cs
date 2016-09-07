@@ -14,6 +14,10 @@ namespace Ann.MainWindow
         private static readonly Brush CaptionBrush;
         private static readonly Brush CommentBrush;
 
+        private static readonly Brush IsSelectedBackgroundBrush;
+        private static readonly Brush IsMouseOverBackgroundBrush;
+        private static readonly Brush TransparentBrush;
+
         static CandidatePanelCanvas()
         {
             PanelBorderLinePen = new Pen(Application.Current.Resources["PanelBorderLineBrush"] as Brush, 1);
@@ -22,19 +26,38 @@ namespace Ann.MainWindow
 
             CaptionBrush = Application.Current.Resources["CaptionBrush"] as Brush;
             CommentBrush = Application.Current.Resources["CommentBrush"] as Brush;
+            IsSelectedBackgroundBrush = Application.Current.Resources["Item.SelectedActive.Background"] as Brush;
+            IsMouseOverBackgroundBrush = Application.Current.Resources["Item.MouseOver.Background"] as Brush;
+            TransparentBrush = Application.Current.Resources["TransparentBrush"] as Brush;
         }
 
         protected override void OnRender(DrawingContext dc)
         {
-            base.OnRender(dc);
+            //base.OnRender(dc);
+
+            var d = DataContext as CandidatePanelViewModel;
+            if (d == null)
+                return;
+
+            var backgroundRect = new Rect
+            {
+                X = 0,
+                Y = 0,
+                Width = ViewConstants.CandidatePanelWidth,
+                Height = ViewConstants.CandidatePanelHeight
+            };
+
+            if (d.IsSelected)
+                dc.DrawRectangle(IsSelectedBackgroundBrush, null, backgroundRect);
+            else if (IsMouseOver)
+                dc.DrawRectangle(IsMouseOverBackgroundBrush, null, backgroundRect);
+            else
+                dc.DrawRectangle(TransparentBrush, null, backgroundRect);
 
             var p0 = new Point(0, ViewConstants.CandidatePanelHeight);
             var p1 = new Point(ViewConstants.CandidatePanelWidth, ViewConstants.CandidatePanelHeight);
             dc.DrawLine(PanelBorderLinePen, p0, p1);
 
-            var d = DataContext as CandidatePanelViewModel;
-            if (d == null)
-                return;
 
             if (d.Name != null)
             {

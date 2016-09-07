@@ -10,15 +10,10 @@
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             xmlns:shortcuts="clr-namespace:Ann.SettingWindow.SettingPage.Shortcuts"
             xmlns:settingWindow="clr-namespace:Ann.SettingWindow"
-            xmlns:core="clr-namespace:Ann.Core;assembly=Ann.Core"
             d:DesignHeight="300"
             d:DesignWidth="300"
             Grid.IsSharedSizeScope="True"
             mc:Ignorable="d">
-    <StackPanel.Resources>
-        <core:StringTagToStringConverter x:Key="StringConverter" />
-    </StackPanel.Resources>
-
     <ListBox x:Name="ListBox"
              HorizontalContentAlignment="Stretch"
              dragDrop:DragDrop.DropHandler="{Binding DropTarget,
@@ -58,7 +53,7 @@
                                                                                           AncestorType={x:Type settingWindow:SettingWindow}}}">
                         <materialDesign:PackIcon.ToolTip>
                             <ToolTip>
-                                <MultiBinding Converter="{StaticResource StringConverter}">
+                                <MultiBinding Converter="{StaticResource StringTagToStringConverter}">
                                     <Binding Mode="OneWay" Path="ValidationMessage.Value" />
                                     <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
                                     <Binding Mode="OneWay"
