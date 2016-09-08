@@ -104,7 +104,8 @@ namespace Ann.Core.Candidate
             using (new TimeMeasure($"Filtering -- {input}"))
             {
                 var extScores = new Dictionary<string, int>();
-                executableFileExtsArray.ForEach((e, i) => extScores[e] = i);
+                for (var i = 0; i != executableFileExtsArray.Length; ++i)
+                    extScores[executableFileExtsArray[i]] = i;
 
                 var inputs = input.Split(' ');
                 var temp = new List<ExecutableFile> {Capacity = targets.Length};
@@ -116,8 +117,14 @@ namespace Ann.Core.Candidate
                     () => new List<ExecutableFile> {Capacity = targets.Length},
                     (u, loop, local) =>
                     {
+#if falsa
                         if (inputs.All(u.SearchKey.Contains) == false)
                             return local;
+#else
+                        foreach (var i in inputs)
+                            if (u.SearchKey.Contains(i) == false)
+                                return local;
+#endif
 
                         u.SetScore(MakeScore(u, inputs, extScores));
                         local.Add(u);
@@ -199,8 +206,16 @@ namespace Ann.Core.Candidate
                 return 1;
 
             if (targetParts != null)
+            {
+#if false
                 if (targetParts.Any(p => p.StartsWith(input)))
                     return 2;
+#else
+                foreach (var t in targetParts)
+                    if (t.StartsWith(input))
+                        return 2;
+#endif
+            }
 
             if (target.Contains(input))
                 return 3;
