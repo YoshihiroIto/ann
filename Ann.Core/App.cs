@@ -134,17 +134,17 @@ namespace Ann.Core
         private readonly Translator _translator;
         private readonly GoogleSuggest _googleSuggest;
 
-        private HashSet<string> _priorityFiles = new HashSet<string>();
+        private HashSet<string> _priorityFiles = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
 
         private string IndexFilePath => System.IO.Path.Combine(_configHolder.ConfigDirPath, "index.dat");
 
         public VersionUpdater VersionUpdater { get; }
 
-        public bool IsPriorityFile(string path) => _priorityFiles.Contains(path.ToLower());
+        public bool IsPriorityFile(string path) => _priorityFiles.Contains(path);
 
         public bool AddPriorityFile(string path)
         {
-            if (_priorityFiles.Contains(path.ToLower()))
+            if (IsPriorityFile(path))
                 return false;
 
             Config.PriorityFiles.Add(new Path(path));
@@ -153,7 +153,7 @@ namespace Ann.Core
 
         public bool RemovePriorityFile(string path)
         {
-            if (_priorityFiles.Contains(path.ToLower()) == false)
+            if (IsPriorityFile(path) == false)
                 return false;
 
             var found = Config.PriorityFiles.First(p => p.Value == path);
@@ -366,7 +366,7 @@ namespace Ann.Core
 
         public void RefreshPriorityFiles()
         {
-            _priorityFiles = new HashSet<string>(Config.PriorityFiles.Select(p => p.Value.ToLower()));
+            _priorityFiles = new HashSet<string>(Config.PriorityFiles.Select(p => p.Value));
         }
 
         public async Task<bool> RunAsync(string appPath, bool isRunAsAdmin)
@@ -459,7 +459,7 @@ namespace Ann.Core
                 Config.PriorityFiles.ObserveAddChanged()
                     .Subscribe(p =>
                     {
-                        _priorityFiles.Add(p.Value.ToLower());
+                        _priorityFiles.Add(p.Value);
                         _configHolder.SaveConfig();
                         InvokePriorityFilesChanged();
                     })
@@ -468,7 +468,7 @@ namespace Ann.Core
                 Config.PriorityFiles.ObserveRemoveChanged()
                     .Subscribe(p =>
                     {
-                        _priorityFiles.Remove(p.Value.ToLower());
+                        _priorityFiles.Remove(p.Value);
                         _configHolder.SaveConfig();
                         InvokePriorityFilesChanged();
                     })
