@@ -27,7 +27,7 @@ namespace Ann.Core.Candidate
         }
 
         private ExecutableFile[] _ExecutableFiles;
-        private ExecutableFile[] _prevResult;
+        private IEnumerable<ExecutableFile> _prevResult;
         private string _prevKeyword;
 
         private bool IsOpend => _ExecutableFiles != null;
@@ -108,13 +108,13 @@ namespace Ann.Core.Candidate
                     extScores[executableFileExtsArray[i]] = i;
 
                 var inputs = input.Split(' ');
-                var temp = new List<ExecutableFile> {Capacity = targets.Length};
+                var temp = new List<ExecutableFile> {Capacity = targets.Count()};
 
                 var lockObj = new object();
 
                 Parallel.ForEach(
                     targets,
-                    () => new List<ExecutableFile> {Capacity = targets.Length},
+                    () => new List<ExecutableFile> {Capacity = targets.Count()},
                     (u, loop, local) =>
                     {
                         foreach (var i in inputs)
@@ -135,7 +135,7 @@ namespace Ann.Core.Candidate
                     });
 
                 temp.Sort();
-                _prevResult = temp.ToArray();
+                _prevResult = temp;
             }
 
             _prevKeyword = input;

@@ -296,8 +296,7 @@ namespace Ann.Core
                         Candidates = _executableFileDataBase
                             .Find(input, Config.ExecutableFileExts)
                             .OrderBy(u => MakeOrder(u.Path))
-                            .Take(Config.MaxCandidateLinesCount)
-                            .ToArray();
+                            .Take(Config.MaxCandidateLinesCount);
                     }
 
                     return;
