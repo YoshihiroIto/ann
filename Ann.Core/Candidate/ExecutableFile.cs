@@ -17,14 +17,13 @@ namespace Ann.Core.Candidate
     {
         public readonly string Path;
         public readonly string Name;
-        public readonly string LowerName;
-        public readonly string LowerDirectory;
-        public readonly string LowerFileName;
+        public readonly string Directory;
+        public readonly string FileName;
         public readonly string SearchKey;
 
-        public readonly string[] LowerNameParts;
-        public readonly string[] LowerDirectoryParts;
-        public readonly string[] LowerFileNameParts;
+        public readonly string[] NameParts;
+        public readonly string[] DirectoryParts;
+        public readonly string[] FileNameParts;
 
         //
         private int _id;
@@ -61,44 +60,42 @@ namespace Ann.Core.Candidate
             _app = app;
             _iconDecoder = iconDecoder;
 
-            var ext = System.IO.Path.GetExtension(path)?.ToLower();
-            var fileDescription = ext == ".exe" ? FileVersionInfo.GetVersionInfo(path).FileDescription : null;
+            var fileDescription = path.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) ? FileVersionInfo.GetVersionInfo(path).FileDescription : null;
 
             var name = string.IsNullOrWhiteSpace(fileDescription)
-                ? System.IO.Path.GetFileNameWithoutExtension(path) ?? string.Empty
+                ? System.IO.Path.GetFileNameWithoutExtension(path)
                 : fileDescription;
 
             Path = stringPool.GetOrAdd(path, path);
             Name = stringPool.GetOrAdd(name, name);
-            LowerName = stringPool.GetOrAdd(name.ToLower(), s => s);
 
             var dir = System.IO.Path.GetDirectoryName(path) ?? string.Empty;
             dir = ShrinkDir(dir, targetFolders);
 
-            LowerDirectory = stringPool.GetOrAdd(dir, s => s);
-            LowerFileName = stringPool.GetOrAdd(System.IO.Path.GetFileNameWithoutExtension(path).ToLower(), s => s);
-            SearchKey = stringPool.GetOrAdd($"{LowerName}*{LowerDirectory}*{LowerFileName}", s => s);
+            Directory = stringPool.GetOrAdd(dir, s => s);
+            FileName = stringPool.GetOrAdd(System.IO.Path.GetFileNameWithoutExtension(path), s => s);
+            SearchKey = stringPool.GetOrAdd($"{Name}*{Directory}*{FileName}", s => s);
 
-            LowerNameParts = LowerName.Split(Separator, StringSplitOptions.RemoveEmptyEntries)
+            NameParts = Name.Split(Separator, StringSplitOptions.RemoveEmptyEntries)
                 .Select(s => stringPool.GetOrAdd(s, s))
                 .ToArray();
 
-            LowerDirectoryParts = LowerDirectory.Split(new[] {'\\'}, StringSplitOptions.RemoveEmptyEntries)
+            DirectoryParts = Directory.Split(new[] {'\\'}, StringSplitOptions.RemoveEmptyEntries)
                 .Select(s => stringPool.GetOrAdd(s, s))
                 .ToArray();
 
-            LowerFileNameParts = LowerFileName.Split(Separator, StringSplitOptions.RemoveEmptyEntries)
+            FileNameParts = FileName.Split(Separator, StringSplitOptions.RemoveEmptyEntries)
                 .Select(s => stringPool.GetOrAdd(s, s))
                 .ToArray();
 
-            if (LowerNameParts.Length <= 1)
-                LowerNameParts = null;
+            if (NameParts.Length <= 1)
+                NameParts = null;
 
-            if (LowerDirectoryParts.Length <= 1)
-                LowerDirectoryParts = null;
+            if (DirectoryParts.Length <= 1)
+                DirectoryParts = null;
 
-            if (LowerFileNameParts.Length <= 1)
-                LowerFileNameParts = null;
+            if (FileNameParts.Length <= 1)
+                FileNameParts = null;
 
             _RunCommand = new DelegateCommand(async () => await RunAsync(false));
 
@@ -144,13 +141,11 @@ namespace Ann.Core.Candidate
 
         private static string ShrinkDir(string srcDir, IEnumerable<string> targetFolders)
         {
-            var srcLower = srcDir.ToLower();
-
             foreach (var f in targetFolders)
             {
-                var ft = f.ToLower().Trim('\\');
-                if (srcLower.StartsWith(ft))
-                    return srcLower.Substring(ft.Length);
+                var ft = f.Trim('\\');
+                if (srcDir.StartsWith(ft))
+                    return srcDir.Substring(ft.Length);
             }
 
             return srcDir;
