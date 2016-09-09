@@ -27,7 +27,7 @@ namespace Ann.Core.Candidate
         }
 
         private ExecutableFile[] _ExecutableFiles;
-        private ExecutableFile[] _prevResult;
+        private IEnumerable<ExecutableFile> _prevResult;
         private string _prevKeyword;
 
         private bool IsOpend => _ExecutableFiles != null;
@@ -103,21 +103,23 @@ namespace Ann.Core.Candidate
 
             using (new TimeMeasure($"Filtering -- {input}"))
             {
-                var extScores = new Dictionary<string, int>();
-                executableFileExtsArray.ForEach((e, i) => extScores[e] = i);
+                var extScores = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+                for (var i = 0; i != executableFileExtsArray.Length; ++i)
+                    extScores[executableFileExtsArray[i]] = i;
 
                 var inputs = input.Split(' ');
-                var temp = new List<ExecutableFile> {Capacity = targets.Length};
+                var temp = new List<ExecutableFile> {Capacity = targets.Count()};
 
                 var lockObj = new object();
 
                 Parallel.ForEach(
                     targets,
-                    () => new List<ExecutableFile> {Capacity = targets.Length},
+                    () => new List<ExecutableFile> {Capacity = targets.Count()},
                     (u, loop, local) =>
                     {
-                        if (inputs.All(u.SearchKey.Contains) == false)
-                            return local;
+                        foreach (var i in inputs)
+                            if (u.SearchKey.Contains(i) == false)
+                                return local;
 
                         u.SetScore(MakeScore(u, inputs, extScores));
                         local.Add(u);
@@ -133,7 +135,7 @@ namespace Ann.Core.Candidate
                     });
 
                 temp.Sort();
-                _prevResult = temp.ToArray();
+                _prevResult = temp;
             }
 
             _prevKeyword = input;
@@ -160,7 +162,7 @@ namespace Ann.Core.Candidate
         private static int MakeScore(ExecutableFile u, string input, Dictionary<string, int> extScores)
         {
             // ReSharper disable once PossibleNullReferenceException
-            var ext = System.IO.Path.GetExtension(u.Path).ToLower();
+            var ext = System.IO.Path.GetExtension(u.Path) ?? string.Empty;
 
             Debug.Assert(extScores.ContainsKey(ext));
             var extScore = extScores[ext];
@@ -199,8 +201,9 @@ namespace Ann.Core.Candidate
                 return 1;
 
             if (targetParts != null)
-                if (targetParts.Any(p => p.StartsWith(input)))
-                    return 2;
+                foreach (var t in targetParts)
+                    if (t.StartsWith(input))
+                        return 2;
 
             if (target.Contains(input))
                 return 3;
@@ -344,7 +347,7 @@ namespace Ann.Core.Candidate
             IEnumerable<string> executableFileExts)
         {
             var targetFoldersArray = NormalizeTargetFolders(targetFolders);
-            var executableExts = new HashSet<string>(executableFileExts);
+            var executableExts = new HashSet<string>(executableFileExts, StringComparer.OrdinalIgnoreCase);
 
             return await Task.Run(() =>
             {
@@ -364,7 +367,7 @@ namespace Ann.Core.Candidate
                         .WithCancellation(_crawlingTokenSource.Token)
                         .SelectMany(targetFolder =>
                                 DirectoryHelper.EnumerateAllFiles(targetFolder)
-                                    .Where(f => executableExts.Contains(System.IO.Path.GetExtension(f)?.ToLower()))
+                                    .Where(f => executableExts.Contains(System.IO.Path.GetExtension(f)))
                                     .Select(f =>
                                     {
                                         CrawlingCount = Interlocked.Increment(ref count);
@@ -427,7 +430,7 @@ namespace Ann.Core.Candidate
         private static string[] NormalizeExecutableFileExts(IEnumerable<string> executableFileExts)
         {
             return executableFileExts
-                .Select(e => e[0] == '.' ? e.ToLower() : "." + e.ToLower())
+                .Select(e => e[0] == '.' ? e : "." + e)
                 .ToArray();
         }
 

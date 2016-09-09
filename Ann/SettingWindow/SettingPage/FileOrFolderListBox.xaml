@@ -2,7 +2,6 @@
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
             xmlns:behavior="clr-namespace:Ann.Foundation.Control.Behavior;assembly=Ann.Foundation"
-            xmlns:core="clr-namespace:Ann.Core;assembly=Ann.Core"
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:dragDrop="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
@@ -14,10 +13,6 @@
             d:DesignWidth="300"
             Grid.IsSharedSizeScope="True"
             mc:Ignorable="d">
-    <StackPanel.Resources>
-        <core:StringTagToStringConverter x:Key="StringConverter" />
-    </StackPanel.Resources>
-
     <ListBox x:Name="ListBox"
              HorizontalContentAlignment="Stretch"
              dragDrop:DragDrop.DropHandler="{Binding DropTarget,
@@ -57,7 +52,7 @@
                                                                                           AncestorType={x:Type settingWindow:SettingWindow}}}">
                         <materialDesign:PackIcon.ToolTip>
                             <ToolTip>
-                                <MultiBinding Converter="{StaticResource StringConverter}">
+                                <MultiBinding Converter="{StaticResource StringTagToStringConverter}">
                                     <Binding Mode="OneWay" Path="ValidationMessage.Value" />
                                     <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
                                     <Binding Mode="OneWay"
