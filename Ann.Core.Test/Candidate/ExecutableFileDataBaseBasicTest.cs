@@ -170,14 +170,13 @@ namespace Ann.Core.Test.Candidate
                 Assert.Equal(1, f.Length);
 
                 Assert.Equal(System.IO.Path.Combine(_dataFs.RootPath, @"target1\aAa.exe"), f[0].Path);
-                Assert.Equal(string.Empty, f[0].LowerDirectory);
-                Assert.Equal("aaa", f[0].LowerFileName);
-                Assert.Equal("aaa", f[0].LowerName);
+                Assert.Equal(string.Empty, f[0].Directory);
+                Assert.Equal("aAa", f[0].FileName);
                 Assert.Equal("aAa", f[0].Name);
-                Assert.Equal("aaa**aaa", f[0].SearchKey);
-                Assert.Null(f[0].LowerDirectoryParts);
-                Assert.Null(f[0].LowerFileNameParts);
-                Assert.Null(f[0].LowerNameParts);
+                Assert.Equal("aAa**aAa", f[0].SearchKey);
+                Assert.Null(f[0].DirectoryParts);
+                Assert.Null(f[0].FileNameParts);
+                Assert.Null(f[0].NameParts);
             }
         }
 
@@ -204,14 +203,13 @@ namespace Ann.Core.Test.Candidate
                 Assert.Equal(1, f.Length);
 
                 Assert.Equal(System.IO.Path.Combine(_dataFs.RootPath, @"target1\xxx\YYY\zzz\aAa 123.exe"), f[0].Path);
-                Assert.Equal(@"\xxx\yyy\zzz", f[0].LowerDirectory);
-                Assert.Equal("aaa 123", f[0].LowerFileName);
-                Assert.Equal("aaa 123", f[0].LowerName);
+                Assert.Equal(@"\xxx\YYY\zzz", f[0].Directory);
+                Assert.Equal("aAa 123", f[0].FileName);
                 Assert.Equal("aAa 123", f[0].Name);
-                Assert.Equal(@"aaa 123*\xxx\yyy\zzz*aaa 123", f[0].SearchKey);
-                Assert.Equal(new[] {"xxx", "yyy", "zzz"}, f[0].LowerDirectoryParts);
-                Assert.Equal(new[] {"aaa", "123"}, f[0].LowerFileNameParts);
-                Assert.Equal(new[] {"aaa", "123"}, f[0].LowerNameParts);
+                Assert.Equal(@"aAa 123*\xxx\YYY\zzz*aAa 123", f[0].SearchKey);
+                Assert.Equal(new[] {"xxx", "YYY", "zzz"}, f[0].DirectoryParts);
+                Assert.Equal(new[] {"aAa", "123"}, f[0].FileNameParts);
+                Assert.Equal(new[] {"aAa", "123"}, f[0].NameParts);
             }
         }
     }

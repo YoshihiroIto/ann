@@ -34,7 +34,8 @@ namespace Ann.Core.Test.Candidate
             {
                 AuthenticationFile auth;
                 using (var reader = new StringReader(File.ReadAllText(authenticationFile)))
-                    auth = new Deserializer(ignoreUnmatched: true).Deserialize<AuthenticationFile>(reader);
+                    auth = new DeserializerBuilder().IgnoreUnmatchedProperties().Build()
+                        .Deserialize<AuthenticationFile>(reader);
 
                 var s = new Translator(
                     auth.MicrosoftTranslatorClientId,

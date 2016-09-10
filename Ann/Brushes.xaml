@@ -9,6 +9,9 @@
     <SolidColorBrush x:Key="CaptionBrush" Color="#222" />
     <SolidColorBrush x:Key="CommentBrush" Color="#888" />
 
+    <SolidColorBrush x:Key="ToolTipCaptionBrush" Color="#EEE" />
+    <SolidColorBrush x:Key="ToolTipCommentBrush" Color="#BBB" />
+
     <SolidColorBrush x:Key="TransparentBrush" Color="Transparent" />
     
     <SolidColorBrush x:Key="MainWindowBackgroundBrush" Color="White" />

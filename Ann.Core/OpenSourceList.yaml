@@ -120,6 +120,10 @@
   Auther: Aybe
   Summry: Windows® API Code Pack for Microsoft® .NET Framework provides a source code library that can be used to access some features of Windows 7 and Windows Vista from managed code.
   Url: https://github.com/aybe/Windows-API-Code-Pack-1.1
+- Name: Wire
+  Auther: Roger Johansson
+  Summry: Wire, fast binary POCO serializer
+  Url: https://github.com/akkadotnet/Wire
 - Name: xUnit.net
   Auther: James Newkirk, Brad Wilson
   Summry: >-

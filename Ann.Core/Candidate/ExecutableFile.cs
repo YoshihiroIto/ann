@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -17,14 +16,13 @@ namespace Ann.Core.Candidate
     {
         public readonly string Path;
         public readonly string Name;
-        public readonly string LowerName;
-        public readonly string LowerDirectory;
-        public readonly string LowerFileName;
+        public readonly string Directory;
+        public readonly string FileName;
         public readonly string SearchKey;
 
-        public readonly string[] LowerNameParts;
-        public readonly string[] LowerDirectoryParts;
-        public readonly string[] LowerFileNameParts;
+        public readonly string[] NameParts;
+        public readonly string[] DirectoryParts;
+        public readonly string[] FileNameParts;
 
         //
         private int _id;
@@ -50,6 +48,8 @@ namespace Ann.Core.Candidate
 
         public ExecutableFile(
             string path,
+            string dir,
+            string name,
             App app,
             IconDecoder iconDecoder,
             ConcurrentDictionary<string, string> stringPool,
@@ -61,61 +61,25 @@ namespace Ann.Core.Candidate
             _app = app;
             _iconDecoder = iconDecoder;
 
-            var ext = System.IO.Path.GetExtension(path)?.ToLower();
-            var fileDescription = ext == ".exe" ? FileVersionInfo.GetVersionInfo(path).FileDescription : null;
-
-            var name = string.IsNullOrWhiteSpace(fileDescription)
-                ? System.IO.Path.GetFileNameWithoutExtension(path) ?? string.Empty
-                : fileDescription;
+            if (name == null)
+                name = MakeNameFromFilePath(path);
 
             Path = stringPool.GetOrAdd(path, path);
             Name = stringPool.GetOrAdd(name, name);
-            LowerName = stringPool.GetOrAdd(name.ToLower(), s => s);
 
-            var dir = System.IO.Path.GetDirectoryName(path) ?? string.Empty;
-            dir = ShrinkDir(dir, targetFolders);
-
-            LowerDirectory = stringPool.GetOrAdd(dir, s => s);
-            LowerFileName = stringPool.GetOrAdd(System.IO.Path.GetFileNameWithoutExtension(path).ToLower(), s => s);
-            SearchKey = stringPool.GetOrAdd($"{LowerName}*{LowerDirectory}*{LowerFileName}", s => s);
-
-            LowerNameParts = LowerName.Split(Separator, StringSplitOptions.RemoveEmptyEntries)
-                .Select(s => stringPool.GetOrAdd(s, s))
-                .ToArray();
-
-            LowerDirectoryParts = LowerDirectory.Split(new[] {'\\'}, StringSplitOptions.RemoveEmptyEntries)
-                .Select(s => stringPool.GetOrAdd(s, s))
-                .ToArray();
-
-            LowerFileNameParts = LowerFileName.Split(Separator, StringSplitOptions.RemoveEmptyEntries)
-                .Select(s => stringPool.GetOrAdd(s, s))
-                .ToArray();
-
-            if (LowerNameParts.Length <= 1)
-                LowerNameParts = null;
-
-            if (LowerDirectoryParts.Length <= 1)
-                LowerDirectoryParts = null;
-
-            if (LowerFileNameParts.Length <= 1)
-                LowerFileNameParts = null;
-
-            _RunCommand = new DelegateCommand(async () => await RunAsync(false));
-
-            _SubCommands = new[]
+            if (dir == null)
             {
-                new MenuCommand
-                {
-                    Caption = StringTags.MenuItem_RunAsAdministrator,
-                    Command = new DelegateCommand(async () => await RunAsync(true))
-                },
-                new MenuCommand
-                {
-                    Caption = StringTags.MenuItem_OpenContainingFolder,
-                    Command = new DelegateCommand(async () =>
-                            await ProcessHelper.RunAsync("EXPLORER", $"/select,\"{path}\"", false))
-                }
-            };
+                dir = System.IO.Path.GetDirectoryName(path) ?? string.Empty;
+                dir = ShrinkDir(dir, targetFolders);
+            }
+
+            Directory = stringPool.GetOrAdd(dir, s => s);
+            FileName = stringPool.GetOrAdd(System.IO.Path.GetFileNameWithoutExtension(path), s => s);
+            SearchKey = stringPool.GetOrAdd($"{Name}*{Directory}*{FileName}", s => s);
+
+            NameParts = SplitString(Name, Separators, stringPool);
+            DirectoryParts = SplitString(Directory, DirectorySeparators, stringPool);
+            FileNameParts = SplitString(FileName, Separators, stringPool);
         }
 
         private async Task RunAsync(bool isRunAsAdmin)
@@ -124,7 +88,7 @@ namespace Ann.Core.Candidate
             if (i)
                 return;
 
-            var errMes = new List<StringTags> { StringTags.Message_FailedToStart };
+            var errMes = new List<StringTags> {StringTags.Message_FailedToStart};
             if (File.Exists(Path) == false)
                 errMes.Add(StringTags.Message_FileNotFound);
 
@@ -132,42 +96,107 @@ namespace Ann.Core.Candidate
         }
 
         public ExecutableFile(
-            int id, int maxId, string path,
+            int id, int maxId,
+            string path,
+            string dir,
+            string name,
             App app,
             IconDecoder iconDecoder,
             ConcurrentDictionary<string, string> stringPool,
             string[] targetFolders)
-            : this(path, app, iconDecoder, stringPool, targetFolders)
+            : this(path, dir, name, app, iconDecoder, stringPool, targetFolders)
         {
             SetId(id, maxId);
         }
 
-        private static string ShrinkDir(string srcDir, IEnumerable<string> targetFolders)
+        private static string ShrinkDir(string srcDir, string[] targetFolders)
         {
-            var srcLower = srcDir.ToLower();
-
             foreach (var f in targetFolders)
-            {
-                var ft = f.ToLower().Trim('\\');
-                if (srcLower.StartsWith(ft))
-                    return srcLower.Substring(ft.Length);
-            }
+                if (srcDir.StartsWith(f, StringComparison.OrdinalIgnoreCase))
+                    return srcDir.Substring(f.Length);
 
             return srcDir;
         }
 
-        private static readonly char[] Separator = {' ', '_', '-', '/', '\\'};
+        private static string[] SplitString(string src, char[] separators, ConcurrentDictionary<string, string> stringPool)
+        {
+            if (src.IndexOfAny(separators) == -1)
+                return null;
+
+            var parts = src.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+
+            if (parts.Length <= 1)
+                return null;
+
+            for (var i = 0; i != parts.Length; ++i)
+                parts[i] = stringPool.GetOrAdd(parts[i], parts[i]);
+
+            return parts;
+        }
+
+        private static string MakeNameFromFilePath(string path)
+        {
+            var fileDescription = path.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)
+                ? FileVersionInfo.GetVersionInfo(path).FileDescription
+                : null;
+
+            var name = string.IsNullOrWhiteSpace(fileDescription)
+                ? System.IO.Path.GetFileNameWithoutExtension(path)
+                : fileDescription;
+
+            return name;
+        }
+
+        private static readonly char[] DirectorySeparators = {'\\'};
+        private static readonly char[] Separators = {' ', '_', '-', '/', '\\'};
 
         int IComparable<ExecutableFile>.CompareTo(ExecutableFile other) => _score - other._score;
         string ICandidate.Name => string.IsNullOrWhiteSpace(Name) == false ? Name : System.IO.Path.GetFileName(Path);
         string ICandidate.Comment => Path;
         Brush ICandidate.Icon => _iconDecoder.GetIcon(Path);
 
-        private readonly DelegateCommand _RunCommand;
-        ICommand ICandidate.RunCommand => _RunCommand;
+        private DelegateCommand _RunCommand;
 
-        private readonly MenuCommand[] _SubCommands;
-        MenuCommand[] ICandidate.SubCommands => _SubCommands;
+        ICommand ICandidate.RunCommand
+        {
+            get
+            {
+                if (_RunCommand != null)
+                    return _RunCommand;
+
+                _RunCommand = new DelegateCommand(async () => await RunAsync(false));
+
+                return _RunCommand;
+            }
+        }
+
+        private MenuCommand[] _SubCommands;
+
+        MenuCommand[] ICandidate.SubCommands
+        {
+            get
+            {
+                if (_SubCommands != null)
+                    return _SubCommands;
+
+                _SubCommands = new[]
+                {
+                    new MenuCommand
+                    {
+                        Caption = StringTags.MenuItem_RunAsAdministrator,
+                        Command = new DelegateCommand(async () => await RunAsync(true))
+                    },
+                    new MenuCommand
+                    {
+                        Caption = StringTags.MenuItem_OpenContainingFolder,
+                        Command = new DelegateCommand(async () =>
+                                await ProcessHelper.RunAsync("EXPLORER", $"/select,\"{Path}\"", false))
+                    }
+                };
+
+                return _SubCommands;
+            }
+        }
 
         bool ICandidate.CanSetPriority => true;
 

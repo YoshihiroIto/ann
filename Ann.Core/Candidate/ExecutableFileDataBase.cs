@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -58,7 +59,7 @@ namespace Ann.Core.Candidate
 
         #endregion
 
-        private const int CurrentIndexVersion = 10;
+        private const int CurrentIndexVersion = 13;
 
         public int IconCacheSize
         {
@@ -93,9 +94,8 @@ namespace Ann.Core.Candidate
                 return Enumerable.Empty<ExecutableFile>();
             }
 
-            input = input.ToLower();
-
-            var targets = _prevKeyword == null || input.StartsWith(_prevKeyword) == false
+            var targets = _prevKeyword == null ||
+                          input.StartsWith(_prevKeyword, StringComparison.OrdinalIgnoreCase) == false
                 ? _ExecutableFiles
                 : _prevResult;
 
@@ -118,7 +118,9 @@ namespace Ann.Core.Candidate
                     (u, loop, local) =>
                     {
                         foreach (var i in inputs)
-                            if (u.SearchKey.Contains(i) == false)
+                            if (
+                                CultureInfo.CurrentCulture.CompareInfo.IndexOf(u.SearchKey, i,
+                                    CompareOptions.OrdinalIgnoreCase) == -1)
                                 return local;
 
                         u.SetScore(MakeScore(u, inputs, extScores));
@@ -171,20 +173,20 @@ namespace Ann.Core.Candidate
             var pathLength = Math.Min(u.Path.Length, maxPathLength);
 
             {
-                var score = MakeScoreSub(u.LowerFileName, u.LowerFileNameParts, input);
+                var score = MakeScoreSub(u.FileName, u.FileNameParts, input);
                 if (score != int.MaxValue)
                     return ((score + 4*0)*extScores.Count + extScore)*maxPathLength + pathLength;
             }
 
             {
-                var score = MakeScoreSub(u.LowerName, u.LowerNameParts, input);
+                var score = MakeScoreSub(u.Name, u.NameParts, input);
                 if (score != int.MaxValue)
                     return ((score + 4*1)*extScores.Count + extScore)*maxPathLength + pathLength;
             }
 
             {
                 // ReSharper disable once RedundantAssignment
-                var score = MakeScoreSub(u.LowerDirectory, u.LowerDirectoryParts, input);
+                var score = MakeScoreSub(u.Directory, u.DirectoryParts, input);
                 if (score != int.MaxValue)
                     return ((score + 4*2)*extScores.Count + extScore)*maxPathLength + pathLength;
             }
@@ -194,18 +196,18 @@ namespace Ann.Core.Candidate
 
         private static int MakeScoreSub(string target, string[] targetParts, string input)
         {
-            if (target == input)
+            if (string.Equals(target, input, StringComparison.OrdinalIgnoreCase))
                 return 0;
 
-            if (target.StartsWith(input))
+            if (target.StartsWith(input, StringComparison.OrdinalIgnoreCase))
                 return 1;
 
             if (targetParts != null)
                 foreach (var t in targetParts)
-                    if (t.StartsWith(input))
+                    if (t.StartsWith(input, StringComparison.OrdinalIgnoreCase))
                         return 2;
 
-            if (target.Contains(input))
+            if (CultureInfo.CurrentCulture.CompareInfo.IndexOf(target, input, CompareOptions.OrdinalIgnoreCase) == -1)
                 return 3;
 
             return int.MaxValue;
@@ -255,12 +257,26 @@ namespace Ann.Core.Candidate
                     using (var stream = new FileStream(_indexFile, FileMode.Create))
                     {
                         ser.Serialize(CurrentIndexVersion, stream);
-                        ser.Serialize(_ExecutableFiles.Select(x => x.Path).ToArray(), stream);
+                        ser.Serialize(_ExecutableFiles.Select(x =>
+                                new ExecutableFileSummry
+                                {
+                                    Path = x.Path,
+                                    Directory = x.Directory,
+                                    Name = x.Name,
+                                }
+                        ).ToArray(), stream);
                     }
                 }
             });
 
             return IndexOpeningResults.Ok;
+        }
+
+        public class ExecutableFileSummry
+        {
+            public string Path;
+            public string Directory;
+            public string Name;
         }
 
         public async Task<IndexOpeningResults> OpenIndexAsync(IEnumerable<string> targetFolders)
@@ -285,9 +301,9 @@ namespace Ann.Core.Candidate
                             if (version != CurrentIndexVersion)
                                 return IndexOpeningResults.OldIndex;
 
-                            var paths = (string[]) ser.Deserialize(stream);
+                            var files = (ExecutableFileSummry[]) ser.Deserialize(stream);
 
-                            var fileCount = paths.Length;
+                            var fileCount = files.Length;
                             var tempExecutableFiles = new ExecutableFile[fileCount];
                             var isContainsInvalid = false;
                             var stringPool = new ConcurrentDictionary<string, string>();
@@ -299,14 +315,21 @@ namespace Ann.Core.Candidate
                                 fileCount,
                                 i =>
                                 {
-                                    if (File.Exists(paths[i]) == false)
+                                    if (File.Exists(files[i].Path) == false)
+                                    {
                                         isContainsInvalid = true;
+                                        return;
+                                    }
 
                                     try
                                     {
                                         IndexOpeningProgress = 100*Interlocked.Increment(ref count)/fileCount;
 
-                                        tempExecutableFiles[i] = new ExecutableFile(i, fileCount, paths[i],
+                                        tempExecutableFiles[i] = new ExecutableFile(
+                                            i, fileCount,
+                                            files[i].Path,
+                                            files[i].Directory,
+                                            files[i].Name,
                                             _app, _iconDecoder, stringPool, targetFoldersArray);
                                     }
                                     catch
@@ -371,7 +394,7 @@ namespace Ann.Core.Candidate
                                     .Select(f =>
                                     {
                                         CrawlingCount = Interlocked.Increment(ref count);
-                                        return new ExecutableFile(f, _app, _iconDecoder, stringPool, targetFoldersArray);
+                                        return new ExecutableFile(f, null, null, _app, _iconDecoder, stringPool, targetFoldersArray);
                                     })
                         ).ToArray();
 
@@ -420,7 +443,7 @@ namespace Ann.Core.Candidate
                 .Select(f =>
                 {
                     f = f.Replace('/', '\\');
-                    f = f.TrimEnd('\\') + '\\';
+                    f = f.TrimEnd('\\');
                     return f;
                 })
                 .OrderByDescending(f => f.Length)

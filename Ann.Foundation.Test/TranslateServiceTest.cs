@@ -41,7 +41,8 @@ namespace Ann.Foundation.Test
 
             AuthenticationFile auth;
             using (var reader = new StringReader(File.ReadAllText(authenticationFile)))
-                auth = new Deserializer(ignoreUnmatched: true).Deserialize<AuthenticationFile>(reader);
+                auth = new DeserializerBuilder().IgnoreUnmatchedProperties().Build()
+                    .Deserialize<AuthenticationFile>(reader);
 
             using (var s = new TranslateService(
                 auth.MicrosoftTranslatorClientId,
@@ -67,7 +68,8 @@ namespace Ann.Foundation.Test
 
             AuthenticationFile auth;
             using (var reader = new StringReader(File.ReadAllText(authFile)))
-                auth = new Deserializer(ignoreUnmatched: true).Deserialize<AuthenticationFile>(reader);
+                auth = new DeserializerBuilder().IgnoreUnmatchedProperties().Build()
+                    .Deserialize<AuthenticationFile>(reader);
 
             using (var s = new TranslateService(
                 auth.MicrosoftTranslatorClientId,

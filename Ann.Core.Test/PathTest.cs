@@ -34,7 +34,8 @@ namespace Ann.Core.Test
 
             using (var writer = new StringWriter())
             {
-                new Serializer(SerializationOptions.EmitDefaults).Serialize(writer, path);
+                new SerializerBuilder().EmitDefaults().Build()
+                    .Serialize(writer, path);
 
                 var yaml = writer.ToString();
 

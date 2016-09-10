@@ -23,7 +23,8 @@ namespace Ann.Foundation
 
                 using (var reader = new StringReader(File.ReadAllText(filePath)))
                 {
-                    var config = new Deserializer(ignoreUnmatched:true).Deserialize<T>(reader);
+                    var config = new DeserializerBuilder().IgnoreUnmatchedProperties().Build()
+                        .Deserialize<T>(reader);
 
                     // ReSharper disable once ConvertIfStatementToNullCoalescingExpression
                     if (config == null)
@@ -42,7 +43,8 @@ namespace Ann.Foundation
         {
             using (var writer = new StringWriter())
             {
-                new Serializer(SerializationOptions.EmitDefaults).Serialize(writer, config);
+                new SerializerBuilder().EmitDefaults().Build()
+                    .Serialize(writer, config);
 
                 var filePath = MakeFilePath(category, dirPath);
 
