@@ -28,7 +28,7 @@ namespace Ann.Test.MainWindow
                 var iconDecoder = new IconDecoder();
                 var app = _context.GetInstance<App>();
 
-                vm.Model = new ExecutableFile(path, null, app, iconDecoder, stringPool, targetFolders);
+                vm.Model = new ExecutableFile(path, null, null, app, iconDecoder, stringPool, targetFolders);
 
                 Assert.Equal("Ann", vm.Name);
                 Assert.Equal(path, vm.Comment);
@@ -47,7 +47,7 @@ namespace Ann.Test.MainWindow
                 var iconDecoder = new IconDecoder();
                 var app = _context.GetInstance<App>();
 
-                vm.Model = new ExecutableFile(path, null, app, iconDecoder, stringPool, targetFolders);
+                vm.Model = new ExecutableFile(path, null, null, app, iconDecoder, stringPool, targetFolders);
 
                 Assert.False(vm.IsPriorityFile);
 
@@ -72,7 +72,7 @@ namespace Ann.Test.MainWindow
                 var iconDecoder = new IconDecoder();
                 var app = _context.GetInstance<App>();
 
-                vm.Model = new ExecutableFile(path, null, app, iconDecoder, stringPool, targetFolders);
+                vm.Model = new ExecutableFile(path, null, null, app, iconDecoder, stringPool, targetFolders);
 
                 Assert.False(vm.IsPriorityFile);
                 Assert.False(app.IsPriorityFile(path));
