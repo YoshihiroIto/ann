@@ -107,11 +107,8 @@ namespace Ann.Core.Candidate
         private static string ShrinkDir(string srcDir, string[] targetFolders)
         {
             foreach (var f in targetFolders)
-            {
-                var ft = f.Trim(DirectorySeparators);
-                if (srcDir.StartsWith(ft, StringComparison.OrdinalIgnoreCase))
-                    return srcDir.Substring(ft.Length);
-            }
+                if (srcDir.StartsWith(f, StringComparison.OrdinalIgnoreCase))
+                    return srcDir.Substring(f.Length);
 
             return srcDir;
         }

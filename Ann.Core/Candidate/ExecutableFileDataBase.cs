@@ -314,7 +314,10 @@ namespace Ann.Core.Candidate
                                 i =>
                                 {
                                     if (File.Exists(files[i].Path) == false)
+                                    {
                                         isContainsInvalid = true;
+                                        return;
+                                    }
 
                                     try
                                     {
@@ -437,7 +440,7 @@ namespace Ann.Core.Candidate
                 .Select(f =>
                 {
                     f = f.Replace('/', '\\');
-                    f = f.TrimEnd('\\') + '\\';
+                    f = f.TrimEnd('\\');
                     return f;
                 })
                 .OrderByDescending(f => f.Length)
