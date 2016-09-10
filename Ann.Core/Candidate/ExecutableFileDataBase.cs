@@ -59,7 +59,7 @@ namespace Ann.Core.Candidate
 
         #endregion
 
-        private const int CurrentIndexVersion = 11;
+        private const int CurrentIndexVersion = 13;
 
         public int IconCacheSize
         {
@@ -261,6 +261,7 @@ namespace Ann.Core.Candidate
                                 new ExecutableFileSummry
                                 {
                                     Path = x.Path,
+                                    Directory = x.Directory,
                                     Name = x.Name,
                                 }
                         ).ToArray(), stream);
@@ -274,6 +275,7 @@ namespace Ann.Core.Candidate
         public class ExecutableFileSummry
         {
             public string Path;
+            public string Directory;
             public string Name;
         }
 
@@ -326,6 +328,7 @@ namespace Ann.Core.Candidate
                                         tempExecutableFiles[i] = new ExecutableFile(
                                             i, fileCount,
                                             files[i].Path,
+                                            files[i].Directory,
                                             files[i].Name,
                                             _app, _iconDecoder, stringPool, targetFoldersArray);
                                     }
@@ -391,7 +394,7 @@ namespace Ann.Core.Candidate
                                     .Select(f =>
                                     {
                                         CrawlingCount = Interlocked.Increment(ref count);
-                                        return new ExecutableFile(f, null, _app, _iconDecoder, stringPool, targetFoldersArray);
+                                        return new ExecutableFile(f, null, null, _app, _iconDecoder, stringPool, targetFoldersArray);
                                     })
                         ).ToArray();
 

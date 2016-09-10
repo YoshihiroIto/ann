@@ -48,6 +48,7 @@ namespace Ann.Core.Candidate
 
         public ExecutableFile(
             string path,
+            string dir,
             string name,
             App app,
             IconDecoder iconDecoder,
@@ -66,8 +67,11 @@ namespace Ann.Core.Candidate
             Path = stringPool.GetOrAdd(path, path);
             Name = stringPool.GetOrAdd(name, name);
 
-            var dir = System.IO.Path.GetDirectoryName(path) ?? string.Empty;
-            dir = ShrinkDir(dir, targetFolders);
+            if (dir == null)
+            {
+                dir = System.IO.Path.GetDirectoryName(path) ?? string.Empty;
+                dir = ShrinkDir(dir, targetFolders);
+            }
 
             Directory = stringPool.GetOrAdd(dir, s => s);
             FileName = stringPool.GetOrAdd(System.IO.Path.GetFileNameWithoutExtension(path), s => s);
@@ -94,12 +98,13 @@ namespace Ann.Core.Candidate
         public ExecutableFile(
             int id, int maxId,
             string path,
+            string dir,
             string name,
             App app,
             IconDecoder iconDecoder,
             ConcurrentDictionary<string, string> stringPool,
             string[] targetFolders)
-            : this(path, name, app, iconDecoder, stringPool, targetFolders)
+            : this(path, dir, name, app, iconDecoder, stringPool, targetFolders)
         {
             SetId(id, maxId);
         }
