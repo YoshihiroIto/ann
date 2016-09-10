@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -60,7 +59,9 @@ namespace Ann.Core.Candidate
             _app = app;
             _iconDecoder = iconDecoder;
 
-            var fileDescription = path.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) ? FileVersionInfo.GetVersionInfo(path).FileDescription : null;
+            var fileDescription = path.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)
+                ? FileVersionInfo.GetVersionInfo(path).FileDescription
+                : null;
 
             var name = string.IsNullOrWhiteSpace(fileDescription)
                 ? System.IO.Path.GetFileNameWithoutExtension(path)
@@ -76,44 +77,26 @@ namespace Ann.Core.Candidate
             FileName = stringPool.GetOrAdd(System.IO.Path.GetFileNameWithoutExtension(path), s => s);
             SearchKey = stringPool.GetOrAdd($"{Name}*{Directory}*{FileName}", s => s);
 
-            NameParts = Name.Split(Separator, StringSplitOptions.RemoveEmptyEntries)
-                .Select(s => stringPool.GetOrAdd(s, s))
-                .ToArray();
-
-            DirectoryParts = Directory.Split(new[] {'\\'}, StringSplitOptions.RemoveEmptyEntries)
-                .Select(s => stringPool.GetOrAdd(s, s))
-                .ToArray();
-
-            FileNameParts = FileName.Split(Separator, StringSplitOptions.RemoveEmptyEntries)
-                .Select(s => stringPool.GetOrAdd(s, s))
-                .ToArray();
-
-            if (NameParts.Length <= 1)
-                NameParts = null;
-
-            if (DirectoryParts.Length <= 1)
-                DirectoryParts = null;
-
-            if (FileNameParts.Length <= 1)
-                FileNameParts = null;
-
-            _RunCommand = new DelegateCommand(async () => await RunAsync(false));
-
-            _SubCommands = new[]
-            {
-                new MenuCommand
-                {
-                    Caption = StringTags.MenuItem_RunAsAdministrator,
-                    Command = new DelegateCommand(async () => await RunAsync(true))
-                },
-                new MenuCommand
-                {
-                    Caption = StringTags.MenuItem_OpenContainingFolder,
-                    Command = new DelegateCommand(async () =>
-                            await ProcessHelper.RunAsync("EXPLORER", $"/select,\"{path}\"", false))
-                }
-            };
+            NameParts = SplitString(Name, Separators, stringPool);
+            DirectoryParts = SplitString(Directory, DirectorySeparators, stringPool);
+            FileNameParts = SplitString(FileName, Separators, stringPool);
         }
+
+        private static string[] SplitString(string src, char[] separators, ConcurrentDictionary<string, string> stringPool)
+        {
+            var parts = src.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+
+            if (parts.Length <= 1)
+                return null;
+
+            for (var i = 0; i != parts.Length; ++i)
+                parts[i] = stringPool.GetOrAdd(parts[i], parts[i]);
+
+            return parts;
+        }
+
+        private static readonly char[] DirectorySeparators = {'\\'};
+        private static readonly char[] Separators = {' ', '_', '-', '/', '\\'};
 
         private async Task RunAsync(bool isRunAsAdmin)
         {
@@ -121,7 +104,7 @@ namespace Ann.Core.Candidate
             if (i)
                 return;
 
-            var errMes = new List<StringTags> { StringTags.Message_FailedToStart };
+            var errMes = new List<StringTags> {StringTags.Message_FailedToStart};
             if (File.Exists(Path) == false)
                 errMes.Add(StringTags.Message_FileNotFound);
 
@@ -139,30 +122,65 @@ namespace Ann.Core.Candidate
             SetId(id, maxId);
         }
 
-        private static string ShrinkDir(string srcDir, IEnumerable<string> targetFolders)
+        private static string ShrinkDir(string srcDir, string[] targetFolders)
         {
             foreach (var f in targetFolders)
             {
-                var ft = f.Trim('\\');
-                if (srcDir.StartsWith(ft))
+                var ft = f.Trim(DirectorySeparators);
+                if (srcDir.StartsWith(ft, StringComparison.OrdinalIgnoreCase))
                     return srcDir.Substring(ft.Length);
             }
 
             return srcDir;
         }
 
-        private static readonly char[] Separator = {' ', '_', '-', '/', '\\'};
-
         int IComparable<ExecutableFile>.CompareTo(ExecutableFile other) => _score - other._score;
         string ICandidate.Name => string.IsNullOrWhiteSpace(Name) == false ? Name : System.IO.Path.GetFileName(Path);
         string ICandidate.Comment => Path;
         Brush ICandidate.Icon => _iconDecoder.GetIcon(Path);
 
-        private readonly DelegateCommand _RunCommand;
-        ICommand ICandidate.RunCommand => _RunCommand;
+        private DelegateCommand _RunCommand;
 
-        private readonly MenuCommand[] _SubCommands;
-        MenuCommand[] ICandidate.SubCommands => _SubCommands;
+        ICommand ICandidate.RunCommand
+        {
+            get
+            {
+                if (_RunCommand != null)
+                    return _RunCommand;
+
+                _RunCommand = new DelegateCommand(async () => await RunAsync(false));
+
+                return _RunCommand;
+            }
+        }
+
+        private MenuCommand[] _SubCommands;
+
+        MenuCommand[] ICandidate.SubCommands
+        {
+            get
+            {
+                if (_SubCommands != null)
+                    return _SubCommands;
+
+                _SubCommands = new[]
+                {
+                    new MenuCommand
+                    {
+                        Caption = StringTags.MenuItem_RunAsAdministrator,
+                        Command = new DelegateCommand(async () => await RunAsync(true))
+                    },
+                    new MenuCommand
+                    {
+                        Caption = StringTags.MenuItem_OpenContainingFolder,
+                        Command = new DelegateCommand(async () =>
+                                await ProcessHelper.RunAsync("EXPLORER", $"/select,\"{Path}\"", false))
+                    }
+                };
+
+                return _SubCommands;
+            }
+        }
 
         bool ICandidate.CanSetPriority => true;
 
