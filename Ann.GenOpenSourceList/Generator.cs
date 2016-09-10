@@ -27,8 +27,8 @@ namespace Ann.GenOpenSourceList
 
                 using (var writer = new StringWriter())
                 {
-                    new Serializer(SerializationOptions.EmitDefaults).Serialize(writer,
-                        openSources.Where(x => x != null).OrderBy(x => x.Name));
+                    new SerializerBuilder().EmitDefaults().Build()
+                        .Serialize(writer, openSources.Where(x => x != null).OrderBy(x => x.Name));
                     return writer.ToString();
                 }
             }
