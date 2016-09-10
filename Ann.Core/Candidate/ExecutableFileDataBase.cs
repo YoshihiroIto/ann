@@ -59,7 +59,7 @@ namespace Ann.Core.Candidate
 
         #endregion
 
-        private const int CurrentIndexVersion = 10;
+        private const int CurrentIndexVersion = 11;
 
         public int IconCacheSize
         {
@@ -94,7 +94,8 @@ namespace Ann.Core.Candidate
                 return Enumerable.Empty<ExecutableFile>();
             }
 
-            var targets = _prevKeyword == null || input.StartsWith(_prevKeyword, StringComparison.OrdinalIgnoreCase) == false
+            var targets = _prevKeyword == null ||
+                          input.StartsWith(_prevKeyword, StringComparison.OrdinalIgnoreCase) == false
                 ? _ExecutableFiles
                 : _prevResult;
 
@@ -117,7 +118,9 @@ namespace Ann.Core.Candidate
                     (u, loop, local) =>
                     {
                         foreach (var i in inputs)
-                            if (CultureInfo.CurrentCulture.CompareInfo.IndexOf(u.SearchKey, i, CompareOptions.OrdinalIgnoreCase) == -1)
+                            if (
+                                CultureInfo.CurrentCulture.CompareInfo.IndexOf(u.SearchKey, i,
+                                    CompareOptions.OrdinalIgnoreCase) == -1)
                                 return local;
 
                         u.SetScore(MakeScore(u, inputs, extScores));
@@ -254,12 +257,24 @@ namespace Ann.Core.Candidate
                     using (var stream = new FileStream(_indexFile, FileMode.Create))
                     {
                         ser.Serialize(CurrentIndexVersion, stream);
-                        ser.Serialize(_ExecutableFiles.Select(x => x.Path).ToArray(), stream);
+                        ser.Serialize(_ExecutableFiles.Select(x =>
+                                new ExecutableFileSummry
+                                {
+                                    Path = x.Path,
+                                    Name = x.Name,
+                                }
+                        ).ToArray(), stream);
                     }
                 }
             });
 
             return IndexOpeningResults.Ok;
+        }
+
+        public class ExecutableFileSummry
+        {
+            public string Path;
+            public string Name;
         }
 
         public async Task<IndexOpeningResults> OpenIndexAsync(IEnumerable<string> targetFolders)
@@ -284,9 +299,9 @@ namespace Ann.Core.Candidate
                             if (version != CurrentIndexVersion)
                                 return IndexOpeningResults.OldIndex;
 
-                            var paths = (string[]) ser.Deserialize(stream);
+                            var files = (ExecutableFileSummry[]) ser.Deserialize(stream);
 
-                            var fileCount = paths.Length;
+                            var fileCount = files.Length;
                             var tempExecutableFiles = new ExecutableFile[fileCount];
                             var isContainsInvalid = false;
                             var stringPool = new ConcurrentDictionary<string, string>();
@@ -298,14 +313,17 @@ namespace Ann.Core.Candidate
                                 fileCount,
                                 i =>
                                 {
-                                    if (File.Exists(paths[i]) == false)
+                                    if (File.Exists(files[i].Path) == false)
                                         isContainsInvalid = true;
 
                                     try
                                     {
                                         IndexOpeningProgress = 100*Interlocked.Increment(ref count)/fileCount;
 
-                                        tempExecutableFiles[i] = new ExecutableFile(i, fileCount, paths[i],
+                                        tempExecutableFiles[i] = new ExecutableFile(
+                                            i, fileCount,
+                                            files[i].Path,
+                                            files[i].Name,
                                             _app, _iconDecoder, stringPool, targetFoldersArray);
                                     }
                                     catch
@@ -370,7 +388,7 @@ namespace Ann.Core.Candidate
                                     .Select(f =>
                                     {
                                         CrawlingCount = Interlocked.Increment(ref count);
-                                        return new ExecutableFile(f, _app, _iconDecoder, stringPool, targetFoldersArray);
+                                        return new ExecutableFile(f, null, _app, _iconDecoder, stringPool, targetFoldersArray);
                                     })
                         ).ToArray();
 

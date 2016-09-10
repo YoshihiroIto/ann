@@ -48,6 +48,7 @@ namespace Ann.Core.Candidate
 
         public ExecutableFile(
             string path,
+            string name,
             App app,
             IconDecoder iconDecoder,
             ConcurrentDictionary<string, string> stringPool,
@@ -59,13 +60,8 @@ namespace Ann.Core.Candidate
             _app = app;
             _iconDecoder = iconDecoder;
 
-            var fileDescription = path.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)
-                ? FileVersionInfo.GetVersionInfo(path).FileDescription
-                : null;
-
-            var name = string.IsNullOrWhiteSpace(fileDescription)
-                ? System.IO.Path.GetFileNameWithoutExtension(path)
-                : fileDescription;
+            if (name == null)
+                name = MakeNameFromFilePath(path);
 
             Path = stringPool.GetOrAdd(path, path);
             Name = stringPool.GetOrAdd(name, name);
@@ -82,22 +78,6 @@ namespace Ann.Core.Candidate
             FileNameParts = SplitString(FileName, Separators, stringPool);
         }
 
-        private static string[] SplitString(string src, char[] separators, ConcurrentDictionary<string, string> stringPool)
-        {
-            var parts = src.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-
-            if (parts.Length <= 1)
-                return null;
-
-            for (var i = 0; i != parts.Length; ++i)
-                parts[i] = stringPool.GetOrAdd(parts[i], parts[i]);
-
-            return parts;
-        }
-
-        private static readonly char[] DirectorySeparators = {'\\'};
-        private static readonly char[] Separators = {' ', '_', '-', '/', '\\'};
-
         private async Task RunAsync(bool isRunAsAdmin)
         {
             var i = await _app.RunAsync(Path, isRunAsAdmin);
@@ -112,12 +92,14 @@ namespace Ann.Core.Candidate
         }
 
         public ExecutableFile(
-            int id, int maxId, string path,
+            int id, int maxId,
+            string path,
+            string name,
             App app,
             IconDecoder iconDecoder,
             ConcurrentDictionary<string, string> stringPool,
             string[] targetFolders)
-            : this(path, app, iconDecoder, stringPool, targetFolders)
+            : this(path, name, app, iconDecoder, stringPool, targetFolders)
         {
             SetId(id, maxId);
         }
@@ -133,6 +115,35 @@ namespace Ann.Core.Candidate
 
             return srcDir;
         }
+
+        private static string[] SplitString(string src, char[] separators, ConcurrentDictionary<string, string> stringPool)
+        {
+            var parts = src.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+
+            if (parts.Length <= 1)
+                return null;
+
+            for (var i = 0; i != parts.Length; ++i)
+                parts[i] = stringPool.GetOrAdd(parts[i], parts[i]);
+
+            return parts;
+        }
+
+        private static string MakeNameFromFilePath(string path)
+        {
+            var fileDescription = path.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)
+                ? FileVersionInfo.GetVersionInfo(path).FileDescription
+                : null;
+
+            var name = string.IsNullOrWhiteSpace(fileDescription)
+                ? System.IO.Path.GetFileNameWithoutExtension(path)
+                : fileDescription;
+
+            return name;
+        }
+
+        private static readonly char[] DirectorySeparators = {'\\'};
+        private static readonly char[] Separators = {' ', '_', '-', '/', '\\'};
 
         int IComparable<ExecutableFile>.CompareTo(ExecutableFile other) => _score - other._score;
         string ICandidate.Name => string.IsNullOrWhiteSpace(Name) == false ? Name : System.IO.Path.GetFileName(Path);
