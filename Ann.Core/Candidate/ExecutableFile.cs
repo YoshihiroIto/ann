@@ -120,6 +120,9 @@ namespace Ann.Core.Candidate
 
         private static string[] SplitString(string src, char[] separators, ConcurrentDictionary<string, string> stringPool)
         {
+            if (src.IndexOfAny(separators) == -1)
+                return null;
+
             var parts = src.Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
             if (parts.Length <= 1)
