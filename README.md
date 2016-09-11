@@ -12,16 +12,18 @@ Simple implementation commandline launcher.
 
 
 
-Download
---------
+Install
+-------
 
-[releases](https://github.com/YoshihiroIto/ann/releases) Ann-X.X.X-Setup.exe
+1. Download from [releases](https://github.com/YoshihiroIto/ann/releases) Ann-X.X.X-Setup.exe.
+1. Click downloaded file.
 
 
 
 Help translate
 --------------
 [Ann-Localization](https://docs.google.com/spreadsheets/d/15Eea4QU9iY2JBkNnNlo83EbCq4QeIJVOnnnKh-c93xs/edit?usp=sharing)
+
 
 
 License
