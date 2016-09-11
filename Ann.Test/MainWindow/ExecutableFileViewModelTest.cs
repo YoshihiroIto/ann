@@ -25,7 +25,7 @@ namespace Ann.Test.MainWindow
                 var path = AssemblyConstants.EntryAssemblyLocation;
                 var stringPool = new ConcurrentDictionary<string, string>();
                 var targetFolders = new string[0];
-                var iconDecoder = new IconDecoder();
+                var iconDecoder = new IconDecoder(_context.ConfigRootPath);
                 var app = _context.GetInstance<App>();
 
                 vm.Model = new ExecutableFile(path, null, null, app, iconDecoder, stringPool, targetFolders);
@@ -44,7 +44,7 @@ namespace Ann.Test.MainWindow
                 var path = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\Explorer.exe");
                 var stringPool = new ConcurrentDictionary<string, string>();
                 var targetFolders = new string[0];
-                var iconDecoder = new IconDecoder();
+                var iconDecoder = new IconDecoder(_context.ConfigRootPath);
                 var app = _context.GetInstance<App>();
 
                 vm.Model = new ExecutableFile(path, null, null, app, iconDecoder, stringPool, targetFolders);
@@ -69,7 +69,7 @@ namespace Ann.Test.MainWindow
                 var path = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\Explorer.exe");
                 var stringPool = new ConcurrentDictionary<string, string>();
                 var targetFolders = new string[0];
-                var iconDecoder = new IconDecoder();
+                var iconDecoder = new IconDecoder(_context.ConfigRootPath);
                 var app = _context.GetInstance<App>();
 
                 vm.Model = new ExecutableFile(path, null, null, app, iconDecoder, stringPool, targetFolders);

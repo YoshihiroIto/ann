@@ -21,7 +21,7 @@ namespace Ann.Core.Test
         [WpfFact]
         public void Basic()
         {
-            var decoder = new IconDecoder();
+            var decoder = new IconDecoder(_context.RootPath);
             var ann = AssemblyConstants.EntryAssembly;
 
             var icon1 = decoder.GetIcon(ann.Location);
@@ -36,7 +36,7 @@ namespace Ann.Core.Test
         [WpfFact]
         public void Cache()
         {
-            var decoder = new IconDecoder {IconCacheSize = 10};
+            var decoder = new IconDecoder(_context.RootPath) {IconCacheSize = 10};
 
             var ann = AssemblyConstants.EntryAssembly;
 
@@ -52,7 +52,7 @@ namespace Ann.Core.Test
         [WpfFact]
         public void NotFound()
         {
-            var decoder = new IconDecoder();
+            var decoder = new IconDecoder(_context.RootPath);
 
             var icon = decoder.GetIcon("XXXXX");
 
@@ -62,7 +62,7 @@ namespace Ann.Core.Test
         [WpfFact]
         public void IconCacheSize()
         {
-            var decoder = new IconDecoder();
+            var decoder = new IconDecoder(_context.RootPath);
 
             Assert.Equal(0, decoder.IconCacheSize);
             decoder.IconCacheSize = 10;
@@ -72,7 +72,7 @@ namespace Ann.Core.Test
         [WpfFact]
         public void IconShareFileExt()
         {
-            var decoder = new IconDecoder();
+            var decoder = new IconDecoder(_context.RootPath);
 
             _context.CreateFile("test1.js");
             _context.CreateFile("test2.js");
@@ -87,7 +87,7 @@ namespace Ann.Core.Test
         [WpfFact]
         public void NoExt()
         {
-            var decoder = new IconDecoder();
+            var decoder = new IconDecoder(_context.RootPath);
             _context.CreateFile("AAAA");
 
             var icon = decoder.GetIcon(System.IO.Path.Combine(_context.RootPath, "AAAA"));

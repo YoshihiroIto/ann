@@ -78,8 +78,8 @@ namespace Ann.Core
 
         public void ClearCache()
         {
-            _IconCache.Clear();
-            _ShareIconCache.Clear();
+            _IconCache?.Clear();
+            _ShareIconCache?.Clear();
 
             foreach (var f in Directory.EnumerateFiles(_iconsDirPath, "*.*"))
                 File.Delete(f);

@@ -10,6 +10,8 @@ namespace Ann.Core
         private readonly Container _DiContainer = new Container();
         private readonly DisposableFileSystem _config = new DisposableFileSystem();
 
+        public string ConfigRootPath => _config.RootPath;
+
         public T GetInstance<T>()where T : class
         {
             return _DiContainer.GetInstance<T>();
