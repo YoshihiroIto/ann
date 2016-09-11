@@ -406,7 +406,7 @@ namespace Ann.Core
 
             UpdateFromConfig();
 
-            _executableFileDataBase = new ExecutableFileDataBase(this, IndexFilePath);
+            _executableFileDataBase = new ExecutableFileDataBase(this, _configHolder, IndexFilePath);
             _executableFileDataBase.ObserveProperty(x => x.CrawlingCount)
                 .Subscribe(c => CrawlingCount = c)
                 .AddTo(CompositeDisposable);

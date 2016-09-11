@@ -19,12 +19,14 @@ namespace Ann.Core.Candidate
         private readonly App _app;
         private readonly string _indexFile;
 
-        public ExecutableFileDataBase(App app, string indexFile)
+        public ExecutableFileDataBase(App app, ConfigHolder configHolder, string indexFile)
         {
             Debug.Assert(app != null);
 
             _app = app;
             _indexFile = indexFile;
+
+            _iconDecoder = new IconDecoder(configHolder.ConfigDirPath);
         }
 
         private ExecutableFile[] _ExecutableFiles;
@@ -67,7 +69,7 @@ namespace Ann.Core.Candidate
             set { _iconDecoder.IconCacheSize = value; }
         }
 
-        private readonly IconDecoder _iconDecoder = new IconDecoder();
+        private readonly IconDecoder _iconDecoder;
 
         public IEnumerable<ExecutableFile> Find(string input, IEnumerable<string> executableFileExts)
         {
