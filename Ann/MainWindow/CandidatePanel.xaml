@@ -19,14 +19,16 @@
                                      ToolTipService.ShowDuration="100000000"
                                      mc:Ignorable="d">
         <mainWindow:CandidatePanelCanvas.ToolTip>
-            <StackPanel>
-                <TextBlock FontSize="14"
+            <ToolTip>
+                <StackPanel>
+                    <TextBlock FontSize="14"
                            FontWeight="Bold"
                            Foreground="{StaticResource ToolTipCaptionBrush}"
                            Text="{Binding Name,
                                           Mode=OneTime}" />
-                <TextBlock Foreground="{StaticResource ToolTipCommentBrush}" Text="{Binding Comment, Mode=OneTime}" />
-            </StackPanel>
+                    <TextBlock Foreground="{StaticResource ToolTipCommentBrush}" Text="{Binding Comment, Mode=OneTime}" />
+                </StackPanel>
+            </ToolTip>
         </mainWindow:CandidatePanelCanvas.ToolTip>
 
         <Button Canvas.Right="{x:Static ann:ViewConstants.CandidatePanel_Star_Right}"
