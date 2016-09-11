@@ -4,7 +4,6 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -38,13 +37,13 @@ namespace Ann.Core
 
         #endregion
 
-        private readonly string _configDirPath;
+        private readonly string _iconsDirPath;
 
         public IconDecoder(string configDirPath)
         {
-            _configDirPath = System.IO.Path.Combine(configDirPath, "icons");
+            _iconsDirPath = System.IO.Path.Combine(configDirPath, "icons");
 
-            Directory.CreateDirectory(_configDirPath);
+            Directory.CreateDirectory(_iconsDirPath);
         }
 
         public ImageBrush GetIcon(string path)
@@ -77,9 +76,18 @@ namespace Ann.Core
                 : _IconCache.GetOrAdd(path, DecodeIcon);
         }
 
+        public void ClearCache()
+        {
+            _IconCache.Clear();
+            _ShareIconCache.Clear();
+
+            foreach (var f in Directory.EnumerateFiles(_iconsDirPath, "*.*"))
+                File.Delete(f);
+        }
+
         private ImageBrush DecodeIcon(string path)
         {
-            var iconCacheFilePath = System.IO.Path.Combine(_configDirPath, GenerateHash(path)) + ".png";
+            var iconCacheFilePath = System.IO.Path.Combine(_iconsDirPath, GenerateHash(path)) + ".png";
 
             if (File.Exists(iconCacheFilePath))
             {

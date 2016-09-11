@@ -69,6 +69,11 @@ namespace Ann.Core.Candidate
             set { _iconDecoder.IconCacheSize = value; }
         }
 
+        public void ClearIconCache()
+        {
+            _iconDecoder.ClearCache();
+        }
+
         private readonly IconDecoder _iconDecoder;
 
         public IEnumerable<ExecutableFile> Find(string input, IEnumerable<string> executableFileExts)

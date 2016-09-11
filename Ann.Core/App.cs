@@ -222,6 +222,8 @@ namespace Ann.Core
         {
             await CancelUpdateIndexAsync();
 
+            _executableFileDataBase.ClearIconCache();
+
             using (Disposable.Create(() => _UpdateIndexAsyncSema.Release()))
             {
                 await _UpdateIndexAsyncSema.WaitAsync();
