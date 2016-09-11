@@ -81,8 +81,9 @@ namespace Ann.Core
             _IconCache?.Clear();
             _ShareIconCache?.Clear();
 
-            foreach (var f in Directory.EnumerateFiles(_iconsDirPath, "*.*"))
-                File.Delete(f);
+            if (Directory.Exists(_iconsDirPath))
+                foreach (var f in Directory.EnumerateFiles(_iconsDirPath, "*.*"))
+                    File.Delete(f);
         }
 
         private ImageBrush DecodeIcon(string path)
