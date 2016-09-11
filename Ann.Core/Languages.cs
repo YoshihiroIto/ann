@@ -53,8 +53,10 @@ Settings_About,
 Settings_Activate,
 Settings_AddExecutableFile,
 Settings_AddFolder,
+Settings_AddFunction,
 Settings_AddKey,
 Settings_FrequentlyUsedFolders,
+Settings_Functions,
 Settings_General,
 Settings_Hide,
 Settings_KeyStroke,
@@ -121,8 +123,10 @@ case StringTags.Settings_About: return "About";
 case StringTags.Settings_Activate: return "Activate";
 case StringTags.Settings_AddExecutableFile: return "Add executable file";
 case StringTags.Settings_AddFolder: return "Add folder";
+case StringTags.Settings_AddFunction: return "Add function";
 case StringTags.Settings_AddKey: return "Add key";
 case StringTags.Settings_FrequentlyUsedFolders: return "Frequently used folders";
+case StringTags.Settings_Functions: return "Functions";
 case StringTags.Settings_General: return "General";
 case StringTags.Settings_Hide: return "Hide";
 case StringTags.Settings_KeyStroke: return "Key Stroke";
@@ -185,8 +189,10 @@ case StringTags.Settings_About: return "概要";
 case StringTags.Settings_Activate: return "アクティブ化";
 case StringTags.Settings_AddExecutableFile: return "実行可能ファイル追加";
 case StringTags.Settings_AddFolder: return "フォルダー追加";
+case StringTags.Settings_AddFunction: return "機能追加";
 case StringTags.Settings_AddKey: return "キー追加";
 case StringTags.Settings_FrequentlyUsedFolders: return "よく使われるフォルダー";
+case StringTags.Settings_Functions: return "機能";
 case StringTags.Settings_General: return "全般";
 case StringTags.Settings_Hide: return "非表示";
 case StringTags.Settings_KeyStroke: return "キーストローク";

@@ -6,6 +6,7 @@ using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 using Ann.Foundation.Mvvm.Message;
 using Ann.SettingWindow.SettingPage.About;
+using Ann.SettingWindow.SettingPage.Functions;
 using Ann.SettingWindow.SettingPage.General;
 using Ann.SettingWindow.SettingPage.PriorityFiles;
 using Ann.SettingWindow.SettingPage.Shortcuts;
@@ -54,6 +55,7 @@ namespace Ann.SettingWindow
                 new ShortcutsViewModel(model),
                 new TargetFoldersViewModel(model, app, Messenger),
                 new PriorityFilesViewModel(model, app, Messenger),
+                new FunctionsViewModel(model), 
                 new AboutViewModel(versionUpdater, Messenger)
             };
             SelectedPage = new ReactiveProperty<ViewModelBase>(Pages[0]).AddTo(CompositeDisposable);
