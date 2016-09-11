@@ -17,33 +17,20 @@ namespace Ann.Foundation
         }
 
         #region IDisposable
-        private bool _isDisposed;
 
         ~TimeMeasure()
         {
-            Dispose(false);
+            Debug.Assert(false);
         }
 
         public void Dispose()
         {
-            Dispose(true);
+            _stopwatch.Stop();
+            Debug.WriteLine($"■{_title} : {_stopwatch.ElapsedMilliseconds}ms : {_stopwatch.ElapsedTicks}");
 
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (_isDisposed)
-                return;
-
-            if (disposing)
-            {
-                _stopwatch.Stop();
-                Debug.WriteLine($"■{_title} : {_stopwatch.ElapsedMilliseconds}ms : {_stopwatch.ElapsedTicks}");
-            }
-
-            _isDisposed = true;
-        }
         #endregion
     }
 }
