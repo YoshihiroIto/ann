@@ -91,7 +91,7 @@ namespace Ann.Core
             var hash = GenerateHash(path);
 
             var iconCacheDirPath = System.IO.Path.Combine(_iconsDirPath, $"{hash[0]}{hash[1]}");
-            var iconCacheFilePath = System.IO.Path.Combine(iconCacheDirPath, hash) + ".png";
+            var iconCacheFilePath = System.IO.Path.Combine(iconCacheDirPath, hash);
 
             try
             {
