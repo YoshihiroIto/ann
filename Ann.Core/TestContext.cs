@@ -10,7 +10,9 @@ namespace Ann.Core
         private readonly Container _DiContainer = new Container();
         private readonly DisposableFileSystem _config = new DisposableFileSystem();
 
-        public T GetInstance<T>()where T : class
+        public string ConfigRootPath => _config.RootPath;
+
+        public T GetInstance<T>() where T : class
         {
             return _DiContainer.GetInstance<T>();
         }
@@ -26,7 +28,7 @@ namespace Ann.Core
             TestHelper.CleanTestEnv();
         }
 
-        public void Dispose()
+        private void Release()
         {
             _config.Dispose();
             _DiContainer.Dispose();
@@ -34,5 +36,34 @@ namespace Ann.Core
             // for appveyor 
             Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
+
+        #region IDisposable
+
+        private bool _isDisposed;
+
+        ~TestContext()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed)
+                return;
+
+            if (disposing)
+                Release();
+
+            _isDisposed = true;
+        }
+
+        #endregion
     }
 }

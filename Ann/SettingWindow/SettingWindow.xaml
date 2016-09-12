@@ -13,6 +13,7 @@
         xmlns:shortcuts="clr-namespace:Ann.SettingWindow.SettingPage.Shortcuts"
         xmlns:targetFolders="clr-namespace:Ann.SettingWindow.SettingPage.TargetFolders"
         xmlns:valueConverter="clr-namespace:Ann.Foundation.Control.ValueConverter;assembly=Ann.Foundation"
+        xmlns:functions="clr-namespace:Ann.SettingWindow.SettingPage.Functions"
         Title="{DynamicResource Settings}"
         Width="800"
         Height="560"
@@ -55,7 +56,6 @@
                 <Style x:Key="PageCaptionTextBlockStyle" TargetType="{x:Type TextBlock}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type about:AboutViewModel}">
-                            <!--<Setter Property="Text" Value="{Binding Source={x:Static app:CultureService.Instance}, Path=Resources.Settings_About, Mode=OneWay}" />-->
                             <Setter Property="Text" Value="{DynamicResource Settings_About}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type general:GeneralViewModel}">
@@ -66,6 +66,9 @@
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type shortcuts:ShortcutsViewModel}">
                             <Setter Property="Text" Value="{DynamicResource Settings_Shortcuts}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type functions:FunctionsViewModel}">
+                            <Setter Property="Text" Value="{DynamicResource Settings_Functions}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Converter={StaticResource Typeof}}" Value="{x:Type targetFolders:TargetFoldersViewModel}">
                             <Setter Property="Text" Value="{DynamicResource Settings_TargetFolders}" />
@@ -232,6 +235,12 @@
                             <DataTemplate DataType="{x:Type shortcuts:ShortcutsViewModel}">
                                 <ContentControl Style="{StaticResource PageStyle}">
                                     <shortcuts:ShortcutsView />
+                                </ContentControl>
+                            </DataTemplate>
+
+                            <DataTemplate DataType="{x:Type functions:FunctionsViewModel}">
+                                <ContentControl Style="{StaticResource PageStyle}">
+                                    <functions:FunctionsView />
                                 </ContentControl>
                             </DataTemplate>
 

@@ -24,7 +24,7 @@ namespace Ann.Test.SettingWindow
 
             using (var vm = new SettingViewModel(model, versionUpdater, app))
             {
-                Assert.Equal(5, vm.Pages.Length);
+                Assert.Equal(6, vm.Pages.Length);
                 Assert.IsType<GeneralViewModel>(vm.SelectedPage.Value);
             }
         }

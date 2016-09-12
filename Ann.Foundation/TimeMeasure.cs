@@ -16,10 +16,21 @@ namespace Ann.Foundation
             _stopwatch.Start();
         }
 
+        #region IDisposable
+
+        ~TimeMeasure()
+        {
+            Debug.Assert(false);
+        }
+
         public void Dispose()
         {
             _stopwatch.Stop();
             Debug.WriteLine($"■{_title} : {_stopwatch.ElapsedMilliseconds}ms : {_stopwatch.ElapsedTicks}");
+
+            GC.SuppressFinalize(this);
         }
+
+        #endregion
     }
 }

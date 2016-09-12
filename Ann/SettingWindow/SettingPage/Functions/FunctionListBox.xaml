@@ -1,0 +1,146 @@
+﻿<StackPanel x:Class="Ann.SettingWindow.SettingPage.Functions.FunctionListBox"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:dragDrop="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+            xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:settingWindow="clr-namespace:Ann.SettingWindow"
+            xmlns:functions="clr-namespace:Ann.SettingWindow.SettingPage.Functions"
+            d:DesignHeight="300"
+            d:DesignWidth="300"
+            Grid.IsSharedSizeScope="True"
+            mc:Ignorable="d">
+    <ListBox x:Name="ListBox"
+             HorizontalContentAlignment="Stretch"
+             dragDrop:DragDrop.DropHandler="{Binding DropTarget,
+                                                     Mode=OneWay,
+                                                     RelativeSource={RelativeSource FindAncestor,
+                                                                                    AncestorType={x:Type functions:FunctionListBox}}}"
+             dragDrop:DragDrop.IsDragSource="True"
+             dragDrop:DragDrop.IsDropTarget="True"
+             dragDrop:DragDrop.UseDefaultDragAdorner="True"
+             ItemsSource="{Binding Items,
+                                   Mode=OneWay,
+                                   RelativeSource={RelativeSource FindAncestor,
+                                                                  AncestorType={x:Type functions:FunctionListBox}}}">
+        <!--<i:Interaction.Behaviors>
+            <behavior:ListBoxLastItemFocusOnItemAddedBehavior ItemType="{x:Type control:ShortcutKeyInputBox}" />
+        </i:Interaction.Behaviors>-->
+
+        <ListBox.ItemTemplate>
+            <DataTemplate DataType="functions:FunctionViewModel">
+                <Grid Margin="0,0,0,4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
+                    <materialDesign:PackIcon Grid.Column="0"
+                                             Margin="4,0,0,0"
+                                             VerticalAlignment="Center"
+                                             Background="Transparent"
+                                             DataContext="{Binding}"
+                                             Foreground="DodgerBlue"
+                                             Kind="InformationOutline"
+                                             Tag="{Binding DataContext.App,
+                                                           RelativeSource={RelativeSource FindAncestor,
+                                                                                          AncestorType={x:Type settingWindow:SettingWindow}}}">
+                        <materialDesign:PackIcon.ToolTip>
+                            <ToolTip>
+                                <MultiBinding Converter="{StaticResource StringTagToStringConverter}">
+                                    <Binding Mode="OneWay" Path="ValidationMessage.Value" />
+                                    <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
+                                    <Binding Mode="OneWay"
+                                             Path="PlacementTarget.Tag"
+                                             RelativeSource="{RelativeSource Mode=Self}" />
+                                </MultiBinding>
+                            </ToolTip>
+                        </materialDesign:PackIcon.ToolTip>
+
+                        <materialDesign:PackIcon.Style>
+                            <Style TargetType="{x:Type materialDesign:PackIcon}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ValidationMessage.Value}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </materialDesign:PackIcon.Style>
+                    </materialDesign:PackIcon>
+
+                    <!--  位置合わせ  -->
+                    <Button Grid.Column="1"
+                            Width="24"
+                            Height="24"
+                            Style="{StaticResource FlatIconButtonStyle}"
+                            Visibility="Hidden">
+                        <materialDesign:PackIcon Kind="Delete" />
+                    </Button>
+
+                    <!--<control:ShortcutKeyInputBox Key="{Binding Key.Value}"
+                                                 Grid.Column="1"
+                                                 Margin="1"
+                                                 materialDesign:HintAssist.Hint="{DynamicResource Settings_KeyStroke}"
+                                                 IsAlt="{Binding IsAlt.Value}"
+                                                 IsControl="{Binding IsControl.Value}"
+                                                 IsShift="{Binding IsShift.Value}"
+                                                 Style="{StaticResource MaterialDesignTextBox}">
+                        <i:Interaction.Behaviors>
+                            <behavior:UIElementFocusBehavior IsFocused="{Binding IsFocused.Value}" />
+                        </i:Interaction.Behaviors>
+                    </control:ShortcutKeyInputBox>-->
+
+                    <TextBlock Grid.Column="0" Text="{Binding Keyword.Value}"></TextBlock>
+
+                    <Button Grid.Column="2"
+                            Width="24"
+                            Height="24"
+                            Command="{Binding RemoveCommand,
+                                              RelativeSource={RelativeSource FindAncestor,
+                                                                             AncestorType={x:Type functions:FunctionListBox}}}"
+                            CommandParameter="{Binding}">
+                        <materialDesign:PackIcon Kind="Delete" />
+
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource FlatIconButtonStyle}" TargetType="{x:Type Button}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="False">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+
+        <ListBox.ItemContainerStyle>
+            <Style TargetType="{x:Type ListBoxItem}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ContentControl}">
+                            <ContentPresenter />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ListBox.ItemContainerStyle>
+    </ListBox>
+
+    <Button HorizontalAlignment="Left"
+            HorizontalContentAlignment="Left"
+            Command="{Binding AddCommand,
+                              RelativeSource={RelativeSource FindAncestor,
+                                                             AncestorType={x:Type functions:FunctionListBox}}}"
+            Content="{DynamicResource Settings_AddFunction}"
+            Focusable="False"
+            IsTabStop="False"
+            Style="{StaticResource FlatButtonStyle}" />
+</StackPanel>

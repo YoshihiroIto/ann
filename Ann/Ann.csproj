@@ -66,6 +66,10 @@
       <HintPath>..\packages\squirrel.windows.1.4.4\lib\Net45\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Jewelry.Collections, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jewelry.Collections.1.0.1\lib\net45\Jewelry.Collections.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MaterialDesignColors, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignColors.1.1.3\lib\net45\MaterialDesignColors.dll</HintPath>
       <Private>True</Private>
@@ -174,6 +178,15 @@
       <DependentUpon>AboutView.xaml</DependentUpon>
     </Compile>
     <Compile Include="SettingWindow\SettingPage\About\AboutViewModel.cs" />
+    <Compile Include="SettingWindow\SettingPage\Functions\FunctionsView.xaml.cs">
+      <DependentUpon>FunctionsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SettingWindow\SettingPage\Functions\FunctionListBoxViewModel.cs" />
+    <Compile Include="SettingWindow\SettingPage\Functions\FunctionsViewModel.cs" />
+    <Compile Include="SettingWindow\SettingPage\Functions\FunctionViewModel.cs" />
+    <Compile Include="SettingWindow\SettingPage\Functions\FunctionListBox.xaml.cs">
+      <DependentUpon>FunctionListBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SettingWindow\SettingPage\General\GeneralView.xaml.cs">
       <DependentUpon>GeneralView.xaml</DependentUpon>
     </Compile>
@@ -246,6 +259,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="SettingWindow\SettingPage\Functions\FunctionsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SettingWindow\SettingPage\Functions\FunctionListBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="SettingWindow\SettingPage\General\GeneralView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -304,6 +325,7 @@
   <ItemGroup>
     <Resource Include="app.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

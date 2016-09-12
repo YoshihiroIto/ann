@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Ann.Foundation.Mvvm;
 using Jewelry.Collections;
 using Microsoft.WindowsAPICodePack.Shell;
@@ -33,6 +36,15 @@ namespace Ann.Core
         }
 
         #endregion
+
+        private readonly string _iconsDirPath;
+
+        public IconDecoder(string configDirPath)
+        {
+            _iconsDirPath = System.IO.Path.Combine(configDirPath, "icons");
+
+            Directory.CreateDirectory(_iconsDirPath);
+        }
 
         public ImageBrush GetIcon(string path)
         {
@@ -64,8 +76,39 @@ namespace Ann.Core
                 : _IconCache.GetOrAdd(path, DecodeIcon);
         }
 
-        private static ImageBrush DecodeIcon(string path)
+        public void ClearCache()
         {
+            _IconCache?.Clear();
+            _ShareIconCache?.Clear();
+
+            if (Directory.Exists(_iconsDirPath))
+                foreach (var f in Directory.EnumerateFiles(_iconsDirPath, "*.*"))
+                    File.Delete(f);
+        }
+
+        private ImageBrush DecodeIcon(string path)
+        {
+            var iconCacheFilePath = System.IO.Path.Combine(_iconsDirPath, GenerateHash(path)) + ".png";
+
+            if (File.Exists(iconCacheFilePath))
+            {
+                using (var stream = File.OpenRead(iconCacheFilePath))
+                {
+                    var bmpImage = new BitmapImage();
+
+                    bmpImage.BeginInit();
+                    bmpImage.CacheOption = BitmapCacheOption.OnLoad;
+                    bmpImage.StreamSource = stream;
+                    bmpImage.EndInit();
+
+                    var b = new ImageBrush(bmpImage);
+                    if (b.CanFreeze && b.IsFrozen == false)
+                        b.Freeze();
+
+                    return b;
+                }
+            }
+
             using (var file = ShellFile.FromFilePath(path))
             {
                 file.Thumbnail.CurrentSize = IconSize;
@@ -78,8 +121,26 @@ namespace Ann.Core
                 if (b.CanFreeze && b.IsFrozen == false)
                     b.Freeze();
 
+                var encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(bi));
+
+                using (var fs = new FileStream(iconCacheFilePath, FileMode.Create))
+                    encoder.Save(fs);
+
                 return b;
             }
+        }
+
+        private static string GenerateHash(string srcStr)
+        {
+            var md5 = MD5.Create();
+            var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(srcStr));
+
+            var sb = new StringBuilder();
+            foreach (var b in hash)
+                sb.Append(b.ToString("x2"));
+
+            return sb.ToString();
         }
 
         private class RefSize

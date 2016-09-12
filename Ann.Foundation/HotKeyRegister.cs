@@ -38,11 +38,6 @@ namespace Ann.Foundation
             _Handle = new WindowInteropHelper(window).Handle;
         }
 
-        public void Dispose()
-        {
-            Unregister();
-        }
-
         private static int _count;
 
         public bool Register()
@@ -87,5 +82,32 @@ namespace Ann.Foundation
 
             handled = true;
         }
+
+       #region IDisposable
+       private bool _isDisposed;
+
+       ~HotKeyRegister()
+       {
+           Dispose(false);
+       }
+
+       public void Dispose()
+       {
+           Dispose(true);
+
+           GC.SuppressFinalize(this);
+       }
+
+       protected virtual void Dispose(bool disposing)
+       {
+           if (_isDisposed)
+               return;
+
+           if (disposing)
+               Unregister();
+
+           _isDisposed = true;
+       }
+       #endregion
     }
 }

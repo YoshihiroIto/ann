@@ -81,7 +81,8 @@ namespace Ann.Core
         }
 
         private ManualResetEventSlim _disposeResetEvent;
-        public void Dispose()
+
+        private void Release()
         {
             lock (_lockObj)
             {
@@ -92,5 +93,34 @@ namespace Ann.Core
             _disposeResetEvent?.Wait();
             _disposeResetEvent?.Dispose();
         }
+
+        #region IDisposable
+
+        private bool _isDisposed;
+
+        ~InputQueue()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed)
+                return;
+
+            if (disposing)
+                Release();
+
+            _isDisposed = true;
+        }
+
+        #endregion
     }
 }
