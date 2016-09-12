@@ -82,31 +82,41 @@ namespace Ann.Core
             _ShareIconCache?.Clear();
 
             if (Directory.Exists(_iconsDirPath))
-                foreach (var f in Directory.EnumerateFiles(_iconsDirPath, "*.*"))
+                foreach (var f in Directory.EnumerateFiles(_iconsDirPath, "*.*", SearchOption.AllDirectories))
                     File.Delete(f);
         }
 
         private ImageBrush DecodeIcon(string path)
         {
-            var iconCacheFilePath = System.IO.Path.Combine(_iconsDirPath, GenerateHash(path)) + ".png";
+            var hash = GenerateHash(path);
 
-            if (File.Exists(iconCacheFilePath))
+            var iconCacheDirPath = System.IO.Path.Combine(_iconsDirPath, $"{hash[0]}{hash[1]}");
+            var iconCacheFilePath = System.IO.Path.Combine(iconCacheDirPath, hash) + ".png";
+
+            try
             {
-                using (var stream = File.OpenRead(iconCacheFilePath))
+                if (File.Exists(iconCacheFilePath))
                 {
-                    var bmpImage = new BitmapImage();
+                    using (var stream = File.OpenRead(iconCacheFilePath))
+                    {
+                        var bmpImage = new BitmapImage();
 
-                    bmpImage.BeginInit();
-                    bmpImage.CacheOption = BitmapCacheOption.OnLoad;
-                    bmpImage.StreamSource = stream;
-                    bmpImage.EndInit();
+                        bmpImage.BeginInit();
+                        bmpImage.CacheOption = BitmapCacheOption.OnLoad;
+                        bmpImage.StreamSource = stream;
+                        bmpImage.EndInit();
 
-                    var b = new ImageBrush(bmpImage);
-                    if (b.CanFreeze && b.IsFrozen == false)
-                        b.Freeze();
+                        var b = new ImageBrush(bmpImage);
+                        if (b.CanFreeze && b.IsFrozen == false)
+                            b.Freeze();
 
-                    return b;
+                        return b;
+                    }
                 }
+            }
+            catch
+            {
+                // ignored
             }
 
             using (var file = ShellFile.FromFilePath(path))
@@ -124,6 +134,7 @@ namespace Ann.Core
                 var encoder = new PngBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(bi));
 
+                Directory.CreateDirectory(iconCacheDirPath);
                 using (var fs = new FileStream(iconCacheFilePath, FileMode.Create))
                     encoder.Save(fs);
 
