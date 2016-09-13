@@ -18,17 +18,36 @@ namespace Ann.Foundation
 
         #region IDisposable
 
+        private bool _isDisposed;
+
         ~TimeMeasure()
         {
-            Debug.Assert(false);
+            Dispose(false);
         }
 
         public void Dispose()
         {
-            _stopwatch.Stop();
-            Debug.WriteLine($"■{_title} : {_stopwatch.ElapsedMilliseconds}ms : {_stopwatch.ElapsedTicks}");
+            Dispose(true);
 
             GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed)
+                return;
+
+            if (disposing)
+            {
+                // Disposing of managed resources.
+                _stopwatch.Stop();
+                Debug.WriteLine($"■{_title} : {_stopwatch.ElapsedMilliseconds}ms : {_stopwatch.ElapsedTicks}");
+            }
+
+            // Disposing of unmanaged resources.
+            ;
+
+            _isDisposed = true;
         }
 
         #endregion

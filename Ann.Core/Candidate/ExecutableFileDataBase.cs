@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Media;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 using File = System.IO.File;
@@ -119,21 +118,17 @@ namespace Ann.Core.Candidate
 
                 var lockObj = new object();
 
-                var tempIndex = 0;
+                var bufferIndex = 0;
 
                 Parallel.ForEach(
                     targets,
+                    new ParallelOptions { MaxDegreeOfParallelism = _FindBuffer.Length },
                     () =>
                     {
-                        var i = Interlocked.Increment(ref tempIndex) - 1;
+                        var i = Interlocked.Increment(ref bufferIndex) - 1;
 
-                        if (_FindBuffer.Count == i)
-                            _FindBuffer.Add(new List<ExecutableFile> {Capacity = targets.Count()});
-                        else
-                        {
-                            _FindBuffer[i].Clear();
-                            _FindBuffer[i].Capacity = targets.Count();
-                        }
+                        _FindBuffer[i].Clear();
+                        _FindBuffer[i].Capacity = targets.Count();
 
                         return _FindBuffer[i];
                     },
@@ -167,7 +162,8 @@ namespace Ann.Core.Candidate
             return _prevResult;
         }
 
-        private readonly List<List<ExecutableFile>> _FindBuffer = new List<List<ExecutableFile>>();
+        private readonly List<ExecutableFile>[] _FindBuffer =
+            Enumerable.Range(0, Environment.ProcessorCount).Select(_ => new List<ExecutableFile>()).ToArray();
 
         private static int MakeScore(ExecutableFile u, string[] inputs, Dictionary<string, int> extScores)
         {
@@ -187,11 +183,8 @@ namespace Ann.Core.Candidate
 
         private static int MakeScore(ExecutableFile u, string input, Dictionary<string, int> extScores)
         {
-            // ReSharper disable once PossibleNullReferenceException
-            var ext = System.IO.Path.GetExtension(u.Path) ?? string.Empty;
-
-            Debug.Assert(extScores.ContainsKey(ext));
-            var extScore = extScores[ext];
+            Debug.Assert(extScores.ContainsKey(u.Extension));
+            var extScore = extScores[u.Extension];
 
             const int maxPathLength = 256;
             var pathLength = Math.Min(u.Path.Length, maxPathLength);
@@ -480,7 +473,5 @@ namespace Ann.Core.Candidate
                 .Select(e => e[0] == '.' ? e : "." + e)
                 .ToArray();
         }
-
-        public ImageBrush GetIcon(string path) => _iconDecoder.GetIcon(path);
     }
 }
