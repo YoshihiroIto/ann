@@ -46,7 +46,7 @@ namespace Ann.Core
             Directory.CreateDirectory(_iconsDirPath);
         }
 
-        public ImageBrush GetIcon(string path)
+        public ImageBrush GetIcon(string path, string ext)
         {
             var i = _IconCache?.Get(path);
             if (i != null)
@@ -54,8 +54,6 @@ namespace Ann.Core
 
             if (File.Exists(path) == false)
                 return null;
-
-            var ext = System.IO.Path.GetExtension(path)?.ToLower();
 
             if (string.IsNullOrEmpty(ext))
                 return null;
@@ -215,7 +213,7 @@ namespace Ann.Core
         private LruCache<string, ImageBrush> _IconCache;
         private readonly Dictionary<string, ImageBrush> _ShareIconCache = new Dictionary<string, ImageBrush>();
 
-        private readonly HashSet<string> _IconShareFileExt = new HashSet<string>
+        private readonly HashSet<string> _IconShareFileExt = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
             ".bat",
             ".cmd",

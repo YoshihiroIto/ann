@@ -15,6 +15,7 @@ namespace Ann.Core.Candidate
     public class ExecutableFile : IComparable<ExecutableFile>, ICandidate
     {
         public readonly string Path;
+        public readonly string Extension;
         public readonly string Name;
         public readonly string Directory;
         public readonly string FileName;
@@ -64,7 +65,10 @@ namespace Ann.Core.Candidate
             if (name == null)
                 name = MakeNameFromFilePath(path);
 
+            var ext = System.IO.Path.GetExtension(path) ?? string.Empty;
+            
             Path = stringPool.GetOrAdd(path, path);
+            Extension = stringPool.GetOrAdd(ext, ext);
             Name = stringPool.GetOrAdd(name, name);
 
             if (dir == null)
@@ -153,7 +157,7 @@ namespace Ann.Core.Candidate
         int IComparable<ExecutableFile>.CompareTo(ExecutableFile other) => _score - other._score;
         string ICandidate.Name => string.IsNullOrWhiteSpace(Name) == false ? Name : System.IO.Path.GetFileName(Path);
         string ICandidate.Comment => Path;
-        Brush ICandidate.Icon => _iconDecoder.GetIcon(Path);
+        Brush ICandidate.Icon => _iconDecoder.GetIcon(Path, Extension);
 
         private DelegateCommand _RunCommand;
 

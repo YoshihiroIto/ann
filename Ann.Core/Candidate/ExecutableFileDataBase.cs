@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Media;
 using Ann.Foundation;
 using Ann.Foundation.Mvvm;
 using File = System.IO.File;
@@ -184,11 +183,8 @@ namespace Ann.Core.Candidate
 
         private static int MakeScore(ExecutableFile u, string input, Dictionary<string, int> extScores)
         {
-            // ReSharper disable once PossibleNullReferenceException
-            var ext = System.IO.Path.GetExtension(u.Path) ?? string.Empty;
-
-            Debug.Assert(extScores.ContainsKey(ext));
-            var extScore = extScores[ext];
+            Debug.Assert(extScores.ContainsKey(u.Extension));
+            var extScore = extScores[u.Extension];
 
             const int maxPathLength = 256;
             var pathLength = Math.Min(u.Path.Length, maxPathLength);
@@ -477,7 +473,5 @@ namespace Ann.Core.Candidate
                 .Select(e => e[0] == '.' ? e : "." + e)
                 .ToArray();
         }
-
-        public ImageBrush GetIcon(string path) => _iconDecoder.GetIcon(path);
     }
 }
