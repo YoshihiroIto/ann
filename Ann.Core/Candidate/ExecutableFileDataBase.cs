@@ -119,21 +119,17 @@ namespace Ann.Core.Candidate
 
                 var lockObj = new object();
 
-                var tempIndex = 0;
+                var bufferIndex = 0;
 
                 Parallel.ForEach(
                     targets,
+                    new ParallelOptions { MaxDegreeOfParallelism = _FindBuffer.Length },
                     () =>
                     {
-                        var i = Interlocked.Increment(ref tempIndex) - 1;
+                        var i = Interlocked.Increment(ref bufferIndex) - 1;
 
-                        if (_FindBuffer.Count == i)
-                            _FindBuffer.Add(new List<ExecutableFile> {Capacity = targets.Count()});
-                        else
-                        {
-                            _FindBuffer[i].Clear();
-                            _FindBuffer[i].Capacity = targets.Count();
-                        }
+                        _FindBuffer[i].Clear();
+                        _FindBuffer[i].Capacity = targets.Count();
 
                         return _FindBuffer[i];
                     },
@@ -167,7 +163,8 @@ namespace Ann.Core.Candidate
             return _prevResult;
         }
 
-        private readonly List<List<ExecutableFile>> _FindBuffer = new List<List<ExecutableFile>>();
+        private readonly List<ExecutableFile>[] _FindBuffer =
+            Enumerable.Range(0, Environment.ProcessorCount).Select(_ => new List<ExecutableFile>()).ToArray();
 
         private static int MakeScore(ExecutableFile u, string[] inputs, Dictionary<string, int> extScores)
         {
