@@ -46,6 +46,11 @@ namespace Ann.Core
             Directory.CreateDirectory(_iconsDirPath);
         }
 
+        public ImageBrush GetIcon(string path)
+        {
+            return GetIcon(path, System.IO.Path.GetExtension(path));
+        }
+
         public ImageBrush GetIcon(string path, string ext)
         {
             var i = _IconCache?.Get(path);
