@@ -119,9 +119,24 @@ namespace Ann.Core.Candidate
 
                 var lockObj = new object();
 
+                var tempIndex = 0;
+
                 Parallel.ForEach(
                     targets,
-                    () => new List<ExecutableFile> {Capacity = targets.Count()},
+                    () =>
+                    {
+                        var i = Interlocked.Increment(ref tempIndex) - 1;
+
+                        if (_FindBuffer.Count == i)
+                            _FindBuffer.Add(new List<ExecutableFile> {Capacity = targets.Count()});
+                        else
+                        {
+                            _FindBuffer[i].Clear();
+                            _FindBuffer[i].Capacity = targets.Count();
+                        }
+
+                        return _FindBuffer[i];
+                    },
                     (u, loop, local) =>
                     {
                         foreach (var i in inputs)
@@ -151,6 +166,8 @@ namespace Ann.Core.Candidate
 
             return _prevResult;
         }
+
+        private readonly List<List<ExecutableFile>> _FindBuffer = new List<List<ExecutableFile>>();
 
         private static int MakeScore(ExecutableFile u, string[] inputs, Dictionary<string, int> extScores)
         {
