@@ -4,6 +4,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -134,12 +135,17 @@ namespace Ann.Core
                 if (b.CanFreeze && b.IsFrozen == false)
                     b.Freeze();
 
-                var encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(bi));
+                Task.Run(async () =>
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(2));
 
-                Directory.CreateDirectory(iconCacheDirPath);
-                using (var fs = new FileStream(iconCacheFilePath, FileMode.Create))
-                    encoder.Save(fs);
+                    var encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(bi));
+
+                    Directory.CreateDirectory(iconCacheDirPath);
+                    using (var fs = new FileStream(iconCacheFilePath, FileMode.Create))
+                        encoder.Save(fs);
+                });
 
                 return b;
             }
