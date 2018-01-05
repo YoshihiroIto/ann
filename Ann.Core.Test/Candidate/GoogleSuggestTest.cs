@@ -34,7 +34,7 @@ namespace Ann.Core.Test.Candidate
                 Assert.Equal("c#", (a[0] as ICandidate).Name);
 
                 foreach (var r in a)
-                    Assert.True(((ICandidate) r).Name.StartsWith("c#"));
+                    Assert.StartsWith("c#", ((ICandidate) r).Name);
             }
         }
     }

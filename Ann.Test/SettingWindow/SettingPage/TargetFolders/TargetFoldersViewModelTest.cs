@@ -54,9 +54,9 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
                 Assert.False(model.TargetFolder.IsIncludeProgramFilesX86Folder);
                 Assert.False(model.TargetFolder.IsIncludeCommonStartMenu);
 
-                Assert.Equal(0, vm.Folders.Count);
+                Assert.Empty(vm.Folders);
                 model.TargetFolder.Folders.Add(new Path("AA"));
-                Assert.Equal(1, vm.Folders.Count);
+                Assert.Single(vm.Folders);
                 Assert.Equal("AA", vm.Folders[0].Path.Value);
             }
         }
@@ -79,8 +79,8 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
 
                 vm.FolderAddCommand.Execute();
 
-                Assert.Equal(1, vm.Folders.Count);
-                Assert.Equal(1, model.TargetFolder.Folders.Count);
+                Assert.Single(vm.Folders);
+                Assert.Single(model.TargetFolder.Folders);
 
                 Assert.Equal(string.Empty, vm.Folders[0].Path.Value);
                 Assert.Equal(string.Empty, model.TargetFolder.Folders[0].Value);
@@ -264,14 +264,14 @@ namespace Ann.Test.SettingWindow.SettingPage.TargetFolders
 
                 model.TargetFolder.Folders.Add(new Path(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)));
 
-                Assert.Equal(1, vm.Folders.Count);
+                Assert.Single(vm.Folders);
 
                 vm.Folders[0].IsFocused.Value = true;
                 vm.Folders[0].Path.Value = string.Empty;
 
                 vm.Folders[0].IsFocused.Value = false;
 
-                Assert.Equal(0, model.TargetFolder.Folders.Count);
+                Assert.Empty(model.TargetFolder.Folders);
             }
         }
 

@@ -108,13 +108,16 @@ namespace Ann.MainWindow
         {
             return cache.GetOrAdd(src, s =>
             {
+                var dpiScale = VisualTreeHelper.GetDpi(Application.Current.MainWindow);
+
                 var text = new FormattedText(
                     s,
                     CultureInfo.CurrentUICulture,
                     FlowDirection.LeftToRight,
                     Dummy,
                     emSize,
-                    brush)
+                    brush,
+                    dpiScale.PixelsPerDip)
                 {
                     MaxTextWidth = width,
                     MaxTextHeight = height,

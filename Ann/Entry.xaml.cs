@@ -59,8 +59,6 @@ namespace Ann
 
         private void SetupDiContainer()
         {
-            _DiContainer.Register(() => _DiContainer);
-
             _DiContainer.RegisterSingleton(() => new ConfigHolder(Constants.ConfigDirPath));
             _DiContainer.RegisterSingleton(() => _DiContainer.GetInstance<ConfigHolder>().Config);
             _DiContainer.RegisterSingleton<App>();

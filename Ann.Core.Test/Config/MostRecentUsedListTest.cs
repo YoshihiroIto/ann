@@ -12,13 +12,13 @@ namespace Ann.Core.Test.Config
             var c = new MostRecentUsedList();
 
             Assert.NotNull(c.AppPath);
-            Assert.Equal(0, c.AppPath.Count);
+            Assert.Empty(c.AppPath);
 
             c.AppPath = new ObservableCollection<string>
             {
                 "AAA"
             };
-            Assert.Equal(1, c.AppPath.Count);
+            Assert.Single(c.AppPath);
             Assert.Equal("AAA", c.AppPath[0]);
         }
     }

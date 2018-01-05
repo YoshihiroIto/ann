@@ -26,10 +26,10 @@ namespace Ann.Foundation.Test
 
             Assert.Equal(4, dirs.Length);
 
-            Assert.True(dirs.Any(d => d.EndsWith(@"aaa\bbb\1.txt")));
-            Assert.True(dirs.Any(d => d.EndsWith(@"aaa\ccc\2.txt")));
-            Assert.True(dirs.Any(d => d.EndsWith(@"aaa\ddd\3.txt")));
-            Assert.True(dirs.Any(d => d.EndsWith(@"111\4.txt")));
+            Assert.Contains(dirs, d => d.EndsWith(@"aaa\bbb\1.txt"));
+            Assert.Contains(dirs, d => d.EndsWith(@"aaa\ccc\2.txt"));
+            Assert.Contains(dirs, d => d.EndsWith(@"aaa\ddd\3.txt"));
+            Assert.Contains(dirs, d => d.EndsWith(@"111\4.txt"));
         }
 
         [Fact]
@@ -38,7 +38,7 @@ namespace Ann.Foundation.Test
             // 例外にならない
             var dirs = DirectoryHelper.EnumerateAllFiles(@"C:\System Volume Information").ToArray();
 
-            Assert.Equal(0, dirs.Length);
+            Assert.Empty(dirs);
         }
     }
 }

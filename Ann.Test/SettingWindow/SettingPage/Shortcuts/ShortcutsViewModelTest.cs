@@ -46,9 +46,9 @@ namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
             var model = new App();
             using (var vm = new ShortcutsViewModel(model))
             {
-                Assert.Equal(0, vm.HideShortcuts.Keys.Count);
+                Assert.Empty(vm.HideShortcuts.Keys);
                 model.ShortcutKeys.Hide.Add(new ShortcutKey());
-                Assert.Equal(1, vm.HideShortcuts.Keys.Count);
+                Assert.Single(vm.HideShortcuts.Keys);
             }
         }
     }

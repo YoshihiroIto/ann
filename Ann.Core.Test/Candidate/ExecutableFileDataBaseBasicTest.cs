@@ -122,7 +122,7 @@ namespace Ann.Core.Test.Candidate
                     Assert.Equal(IndexOpeningResults.Ok, r);
 
                     var f = db.Find("aaa", executableFileExts);
-                    Assert.Equal(0, f.Count());
+                    Assert.Empty(f);
                 }
             }
         }
@@ -167,7 +167,7 @@ namespace Ann.Core.Test.Candidate
 
                 var f = db.Find("aaa", executableFileExts).ToArray();
 
-                Assert.Equal(1, f.Length);
+                Assert.Single(f);
 
                 Assert.Equal(System.IO.Path.Combine(_dataFs.RootPath, @"target1\aAa.exe"), f[0].Path);
                 Assert.Equal(string.Empty, f[0].Directory);
@@ -200,7 +200,7 @@ namespace Ann.Core.Test.Candidate
 
                 var f = db.Find("aaa", executableFileExts).ToArray();
 
-                Assert.Equal(1, f.Length);
+                Assert.Single(f);
 
                 Assert.Equal(System.IO.Path.Combine(_dataFs.RootPath, @"target1\xxx\YYY\zzz\aAa 123.exe"), f[0].Path);
                 Assert.Equal(@"\xxx\YYY\zzz", f[0].Directory);

@@ -38,7 +38,7 @@ namespace Ann.Core.Test.Candidate
 
                 var f = db.Find("bb", executableFileExts).ToArray();
 
-                Assert.Equal(1, f.Length);
+                Assert.Single(f);
                 Assert.Equal(name, f[0].Name);
                 Assert.Equal(
                     System.IO.Path.Combine(_dataFs.RootPath, @"target1\bbb.exe").ToLower(),
@@ -68,7 +68,7 @@ namespace Ann.Core.Test.Candidate
 
                 var f = db.Find(input, executableFileExts).ToArray();
 
-                Assert.Equal(0, f.Length);
+                Assert.Empty(f);
             }
         }
 

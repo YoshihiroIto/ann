@@ -28,13 +28,13 @@ namespace Ann.Core.Test.Config
             Assert.Equal(ModifierKeys.Alt, c.ShortcutKeys.Activate.Modifiers);
 
             Assert.NotNull(c.ShortcutKeys.Hide);
-            Assert.Equal(0, c.ShortcutKeys.Hide.Count);
+            Assert.Empty(c.ShortcutKeys.Hide);
 
             c.ShortcutKeys.Hide = new ObservableCollection<ShortcutKey>
             {
                 new ShortcutKey {Key = Key.J, Modifiers = ModifierKeys.Control}
             };
-            Assert.Equal(1, c.ShortcutKeys.Hide.Count);
+            Assert.Single(c.ShortcutKeys.Hide);
             Assert.Equal(Key.J, c.ShortcutKeys.Hide[0].Key);
             Assert.Equal(ModifierKeys.Control, c.ShortcutKeys.Hide[0].Modifiers);
 
@@ -42,7 +42,7 @@ namespace Ann.Core.Test.Config
             Assert.Equal(Key.Space, c.ShortcutKeys.Activate.Key);
             Assert.Equal(ModifierKeys.Control, c.ShortcutKeys.Activate.Modifiers);
             Assert.NotNull(c.ShortcutKeys.Hide);
-            Assert.Equal(0, c.ShortcutKeys.Hide.Count);
+            Assert.Empty(c.ShortcutKeys.Hide);
 
             Assert.NotNull(c.TargetFolder);
             Assert.True(c.TargetFolder.IsIncludeSystemFolder);
@@ -54,7 +54,7 @@ namespace Ann.Core.Test.Config
             Assert.True(c.TargetFolder.IsIncludeCommonStartMenu);
 
             Assert.NotNull(c.TargetFolder.Folders);
-            Assert.Equal(0, c.TargetFolder.Folders.Count);
+            Assert.Empty(c.TargetFolder.Folders);
 
             c.TargetFolder.IsIncludeSystemFolder = false;
             c.TargetFolder.IsIncludeSystemX86Folder = false;
@@ -80,17 +80,17 @@ namespace Ann.Core.Test.Config
             Assert.True(c.TargetFolder.IsIncludeProgramsFolder);
             Assert.True(c.TargetFolder.IsIncludeCommonStartMenu);
             Assert.NotNull(c.TargetFolder.Folders);
-            Assert.Equal(0, c.TargetFolder.Folders.Count);
+            Assert.Empty(c.TargetFolder.Folders);
 
             c.TargetFolder.Folders = new ObservableCollection<Path>
             {
                 new Path("AAA")
             };
-            Assert.Equal(1, c.TargetFolder.Folders.Count);
+            Assert.Single(c.TargetFolder.Folders);
             Assert.Equal("AAA", c.TargetFolder.Folders[0].Value);
 
             Assert.NotNull(c.PriorityFiles);
-            Assert.Equal(0, c.PriorityFiles.Count);
+            Assert.Empty(c.PriorityFiles);
 
             c.PriorityFiles = new ObservableCollection<Path> {new Path("AA"), new Path("BB")};
             Assert.Equal(2, c.PriorityFiles.Count);
@@ -118,7 +118,7 @@ namespace Ann.Core.Test.Config
                 c.ExecutableFileExts);
 
             c.ExecutableFileExts = new ObservableCollection<string>();
-            Assert.Equal(0, c.ExecutableFileExts.Count);
+            Assert.Empty(c.ExecutableFileExts);
 
             Assert.Empty(c.GitHubPersonalAccessToken);
             c.GitHubPersonalAccessToken = "AAA";
@@ -182,7 +182,7 @@ namespace Ann.Core.Test.Config
             Assert.Equal("Ctrl + Space", s.Activate.Text);
 
             Assert.NotNull(s.Hide);
-            Assert.Equal(0, s.Hide.Count);
+            Assert.Empty(s.Hide);
         }
 
         [Fact]

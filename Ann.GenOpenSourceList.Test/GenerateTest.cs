@@ -35,7 +35,7 @@ namespace Ann.GenOpenSourceList.Test
             using (var reader = new StringReader(d))
             {
                 var list = new Deserializer().Deserialize<OpenSource[]>(reader);
-                Assert.Equal(1, list.Length);
+                Assert.Single(list);
 
                 Assert.Equal("ReactiveProperty", list[0].Name);
                 Assert.Equal("neuecc xin9le okazuki", list[0].Auther);
@@ -50,7 +50,7 @@ namespace Ann.GenOpenSourceList.Test
         public void ProgramNoArgs()
         {
             var i = GenOpenSourceList.Program.Main(new string[0]);
-            Assert.Equal(i, 1);
+            Assert.Equal(1, i);
         }
 
         [Fact]
@@ -68,12 +68,12 @@ namespace Ann.GenOpenSourceList.Test
                 Path.Combine(_context.RootPath, "output.yaml")
             });
 
-            Assert.Equal(i, 0);
+            Assert.Equal(0, i);
 
             using (var reader = new StringReader(File.ReadAllText(Path.Combine(_context.RootPath, "output.yaml"))))
             {
                 var list = new Deserializer().Deserialize<OpenSource[]>(reader);
-                Assert.Equal(1, list.Length);
+                Assert.Single(list);
 
                 Assert.Equal("ReactiveProperty", list[0].Name);
                 Assert.Equal("neuecc xin9le okazuki", list[0].Auther);

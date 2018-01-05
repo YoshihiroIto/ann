@@ -23,7 +23,7 @@ namespace Ann.Foundation.Test
                 Assert.Equal("c#", results[0]);
 
                 foreach (var r in results)
-                    Assert.True(r.StartsWith("c#"));
+                    Assert.StartsWith("c#", r);
             }
         }
     }

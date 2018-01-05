@@ -8,7 +8,7 @@ namespace Ann.Foundation
     {
         public const string Company = "Jewelry Development";
         public const string Product = "Ann";
-        public const string Copyright = "Copyright © 2016 Jewelry Development All Rights Reserved.";
+        public const string Copyright = "Copyright © Jewelry Development All Rights Reserved.";
 
         public static string Version => Assembly.GetExecutingAssembly().GetName().Version.ToString();
 

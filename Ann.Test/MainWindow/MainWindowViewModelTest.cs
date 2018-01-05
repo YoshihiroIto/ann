@@ -70,7 +70,7 @@ namespace Ann.Test.MainWindow
         {
             using (var vm = _context.GetInstance<MainWindowViewModel>())
             {
-                Assert.Equal(0, vm.Candidates.Value.Length);
+                Assert.Empty(vm.Candidates.Value);
             }
         }
     }
