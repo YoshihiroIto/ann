@@ -63,7 +63,7 @@ namespace Ann.Core.Test
             configHolder.Config.TargetFolder.IsIncludeProgramFilesX86Folder = false;
             configHolder.Config.TargetFolder.IsIncludeCommonStartMenu = false;
 
-            Assert.Empty(app.TagetFolders);
+            Assert.Equal(0, app.TagetFolders.Count());
         }
 
         [Fact]
@@ -158,7 +158,7 @@ namespace Ann.Core.Test
 
             app.Find("          ");
 
-            Assert.Empty(app.Candidates);
+            Assert.Equal(0, app.Candidates.Count());
         }
 
         [Fact]
@@ -174,7 +174,7 @@ namespace Ann.Core.Test
                 e1.Wait();
             }
 
-            Assert.Single(app.Candidates);
+            Assert.Equal(1, app.Candidates.Count());
             Assert.Equal("24", app.Candidates.FirstOrDefault()?.Name);
         }
 

@@ -22,7 +22,7 @@ namespace Ann.Core.Test.Candidate
 
                 var r = c.Calculate("4*5", languagesService);
 
-                Assert.Equal("20", r.Name);
+                Assert.Equal(r.Name, "20");
             }
         }
 

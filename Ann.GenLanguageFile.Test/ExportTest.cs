@@ -39,7 +39,7 @@ namespace Ann.GenLanguageFile.Test
         public void ProgramNoArgs()
         {
             var i = GenLanguageFile.Program.Main(new string[0]);
-            Assert.Equal(1, i);
+            Assert.Equal(i, 1);
         }
 
         [Fact]
@@ -56,7 +56,7 @@ namespace Ann.GenLanguageFile.Test
             var nameSpace = "XYZ";
 
             var i = GenLanguageFile.Program.Main(new [] {classPath, defaultXamlPath, nameSpace});
-            Assert.Equal(0, i);
+            Assert.Equal(i, 0);
 
             Assert.True(File.Exists(classPath));
             Assert.True(File.Exists(defaultXamlPath));

@@ -24,9 +24,9 @@ namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
 
             using (var vm = new ShortcutKeyListBoxViewModel(model))
             {
-                Assert.Empty(vm.Keys);
+                Assert.Equal(0, vm.Keys.Count);
                 model.Add(new ShortcutKey());
-                Assert.Single(vm.Keys);
+                Assert.Equal(1, vm.Keys.Count);
             }
         }
 
@@ -37,8 +37,8 @@ namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
             using (var vm = new ShortcutKeyListBoxViewModel(model))
             {
                 vm.KeyAddCommand.Execute(null);
-                Assert.Single(vm.Keys);
-                Assert.Single(model);
+                Assert.Equal(1, vm.Keys.Count);
+                Assert.Equal(1, model.Count);
             }
         }
 
@@ -73,7 +73,7 @@ namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
             {
                 model.Add(new ShortcutKey {Key = Key.A});
 
-                Assert.Single(vm.Keys);
+                Assert.Equal(1, vm.Keys.Count);
 
                 vm.Keys[0].IsFocused.Value = true;
 
@@ -81,7 +81,7 @@ namespace Ann.Test.SettingWindow.SettingPage.Shortcuts
 
                 vm.Keys[0].IsFocused.Value = false;
 
-                Assert.Empty(model);
+                Assert.Equal(0, model.Count);
             }
         }
 

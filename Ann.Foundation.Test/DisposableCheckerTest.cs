@@ -86,7 +86,7 @@ namespace Ann.Foundation.Test
 
             DisposableChecker.End();
 
-            Assert.Contains("Found undispose object.", message);
+            Assert.True(message.Contains("Found undispose object."));
         }
 
         [Fact]
@@ -103,7 +103,7 @@ namespace Ann.Foundation.Test
             Assert.Equal("ABC", message);
             DisposableChecker.Add(d);
 
-            Assert.Contains("Found multiple addition.", message);
+            Assert.True(message.Contains("Found multiple addition."));
 
             DisposableChecker.End();
         }
@@ -125,7 +125,7 @@ namespace Ann.Foundation.Test
             Assert.Equal("ABC", message);
             DisposableChecker.Remove(d);
 
-            Assert.Contains("Found multiple removing.", message);
+            Assert.True(message.Contains("Found multiple removing."));
 
             DisposableChecker.End();
         }

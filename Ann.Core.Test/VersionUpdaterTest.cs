@@ -9,7 +9,6 @@ namespace Ann.Core.Test
             TestHelper.CleanTestEnv();
         }
 
-#if false
         [Fact]
         public void BasicOnDisabledSilentUpdate()
         {
@@ -31,7 +30,6 @@ namespace Ann.Core.Test
                 versionUpdater.RemoveStartupShortcut().Wait();
             }
         }
-#endif
 
         [Fact]
         public void Restart()

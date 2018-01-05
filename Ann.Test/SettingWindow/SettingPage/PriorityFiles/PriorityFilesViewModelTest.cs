@@ -36,10 +36,10 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
             using (var messenger = new WindowMessageBroker())
             using (var vm = new PriorityFilesViewModel(model, app, messenger))
             {
-                Assert.Empty(vm.Files);
+                Assert.Equal(0, vm.Files.Count);
 
                 model.PriorityFiles.Add(new Path("AA"));
-                Assert.Single(vm.Files);
+                Assert.Equal(1, vm.Files.Count);
                 Assert.Equal("AA", vm.Files[0].Path.Value);
 
                 model.PriorityFiles.Add(new Path("BB"));
@@ -48,7 +48,7 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
                 Assert.Equal("BB", vm.Files[1].Path.Value);
 
                 model.PriorityFiles.RemoveAt(0);
-                Assert.Single(vm.Files);
+                Assert.Equal(1, vm.Files.Count);
                 Assert.Equal("BB", vm.Files[0].Path.Value);
             }
         }
@@ -64,10 +64,10 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
             {
                 vm.FileAddCommand.Execute(null);
 
-                Assert.Single(vm.Files);
+                Assert.Equal(1, vm.Files.Count);
                 Assert.Equal(string.Empty, vm.Files[0].Path.Value);
 
-                Assert.Single(model.PriorityFiles);
+                Assert.Equal(1, model.PriorityFiles.Count);
                 Assert.Equal(string.Empty, model.PriorityFiles[0].Value);
             }
         }
@@ -81,7 +81,7 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
             using (var messenger = new WindowMessageBroker())
             using (var vm = new PriorityFilesViewModel(model, app, messenger))
             {
-                Assert.Empty(vm.Files);
+                Assert.Equal(0, vm.Files.Count);
 
                 var aa = new Path("AA");
                 var bb = new Path("BB");
@@ -128,14 +128,14 @@ namespace Ann.Test.SettingWindow.SettingPage.PriorityFiles
             {
                 model.PriorityFiles.Add(new Path(Environment.ExpandEnvironmentVariables(@"%SystemRoot%\explorer.exe")));
 
-                Assert.Single(vm.Files);
+                Assert.Equal(1, vm.Files.Count);
 
                 vm.Files[0].IsFocused.Value = true;
                 vm.Files[0].Path.Value = string.Empty;
 
                 vm.Files[0].IsFocused.Value = false;
 
-                Assert.Empty(model.PriorityFiles);
+                Assert.Equal(0, model.PriorityFiles.Count);
             }
         }
 

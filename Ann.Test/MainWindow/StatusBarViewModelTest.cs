@@ -42,9 +42,9 @@ namespace Ann.Test.MainWindow
 
                 using (var vm = new StatusBarViewModel(app))
                 {
-                    Assert.Empty(vm.Messages);
+                    Assert.Equal(0, vm.Messages.Count);
                     vm.Messages.Add(new ProcessingStatusBarItemViewModel(app, StringTags.AllFiles));
-                    Assert.Single(vm.Messages);
+                    Assert.Equal(1, vm.Messages.Count);
                 }
             }
         }
